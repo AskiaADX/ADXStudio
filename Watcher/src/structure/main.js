@@ -316,5 +316,5 @@ if (option.file && !option.webdriver) {
   console.log(helpMessage);
   process.exit(0);
 } else {
-  require('./default_app.js');
+  require('./Firstapp.js');
 }

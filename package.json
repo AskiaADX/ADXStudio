@@ -2,7 +2,7 @@
   "name": "ADXStudio",
   "version": "1.0.0",
   "description": "ADXStudio",
-  "main": "index.js",
+  "main": "app/main.js",
   "scripts": {
     "test": "jasmine-node spec/"
   },

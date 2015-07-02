@@ -18,61 +18,49 @@ var path=require("path");
 * @param {Error} callback.err Error
 * @param {Array} callback.files return an array of files/folders
 */
-exports.load=function(dir,callback){
-  if(!callback){
+exports.load = function (dir, callback) {
+    if (!callback) {
       throw new Error('Invalid argument, expected callback');
     }
-    if(typeof dir != 'string'){
-      callback(new Error('Invalid argument, expected dir to be string.'),null);
+    if (typeof dir != 'string') {
+      callback(new Error('Invalid argument, expected dir to be string.'), null);
       return;
     }
 
-    fs.stat(dir,function(err,stats){
-      if(err){
-        callback(err,null);
+    fs.stat(dir, function (err, stats) {
+      if (err) {
+        callback(err, null);
         return;
       }
 
-      if(!stats.isDirectory()){
-        callback(new Error('Invalid dir path.'),null);
+      if (!stats.isDirectory()) {
+        callback(new Error('Invalid dir path.'), null);
         return;
       }
-      fs.readdir(dir,function(err1,files){
-        if(err1){
-          callback(err1,null);
+      fs.readdir(dir, function (err1, files) {
+        if (err1) {
+          callback(err1, null);
+          return;
         }
-        else{
-          var finalFiles=[];
-          for (var i = 0; i < files.length; i++) {
 
-            var stats;
+        var stats;
+        var finalFiles = [];
 
-            try{
-              stats=fs.statSync(path.join(dir,files[i]));
-            }
-            catch(err2){
-              continue;
-            }
-
-
-            finalFiles[i]={
-              name:files[i],
-              path:path.join(dir,files[i])
-            };
-
-
-            if (stats.isFile()){
-              finalFiles[i].type='file';
-            }
-            else{
-              finalFiles[i].type='folder';
-            }
+        for (var i = 0; i < files.length; i++) {
+          try {
+            stats = fs.statSync( path.join(dir,files[i]) );
           }
-          console.log(finalFiles);
-          callback(null,finalFiles);
+          catch (err2) {
+            continue;
+          }
+
+          finalFiles.push({
+            name : files[i],
+            path : path.join(dir,files[i]),
+            type : (stats.isFile()) ? 'file' : 'folder'
+          });
         }
-
+        callback(null, finalFiles);
       });
-
     });
 };
