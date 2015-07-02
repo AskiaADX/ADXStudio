@@ -2,20 +2,28 @@
 <html>
   <head>
     <title>Hello World!</title>
+    <link rel="stylesheet" type="text/css" href="explorer.css" />
   </head>
-  <body>
-    <h1>EXPLORER!</h1>
+  <body class="background_textColor">
+    <div id="root"></div>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function(){
+      var ipc=require('ipc');
+      ipc.on('loadFolder', function( err, files) {
+        console.log(JSON.stringify(files));
+        var root=document.getElementById('root');
 
-    <div style="border : 1px solid black; height :360px; width :140px; ">
+        for (var i = 0; i < files.length; i += 1) {
 
-    </div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
+          var div=document.createElement('div');
+          div.className=files[i].type;
+          div.innerHTML=files[i].name;
+          root.appendChild(div);
+        }
+    });
+      ipc.send('explorer-ready');
+  });
+    </script>
 
 
   </body>

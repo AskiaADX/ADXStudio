@@ -1,6 +1,6 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
-
+var ipc=require('ipc');
 // Report crashes to our server.
 //require('crash-reporter').start();
 
@@ -33,5 +33,12 @@ app.on('ready', function() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+  });
+});
+
+ipc.on('explorer-ready', function(event) {
+  var explorer=require('../src/explorer/explorer.js');
+  explorer.load('C:/', function(err, files){
+    event.sender.send('loadFolder', err, files);
   });
 });

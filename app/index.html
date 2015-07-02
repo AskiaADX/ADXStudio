@@ -7,9 +7,9 @@
     <h1>EXPLORER!</h1>
 
     <div style="border : 1px solid black; height :360px; width :140px; ">
-    <script src="explorerControler.js" type="text/javascript">
-      load('C:/');
-    </script>
+      <webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview>
+    <input type="button" id="ping" value="ping"/>
+
     </div>
     <br>
     <br>
@@ -19,7 +19,25 @@
     <br>
     <div style="border : 1px solid black; height :360px; width :240px; ">
     </div>
+    <script type="text/javascript">
 
+      var ipc=require('ipc');
+      var webview=document.getElementById("explorer");
+
+      webview.addEventListener('console-message', function(e) {
+        console.log( e.message );
+      });
+
+
+      document.getElementById('ping').onclick=function() {
+        ipc.send('ping');
+      }
+
+      ipc.on('pong', function(){
+        console.log('PONG!');
+      });
+      
+    </script>
 
   </body>
 </html>
