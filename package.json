@@ -23,6 +23,10 @@
     "url": "https://github.com/AskiaADX/ADXStudio/issues"
   },
   "homepage": "https://github.com/AskiaADX/ADXStudio",
+  "dependencies": {
+    "charset-detector": "0.0.2",
+    "node-uuid": "^1.4.3"
+  },
   "devDependencies": {
     "jasmine-node": "^1.14.5",
     "electron-prebuilt": "^0.28.3"
