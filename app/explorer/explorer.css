@@ -15,10 +15,16 @@
 }
 
 .folder{
-  color: red;
+  font-size: 10px;
+  color: white;
 }
 
 .file{
+  font-size: 10px;
+  color: grey;
+}
 
-  color: yellow;
+.parent_div{
+  margin-left: 10px;
+  
 }
