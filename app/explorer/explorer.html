@@ -3,23 +3,140 @@
   <head>
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="explorer.css" />
+    <style>
+    .toggle, .icon {
+
+        width: 20px;
+        height: 20px;
+    }
+    .icon {
+      background: red;
+      margin-left:3px;
+    }
+    .toggle {
+      background: blue;
+    }
+
+    .element div {
+      display: inline-block;
+    }
+
+    </style>
   </head>
   <body class="background_textColor">
-    <div id="root"></div>
+    <div id="root">
+      <div class="line"id="item1">
+        <div class="element" onclick="itemclick(this.parentNode)">
+          <div class="toggle">
+          </div>
+          <div class="icon">
+          </div>
+          <div class="name">
+            test
+          </div>
+        </div>
+        <div class="child">
+          <div class="line" style="padding-left: 20px" id="item2">
+            <div class="element">
+              <div class="toggle">
+              </div>
+              <div class="icon">
+              </div>
+              <div class="name">
+                test2
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function(){
+    var map={
+      autoincrement: 2,
+      item1:{
+        name: "test",
+        type: 'folder',
+        path: 'C:/test'
+      },
+
+      item2:{
+        name: "test2",
+        type: 'file',
+        path: 'C:/test2'
+      }
+    };
+
+    function toggle(element){
+
+      var child = element.querySelector('.child');
+
+      if(child.style.display){
+        child.style.display="";
+      }
+      else {
+        child.style.display="none";
+      }
+    }
+
+    function itemclick(element) {
+      var file = map[element.id];
+      console.log(JSON.stringify(file));
+      if (file.type == 'folder') {
+        toggle(element);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
       var ipc=require('ipc');
+
       ipc.on('loadFolder', function( err, files) {
         console.log(JSON.stringify(files));
         var root=document.getElementById('root');
 
+
         for (var i = 0; i < files.length; i += 1) {
 
-          var div=document.createElement('div');
-          div.className=files[i].type;
-          div.innerHTML=files[i].name;
-          root.appendChild(div);
+          map.autoincrement++;
+          map['item'+ map.autoincrement] = files[i];
+          //content inside a line
+
+          var ele = document.createElement('div');
+          var toggle = document.createElement('div');
+          var icon = document.createElement('div');
+          var name = document.createElement('div');
+          var line = document.createElement('div');
+          line.id = 'item'+ map.autoincrement;
+
+          ele.onclick=function () {
+
+            itemclick(this.parentNode);
+
+          };
+
+          ele.className = 'element';
+          toggle.className = 'toggle';
+          icon.className = 'icon';
+          name.className = 'name';
+          line.className = files[i].type;
+          name.innerHTML = files[i].name;
+
+
+          ele.appendChild(toggle);
+          ele.appendChild(icon);
+          ele.appendChild(name);
+          line.appendChild(ele);
+
+          if(files[i].type =='folder') {
+            var child = document.createElement('div');
+            child.className="child";
+            child.innerHTML = 'lol';
+            line.appendChild(child);
+
+          }
+            root.appendChild(line);
         }
+
+
     });
       ipc.send('explorer-ready');
   });

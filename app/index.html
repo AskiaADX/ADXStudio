@@ -2,23 +2,20 @@
 <html>
   <head>
     <title>Hello World!</title>
+    <link rel="stylesheet" type="text/css" href="index.css"/>
   </head>
-  <body>
-    <h1>EXPLORER!</h1>
-
-    <div style="border : 1px solid black; height :360px; width :140px; ">
+  <body class="backgroundP">
+    <div style="border : 1px solid black; height :460px; width :240px; ">
       <webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview>
-    <input type="button" id="ping" value="ping"/>
+    </div>
 
-    </div>
     <br>
     <br>
     <br>
     <br>
     <br>
     <br>
-    <div style="border : 1px solid black; height :360px; width :240px; ">
-    </div>
+
     <script type="text/javascript">
 
       var ipc=require('ipc');
@@ -28,15 +25,6 @@
         console.log( e.message );
       });
 
-
-      document.getElementById('ping').onclick=function() {
-        ipc.send('ping');
-      }
-
-      ipc.on('pong', function(){
-        console.log('PONG!');
-      });
-      
     </script>
 
   </body>
