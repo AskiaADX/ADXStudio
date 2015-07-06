@@ -7,6 +7,12 @@ var Tab = require('./Tab.js').Tab;
 var currentPane = 'main';
 
 /**
+ * Current tab
+ * @type {Tab}
+ */
+var currentTab = null;
+
+/**
  * List of available panes
  * @type {{main: {}, second: {}}}
  */
@@ -27,8 +33,7 @@ var panes = {
      * Main pane
      */
     main : {
-        name : 'main',
-        tabs : []
+        name : 'main'
     },
 
 
@@ -36,8 +41,7 @@ var panes = {
      * Secondary pane
      */
     second : {
-        name : 'second',
-        tabs : []
+        name : 'second'
     },
 
     /**
@@ -54,6 +58,12 @@ var panes = {
 
 
 /**
+ * Collection of tabs
+ * @type {Array}
+ */
+var tabs  = [];
+
+/**
  * Create a new instance of tab in the current pane
  *
  * @param {Object} config Configuration of tab
@@ -65,7 +75,13 @@ var panes = {
 function createTab(config, callback) {
     var tab = new Tab(config);
 
+    tabs.push(tab);
     panes.mapByTabId[tab.id] = currentPane;
+
+    // Set the current tab if not defined
+    if (currentTab === null) {
+        currentTab = tab;
+    }
 
     if (typeof callback === 'function') {
         callback(null, tab,  panes.mapByTabId[tab.id]);
@@ -88,6 +104,102 @@ function where(tab) {
     }
 }
 
+/**
+ * Try to find the tab using the specified criteria
+ *
+ *      // Search with the file object
+ *      workspace.find({file : "MyFile.txt", path : "/my/path/MyFile.txt", type : "file" }, function (err, tab, pane) {
+ *          if (err) throw err;
+ *          if (!tab) return;
+ *          console.log(tab.id + ' in ' + pane);
+ *      });
+ *
+ *      // Search with the path of file
+ *      workspace.find("/my/path/MyFile.txt", function (err, tab, pane) {
+ *          if (err) throw err;
+ *          if (!tab) return;
+ *          console.log(tab,id + ' in ' + pane);
+ *      });
+ *
+ *      // Search with the id of the tab
+ *      workspace.find("1er35q3-15edca3-58a1rg12-512d3w2", functiom (err, tab, pane) {
+ *          if (err) throw err;
+ *          if (!tab) return;
+ *          console.log(tab,id + ' in ' + pane);
+ *      });
+ *
+ *
+ *
+ * @param {String|Object} criteria Criteria of search
+ * @param {Function} callback Callback
+ * @param {Error} callback.err Error
+ * @param {Tab} callback.tab Tab
+ * @param {String} callback.pane Name of the pane
+ */
+function find(criteria, callback) {
+    var tab  = null,
+        path = null,
+        id   = null,
+        pane = null,
+        i, l;
+
+    if (criteria && typeof criteria === 'object') {
+        if (typeof criteria.path === 'string') {
+            path = criteria.path;
+        }
+    } else if (criteria && typeof criteria === 'string') {
+        id   = criteria;
+        path = criteria;
+    }
+
+    if (id || path) {
+        for (i = 0, l = tabs.length; i < l; i += 1) {
+            if ((path && tabs[i].path === path) || (id && tabs[i].id === id)) {
+                tab = tabs[i];
+                break;
+            }
+        }
+    }
+
+    if (tab) {
+        pane = panes.mapByTabId[tab.id];
+    }
+
+    if (typeof callback === 'function') {
+        callback(null, tab, pane);
+    }
+}
+
+
+/**
+ * Get or set the current tab
+ * @param {Tab} [tab] Tab to set
+ * @param {Function} callback Callback function
+ * @param {Error} callback.err Error
+ * @param {Tab} callback.tab Current tab
+ * @param {String} callback.pane Pane of the tab
+ */
+function getSetCurrentTab(tab, callback) {
+    var cb = (typeof tab === 'function' && !callback) ? tab : callback,
+        pane;
+
+    if (tab instanceof Tab) {
+        currentTab = tab;
+        panes.current(panes.mapByTabId[currentTab.id]);
+    }
+
+    if (currentTab) {
+        pane = panes.mapByTabId[currentTab.id];
+    }
+
+    if (typeof  cb === 'function') {
+        cb (null, currentTab, pane);
+    }
+}
+
+
 exports.createTab = createTab;
 exports.where = where;
+exports.find  = find;
 exports.panes = panes;
+exports.currentTab = getSetCurrentTab;

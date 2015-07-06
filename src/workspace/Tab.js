@@ -33,10 +33,14 @@ Tab.prototype.loadFile = function loadFile(callback) {
         if (type === 'text') {
             fs.readFile(self.path, function (err, data) {
                 self.content = data.toString();
-                callback();
+                if (typeof  callback === 'function') {
+                    callback();
+                }
             });
         } else {
-            callback();
+            if (typeof  callback === 'function') {
+                callback();
+            }
         }
     });
 };
@@ -63,7 +67,9 @@ Tab.isTextOrBinaryFile = function (path, callback) {
 
         var charsets = detector(buffer);
         var fileType = (charsets[0].confidence < 10) ? 'binary' : 'text';
-        callback(null, fileType);
+        if (typeof callback === 'function') {
+            callback(null, fileType);
+        }
     });
 
 };
