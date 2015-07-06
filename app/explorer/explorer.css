@@ -14,9 +14,14 @@
   background-color : #003050;
 }
 
-.folder{
+.folder {
   font-size: 10px;
   color: white;
+}
+
+.child {
+
+  margin-left: 10px;
 }
 
 .file{
@@ -26,5 +31,5 @@
 
 .parent_div{
   margin-left: 10px;
-  
+
 }

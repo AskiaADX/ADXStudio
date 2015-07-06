@@ -3,6 +3,7 @@
   <head>
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="explorer.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
     <style>
     .toggle, .icon {
 
@@ -14,7 +15,7 @@
       margin-left:3px;
     }
     .toggle {
-      background: blue;
+      background: grey;
     }
 
     .element div {
@@ -25,11 +26,13 @@
   </head>
   <body class="background_textColor">
     <div id="root">
+      <div class="child">
+      </div>
       <div class="line"id="item1">
         <div class="element" onclick="itemclick(this.parentNode)">
           <div class="toggle">
           </div>
-          <div class="icon">
+          <div class="icon glyphicon-menu-left" >
           </div>
           <div class="name">
             test
@@ -50,8 +53,9 @@
         </div>
       </div>
     </div>
+
     <script type="text/javascript">
-    var map={
+    var map = {
       autoincrement: 2,
       item1:{
         name: "test",
@@ -66,32 +70,39 @@
       }
     };
 
-    function toggle(element){
+    function toggle(element) {
 
       var child = element.querySelector('.child');
 
-      if(child.style.display){
+      if(child.style.display) {
         child.style.display="";
       }
       else {
         child.style.display="none";
       }
-    }
+    };
 
     function itemclick(element) {
+
       var file = map[element.id];
       console.log(JSON.stringify(file));
       if (file.type == 'folder') {
         toggle(element);
+
+        if(!file.loaded) {
+        var ipc = require('ipc');
+        ipc.send('explorer-loadfolder', file.path, element.id);
+        }
+        file.loaded = true;
       }
-    }
+    };
 
     document.addEventListener('DOMContentLoaded', function() {
-      var ipc=require('ipc');
+      var ipc = require('ipc');
 
-      ipc.on('loadFolder', function( err, files) {
+      ipc.on('loadFolder', function( err, files, elementid) {
         console.log(JSON.stringify(files));
-        var root=document.getElementById('root');
+        var root = document.getElementById(elementid).querySelector('.child');
 
 
         for (var i = 0; i < files.length; i += 1) {
@@ -126,10 +137,9 @@
           ele.appendChild(name);
           line.appendChild(ele);
 
-          if(files[i].type =='folder') {
+          if(files[i].type == 'folder') {
             var child = document.createElement('div');
             child.className="child";
-            child.innerHTML = 'lol';
             line.appendChild(child);
 
           }
@@ -138,7 +148,9 @@
 
 
     });
+
       ipc.send('explorer-ready');
+
   });
     </script>
 
