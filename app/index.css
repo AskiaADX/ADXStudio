@@ -1,47 +1,35 @@
-.backgroundP {
-  background-color: #708090;
-  background-size: contain;
+html, body {
+    width:100%;
+    height:100%;
+    padding:0;
+    margin:0;
 }
 
-.WorkSpace {
-  position: absolute;
-  margin-left: 245px;
-  margin-right: auto;
-  border: 1px solid black;
-  background: #002040;
-  width: 1000px;
-  height: 760px;
-  border-radius: 3px;
-
+body {
+  background-color: #101010;
 }
 
-.properties {
-  margin-top: 5px;
-  height: 280px;
-  width: 240px;
-  background: #002040;
-  border: 1px solid black;
+#panel_container {
+    width:100%;
+    height:100%;
+    border-spacing: 0;
+    border-collapse: collapse;
 }
 
-.explr {
-  border : 1px solid black;
-  height : 460px;
-  width : 240px;
-  background: #002040;
+.panel {
+    min-width: 15%;
 }
 
-.scrolladx {
--webkit-scrollbar;
-
+.panel div {
+    width  : 100%;
+    height : 100%;
 }
 
-::-webkit-scrollbar {
-  width:5px ;
-  height:10px ;
-  border-radius:5px ;
-
+#left_panel {
+    width : 25%;
 }
 
-::-webkit-scrollbar-track-piece {
-
+webview {
+    width  : 100%;
+    height : 100%;
 }
