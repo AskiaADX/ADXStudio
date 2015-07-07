@@ -37,7 +37,9 @@ exports.load = function (dir, callback) {
         callback(new Error('Invalid dir path.'), null);
         return;
       }
+
       fs.readdir(dir, function (err1, files) {
+
         if (err1) {
           callback(err1, null);
           return;
@@ -45,8 +47,9 @@ exports.load = function (dir, callback) {
 
         var stats;
         var finalFiles = [];
+        var lgtfil = files.length;
 
-        for (var i = 0; i < files.length; i++) {
+        for (var i = 0; i < lgtfil; i++) {
           try {
             stats = fs.statSync( path.join(dir,files[i]) );
           }

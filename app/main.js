@@ -41,7 +41,15 @@ app.on('ready', function() {
 
 ipc.on('explorer-ready', function(event) {
   var explorer=require('../src/explorer/explorer.js');
-  explorer.load('C:/', function(err, files){
-    event.sender.send('loadFolder', err, files);
+  explorer.load('C:/', function(err, files) {
+    event.sender.send('loadFolder', err, files, 'root');
+  });
+});
+
+ipc.on('explorer-loadfolder', function(event, path, elementid) {
+  var explorer = require('../src/explorer/explorer.js');
+console.log(path);
+  explorer.load(path, function(err, files) {
+    event.sender.send('loadFolder', err, files, elementid);
   });
 });
