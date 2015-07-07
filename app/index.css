@@ -1,4 +1,47 @@
 .backgroundP {
-  background-color: #101010;
+  background-color: #708090;
+  background-size: contain;
+}
+
+.WorkSpace {
+  position: absolute;
+  margin-left: 245px;
+  margin-right: auto;
+  border: 1px solid black;
+  background: #002040;
+  width: 1000px;
+  height: 760px;
+  border-radius: 3px;
+
+}
+
+.properties {
+  margin-top: 5px;
+  height: 280px;
+  width: 240px;
+  background: #002040;
+  border: 1px solid black;
+}
+
+.explr {
+  border : 1px solid black;
+  height : 460px;
+  width : 240px;
+  background: #002040;
+}
+
+.scrolladx {
+-webkit-scrollbar;
+
+}
+
+::-webkit-scrollbar {
+  width:5px ;
+  height:10px ;
+  border-radius:5px ;
+
+}
+
+::-webkit-scrollbar-track-piece {
 
 }

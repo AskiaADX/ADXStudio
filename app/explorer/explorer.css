@@ -16,7 +16,7 @@
 
 .folder {
   font-size: 10px;
-  color: white;
+  color: #FFFAFA;
 }
 
 .child {
@@ -26,7 +26,7 @@
 
 .file{
   font-size: 10px;
-  color: grey;
+  color: #7FFFD4;
 }
 
 .parent_div{
