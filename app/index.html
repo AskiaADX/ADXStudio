@@ -4,26 +4,36 @@
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="index.css"/>
   </head>
-  <body class="backgroundP">
-    <div style="border : 1px solid black; height :460px; width :240px; ">
-      <webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview>
-    </div>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+  <body>
+    <table id="panel_container">
+      <tr>
+        <td id="left_panel" class="panel">
+          <div>
+            <webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview>
+          </div>
+        </td>
+        <td id="right_panel" class="panel">
+          <div>
+            <webview id="workspace" src="workspace/workspace.html" nodeintegration="on"></webview>
+          </div>
+        </td>
+      </tr>
+    </table>
 
     <script type="text/javascript">
+      (function () {
+          var ipc = require('ipc'),
+              exp = document.getElementById("explorer"),
+              wks = document.getElementById("workspace");
 
-      var ipc=require('ipc');
-      var webview=document.getElementById("explorer");
+        function catchConsoleLog(event) {
+          console.log( event.message );
+        }
 
-      webview.addEventListener('console-message', function(e) {
-        console.log( e.message );
-      });
+        exp.addEventListener('console-message', catchConsoleLog);
+        wks.addEventListener('console-message', catchConsoleLog);
+
+      }());
 
     </script>
 

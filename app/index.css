@@ -1,4 +1,35 @@
-.backgroundP {
-  background-color: #101010;
+html, body {
+    width:100%;
+    height:100%;
+    padding:0;
+    margin:0;
+}
 
+body {
+  background-color: #101010;
+}
+
+#panel_container {
+    width:100%;
+    height:100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.panel {
+    min-width: 15%;
+}
+
+.panel div {
+    width  : 100%;
+    height : 100%;
+}
+
+#left_panel {
+    width : 25%;
+}
+
+webview {
+    width  : 100%;
+    height : 100%;
 }
