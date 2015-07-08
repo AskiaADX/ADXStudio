@@ -1,0 +1,28 @@
+/* Here is the global css of the project.
+
+* CSS-part for the explorer */
+.toggle {
+  background-image: url(spritesheet.png);
+  background-position: -80px -180px;
+  width: 20px;
+  height: 20px;
+}
+
+
+.element:hover .toggle {
+  background-position: -100px -180px;
+  width: 20px;
+  height: 20px;
+}
+
+.toggle.open {
+  background-position: -120px -180px;
+  width: 20px;
+  height: 20px;
+}
+
+.element:hover .toggle.open {
+  background-position: -140px -180px;
+  width: 20px;
+  height: 20px;
+}

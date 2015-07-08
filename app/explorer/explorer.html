@@ -4,6 +4,7 @@
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="explorer.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="../theme.css"/>
     <style>
     .toggle, .icon {
 
@@ -11,11 +12,8 @@
         height: 20px;
     }
     .icon {
-      background: red;
+
       margin-left:3px;
-    }
-    .toggle {
-      background: grey;
     }
 
     .element div {
@@ -26,13 +24,13 @@
   </head>
   <body class="background_textColor">
     <div id="root">
-      <div class="child">
+      <div class="child ">
       </div>
       <div class="line"id="item1">
         <div class="element" onclick="itemclick(this.parentNode)">
-          <div class="toggle">
+          <div class="toggle spritesheet folder-close-mouseon folder-close-mouseout">
           </div>
-          <div class="icon glyphicon-menu-left" >
+          <div class="icon " >
           </div>
           <div class="name">
             test
@@ -40,8 +38,8 @@
         </div>
         <div class="child">
           <div class="line" style="padding-left: 20px" id="item2">
-            <div class="element">
-              <div class="toggle">
+            <div class="element ">
+              <div class="toggle spritesheet folder-close-mouseon folder-close-mouseout">
               </div>
               <div class="icon">
               </div>
@@ -76,6 +74,7 @@
 
       if(child.style.display) {
         child.style.display="";
+
       }
       else {
         child.style.display="none";
@@ -86,8 +85,11 @@
 
       var file = map[element.id];
       console.log(JSON.stringify(file));
+
       if (file.type == 'folder') {
+
         toggle(element);
+        file.className = 'folder';
 
         if(!file.loaded) {
         var ipc = require('ipc');
@@ -118,14 +120,25 @@
           var line = document.createElement('div');
           line.id = 'item'+ map.autoincrement;
 
-          ele.onclick=function () {
+          ele.onclick = function() {
+
+            var tgle = this.querySelector('.toggle');
+
+            if (tgle.classList.contains('open')) {
+                tgle.classList.remove('open');
+            } else {
+              tgle.classList.add('open');
+            }
+
+            console.log(this.querySelector('.toggle').className);
+          //  this.querySelector(".toggle").className = '';
 
             itemclick(this.parentNode);
 
           };
 
           ele.className = 'element';
-          toggle.className = 'toggle';
+          toggle.classList.add('toggle');
           icon.className = 'icon';
           name.className = 'name';
           line.className = files[i].type;
@@ -141,6 +154,7 @@
             var child = document.createElement('div');
             child.className="child";
             line.appendChild(child);
+
 
           }
             root.appendChild(line);

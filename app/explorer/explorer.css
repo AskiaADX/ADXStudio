@@ -1,7 +1,7 @@
 
 .background_textColor {
-  background-color : #002040;
-  color : white;
+  background-color : white; /* #002040*/
+  color : black;
   font-family: Helvetica;
 }
 
@@ -15,8 +15,8 @@
 }
 
 .folder {
-  font-size: 10px;
-  color: white;
+  font-size: 11px;
+  color: black;
 }
 
 .child {
@@ -24,9 +24,9 @@
   margin-left: 10px;
 }
 
-.file{
+.file {
   font-size: 10px;
-  color: grey;
+  color: #7FFFD4;
 }
 
 .parent_div{

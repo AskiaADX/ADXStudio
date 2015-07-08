@@ -122,7 +122,7 @@ function where(tab) {
  *      });
  *
  *      // Search with the id of the tab
- *      workspace.find("1er35q3-15edca3-58a1rg12-512d3w2", functiom (err, tab, pane) {
+ *      workspace.find("1er35q3-15edca3-58a1rg12-512d3w2", function (err, tab, pane) {
  *          if (err) throw err;
  *          if (!tab) return;
  *          console.log(tab,id + ' in ' + pane);
