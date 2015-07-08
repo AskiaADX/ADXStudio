@@ -5,28 +5,10 @@
     <link rel="stylesheet" type="text/css" href="index.css"/>
   </head>
   <body>
-<<<<<<< HEAD
-    <table id="panel_container">
-      <tr>
-        <td id="left_panel" class="panel">
-          <div>
-            <webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview>
-          </div>
-        </td>
-        <td id="right_panel" class="panel">
-          <div>
-            <webview id="workspace" src="workspace/workspace.html" nodeintegration="on"></webview>
-          </div>
-        </td>
-      </tr>
-    </table>
-=======
     <div id="main_panels">
       <div id="panel_explorer"><webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview></div>
       <div id="panel_workspace"><webview id="workspace" src="workspace/workspace.html" nodeintegration="on"></webview></div>
->>>>>>> c3c738839ea1db478872855a513bb5012015a6c3
     </div>
-
     <script type="text/javascript">
       (function () {
           var ipc = require('ipc'),
