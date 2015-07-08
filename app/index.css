@@ -1,6 +1,6 @@
 html, body {
     width:100%;
-    height:100%;
+    height:100vh;
     padding:0;
     margin:0;
 }
@@ -9,27 +9,29 @@ body {
   background-color: #101010;
 }
 
-#panel_container {
-    width:100%;
-    height:100%;
-    border-spacing: 0;
-    border-collapse: collapse;
+#main_panels {
+    display:flex;
+    flex-direction: row;
+    height:100vh;
 }
 
-.panel {
-    min-width: 15%;
+#panel_explorer, #panel_workspace {
+    position: relative;
 }
 
-.panel div {
-    width  : 100%;
-    height : 100%;
+#panel_explorer {
+    min-width : 250px;
 }
 
-#left_panel {
-    width : 25%;
+#panel_workspace {
+    flex  : 1;
 }
 
 webview {
-    width  : 100%;
-    height : 100%;
+    /* Fit  the content */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }

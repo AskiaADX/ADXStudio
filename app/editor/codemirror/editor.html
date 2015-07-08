@@ -1,0 +1,95 @@
+﻿<!doctype html>
+<html>
+<head>
+    <title>AskiaScript mode</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="lib/codemirror.js"></script>
+    <link rel="stylesheet" href="mode/askiascript/askiascript.css" />
+    <script src="mode/askiascript/askiascript.js"></script>
+    <script src="lexicons/AskiaLanguage-en.js"></script>
+    <script src="lexicons/MasqueLanguage-en.js"></script>
+    <script src="mode/xml/xml.js"></script>
+    <script src="mode/javascript/javascript.js"></script>
+    <script src="mode/css/css.js"></script>
+    <script src="mode/htmlmixed/htmlmixed.js"></script>
+    <script src="addon/mode/multiplex.js"></script>
+    <script src="mode/askiascripthtml/askiascripthtml.js"></script>
+    <script src="mode/askiascriptjs/askiascriptjs.js"></script>
+    <script src="mode/askiascriptcss/askiascriptcss.js"></script>
+    <link rel="stylesheet" href="addon/sense/sense.css" />
+    <script src="addon/sense/sense.js"></script>
+    <style>
+        html, body
+        {
+            margin  : 0;
+            padding : 0;
+            height  : 100vh;
+            overflow: hidden;
+        }
+        .CodeMirror {
+            font-size   : 16px;
+            font-weight : bold;
+            height      : 100vh;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="code" name="code"></textarea>
+    <script>
+        (function () {
+            var contentTypeByFileExt = {
+                html : 'askiascript/html',
+                htm  : 'askiascript/html',
+                js   : 'askiascript/js',
+                css  : 'askiascript/css'
+            };
+            var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
+            if (!matchTabId || !matchTabId.length) {
+                throw new Error("Invalid context, the tab id is not defined");
+            }
+            var tabId    = matchTabId[1];
+            var parent   = window.parent;
+            var tabs     = parent.tabs;
+            var tab      = tabs[tabId];
+            var textarea = document.getElementById('code');
+
+            var matchFileExt = /\.(.*?)$/.exec(tab.name);
+            var contentType = (matchFileExt && matchFileExt.length) ?
+                    contentTypeByFileExt[matchFileExt[1].toLocaleLowerCase()] : '';
+
+            textarea.value = tab.content;
+
+            window.editor = CodeMirror.fromTextArea(textarea, {
+                lineNumbers     : true,
+                gutters         : ["cms-gutter-errors", "CodeMirror-linenumbers"],
+                mode            : contentType,
+                /*currentQuestion : 'gender',
+                 localExe : false,
+                 questions       :  [
+                 {shortcut : 'gender', type : 'single'},
+                 {shortcut : 'age', type : 'numeric'},
+                 {shortcut : 'brands', type : 'multiple'},
+                 {shortcut : 'preferred brands', type : 'single'}
+                 ],*/
+                questions       : []/*,
+                 onDragEvent     : function (instance, event) {
+                 if (event.type === 'drop') {
+                 return false;
+                 }
+                 return false;
+                 }*/
+            }).suggest();
+
+
+            tab.window = window;
+            tab.editor = window.editor;
+
+            tabs.onEditorLoaded(tab);
+
+        }());
+
+    </script>
+</body>
+</html>
+
