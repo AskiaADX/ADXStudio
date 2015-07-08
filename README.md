@@ -1,3 +1,5 @@
 # ADXStudio
-Application in which you can create your own ADC easily.
-This will help all the team to create ADCs.
+
+This is the Askia IDE to create the ADCs (Askia Design Control)
+
+
