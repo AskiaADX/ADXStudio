@@ -1,3 +1,35 @@
+window.tabs  = {
+    /**
+     * Id of the current active tan
+     */
+    currentTabId : null,
+    /**
+     * Event fire when the editor is full loaded
+     * @param {Tab} tab Tab currently in used
+     * @param {Window} tab.window Window that contains the content of the the tab
+     * @param {CodeMirror} tab.editor Code mirror instance on the tab
+     */
+    onEditorLoaded : function (tab) {
+        if (tab.id === this.currentTabId && tab.editor) {
+            tab.editor.focus && tab.editor.focus();
+        }
+    },
+    /**
+     * Set the current tab and focus the editor
+     * @param {String} tabId Id of the current tab
+     */
+    setCurrentTab : function (tabId) {
+        this.currentTabId = tabId;
+        var currentTab    = this[tabId];
+        var currentEditor = currentTab && currentTab.editor;
+
+        if (currentEditor) {
+            currentEditor.focus && currentEditor.focus();
+        }
+    }
+};
+
+
 document.addEventListener('DOMContentLoaded', function () {
     var ipc = require('ipc');
 
@@ -22,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         el.classList.add('active');
         content.classList.add('active');
+
+        window.tabs.setCurrentTab(tabId);
     }
 
     /**
@@ -58,9 +92,13 @@ document.addEventListener('DOMContentLoaded', function () {
         contentEl.setAttribute('id', 'content-' + tab.id);
 
         var div = document.createElement('div');
-        var pre = document.createElement('pre');
-        pre.innerText = tab.content;
-        div.appendChild(pre);
+        var editor = document.createElement('iframe');
+        editor.setAttribute('frameborder', 'no');
+        editor.setAttribute('scrolling', 'no');
+        window.tabs[tab.id] = tab;
+        editor.src = '../editor/codemirror/editor.html?tabId=' + tab.id;
+        div.appendChild(editor);
+
         contentEl.appendChild(div);
 
         var paneEl    = document.getElementById(pane + '_pane');
@@ -104,12 +142,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     } ());
 
-
-    /*addTab({
-        id : 'test1',
-        name : 'test1',
-        content : 'Hello\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nworld!'
-    }, 'main', true);*/
     ipc.on('workspace-create-and-focus-tab', function (err, tab, pane) {
         if (err) {
            alert(err.message);

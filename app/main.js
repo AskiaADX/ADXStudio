@@ -4,7 +4,7 @@ var ipc = require('ipc');
 var workspaceController = require('./workspace/workspaceController.js');
 
 // Report crashes to our server.
-//require('crash-reporter').start();
+require('crash-reporter').start();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -20,14 +20,20 @@ app.on('window-all-closed', function() {
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    // Create the browser window, but don't show
+    mainWindow = new BrowserWindow({width: 800, height: 600, show : false});
+
+    // Maximize it first
+    mainWindow.maximize();
 
     // and load the index.html of the app.
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
 
+    // Now show it
+    mainWindow.show();
+
     // Open the devtools.
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
