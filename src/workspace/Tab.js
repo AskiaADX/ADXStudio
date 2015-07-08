@@ -74,4 +74,6 @@ Tab.isTextOrBinaryFile = function (path, callback) {
 
 };
 
+
+
 exports.Tab = Tab;
