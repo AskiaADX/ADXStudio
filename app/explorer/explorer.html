@@ -61,9 +61,11 @@
         }
 
         if(!file.loaded) {
-        ipc.send('explorer-loadfolder', file.path, item.id);
-        file.loaded = true;
+          ipc.send('explorer-loadfolder', file.path, item.id);
+          file.loaded = true;
         }
+      } else {
+        ipc.send('explorer-loadfile', file);
       }
     }
 

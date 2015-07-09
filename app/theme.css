@@ -34,6 +34,7 @@
   display: inline-block;
   width: 20px;
   height: 20px;
+
 }
 
 .file>.item-info>.icon {
@@ -42,4 +43,15 @@
   display: inline-block;
   width: 20px;
   height: 20px;
+}
+
+.item-info {
+  display: inline-block;
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.name {
+  text-align: auto;
+  font-size: 14px;
 }
