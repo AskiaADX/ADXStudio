@@ -1,12 +1,11 @@
 
-.background_textColor {
-  background-color : white; /* #002040*/
+body {
+  background-color : white;
   color : black;
   font-family: Helvetica;
 }
 
 .theDivExplorer {
-
   border : 1px solid none;
   border-shadow : grey;
   height : 660px;
@@ -20,16 +19,10 @@
 }
 
 .child {
-
   margin-left: 10px;
 }
 
 .file {
   font-size: 10px;
   color: #7FFFD4;
-}
-
-.parent_div{
-  margin-left: 10px;
-
 }

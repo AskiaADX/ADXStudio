@@ -12,162 +12,109 @@
         height: 20px;
     }
     .icon {
-
       margin-left:3px;
     }
 
-    .element div {
+    .item-info div {
       display: inline-block;
+    }
+
+    .child {
+      display: none;
     }
 
     </style>
   </head>
-  <body class="background_textColor">
+  <body>
     <div id="root">
-      <div class="child ">
-      </div>
-      <div class="line"id="item1">
-        <div class="element" onclick="itemclick(this.parentNode)">
-          <div class="toggle spritesheet folder-close-mouseon folder-close-mouseout">
-          </div>
-          <div class="icon " >
-          </div>
-          <div class="name">
-            test
-          </div>
-        </div>
-        <div class="child">
-          <div class="line" style="padding-left: 20px" id="item2">
-            <div class="element ">
-              <div class="toggle spritesheet folder-close-mouseon folder-close-mouseout">
-              </div>
-              <div class="icon">
-              </div>
-              <div class="name">
-                test2
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="child" style="display: block;">
       </div>
     </div>
 
     <script type="text/javascript">
+    // the object map is created to give unique id to each item
     var map = {
-      autoincrement: 2,
-      item1:{
-        name: "test",
-        type: 'folder',
-        path: 'C:/test'
-      },
-
-      item2:{
-        name: "test2",
-        type: 'file',
-        path: 'C:/test2'
-      }
+      autoincrement: 0
     };
 
-    function toggle(element) {
+    var ipc = require('ipc');
 
-      var child = element.querySelector('.child');
+    function itemclick(itemInfo) {
 
-      if(child.style.display) {
-        child.style.display="";
+      var item = itemInfo.parentNode;
+      var file = map[item.id];
+      var child = item.querySelector('.child');
+      var toggle;
 
-      }
-      else {
-        child.style.display="none";
-      }
-    };
+      // Folder system
+      if (file.type === 'folder') {
+        toggle = itemInfo.querySelector('.toggle');
 
-    function itemclick(element) {
-
-      var file = map[element.id];
-      console.log(JSON.stringify(file));
-
-      if (file.type == 'folder') {
-
-        toggle(element);
-        file.className = 'folder';
+        if(child.style.display === 'block') {
+          //if it's open, then we close it on click
+          child.style.display = '';
+          toggle.classList.remove('open');
+        } else {
+          // if it's close we open it on click
+          child.style.display = 'block';
+          toggle.classList.add('open');
+        }
 
         if(!file.loaded) {
-        var ipc = require('ipc');
-        ipc.send('explorer-loadfolder', file.path, element.id);
-        }
+        ipc.send('explorer-loadfolder', file.path, item.id);
         file.loaded = true;
+        }
       }
-    };
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
-      var ipc = require('ipc');
-
       ipc.on('loadFolder', function( err, files, elementid) {
-        console.log(JSON.stringify(files));
         var root = document.getElementById(elementid).querySelector('.child');
-
+        root.innerHTML = '';
 
         for (var i = 0; i < files.length; i += 1) {
 
           map.autoincrement++;
           map['item'+ map.autoincrement] = files[i];
-          //content inside a line
 
-          var ele = document.createElement('div');
-          var toggle = document.createElement('div');
-          var icon = document.createElement('div');
-          var name = document.createElement('div');
-          var line = document.createElement('div');
-          line.id = 'item'+ map.autoincrement;
+          var item = document.createElement('div');
+          item.className = files[i].type;
+          item.id = 'item'+ map.autoincrement;
 
-          ele.onclick = function() {
-
-            var tgle = this.querySelector('.toggle');
-
-            if (tgle.classList.contains('open')) {
-                tgle.classList.remove('open');
-            } else {
-              tgle.classList.add('open');
-            }
-
-            console.log(this.querySelector('.toggle').className);
-          //  this.querySelector(".toggle").className = '';
-
-            itemclick(this.parentNode);
-
+          var itemInfo = document.createElement('div');
+          itemInfo.className = 'item-info';
+          //The function when someone click on a div itemInfo
+          itemInfo.onclick = function() {
+            itemclick(this);
           };
 
-          ele.className = 'element';
-          toggle.classList.add('toggle');
+
+          var toggle = document.createElement('div');
+          toggle.className = 'toggle';
+          itemInfo.appendChild(toggle);
+
+          var icon = document.createElement('div');
           icon.className = 'icon';
+          itemInfo.appendChild(icon);
+
+          var name = document.createElement('div');
           name.className = 'name';
-          line.className = files[i].type;
           name.innerHTML = files[i].name;
+          itemInfo.appendChild(name);
 
-
-          ele.appendChild(toggle);
-          ele.appendChild(icon);
-          ele.appendChild(name);
-          line.appendChild(ele);
+          item.appendChild(itemInfo);
 
           if(files[i].type == 'folder') {
             var child = document.createElement('div');
             child.className="child";
-            line.appendChild(child);
-
-
+            item.appendChild(child);
           }
-            root.appendChild(line);
+            root.appendChild(item);
         }
-
-
     });
-
       ipc.send('explorer-ready');
-
   });
     </script>
-
 
   </body>
 </html>

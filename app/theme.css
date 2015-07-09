@@ -9,7 +9,8 @@
 }
 
 
-.element:hover .toggle {
+
+.item-info:hover .toggle {
   background-position: -100px -180px;
   width: 20px;
   height: 20px;
@@ -21,8 +22,24 @@
   height: 20px;
 }
 
-.element:hover .toggle.open {
+.item-info:hover .toggle.open {
   background-position: -140px -180px;
+  width: 20px;
+  height: 20px;
+}
+
+.folder>.item-info>.icon {
+  background-image: url(spritesheet.png);
+  background-position: -60px -20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+
+.file>.item-info>.icon {
+  background-image: url(spritesheet.png);
+  background-position: -240px -120px;
+  display: inline-block;
   width: 20px;
   height: 20px;
 }
