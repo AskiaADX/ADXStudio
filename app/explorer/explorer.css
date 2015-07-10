@@ -5,6 +5,8 @@ body {
   font-family: Helvetica;
 }
 
+
+
 .theDivExplorer {
   border : 1px solid none;
   border-shadow : grey;
@@ -18,11 +20,25 @@ body {
   color: black;
 }
 
+.folder:hover {
+  font-size: 11px;
+  color: red;
+}
+
 .child {
   margin-left: 10px;
 }
 
 .file {
   font-size: 10px;
-  color: #7FFFD4;
+  color: blue;
+}
+
+.file:hover {
+  font-size: 10px;
+  color: red;
+}
+
+.backgclick {
+  background-color: #D0D0D0;
 }

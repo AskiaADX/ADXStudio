@@ -65,6 +65,36 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {String} pane Name of the pane
      * @param {Boolean} [isActive=false] Activate the tab after his creation
      */
+
+     function tabCloseclick(tab) {
+       //one is LI
+       //two is UL
+       //three is div
+       // the var with 1 is class child selection
+
+       var one = tab.parentNode;
+       var two = one.parentNode;
+       var three = two.parentNode;
+
+       var two1 = two.querySelector('.tab');
+
+       //Disabled the active class of a LI
+       if (two1.classList.contains('active')) {
+         two1.classList.remove('tab');
+         two1.classList.remove('active');
+         two1.classList.add('close');
+        return;
+       }
+
+       // shutdown the tab even if it's not an active class on.
+       if (!two1.classList.contains('active')) {
+          two1.classList.remove('tab');
+          two1.classList.add('close');
+          return;
+       }
+     }
+
+
     function addTab(tab, pane, isActive) {
         // Create the tab
         var tabEl     = document.createElement('li');
@@ -84,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
         tabClose.setAttribute('href', '#');
         tabClose.classList.add('tab-close');
         tabEl.appendChild(tabClose);
+        tabClose.onclick = function() {
+          tabCloseclick(this);
+        }
 
 
         // Create the content of the tab
@@ -105,6 +138,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
         paneEl.querySelector('.tabs-content').appendChild(contentEl);
+
+
+
 
         if (isActive) {
             setActiveTab(tabEl, paneEl);
