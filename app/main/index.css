@@ -5,10 +5,6 @@ html, body {
     margin:0;
 }
 
-body {
-  background-color: #101010;
-}
-
 #main_panels {
     display:flex;
     flex-direction: row;
@@ -26,6 +22,7 @@ body {
 
 #panel_workspace {
     flex  : 1;
+    margin-left: 4px;
 }
 
 webview {
@@ -43,7 +40,5 @@ webview {
   position: absolute;
   z-index: 2;
   left: 250px;
-  background: transparent;
   cursor: ew-resize;
-  border: none;
 }

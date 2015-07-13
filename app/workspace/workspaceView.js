@@ -58,15 +58,19 @@ document.addEventListener('DOMContentLoaded', function () {
         window.tabs.setCurrentTab(tabId);
     }
 
-     function removeTab(tabel) {
+    /**
+     * Remove a tab
+     * @param {HTMLElement} el HTML Element that represent the tab
+     */
+     function removeTab(el) {
 
-       var tabContainer = tabel.parentNode;
-       var tabID = tabel.id.replace(/^(tab-)/, '');
-       var contentEl = document.getElementById('content-' + tabID);
+       var tabId = el.id.replace(/^(tab-)/, '');
+       var tabContainer = el.parentNode;
+       var contentEl = document.getElementById('content-' + tabId);
        var contentContainer = contentEl.parentNode;
 
+       tabContainer.removeChild(el);
        contentContainer.removeChild(contentEl);
-       tabContainer.removeChild(tabel);
      }
 
      /**
@@ -135,10 +139,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (el.classList.contains('tab')) {
+                    // Has click on the element to close the tab?
                     if (shouldClose) {
                       removeTab(el);
                       return;
                     }
+
                     if (el.classList.contains('active')) {
                         return;
                     }

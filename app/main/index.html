@@ -3,12 +3,13 @@
   <head>
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="index.css"/>
+    <link rel="stylesheet" type="text/css" href="../themes/default/default.css"/>
   </head>
-  <body>
+  <body class="grey">
     <div id="main_panels">
-      <div id="panel_explorer"><webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview></div>
-      <div id="panel_workspace"><webview id="workspace" src="workspace/workspace.html" nodeintegration="on"></webview></div>
-      <div id="separatorExplorerWorkspace"></div>
+      <div id="panel_explorer"><webview id="explorer" src="../explorer/explorer.html" nodeintegration="on"></webview></div>
+      <div id="panel_workspace"><webview id="workspace" src="../workspace/workspace.html" nodeintegration="on"></webview></div>
+      <div id="separatorExplorerWorkspace" class="splitter"></div>
     </div>
     <script type="text/javascript">
 
@@ -26,7 +27,7 @@
 
 
         wks.addEventListener("dom-ready", function(){
-        wks.openDevTools();
+          wks.openDevTools();
         });
 
       }());
@@ -36,8 +37,8 @@
 
         var currentEl = this;
         var deltaX = event.pageX - this.offsetLeft;
-        this.style.background = 'grey';
-        document.body.style.cursor = 'ew-resize';
+        currentEl.classList.add('drag');
+        document.body.classList.add('drag');
         document.body.addEventListener('mouseup', horizUp);
         document.body.addEventListener('mousemove', horizMove);
 
@@ -46,14 +47,13 @@
         }
 
         function horizUp(event) {
-          currentEl.style.background = '';
-          document.body.style.cursor = '';
+          currentEl.classList.remove('drag');
+          document.body.classList.remove('drag');
           document.body.removeEventListener('mouseup', horizUp);
           document.body.removeEventListener('mousemove', horizMove);
           document.getElementById('panel_explorer').style.width = currentEl.offsetLeft + 'px';
           var widthEl = document.getElementById('panel_explorer').offsetWidth;
           currentEl.style.left = widthEl + 'px';
-
         }
     });
 

@@ -1,11 +1,33 @@
-/*CSS for ADX STUDIO THEMES.
-This will serve to change Theme of the Application. */
+/* ========================================
 
-/*
-*
-Explorer Part
-*
-*/
+    CSS for ADX STUDIO THEMES.
+    This will serve to change Theme of the Application.
+
+   ======================================== */
+
+/* ========================================
+    Share styling
+   ======================================== */
+body.grey {
+    background: #bbb;
+}
+
+body.drag {
+    cursor: ne-resize;
+}
+
+.splitter {
+    background: transparent;
+}
+.splitter.drag {
+    background: #333;
+    cursor: ne-resize;
+}
+
+
+/* ========================================
+   Explorer Part
+   ======================================== */
 
 .toggle {
   background-image: url(spritesheet.png);
@@ -32,7 +54,7 @@ Explorer Part
   height: 20px;
 }
 
-.folder>.item-info>.icon {
+.folder > .item-info > .icon {
   background-image: url(spritesheet.png);
   background-position: -60px -20px;
   display: inline-block;
@@ -41,7 +63,7 @@ Explorer Part
 
 }
 
-.file>.item-info>.icon {
+.file > .item-info > .icon {
   background-image: url(spritesheet.png);
   background-position: -240px -120px;
   display: inline-block;
@@ -56,7 +78,6 @@ Explorer Part
 }
 
 .name {
-  text-align: auto;
   font-size: 14px;
 }
 
@@ -81,31 +102,40 @@ Explorer Part
 }
 
 .theDivExplorer {
-  border-shadow : grey;
   background-color : #003050;
 }
 
 
-/*
-*
-WorkSpace Part
-*
-*/
-
-.tab-close:hover {
-  margin-left: 10px;
-  background-image: url(spritesheet.png);
-  background-position: -440px -100px;
-  width: 20px;
-  height: 20px;
-}
+/* ========================================
+   WorkSpace Part
+   ======================================== */
 
 .tab {
     background : #ccc;
     border     : 1px solid #aaa;
 }
+
+.tab-icon {
+    background-image: url(spritesheet.png);
+    background-position: -240px -120px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.tab-close {
+    background-image: url(spritesheet.png);
+    background-position: -440px -100px;
+    width: 20px;
+    height: 20px;
+    visibility: hidden;
+}
+.tab:hover .tab-close {
+    visibility: visible;
+}
+
 .tab-end {
-    background : #ddd;
+    background : #bbb;
     border     : 1px solid #aaa;
 }
 .tab.active {
