@@ -2,7 +2,7 @@ var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var ipc = require('ipc');
 var workspaceController = require('./workspace/workspaceController.js');
-var explorerControler = require('./explorer/explorerControler.js');
+var explorerController = require('./explorer/explorerController.js');
 
 // Report crashes to our server.
 require('crash-reporter').start();

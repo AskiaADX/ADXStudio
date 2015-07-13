@@ -1,14 +1,18 @@
-/* Here is the global css of the project.
+/*CSS for ADX STUDIO THEMES.
+This will serve to change Theme of the Application. */
 
-* CSS-part for the explorer */
+/*
+*
+Explorer Part
+*
+*/
+
 .toggle {
   background-image: url(spritesheet.png);
   background-position: -80px -180px;
   width: 20px;
   height: 20px;
 }
-
-
 
 .item-info:hover .toggle {
   background-position: -100px -180px;
@@ -54,4 +58,65 @@
 .name {
   text-align: auto;
   font-size: 14px;
+}
+
+.folder {
+  color: black;
+}
+
+.folder:hover {
+  color: red;
+}
+
+.file {
+  color: blue;
+}
+
+.file:hover {
+  color: red;
+}
+
+.backgclick {
+  background-color: #D0D0D0;
+}
+
+.theDivExplorer {
+  border-shadow : grey;
+  background-color : #003050;
+}
+
+
+/*
+*
+WorkSpace Part
+*
+*/
+
+.tab-close:hover {
+  margin-left: 10px;
+  background-image: url(spritesheet.png);
+  background-position: -440px -100px;
+  width: 20px;
+  height: 20px;
+}
+
+.tab {
+    background : #ccc;
+    border     : 1px solid #aaa;
+}
+.tab-end {
+    background : #ddd;
+    border     : 1px solid #aaa;
+}
+.tab.active {
+    background: #eee;
+    border-bottom-color: #eee;
+}
+
+.content {
+    background  : #eee;
+}
+
+.content div {
+    background: #fff;
 }

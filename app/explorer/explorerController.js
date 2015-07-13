@@ -4,7 +4,7 @@ var explorer = require('../../src/explorer/explorer.js');
 
 
 ipc.on('explorer-ready', function(event) {
-  explorer.load(__dirname, function(err, files) {
+  explorer.load('C:/', function(err, files) {
     event.sender.send('loadFolder', err, files, 'root');
   });
 });
