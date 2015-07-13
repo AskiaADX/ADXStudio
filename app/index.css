@@ -20,7 +20,8 @@ body {
 }
 
 #panel_explorer {
-    min-width : 250px;
+    min-width : 100px;
+    width: 250px;
 }
 
 #panel_workspace {
@@ -34,4 +35,15 @@ webview {
     right: 0;
     bottom: 0;
     left: 0;
+}
+
+#main_panels div#separatorExplorerWorkspace {
+  height: 100%;
+  width: 4px;
+  position: absolute;
+  z-index: 2;
+  left: 250px;
+  background: transparent;
+  cursor: ew-resize;
+  border: none;
 }

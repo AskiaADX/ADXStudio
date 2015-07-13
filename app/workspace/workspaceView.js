@@ -58,43 +58,24 @@ document.addEventListener('DOMContentLoaded', function () {
         window.tabs.setCurrentTab(tabId);
     }
 
-    /**
-     * Add a tab
-     *
-     * @param {Tab} tab Tab object
-     * @param {String} pane Name of the pane
-     * @param {Boolean} [isActive=false] Activate the tab after his creation
-     */
+     function removeTab(tabel) {
 
-     function tabCloseclick(tab) {
-       //one is LI
-       //two is UL
-       //three is div
-       // the var with 1 is class child selection
+       var tabContainer = tabel.parentNode;
+       var tabID = tabel.id.replace(/^(tab-)/, '');
+       var contentEl = document.getElementById('content-' + tabID);
+       var contentContainer = contentEl.parentNode;
 
-       var one = tab.parentNode;
-       var two = one.parentNode;
-       var three = two.parentNode;
-
-       var two1 = two.querySelector('.tab');
-
-       //Disabled the active class of a LI
-       if (two1.classList.contains('active')) {
-         two1.classList.remove('tab');
-         two1.classList.remove('active');
-         two1.classList.add('close');
-        return;
-       }
-
-       // shutdown the tab even if it's not an active class on.
-       if (!two1.classList.contains('active')) {
-          two1.classList.remove('tab');
-          two1.classList.add('close');
-          return;
-       }
+       contentContainer.removeChild(contentEl);
+       tabContainer.removeChild(tabel);
      }
 
-
+     /**
+      * Add a tab
+      *
+      * @param {Tab} tab Tab object
+      * @param {String} pane Name of the pane
+      * @param {Boolean} [isActive=false] Activate the tab after his creation
+      */
     function addTab(tab, pane, isActive) {
         // Create the tab
         var tabEl     = document.createElement('li');
@@ -114,10 +95,6 @@ document.addEventListener('DOMContentLoaded', function () {
         tabClose.setAttribute('href', '#');
         tabClose.classList.add('tab-close');
         tabEl.appendChild(tabClose);
-        tabClose.onclick = function() {
-          tabCloseclick(this);
-        }
-
 
         // Create the content of the tab
         var contentEl = document.createElement('div');
@@ -139,9 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
         paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
         paneEl.querySelector('.tabs-content').appendChild(contentEl);
 
-
-
-
         if (isActive) {
             setActiveTab(tabEl, paneEl);
         }
@@ -153,14 +127,18 @@ document.addEventListener('DOMContentLoaded', function () {
         for (i = 0, l = els.length; i < l; i += 1) {
             els[i].addEventListener('click', function (event) {
                 var el = event.srcElement, paneEl, pane;
+                var shouldClose = el.classList.contains('tab-close');
 
                 // Click on child nodes
                 if (el.parentNode.classList.contains('tab')) {
                     el = el.parentNode;
                 }
 
-
                 if (el.classList.contains('tab')) {
+                    if (shouldClose) {
+                      removeTab(el);
+                      return;
+                    }
                     if (el.classList.contains('active')) {
                         return;
                     }

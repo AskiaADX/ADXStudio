@@ -8,8 +8,10 @@
     <div id="main_panels">
       <div id="panel_explorer"><webview id="explorer" src="explorer/explorer.html" nodeintegration="on"></webview></div>
       <div id="panel_workspace"><webview id="workspace" src="workspace/workspace.html" nodeintegration="on"></webview></div>
+      <div id="separatorExplorerWorkspace"></div>
     </div>
     <script type="text/javascript">
+
       (function () {
           var ipc = require('ipc'),
               exp = document.getElementById("explorer"),
@@ -28,6 +30,34 @@
         });
 
       }());
+
+
+      document.getElementById('separatorExplorerWorkspace').addEventListener('mousedown',  function horizDown(event) {
+
+        var currentEl = this;
+        var deltaX = event.pageX - this.offsetLeft;
+        this.style.background = 'grey';
+        document.body.style.cursor = 'ew-resize';
+        document.body.addEventListener('mouseup', horizUp);
+        document.body.addEventListener('mousemove', horizMove);
+
+        function horizMove(event) {
+          currentEl.style.left = (event.pageX - deltaX) + 'px';
+        }
+
+        function horizUp(event) {
+          currentEl.style.background = '';
+          document.body.style.cursor = '';
+          document.body.removeEventListener('mouseup', horizUp);
+          document.body.removeEventListener('mousemove', horizMove);
+          document.getElementById('panel_explorer').style.width = currentEl.offsetLeft + 'px';
+          var widthEl = document.getElementById('panel_explorer').offsetWidth;
+          currentEl.style.left = widthEl + 'px';
+
+        }
+    });
+
+
 
     </script>
 
