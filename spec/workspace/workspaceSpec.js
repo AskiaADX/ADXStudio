@@ -89,7 +89,6 @@ describe("workspace", function () {
             });
         });
 
-
         it("should add the new tab in the mapByTabId and associate it with the current tab", function () {
 
             workspace.panes.current('second');
@@ -148,6 +147,17 @@ describe("workspace", function () {
                     workspace.find({
                         path : "my/file/path"
                     }, function (err, resultTab)  {
+                        expect(resultTab).toBe(tab);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("should find the tab using an instance of Tab in arg", function () {
+            runSync(function (done) {
+                workspace.createTab({}, function (err, tab) {
+                    workspace.find(tab, function (err, resultTab)  {
                         expect(resultTab).toBe(tab);
                         done();
                     });
@@ -249,24 +259,58 @@ describe("workspace", function () {
             });
         });
     });
+
+    describe("#removeTab", function () {
+        it("should be a function", function () {
+           expect(typeof workspace.removeTab).toBe("function");
+        });
+
+        it("should return an error when the first arg is a falsy", function () {
+             runSync(function (done) {
+                workspace.removeTab(null, function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+             });
+        });
+
+        it("should return an error when the tab is not found", function () {
+            runSync(function (done) {
+                workspace.removeTab("undefined-tab", function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+            });
+        });
+
+        it("should remove the tab when it's found", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err, tab) {
+                    workspace.removeTab(tab, function () {
+                        workspace.find(tab.id, function (err, findTab) {
+                            expect(findTab).toBe(null);
+                            expect(workspace.where(tab.id)).toEqual("");
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+
+        it("should return the tab that has been removed, when passing the id of the tab", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err, tab) {
+                    var tabId = tab.id;
+                    workspace.removeTab(tabId, function (err, tab) {
+                        expect(tab instanceof  Tab).toBe(true);
+                        expect(tab.id).toEqual(tabId);
+                        done();
+                    });
+                });
+            });
+        });
+
+    });
 });
-
-
-
-
-
-/*ipc.on('openFile', function (event, file) {
-     workspace.find(file, function (err, tab) {
-         if (tab) {
-            workspace.currentTab(tab, function (err, tab, pane) {
-                 ipc.send('focus-tab', tab, pane);
-             });
-         } else {
-             workspace.createNewTab(file, function (err, tab) {
-                 workspace.currentTab(tab, function (err, tab, pane                                                                                                         b7v) {
-                     ipc.send('create-and-focus-tab', tab, pane);
-                 });
-             });
-         }
-     });
- });*/

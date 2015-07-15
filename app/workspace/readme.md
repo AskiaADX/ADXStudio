@@ -22,14 +22,23 @@ use.
      ipc.on('workspace-ready', function (event) {
         // ... code that uses the workspace 
      });
+
+### workspace-close-tab
+
+The `workspace-close-tab` event is fire when the user try to close a tab.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab to close
      
 ## Events from Controller
 
 The workspace controller trigger the following events:
 
-### workspace-create
+### workspace-create-tab
 
-The `workspace-create` event is fire when the creation of a new tab is needed.
+The `workspace-create-tab` event is fire when the creation of a new tab is needed.
 
 It's fire with following arguments:
 
@@ -37,9 +46,9 @@ It's fire with following arguments:
 * **tab** Tab object, with id/name/content/path etc...
 * **pane** Name of the pane where the tab should be created
 
-### workspace-focus
+### workspace-focus-tab
 
-The `workspace-focus` event is fire when it's needed to focus another existing tab.
+The `workspace-focus-tab` event is fire when it's needed to focus another existing tab.
 
 It's fire with the following arguments:
 
@@ -47,9 +56,9 @@ It's fire with the following arguments:
 * **tab** Tab to focus
 * **pane** Name of the pane where the tab should be located
 
-### workspace-create-and-focus
+### workspace-create-and-focus-tab
 
-The `workspace-create-and-focus` is the combination with the two previous event.
+The `workspace-create-and-focus-tab` is the combination of the two previous events.
 
 It first create the tab and then focus it.
 
@@ -58,3 +67,13 @@ It's fire with the following arguments
  * **err** Possible error that could occurred, null when everything is ok.
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab should be created
+ 
+### workspace-remove-tab
+ 
+The `workspace-remove-tab` event is fire when a tab could be remove safely.
+ 
+It's fire with following arguments:
+ 
+ * **err** Possible error that could occurred, null when everything is ok.
+ * **tab** Tab object, with id/name/content/path etc...
+ * **pane** Name of the pane where the tab is located 
