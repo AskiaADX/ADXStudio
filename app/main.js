@@ -3,6 +3,7 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 var ipc = require('ipc');
 var workspaceController = require('./workspace/workspaceController.js');
 var explorerController = require('./explorer/explorerController.js');
+var previewController = require('./preview/previewController.js');
 
 // Report crashes to our server.
 require('crash-reporter').start();

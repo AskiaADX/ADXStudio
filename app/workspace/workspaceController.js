@@ -8,38 +8,39 @@ ipc.on('workspace-ready', function (event) {
     var sender = event.sender;
 
     ipc.on('explorer-loadfile', function(event, file) {
+<<<<<<< HEAD
       workspace.createTab(file, function (err, tab, pane) {
           if (err) throw err;
           tab.loadFile(function (err) {
               sender.send('workspace-create-and-focus-tab', err, tab, pane);
+=======
+
+      workspace.find(file, function (err, tab, pane) {
+
+          // If the tab already exist only focus it
+          if (tab) {
+              // TODO::Look if the content of the tab has changed
+              // TODO::Look if the file has been removed
+              sender.send('workspace-focus-tab', err, tab, pane);
+              return;
+          }
+
+          // When the tab doesn't exist, create it
+          workspace.createTab(file, function (err, tab, pane) {
+              if (err) throw err;
+              tab.loadFile(function (err) {
+                  sender.send('workspace-create-and-focus-tab', err, tab, pane);
+              });
+>>>>>>> 171c33d27b1c448a0e867b6a170fe5460a581203
           });
       });
+
     });
 
-    workspace.createTab({
-        name : 'workspace.css',
-        path : path.join(__dirname, '/workspace.css'),
-        type : 'file'
-    }, function (err, tab, pane) {
-        if (err) throw err;
-        tab.loadFile(function (err) {
-            sender.send('workspace-create-and-focus-tab', err, tab, pane);
-            openTheSecond();
-        });
+});
+
+ipc.on('workspace-close-tab', function (event, tabId) {
+    workspace.removeTab(tabId, function (err, tab, pane) {
+       event.sender.send('workspace-remote-tab', err, tab, pane);
     });
-
-    function openTheSecond() {
-        workspace.createTab({
-            name : 'workspace.html',
-            path : path.join(__dirname, '/workspace.html'),
-            type : 'file'
-        }, function (err, tab, pane) {
-            if (err) throw err;
-            tab.loadFile(function (err) {
-                sender.send('workspace-create', err, tab, pane);
-            });
-        });
-    }
-
-
 });

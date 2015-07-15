@@ -1,8 +1,81 @@
 window.tabs  = {
     /**
-     * Id of the current active tan
+     * Id of the current active tab
      */
     currentTabId : null,
+
+    /**
+     * Latest added tab
+     */
+    lastTabId    : null,
+
+    /**
+     * Add a tab in the collection
+     *
+     * @param {Tab} tab Tab to add
+     */
+    addTab       : function (tab) {
+        this[tab.id] = tab;
+
+        var lastTab;
+
+        // Register the previous tab
+        if (!this.lastTabId) {
+            tab.previous = null;
+            tab.next     = null;
+        } else {
+            lastTab = this[this.lastTabId];
+            lastTab.next = tab;
+            tab.previous = lastTab;
+            tab.next = null;
+        }
+
+        this.lastTabId = tab.id;
+    },
+
+    /**
+     * Remove the tab in the collection
+     *
+     * @param {Tab} tab Tab to remove
+     */
+    removeTab       : function (tab) {
+        var previousSelection, previous, nextSelection, next;
+
+        // Reset the last tab id
+        if (this.lastTabId === tab.id) {
+            if (tab.next) {
+                this.lastTabId = tab.next.id;
+            } else if (tab.previous) {
+                this.lastTabId = tab.previous.id;
+            } else {
+                this.lastTabId = null;
+            }
+        }
+
+
+        // Reset the previous / next
+        previousSelection   = tab.previousSelection;
+        nextSelection       = tab.nextSelection;
+        previous            = tab.previous;
+        next                = tab.next;
+
+        if (previousSelection) {
+            previousSelection.nextSelection = nextSelection;
+        }
+        if (nextSelection) {
+            nextSelection.previousSelection = previousSelection;
+        }
+        if (previous) {
+            previous.next = next;
+        }
+        if (next) {
+            next.previous = previous;
+        }
+
+        // Remove the reference
+        delete this[tab.id];
+    },
+
     /**
      * Event fire when the editor is full loaded
      * @param {Tab} tab Tab currently in used
@@ -14,15 +87,32 @@ window.tabs  = {
             tab.editor.focus && tab.editor.focus();
         }
     },
+
     /**
      * Set the current tab and focus the editor
      * @param {String} tabId Id of the current tab
      */
     setCurrentTab : function (tabId) {
-        this.currentTabId = tabId;
-        var currentTab    = this[tabId];
-        var currentEditor = currentTab && currentTab.editor;
+        var currentTab    = this[tabId],
+            currentEditor, previousTab;
 
+        // Register the previous selected tab
+        if (!this.currentTabId) {
+            currentTab.previousSelection = null;
+            currentTab.nextSelection = null;
+        } else {
+            previousTab = this[this.currentTabId];
+            if (previousTab) {
+                previousTab.nextSelection = currentTab;
+            }
+            currentTab.previousSelection = previousTab;
+            currentTab.nextSelection = null;
+        }
+
+        // Set the current tab
+        this.currentTabId = tabId;
+
+        currentEditor = currentTab && currentTab.editor;
         if (currentEditor) {
             currentEditor.focus && currentEditor.focus();
         }
@@ -31,6 +121,7 @@ window.tabs  = {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+<<<<<<< HEAD
     var ipc = require('ipc');
 
     /**
@@ -71,6 +162,10 @@ document.addEventListener('DOMContentLoaded', function () {
        tabContainer.removeChild(el);
        contentContainer.removeChild(contentEl);
      }
+=======
+    var ipc = require('ipc'),
+        tabs = window.tabs;
+>>>>>>> 171c33d27b1c448a0e867b6a170fe5460a581203
 
      /**
       * Add a tab
@@ -109,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var editor = document.createElement('iframe');
         editor.setAttribute('frameborder', 'no');
         editor.setAttribute('scrolling', 'no');
-        window.tabs[tab.id] = tab;
+        tabs.addTab(tab);
         editor.src = '../editor/codemirror/editor.html?tabId=' + tab.id;
         div.appendChild(editor);
 
@@ -121,17 +216,80 @@ document.addEventListener('DOMContentLoaded', function () {
         paneEl.querySelector('.tabs-content').appendChild(contentEl);
 
         if (isActive) {
-            setActiveTab(tabEl, paneEl);
+            setActiveTab(tab, pane);
         }
     }
+
+    /**
+     * Set active tab
+     *
+     * @param {Tab} tab Tab to active
+     * @param {String} pane Name of the pane where the tab is located
+     */
+    function setActiveTab(tab, pane) {
+        var el              = document.getElementById('tab-' + tab.id),
+            content         = document.getElementById('content-' + tab.id),
+            oldActiveTab    = document.getElementById(pane + '_pane').querySelector('.tab.active'),
+            oldContent      = oldActiveTab && document.getElementById(oldActiveTab.id.replace(/^tab-/, "content-"));
+
+        if (el === oldActiveTab) {
+            return;
+        }
+
+        if (oldActiveTab) {
+            oldActiveTab.classList.remove('active');
+            oldContent.classList.remove('active');
+        }
+        el.classList.add('active');
+        content.classList.add('active');
+
+        tabs.setCurrentTab(tab.id);
+    }
+
+    /**
+     * Remove a tab
+     *
+     * @param {Tab} tab Tab object to remove
+     * @param {String} pane Name of the pane where the tab is locased
+     */
+    function removeTab(tab, pane) {
+        var el              = document.getElementById('tab-' + tab.id),
+            contentEl       = document.getElementById('content-' + tab.id),
+            tabToSelect     = null,
+            currentTab      = tabs[tab.id];
+
+
+
+        // First look if the tab to close is the current active one
+       if (tabs.currentTabId === currentTab.id) {
+            tabToSelect = currentTab.previousSelection || currentTab.nextSelection ||
+                            currentTab.previous || currentTab.next;
+        }
+
+        // Remove the tab reference
+        tabs.removeTab(currentTab);
+
+        // Remove the tab
+        el.parentNode.removeChild(el);
+        contentEl.parentNode.removeChild(contentEl);
+
+        // Set the new active tab
+        if (tabToSelect) {
+            setActiveTab(tabToSelect, pane);
+        }
+    }
+
 
     (function initTabEvents() {
         var i, l,
             els = document.querySelectorAll('.tabs');
         for (i = 0, l = els.length; i < l; i += 1) {
             els[i].addEventListener('click', function (event) {
-                var el = event.srcElement, paneEl, pane;
-                var shouldClose = el.classList.contains('tab-close');
+                var el = event.srcElement,
+                    paneEl,
+                    tab,
+                    pane,
+                    shouldClose = el.classList.contains('tab-close');
 
                 // Click on child nodes
                 if (el.parentNode.classList.contains('tab')) {
@@ -141,8 +299,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (el.classList.contains('tab')) {
                     // Has click on the element to close the tab?
                     if (shouldClose) {
-                      removeTab(el);
-                      return;
+                        ipc.send('workspace-close-tab', el.id.replace(/^(tab-)/, ''));
+                        return;
                     }
 
                     if (el.classList.contains('active')) {
@@ -153,14 +311,41 @@ document.addEventListener('DOMContentLoaded', function () {
                     while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
                         paneEl = paneEl.parentNode;
                     }
+                    pane = paneEl.id.replace(/(_pane)$/, '');
 
                     if (paneEl.classList.contains('pane')) {
-                        setActiveTab(el, paneEl);
+                        tab = tabs[el.id.replace(/^(tab-)/, '')];
+                        setActiveTab(tab, pane);
                     }
                 }
             });
         }
     } ());
+
+
+    /* --- LISTEN EVENTS EMIT FROM THE SERVER SIDE CONTROLLER  --- */
+
+    ipc.on('workspace-create-tab', function (err, tab, pane) {
+        if (err) {
+            alert(err.message);
+            return;
+        }
+        addTab(tab, pane);
+    });
+
+    ipc.on('workspace-focus-tab', function (err, tab, pane) {
+        if (err) {
+            alert(err.message);
+            return;
+        }
+
+        var el = document.getElementById('tab-' + tab.id);
+        if (!el) { // The tab was closed
+            addTab(tab, pane, true);
+        } else {
+            setActiveTab(tab, pane);
+        }
+    });
 
     ipc.on('workspace-create-and-focus-tab', function (err, tab, pane) {
         if (err) {
@@ -170,14 +355,13 @@ document.addEventListener('DOMContentLoaded', function () {
         addTab(tab, pane, true);
     });
 
-    ipc.on('workspace-create', function (err, tab, pane) {
+    ipc.on('workspace-remote-tab', function (err, tab, pane) {
         if (err) {
             alert(err.message);
             return;
         }
-        addTab(tab, pane);
+       removeTab(tab, pane);
     });
-
 
     ipc.send('workspace-ready');
 });
