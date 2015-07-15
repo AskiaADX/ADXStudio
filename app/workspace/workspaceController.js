@@ -8,13 +8,6 @@ ipc.on('workspace-ready', function (event) {
     var sender = event.sender;
 
     ipc.on('explorer-loadfile', function(event, file) {
-<<<<<<< HEAD
-      workspace.createTab(file, function (err, tab, pane) {
-          if (err) throw err;
-          tab.loadFile(function (err) {
-              sender.send('workspace-create-and-focus-tab', err, tab, pane);
-=======
-
       workspace.find(file, function (err, tab, pane) {
 
           // If the tab already exist only focus it
@@ -31,7 +24,6 @@ ipc.on('workspace-ready', function (event) {
               tab.loadFile(function (err) {
                   sender.send('workspace-create-and-focus-tab', err, tab, pane);
               });
->>>>>>> 171c33d27b1c448a0e867b6a170fe5460a581203
           });
       });
 

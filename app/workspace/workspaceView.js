@@ -121,51 +121,8 @@ window.tabs  = {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-<<<<<<< HEAD
-    var ipc = require('ipc');
-
-    /**
-     * Set active tab
-     * @param {HTMLElement} el HTML Element that represent the tab
-     * @param {HTMLElement} pane HTML Element that represent the pane
-     */
-    function setActiveTab(el, paneEl) {
-        var tabId           = el.id.replace(/^(tab-)/, ''),
-            content         = document.getElementById('content-' + tabId),
-            oldActiveTab    = paneEl.querySelector('.tab.active'),
-            oldContent      = oldActiveTab && document.getElementById(oldActiveTab.id.replace(/^tab-/, "content-"));
-
-        if (el === oldActiveTab) {
-            return;
-        }
-
-        if (oldActiveTab) {
-            oldActiveTab.classList.remove('active');
-            oldContent.classList.remove('active');
-        }
-        el.classList.add('active');
-        content.classList.add('active');
-        window.tabs.setCurrentTab(tabId);
-    }
-
-    /**
-     * Remove a tab
-     * @param {HTMLElement} el HTML Element that represent the tab
-     */
-     function removeTab(el) {
-
-       var tabId = el.id.replace(/^(tab-)/, '');
-       var tabContainer = el.parentNode;
-       var contentEl = document.getElementById('content-' + tabId);
-       var contentContainer = contentEl.parentNode;
-
-       tabContainer.removeChild(el);
-       contentContainer.removeChild(contentEl);
-     }
-=======
     var ipc = require('ipc'),
         tabs = window.tabs;
->>>>>>> 171c33d27b1c448a0e867b6a170fe5460a581203
 
      /**
       * Add a tab
