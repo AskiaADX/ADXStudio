@@ -36,6 +36,10 @@ body.drag {
   height: 20px;
 }
 
+.file > .item-info > .toggle {
+  background-image: none;
+}
+
 .item-info:hover .toggle {
   background-position: -100px -180px;
   width: 20px;
@@ -72,13 +76,21 @@ body.drag {
 }
 
 .item-info {
-  display: inline-block;
-  overflow: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   white-space: nowrap;
+  padding: 2px 0px;
+  width: 100%;
+}
+
+.item {
 }
 
 .name {
-  font-size: 14px;
+  flex: 1;
+  align-self: center;
+  font-size: 15px;
 }
 
 .folder {
@@ -97,7 +109,7 @@ body.drag {
   color: red;
 }
 
-.backgclick {
+.selected {
   background-color: #D0D0D0;
 }
 

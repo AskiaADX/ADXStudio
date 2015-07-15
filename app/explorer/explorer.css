@@ -1,12 +1,16 @@
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-.theDivExplorer {
-  border : 1px solid none;
-  height : 660px;
-  width : 200px;
+#root {
+  width: 100%;
 }
 
 .folder {
   font-size: 11px;
+  width: 100%;
 }
 
 .folder:hover {
@@ -14,11 +18,12 @@
 }
 
 .child {
-  margin-left: 10px;
+  width: 100%;
 }
 
 .file {
   font-size: 10px;
+  width: 100%;
 }
 
 .file:hover {

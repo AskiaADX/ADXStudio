@@ -7,7 +7,7 @@
   </head>
   <body>
     <div id="root">
-      <div class="child" style="display: block;"></div>
+      <div class="child" data-deep="0" style="display: block;"></div>
     </div>
 
     <script type="text/javascript">
@@ -21,6 +21,8 @@
     function itemclick(itemInfo) {
 
       var item = itemInfo.parentNode;
+      var parentItem = item.parentNode;
+      var divGlobal = document.querySelector('.selected');
       var file = map[item.id];
       var child = item.querySelector('.child');
       var toggle;
@@ -44,14 +46,17 @@
           file.loaded = true;
         }
       } else {
+        itemInfo.classList.add('selected');
         ipc.send('explorer-loadfile', file);
-        item.classList.add('backgclick');
+        divGlobal.classList.remove('selected');
       }
+
     }
 
     document.addEventListener('DOMContentLoaded', function() {
       ipc.on('loadFolder', function( err, files, elementid) {
         var root = document.getElementById(elementid).querySelector('.child');
+        var deep = parseInt(root.getAttribute('data-deep'), 10);
         root.innerHTML = '';
 
         for (var i = 0; i < files.length; i += 1) {
@@ -73,6 +78,7 @@
 
           var toggle = document.createElement('div');
           toggle.className = 'toggle';
+          toggle.style.marginLeft = (deep * 10) + 'px';
           itemInfo.appendChild(toggle);
 
           var icon = document.createElement('div');
@@ -89,6 +95,7 @@
           if(files[i].type == 'folder') {
             var child = document.createElement('div');
             child.className="child";
+            child.setAttribute('data-deep', deep + 1);
             item.appendChild(child);
           }
             root.appendChild(item);

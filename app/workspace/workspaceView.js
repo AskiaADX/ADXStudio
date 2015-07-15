@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * Set active tab
      * @param {HTMLElement} el HTML Element that represent the tab
-     * @paran {HTMLElement} pane HTML Element that represent the pane
+     * @param {HTMLElement} pane HTML Element that represent the pane
      */
     function setActiveTab(el, paneEl) {
         var tabId           = el.id.replace(/^(tab-)/, ''),
@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         el.classList.add('active');
         content.classList.add('active');
-
         window.tabs.setCurrentTab(tabId);
     }
 
@@ -94,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tabText.classList.add('tab-text');
         tabText.innerHTML = tab.name || 'File';
         tabEl.appendChild(tabText);
+
 
         var tabClose = document.createElement('a');
         tabClose.setAttribute('href', '#');
