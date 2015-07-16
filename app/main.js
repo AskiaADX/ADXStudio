@@ -4,6 +4,7 @@ var ipc = require('ipc');
 var workspaceController = require('./workspace/workspaceController.js');
 var explorerController = require('./explorer/explorerController.js');
 var previewController = require('./preview/previewController.js');
+var menu = require('menu');
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -18,6 +19,127 @@ app.on('window-all-closed', function() {
     app.quit();
   }
 });
+
+//Default Menu of the app.
+app.once('ready', function() {
+  var template;
+  if (process.platforn !== 'darwin') {
+    template = [
+      {
+          label: '&File',
+          submenu: [
+            {
+              label: '&New File',
+              accelerator: 'Ctrl+N',
+              click: function() {
+                // Function to define in order to open a new tab and new content.
+              }
+            },
+            {
+              label: '&New Project',
+              accelerator : 'Ctrl+Shift+N',
+              click: function() {
+                //Function to define in order to initialized a new project.
+              }
+            },
+            {
+              label: '&Open File',
+              accelerator : 'Ctrl+O',
+              click: function() {
+                //Function to define in order to open file already been create.
+              }
+            },
+            {
+              label: '&Open Project',
+              accelerator: 'Ctrl+Shift+O',
+              click: function() {
+                  //Function to define in order to open folder/project already created.
+              }
+            },
+            {
+              type: 'separator'
+            },
+            {
+              label: '&Save',
+              accelerator: 'Ctrl+S',
+              click: function() {
+                //Function to define in order to save current file changed.
+              }
+            },
+            {
+              label: '&Save As...',
+              accelerator: 'Ctrl+Shift+S',
+              click: function() {
+                //Function to define in order to save new files.
+              }
+            },
+            {
+              label: '&Save All',
+              click: function() {
+                //Function to define in order to save all files open and changed.
+              }
+            }
+          ]
+      },
+      {
+        label: 'Build',
+        submenu: [
+          {
+            label: '&Build',
+            accelerator: 'Ctrl+B',
+            click: function() {
+              //function to define in order to build the ADC.
+            }
+          },
+          {
+            label: '&Preview',
+            accelerator: 'F5',
+            click: function() {
+              //Function to define in order to see the preview of the ADC Builded.
+            }
+          }
+        ]
+      },
+      {
+        label: 'View',
+        submenu: [
+          {
+            label: '&Reload',
+            accelerator: 'Ctrl+R',
+            click: function() {
+              var focusedWindow = BrowserWindow.getFocusedWindow();
+              if (focusedWindow)
+                focusedWindow.reload();
+            }
+          },
+          {
+            label: 'Toggle &Full Screen',
+            accelerator: 'F11',
+            click: function() {
+              var focusedWindow = BrowserWindow.getFocusedWindow();
+              if (focusedWindow)
+                focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+            }
+          },
+          {
+            label: 'Toggle &Developer Tools',
+            accelerator: 'Alt+Ctrl+I',
+            click: function() {
+              var focusedWindow = BrowserWindow.getFocusedWindow();
+              if (focusedWindow)
+                focusedWindow.toggleDevTools();
+            }
+          }
+        ]
+      }
+    ];
+  }
+
+  var menuTemplate = menu.buildFromTemplate(template);
+  menu.setApplicationMenu(menuTemplate);
+});
+
+
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
