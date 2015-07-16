@@ -26,8 +26,8 @@
         wks.addEventListener('console-message', catchConsoleLog);
 
 
-        exp.addEventListener("dom-ready", function(){
-          exp.openDevTools();
+        wks.addEventListener("dom-ready", function(){
+            wks.openDevTools();
         });
 
       }());

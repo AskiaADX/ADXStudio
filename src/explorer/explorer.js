@@ -47,9 +47,9 @@ exports.load = function (dir, callback) {
 
         var stats;
         var finalFiles = [];
-        var lgtfil = files.length;
+        var i, l = files.length;
 
-        for (var i = 0; i < lgtfil; i++) {
+        for (i = 0; i < l; i++) {
           try {
             stats = fs.statSync( path.join(dir,files[i]) );
           }

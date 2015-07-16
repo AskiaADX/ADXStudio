@@ -1,12 +1,11 @@
 var ipc = require('ipc');
 var explorer = require('../../src/explorer/explorer.js');
 
-
-
 ipc.on('explorer-ready', function(event) {
-  explorer.load(require('path').join(__dirname, '../../'), function(err, files) {
-    event.sender.send('loadFolder', err, files, 'root');
-  });
+    module.exports.sender = event.sender;
+    explorer.load(require('path').join(__dirname, '../../'), function(err, files) {
+        event.sender.send('loadFolder', err, files, 'root');
+    });
 });
 
 ipc.on('explorer-loadfolder', function(event, path, elementid) {
@@ -14,3 +13,5 @@ ipc.on('explorer-loadfolder', function(event, path, elementid) {
     event.sender.send('loadFolder', err, files, elementid);
   });
 });
+
+

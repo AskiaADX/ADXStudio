@@ -31,6 +31,17 @@ It's fire with the following arguments:
 
 * **event** Event object
 * **tabId** Id of the tab to close
+
+### workspace-save-content
+
+The `workspace-save-content` event is fire when the user try to save the content of a given file.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab that hold the content
+* **content** The content to save
+
      
 ## Events from Controller
 

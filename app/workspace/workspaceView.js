@@ -14,7 +14,7 @@ window.tabs  = {
      *
      * @param {Tab} tab Tab to add
      */
-    addTab       : function (tab) {
+    addTab       : function addTab(tab) {
         this[tab.id] = tab;
 
         var lastTab;
@@ -34,11 +34,40 @@ window.tabs  = {
     },
 
     /**
+     * Update the tab with the version coming from the main process
+     *
+     * @param {Tab} tab Tab coming from the main process
+     */
+    updateTab       : function updateTab(tab) {
+        var viewTab = this[tab.id]; // Tab in the view
+
+        tab.previousSelection = viewTab.previousSelection;
+        if (tab.previousSelection) {
+            tab.previousSelection.nextSelection  = tab;
+        }
+        tab.previous = viewTab.previous;
+        if (tab.previous) {
+            tab.previous.next = tab;
+        }
+        tab.nextSelection = viewTab.nextSelection;
+        if (tab.nextSelection) {
+            tab.nextSelection.previousSelection = tab;
+        }
+        tab.next = viewTab.next;
+        if (tab.next) {
+            tab.next.previous = tab;
+        }
+
+        this[tab.id] = tab;
+        this.dispatchEvent('tabcontentchange', tab.id, tab.content);
+    },
+
+    /**
      * Remove the tab in the collection
      *
      * @param {Tab} tab Tab to remove
      */
-    removeTab       : function (tab) {
+    removeTab       : function removeTab(tab) {
         var previousSelection, previous, nextSelection, next;
 
         // Reset the last tab id
@@ -82,17 +111,61 @@ window.tabs  = {
      * @param {Window} tab.window Window that contains the content of the the tab
      * @param {CodeMirror} tab.editor Code mirror instance on the tab
      */
-    onEditorLoaded : function (tab) {
+    onEditorLoaded : function onEditorLoaded(tab) {
         if (tab.id === this.currentTabId && tab.editor) {
             tab.editor.focus && tab.editor.focus();
         }
     },
 
     /**
+     * Helper function to dispatch event
+     *
+     * @param {String} eventName Name of the event
+     * @param {String} tabId Id of the tab taht initiate the event
+     * @param {String} content Content of the tab
+     */
+    dispatchEvent  : function dispatchEvent(eventName, tabId, content) {
+        var tab = this[tabId];
+        if (!tab) {
+            return;
+        }
+
+        var event = new CustomEvent(eventName, {
+            'detail': {
+                'tab'     : tab,
+                'content' : content,
+                'isModified' : (tab.content !== content)
+            }
+        });
+        document.body.dispatchEvent(event);
+    },
+
+    /**
+     * Event fire when the content of the editor has changed
+     *
+     * @param {String} tabId Id of the tab
+     * @param {String} content Current content in the editor
+     */
+    onContentChange : function onContentChange(tabId, content) {
+        this.dispatchEvent('tabcontentchange', tabId, content);
+    },
+
+    /**
+     * Event fire when the editor request a save
+     *
+     * @param {String} tabId Id of the tab
+     * @param {String} content Current content in the editor
+     */
+    onSave       : function onSave(tabId, content) {
+        this.dispatchEvent('tabcontentsave', tabId, content);
+    },
+
+
+    /**
      * Set the current tab and focus the editor
      * @param {String} tabId Id of the current tab
      */
-    setCurrentTab : function (tabId) {
+    setCurrentTab : function setCurrentTab(tabId) {
         var currentTab    = this[tabId],
             currentEditor, previousTab;
 
@@ -121,7 +194,7 @@ window.tabs  = {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    var ipc = require('ipc'),
+    var ipc  = require('ipc'),
         tabs = window.tabs;
 
      /**
@@ -204,6 +277,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
+     * Update the information of the tab
+     *
+     * @param {Tab} tab Tab to update
+     * @param {String} pane Name of the pane
+     */
+    function updateTab(tab, pane) {
+        tabs.updateTab(tab);
+    }
+
+    /**
      * Remove a tab
      *
      * @param {Tab} tab Tab object to remove
@@ -237,45 +320,91 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+
     (function initTabEvents() {
         var i, l,
             els = document.querySelectorAll('.tabs');
+
+        /**
+         * Event when clicking on tabs
+         *
+         * @param {Event} event
+         */
+        function onTabsClick(event) {
+            var el = event.srcElement,
+                paneEl,
+                tab,
+                pane,
+                shouldClose = el.classList.contains('tab-close');
+
+            // Click on child nodes
+            if (el.parentNode.classList.contains('tab')) {
+                el = el.parentNode;
+            }
+
+            if (el.classList.contains('tab')) {
+                // Has click on the element to close the tab?
+                if (shouldClose) {
+                    ipc.send('workspace-close-tab', el.id.replace(/^(tab-)/, ''));
+                    return;
+                }
+
+                if (el.classList.contains('active')) {
+                    return;
+                }
+
+                paneEl = el.parentNode;
+                while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
+                    paneEl = paneEl.parentNode;
+                }
+                pane = paneEl.id.replace(/(_pane)$/, '');
+
+                if (paneEl.classList.contains('pane')) {
+                    tab = tabs[el.id.replace(/^(tab-)/, '')];
+                    setActiveTab(tab, pane);
+                }
+            }
+        }
+
+
+        /**
+         * Event when the content of a tab has changed
+         *
+         * @param {CustomEvent} event
+         */
+        function onTabContentChange(event) {
+            var tab         = event.detail.tab,
+                isModified  = event.detail.isModified,
+                tabEl       = document.getElementById('tab-' + tab.id),
+                tabTextEl   = tabEl.querySelector('.tab-text');
+            if (tabEl.classList.contains('edit') !== isModified) {
+                if (isModified) {
+                    tabEl.classList.add('edit');
+                } else {
+                    tabEl.classList.remove('edit');
+                }
+                tabTextEl.innerHTML = (isModified ? '* ' : '') + (tab.name || 'File');
+            }
+        }
+
+        document.body.addEventListener('tabcontentchange', onTabContentChange);
+
+        /**
+         * Event when the editor request the save
+         *
+         * @param {CustomEvent} event
+         */
+        function onTabContentSave(event) {
+            var tab         = event.detail.tab,
+                content     = event.detail.content;
+
+            ipc.send('workspace-save-content', tab.id, content);
+        }
+
+        document.body.addEventListener('tabcontentsave', onTabContentSave);
+
         for (i = 0, l = els.length; i < l; i += 1) {
-            els[i].addEventListener('click', function (event) {
-                var el = event.srcElement,
-                    paneEl,
-                    tab,
-                    pane,
-                    shouldClose = el.classList.contains('tab-close');
-
-                // Click on child nodes
-                if (el.parentNode.classList.contains('tab')) {
-                    el = el.parentNode;
-                }
-
-                if (el.classList.contains('tab')) {
-                    // Has click on the element to close the tab?
-                    if (shouldClose) {
-                        ipc.send('workspace-close-tab', el.id.replace(/^(tab-)/, ''));
-                        return;
-                    }
-
-                    if (el.classList.contains('active')) {
-                        return;
-                    }
-
-                    paneEl = el.parentNode;
-                    while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
-                        paneEl = paneEl.parentNode;
-                    }
-                    pane = paneEl.id.replace(/(_pane)$/, '');
-
-                    if (paneEl.classList.contains('pane')) {
-                        tab = tabs[el.id.replace(/^(tab-)/, '')];
-                        setActiveTab(tab, pane);
-                    }
-                }
-            });
+            els[i].addEventListener('click', onTabsClick);
         }
     } ());
 
@@ -312,12 +441,20 @@ document.addEventListener('DOMContentLoaded', function () {
         addTab(tab, pane, true);
     });
 
-    ipc.on('workspace-remote-tab', function (err, tab, pane) {
+    ipc.on('workspace-remove-tab', function (err, tab, pane) {
         if (err) {
             alert(err.message);
             return;
         }
        removeTab(tab, pane);
+    });
+
+    ipc.on('workspace-update-tab', function (err, tab, pane) {
+        if (err) {
+            alert(err.message);
+            return;
+        }
+        updateTab(tab, pane);
     });
 
     ipc.send('workspace-ready');

@@ -1,16 +1,63 @@
 describe("Tab", function () {
    var Tab,
        uuid = require('node-uuid'),
-       fs   = require('fs');
+       fs   = require('fs'),
+       nodePath = require('path'),
+       spies = {};
+
 
     beforeEach(function () {
-       Tab = require('../../src/workspace/Tab.js').Tab;
+        Tab = require('../../src/workspace/Tab.js').Tab;
+
+        spies.isTextOrBinary = spyOn(Tab, 'isTextOrBinaryFile');
+        spies.isTextOrBinary.andCallFake(function (path, cb) {
+            cb(null, 'text');
+        });
+
+        spies.uuid  = spyOn(uuid, "v4").andReturn("random-guid");
+
+        spies.basename = spyOn(nodePath, "basename");
+        spies.basename.andReturn("");
+
+        spies.fs = {};
+
+        spies.fs.rename =  spyOn(fs, 'rename');
+        spies.fs.rename.andCallFake(function (oldpath, newpath, cb) {
+            cb(null);
+        });
+
+        spies.fs.stat = spyOn(fs, 'stat');
+        spies.fs.stat.andCallFake(function (path, cb) {
+            cb(null, {});
+        });
+
+        spies.fs.readFile = spyOn(fs, 'readFile');
+        spies.fs.readFile.andCallFake(function (path, cb) {
+           cb(null, "Hello world!");
+        });
+
+        spies.fs.writeFile = spyOn(fs, 'writeFile');
+        spies.fs.writeFile.andCallFake(function (path, content, cb) {
+            cb(null);
+        });
+
     });
 
+    function runSync(fn) {
+        var wasCalled = false;
+        runs( function () {
+            fn(function () {
+                wasCalled = true;
+            });
+        });
+        waitsFor(function () {
+            return wasCalled;
+        });
+    }
 
     describe("#constructor", function () {
         it("should assign a GUID as the identifier of the tab", function () {
-            spyOn(uuid, "v4").andReturn("random-guid");
+            spies.uuid.andReturn("random-guid");
             var tab = new Tab();
             expect(tab.id).toBe('random-guid');
         });
@@ -29,10 +76,6 @@ describe("Tab", function () {
 
     describe("#loadFile", function () {
         it("should set the #fileType to `text` if the file is a text file", function () {
-            spyOn(Tab, 'isTextOrBinaryFile').andCallFake(function (path, cb) {
-                cb(null, 'text');
-            });
-
             var tab = new Tab({
                 path : 'file/to/load'
             });
@@ -44,7 +87,7 @@ describe("Tab", function () {
 
 
         it("should set the #fileType to `binary` if the file is a text file", function () {
-            spyOn(Tab, 'isTextOrBinaryFile').andCallFake(function (path, cb) {
+            spies.isTextOrBinary.andCallFake(function (path, cb) {
                 cb(null, 'binary');
             });
 
@@ -58,10 +101,7 @@ describe("Tab", function () {
         });
 
         it("should, if the file is `text`, read the content and assign it to the #content property", function () {
-            spyOn(Tab, 'isTextOrBinaryFile').andCallFake(function (path, cb) {
-                cb(null, 'text');
-            });
-            spyOn(fs, 'readFile').andCallFake(function (path, cb) {
+            spies.fs.readFile.andCallFake(function (path, cb) {
                 cb(null, 'Hello');
             });
 
@@ -75,10 +115,10 @@ describe("Tab", function () {
         });
 
         it("should not read the file, if the file is `binary`", function () {
-            spyOn(Tab, 'isTextOrBinaryFile').andCallFake(function (path, cb) {
+            spies.isTextOrBinary.andCallFake(function (path, cb) {
                 cb(null, 'binary');
             });
-            spyOn(fs, 'readFile').andCallFake(function (path, cb) {
+            spies.fs.readFile.andCallFake(function (path, cb) {
                 cb(null, 'Should not be set');
             });
 
@@ -91,5 +131,266 @@ describe("Tab", function () {
             });
         });
 
+        it("should set the properties #statTimes an object with the keys `modified` and `change`", function () {
+            spies.isTextOrBinary.andCallFake(function (path, cb) {
+                cb(null, 'binary');
+            });
+
+            var mtime = new Date(2015, 6, 16, 15, 11, 9),
+                ctime = new Date(2015, 6, 16, 15, 11, 9);
+
+            spies.fs.stat.andCallFake(function (path, cb) {
+                cb(null, {
+                    mtime : mtime,
+                    ctime : ctime
+                });
+            });
+
+            var tab = new Tab({
+                path : 'file/to/load'
+            });
+
+            tab.loadFile(function () {
+                expect(tab.statTimes.modified).toEqual(mtime);
+                expect(tab.statTimes.change).toEqual(ctime);
+            });
+        });
+
     });
+
+    describe('#saveFile', function () {
+
+
+        it('should be a function', function () {
+            var tab = new Tab({
+                path : 'file/to/load'
+            });
+
+            expect(typeof tab.saveFile).toBe('function');
+        });
+
+        it("should return an error when the first argument is not an object nor a string", function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : 'file/to/load'
+                });
+
+                tab.saveFile(null, function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+            });
+        });
+
+        it("should return an error when the first argument is an object but don't contains the `content` or the `path` attribute", function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path: 'file/to/load'
+                });
+
+                tab.saveFile({}, function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+            });
+        });
+
+        it("should return an error when trying to save the content of a  binary file", function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path: 'file/to/load'
+                });
+
+                tab.fileType = 'binary';
+                tab.saveFile({
+                    content : 'Hello'
+                }, function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+            });
+        });
+
+        it("should not return an error when trying to save the path fo the binary file", function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path: 'file/to/load'
+                });
+
+                tab.fileType = 'binary';
+                tab.saveFile({
+                    path : 'new/file/path'
+                }, function (err) {
+                    expect(err).toBe(null);
+                    done();
+                });
+            });
+        });
+
+        it("should return an error when the `file.path` and the `tab.path` is not defined", function () {
+            runSync(function (done) {
+                var tab = new Tab({});
+                tab.saveFile({
+                    content : 'Hello'
+                }, function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+            });
+        });
+
+        it("should rename the file when passing the `file.path` in arg", function () {
+            var oldPath, newPath;
+            spies.fs.rename.andCallFake(function (oldP, newP, cb) {
+                oldPath = oldP;
+                newPath = newP;
+                cb(null);
+            });
+            runSync(function (done) {
+                var tab = new Tab({
+                    path: 'file/to/load'
+                });
+
+                tab.fileType = 'binary';
+                tab.saveFile({
+                    path : 'new/file/path'
+                }, function () {
+                    expect(oldPath).toBe('file/to/load');
+                    expect(newPath).toBe('new/file/path');
+                    done();
+                });
+            });
+        });
+
+        it("should write a new file if the `file.path` is defined but not the `tab.path`", function () {
+            var path, content;
+            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+                path = p;
+                content = c;
+                cb(null);
+            });
+            runSync(function (done) {
+                var tab = new Tab({
+                    name : 'test.txt'
+                });
+                tab.saveFile({
+                    path    : '/the/path',
+                    content : 'Hello'
+                }, function () {
+                    expect(path).toBe('/the/path');
+                    expect(content).toBe('Hello');
+                    done();
+                });
+            });
+        });
+
+        it("should write a new file when the content is defined", function () {
+            var path, content;
+            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+                path = p;
+                content = c;
+                cb(null);
+            });
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+                tab.saveFile("Content to save", function () {
+                    expect(path).toBe('/the/path/');
+                    expect(content).toBe('Content to save');
+                    done();
+                });
+            });
+        });
+
+        it("should return an error when trying to save a file that has already been changed", function () {
+            spies.isTextOrBinary.andCallFake(function (path, cb) {
+                cb(null, 'text');
+            });
+
+            var mtime = new Date(2015, 6, 16, 15, 11, 9),
+                ctime = new Date(2015, 6, 16, 15, 11, 9);
+
+            spies.fs.stat.andCallFake(function (path, cb) {
+                cb(null, {
+                    mtime : mtime,
+                    ctime : ctime
+                });
+            });
+
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+                tab.loadFile(function () {
+                    spies.fs.stat.andCallFake(function (path, cb) {
+                        cb(null, {
+                            mtime : new Date(2015, 6, 16, 15, 11, 10),
+                            ctime : new Date(2015, 6, 16, 15, 11, 10)
+                        });
+                    });
+                    tab.saveFile("Content to save", function (err) {
+                        expect(err instanceof Error).toBe(true);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("should reload the file information after save", function () {
+
+            var imtime = new Date(2015, 6, 16, 15, 11, 9),
+                ictime = new Date(2015, 6, 16, 15, 11, 9),
+                nmtime = new Date(2015, 6, 16, 15, 11, 10),
+                nctime = new Date(2015, 6, 16, 15, 11, 10);
+
+            spies.fs.stat.andCallFake(function (path, cb) {
+                cb(null, {
+                    mtime : imtime,
+                    ctime : ictime
+                });
+            });
+            spies.fs.readFile.andCallFake(function (path, cb) {
+                cb(null, "No");
+            });
+
+            spies.fs.writeFile.andCallFake(function (path, content, cb) {
+                spies.fs.readFile.andCallFake(function (path, cb) {
+                    cb(null, content);
+                });
+
+                spies.fs.stat.andCallFake(function (path, cb) {
+                    cb(null, {
+                        mtime : nmtime,
+                        ctime : nctime
+                    });
+                });
+
+                spies.basename.andReturn('newName.txt');
+
+                cb(null);
+            });
+
+            runSync(function (done) {
+                var tab = new Tab({
+                    name : 'oldName.txt',
+                    path : '/the/path/oldName.txt'
+                });
+                tab.loadFile(function () {
+                    tab.saveFile({
+                        path : "/the/path/newName.txt",
+                        content : "Yes"
+                    }, function () {
+                        expect(tab.path).toBe('/the/path/newName.txt');
+                        expect(tab.name).toBe('newName.txt');
+                        expect(tab.content).toBe('Yes');
+                        expect(tab.statTimes.modified).toEqual(nmtime);
+                        expect(tab.statTimes.change).toEqual(nctime);
+                        done();
+                    });
+                });
+            });
+        });
+    });
+
 });

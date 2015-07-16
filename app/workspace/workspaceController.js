@@ -33,6 +33,18 @@ ipc.on('workspace-ready', function (event) {
 
 ipc.on('workspace-close-tab', function (event, tabId) {
     workspace.removeTab(tabId, function (err, tab, pane) {
-       event.sender.send('workspace-remote-tab', err, tab, pane);
+       event.sender.send('workspace-remove-tab', err, tab, pane);
     });
+});
+
+ipc.on('workspace-save-content', function (event, tabId, content) {
+    workspace.find(tabId, function (err, tab, pane) {
+        if (err) {
+            event.sender.send('workspace-update-tab', err, null, null);
+            return;
+        }
+        tab.saveFile(content, function (err) {
+            event.sender.send('workspace-update-tab', err, tab, pane);
+        });
+    })
 });
