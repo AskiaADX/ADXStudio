@@ -7,17 +7,22 @@ var nodePath = require('path');
  * Tab in pane
  *
  * @constructor
- * @param {Object} [config] Configuratino
+ * @param {Object|String} [config] Configuration or path of the file
  * @param {String} [config.name] Name of tab or file
  * @param {String|'file'} [config.type] Type of tab
  * @param {String} [config.path] Path of the file associated with the tab
  */
 function Tab(config) {
+    if (typeof  config === 'string') {
+        config = {
+            path : config
+        };
+    }
     this.id = uuid.v4();
     this.config = config || {};
-    this.name = this.config.name || '';
     this.type = this.config.type || '';
     this.path = this.config.path || '';
+    this.name = this.config.name || (this.path && nodePath.basename(this.path)) || '';
     this.fileType = '';
     this.statTimes = {};
     this.content  = null;

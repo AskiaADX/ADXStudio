@@ -451,6 +451,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-update-tab', function (err, tab, pane) {
         if (err) {
+            console.log(err);
             alert(err.message);
             return;
         }

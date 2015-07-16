@@ -6,7 +6,6 @@ var explorerController = require('./explorer/explorerController.js');
 var previewController = require('./preview/previewController.js');
 var menu = require('menu');
 var dialog = require('dialog');
-var fs = require('fs');
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -49,21 +48,21 @@ app.once('ready', function() {
               accelerator : 'Ctrl+O',
               click: function() {
                 dialog.showOpenDialog({ properties: [ 'openFile']}, function(filepath) {
-
+                    if (filepath && filepath.length) {
+                        app.emit("menu-open-file", filepath[0]);
+                    }
                 });
                 //Function to define in order to open file already been create.
               }
             },
             {
-              label: 'Open Project',
+              label: '&Open Project',
               accelerator: 'Ctrl+Shift+O',
               click: function() {
                 dialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
-                  ipc.send('explorer-ready', function(event, folderpath) {
-                    explorerController.load(filepath, function(err, files) {
-                        event.sender.send('loadFolder', err, files);
-                    })
-                  })
+                  if (folderpath && folderpath.length) {
+                      app.emit("menu-open-project", folderpath[0]);
+                  }
                 });
 
                   //Function to define in order to open folder/project already created.
@@ -76,7 +75,7 @@ app.once('ready', function() {
               label: '&Save',
               accelerator: 'Ctrl+S',
               click: function() {
-                dialog.showSaveDialog({title:'file'});
+                  console.log("Save from main.js");
                 //Function to define in order to save current file changed.
               }
             },
@@ -84,6 +83,7 @@ app.once('ready', function() {
               label: '&Save As...',
               accelerator: 'Ctrl+Shift+S',
               click: function() {
+                  dialog.showSaveDialog({title:'file'});
                 //Function to define in order to save new files.
               }
             },

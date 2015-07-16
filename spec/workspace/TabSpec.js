@@ -72,6 +72,22 @@ describe("Tab", function () {
             expect(tab.type).toBe('file');
             expect(tab.path).toBe('path/of/file1');
         });
+
+        it("should set #type, #name, #path when the argument is a string", function () {
+            spies.basename.andReturn("file1.txt");
+            var tab = new Tab('path/of/file1.txt');
+            expect(tab.name).toBe('file1.txt');
+            expect(tab.path).toBe('path/of/file1.txt');
+        });
+
+        it("should set the name of the tab using the path when it's defined", function () {
+            spies.basename.andReturn("file1.txt");
+            var tab = new Tab({
+                type : 'file',
+                path : 'path/of/file1.txt'
+            });
+            expect(tab.name).toBe('file1.txt');
+        });
     });
 
     describe("#loadFile", function () {
@@ -84,7 +100,6 @@ describe("Tab", function () {
                 expect(tab.fileType).toBe('text');
             });
         });
-
 
         it("should set the #fileType to `binary` if the file is a text file", function () {
             spies.isTextOrBinary.andCallFake(function (path, cb) {
