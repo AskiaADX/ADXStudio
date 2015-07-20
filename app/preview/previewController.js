@@ -1,8 +1,9 @@
 var ipc  = require('ipc');
-var adcShow = require('adcutil/app/show/ADCShow.js');
+var adcutil = require('adcutil');
 var http = require("http");
 var path = require('path');
 var server;
+var isStart = false;
 
 
 /**
@@ -14,7 +15,7 @@ function createServer() {
     }
     server = http.createServer(function(request, response) {
         response.writeHead(200, {"Content-Type": "text/html"});
-        adcShow.show({
+        adcutil.show({
             output : 'default',
             fixture : 'open.xml',
             masterPage : 'node_modules/adcutil/templates/master_page/default.html'
@@ -27,6 +28,11 @@ function createServer() {
             response.end();
         });
     });
+
+    server.on('close', function () {
+        isStart = false;
+       console.log('close the server connection');
+    });
 }
 
 /**
@@ -35,9 +41,14 @@ function createServer() {
  * @param {Function} [callback]
  */
 function startServer(port, callback) {
+    if (isStart) {
+        return;
+    }
     port = port || 3500;
+
     createServer();
     server.listen(port, function () {
+        isStart = true;
         console.log("Server is listening on port " + port);
         if (typeof  callback === 'function') {
             callback();
@@ -52,6 +63,7 @@ function startServer(port, callback) {
 function stopServer(callback) {
     if (server) {
         server.close(function () {
+            isStart = false;
             console.log("Server was stopped");
             if (typeof  callback === 'function') {
                 callback();

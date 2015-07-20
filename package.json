@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/AskiaADX/ADXStudio",
   "dependencies": {
-    "adcutil": "^1.1.0-beta.4",
+    "adcutil": "^1.1.0-beta.6",
     "charset-detector": "0.0.2",
     "node-uuid": "^1.4.3"
   },
