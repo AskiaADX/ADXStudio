@@ -194,9 +194,9 @@ window.tabs  = {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+
     var ipc  = require('ipc'),
         tabs = window.tabs;
-
      /**
       * Add a tab
       *

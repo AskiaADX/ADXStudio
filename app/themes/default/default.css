@@ -12,10 +12,6 @@ body.grey {
     background: #bbb;
 }
 
-body.drag {
-    cursor: ne-resize;
-}
-
 .splitter {
     background: transparent;
 }

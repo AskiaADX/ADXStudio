@@ -1,0 +1,31 @@
+div.adx-horizontal-drag {
+    cursor: ew-resize;
+    background: #333;
+}
+
+div.adx-vertical-drag {
+    cursor: ns-resize;
+    background: #333;
+}
+
+.adx-horizontal, .adx-vertical {
+  position: absolute;
+  top:0;
+  left: 0;
+}
+
+.adx-horizontal {
+  cursor: ew-resize;
+  width: 6px;
+  height: 100%;
+}
+
+.adx-vertical {
+  cursor: ns-resize;
+  height: 6px;
+  width: 100%;
+}
+
+.hide {
+  display: none;
+}

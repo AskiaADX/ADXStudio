@@ -4,62 +4,16 @@
     <title>ADX STUDIO</title>
     <link rel="stylesheet" type="text/css" href="index.css"/>
     <link rel="stylesheet" type="text/css" href="../themes/default/default.css"/>
+    <link rel="stylesheet" type="text/css" href="adxResizer.css"/>
+    <script type="text/javascript" src="adxResizer.js"></script>
+
   </head>
   <body class="grey">
     <div id="main_panels">
       <div id="panel_explorer"><webview id="explorer" src="../explorer/explorer.html" nodeintegration="on"></webview></div>
       <div id="panel_workspace"><webview id="workspace" src="../workspace/workspace.html" nodeintegration="on"></webview></div>
-      <div id="separatorExplorerWorkspace" class="splitter"></div>
     </div>
-    <script type="text/javascript">
-
-      (function () {
-          var ipc = require('ipc'),
-              exp = document.getElementById("explorer"),
-              wks = document.getElementById("workspace");
-
-        function catchConsoleLog(event) {
-          console.log( event.message );
-        }
-
-        exp.addEventListener('console-message', catchConsoleLog);
-        wks.addEventListener('console-message', catchConsoleLog);
-
-
-        wks.addEventListener("dom-ready", function(){
-            wks.openDevTools();
-        });
-
-      }());
-
-
-      document.getElementById('separatorExplorerWorkspace').addEventListener('mousedown',  function horizDown(event) {
-
-        var currentEl = this;
-        var deltaX = event.pageX - this.offsetLeft;
-        currentEl.classList.add('drag');
-        document.body.classList.add('drag');
-        document.body.addEventListener('mouseup', horizUp);
-        document.body.addEventListener('mousemove', horizMove);
-
-        function horizMove(event) {
-          currentEl.style.left = (event.pageX - deltaX) + 'px';
-        }
-
-        function horizUp(event) {
-          currentEl.classList.remove('drag');
-          document.body.classList.remove('drag');
-          document.body.removeEventListener('mouseup', horizUp);
-          document.body.removeEventListener('mousemove', horizMove);
-          document.getElementById('panel_explorer').style.width = currentEl.offsetLeft + 'px';
-          var widthEl = document.getElementById('panel_explorer').offsetWidth;
-          currentEl.style.left = widthEl + 'px';
-        }
-    });
-
-
-
-    </script>
+    <script type="text/javascript" src="index.js"></script>
 
   </body>
 </html>
