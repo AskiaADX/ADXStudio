@@ -1,10 +1,11 @@
-var ipc  = require('ipc');
+var app     = require('app');
 var adcutil = require('adcutil');
-var http = require("http");
-var path = require('path');
+var http    = require("http");
+var path    = require('path');
+var shell   = require('shell');
 var server;
 var isStart = false;
-
+var lastPort = 0;
 
 /**
  * Create the server
@@ -13,25 +14,30 @@ function createServer() {
     if (server) {
         return;
     }
-    server = http.createServer(function(request, response) {
-        response.writeHead(200, {"Content-Type": "text/html"});
-        adcutil.show({
-            output : 'default',
-            fixture : 'open.xml',
-            masterPage : 'node_modules/adcutil/templates/master_page/default.html'
-        }, path.join(__dirname, '../../tmp/testPreview/'), function (err, output) {
-            if (err) {
-                response.write(err.message);
-            } else {
-                response.write(output);
-            }
-            response.end();
-        });
-    });
+
+    server = http.createServer(reply);
 
     server.on('close', function () {
         isStart = false;
-       console.log('close the server connection');
+        console.log('close the server connection');
+    });
+}
+
+// Reply on HTTP request
+function reply(request, response) {
+    var adcPath = (global.project && global.project.path) || path.join(__dirname, '../../tmp/testPreview/');
+    response.writeHead(200, {"Content-Type": "text/html"});
+    adcutil.show({
+        output : 'default',
+        fixture : 'single.xml',
+        masterPage : 'node_modules/adcutil/templates/master_page/default.html'
+    }, adcPath, function (err, output) {
+        if (err) {
+            response.write(err.message);
+        } else {
+            response.write(output);
+        }
+        response.end();
     });
 }
 
@@ -39,19 +45,35 @@ function createServer() {
  * Start the HTTP server
  * @param {Number} [port=3500] Port to listen
  * @param {Function} [callback]
+ * @param {Number} [callback.port] Port listen
  */
 function startServer(port, callback) {
+    // Swap arguments
+    if (typeof  port === 'function') {
+        callback = port;
+        port = null;
+    }
+
+    // Already started
     if (isStart) {
+        if (typeof  callback === 'function') {
+            callback(lastPort);
+        }
         return;
     }
-    port = port || 3500;
 
+    // Initialize the port
+    lastPort = port || 3500;
+
+    // Create teh server
     createServer();
-    server.listen(port, function () {
+
+    // Listen the port
+    server.listen(lastPort, function () {
         isStart = true;
-        console.log("Server is listening on port " + port);
+        console.log("Server is listening on port " + lastPort);
         if (typeof  callback === 'function') {
-            callback();
+            callback(lastPort);
         }
     });
 }
@@ -76,15 +98,11 @@ function stopServer(callback) {
     }
 }
 
-ipc.on('preview-start-server', function () {
-    startServer();
+app.on('menu-preview', function () {
+    startServer(function (port) {
+        shell.openExternal('http://localhost:' + port);
+    });
 });
-
-ipc.on('preview-stop-server', function () {
-    stopServer();
-});
-
-// startServer();
 
 exports.startServer = startServer;
 exports.stopServer = stopServer;

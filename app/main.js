@@ -110,6 +110,7 @@ app.once('ready', function() {
             accelerator: 'F5',
             click: function() {
               //Function to define in order to see the preview of the ADC Builded.
+              app.emit("menu-preview");
             }
           }
         ]
