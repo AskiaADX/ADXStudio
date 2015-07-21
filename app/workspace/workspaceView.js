@@ -231,12 +231,20 @@ document.addEventListener('DOMContentLoaded', function () {
         contentEl.setAttribute('id', 'content-' + tab.id);
 
         var div = document.createElement('div');
-        var editor = document.createElement('iframe');
-        editor.setAttribute('frameborder', 'no');
-        editor.setAttribute('scrolling', 'no');
-        tabs.addTab(tab);
-        editor.src = '../editor/codemirror/editor.html?tabId=' + tab.id;
-        div.appendChild(editor);
+        var viewerSubFolderName = 'codemirror';
+        if (tab.fileType !== 'text') {
+            var reIsImg = /\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i;
+            if (reIsImg.test(tab.name)) {
+                viewerSubFolderName = 'image';
+            }
+        }
+
+         var viewer = document.createElement('iframe');
+         viewer.setAttribute('frameborder', 'no');
+         viewer.setAttribute('scrolling', 'no');
+         tabs.addTab(tab);
+         viewer.src = '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
+         div.appendChild(viewer);
 
         contentEl.appendChild(div);
 

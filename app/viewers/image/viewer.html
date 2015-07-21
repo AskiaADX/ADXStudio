@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image viewer</title>
+</head>
+<body>
+
+<script>
+    (function () {
+        var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
+        if (!matchTabId || !matchTabId.length) {
+            throw new Error("Invalid context, the tab id is not defined");
+        }
+        var tabId    = matchTabId[1];
+        var parent   = window.parent;
+        var tabs     = parent.tabs;
+        var tab      = tabs[tabId];
+
+        var img = document.createElement('img');
+        img.src = 'file:///' + tab.path;
+        img.alt = tab.name;
+        img.title = tab.name;
+        img.style.backgroundImage = "url('bg.png')";
+        img.style.backgroundRepeat = "repeat";
+        document.body.appendChild(img);
+    }());
+
+
+</script>
+</body>
+</html>

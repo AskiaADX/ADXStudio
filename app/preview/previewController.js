@@ -25,7 +25,7 @@ function createServer() {
 
 // Reply on HTTP request
 function reply(request, response) {
-    var adcPath = (global.project && global.project.path) || path.join(__dirname, '../../tmp/testPreview/');
+    var adcPath = (global.project && global.project.path);
     response.writeHead(200, {"Content-Type": "text/html"});
     adcutil.show({
         output : 'default',
