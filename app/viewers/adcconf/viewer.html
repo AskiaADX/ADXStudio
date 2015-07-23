@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image viewer</title>
+</head>
+<body>
+
+TODO::Display information of the ADC config file in a form
+
+<pre id="test"></pre>
+
+<script>
+    (function () {
+        var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
+        if (!matchTabId || !matchTabId.length) {
+            throw new Error("Invalid context, the tab id is not defined");
+        }
+        var tabId    = matchTabId[1];
+        var parent   = window.parent;
+        var tabs     = parent.tabs;
+        var tab      = tabs[tabId];
+
+        console.log(tab);
+        document.getElementById("test").innerHTML = JSON.stringify(tab.adcConfig, null, 4);
+
+    }());
+
+
+</script>
+</body>
+</html>

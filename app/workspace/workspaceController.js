@@ -2,11 +2,16 @@ var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
 var workspace = require('../../src/workspace/workspace.js');
-
+var ADCConfigurator = require('adcutil').Configurator;
 
 ipc.on('workspace-ready', function (event) {
     var sender = event.sender;
 
+    /**
+     * Open a file in new tab. If the file is already open, focus the tab.
+     *
+     * @param {String} file Path of file to open
+     */
     function openFile(file) {
         workspace.find(file, function (err, tab, pane) {
 
@@ -20,6 +25,7 @@ ipc.on('workspace-ready', function (event) {
 
             // When the tab doesn't exist, create it
             workspace.createTab(file, function (err, tab, pane) {
+                // TODO::Don't throw the error but send it to the view
                 if (err) throw err;
                 tab.loadFile(function (err) {
                     sender.send('workspace-create-and-focus-tab', err, tab, pane);
@@ -33,6 +39,38 @@ ipc.on('workspace-ready', function (event) {
         openFile(file);
     });
     app.on('menu-open-file', openFile);
+
+
+
+    function openProjectSettings() {
+        var folderPath = global.project.path;
+        if (!folderPath) {
+            return;
+        }
+        workspace.find(folderPath, function (err, tab, pane) {
+
+            // If the tab already exist only focus it
+            if (tab) {
+                // TODO::Look if the content of the tab has changed
+                // TODO::Look if the file has been removed
+                sender.send('workspace-focus-tab', err, tab, pane);
+                return;
+            }
+
+            // When the tab doesn't exist, create it
+            workspace.createTab(folderPath, function (err, tab, pane) {
+                // TODO::Don't throw the error but send it to the view
+                if (err) throw err;
+                var configurator = new ADCConfigurator(folderPath);
+                configurator.load(function (err) {
+                    tab.adcConfig = (!err)  ? { info : configurator.info.get() } : {};
+                    sender.send('workspace-create-and-focus-tab', err, tab, pane);
+                });
+            });
+        });
+    }
+
+    app.on('menu-show-project-settings', openProjectSettings);
 
 });
 
