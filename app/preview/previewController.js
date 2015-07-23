@@ -29,7 +29,7 @@ function reply(request, response) {
     response.writeHead(200, {"Content-Type": "text/html"});
     adcutil.show({
         output : 'default',
-        fixture : 'single.xml',
+        fixture : 'date.xml',
         masterPage : 'node_modules/adcutil/templates/master_page/default.html'
     }, adcPath, function (err, output) {
         if (err) {

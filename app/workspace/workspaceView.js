@@ -205,39 +205,42 @@ document.addEventListener('DOMContentLoaded', function () {
       * @param {Boolean} [isActive=false] Activate the tab after his creation
       */
     function addTab(tab, pane, isActive) {
-        // Create the tab
-        var tabEl     = document.createElement('li');
-        tabEl.classList.add('tab');
-        tabEl.setAttribute('id', 'tab-' + tab.id);
+         // Create the tab
+         var tabEl = document.createElement('li');
+         tabEl.classList.add('tab');
+         tabEl.setAttribute('id', 'tab-' + tab.id);
 
-        var tabIcon = document.createElement('span');
-        tabIcon.classList.add('tab-icon');
-        tabEl.appendChild(tabIcon);
+         var tabIcon = document.createElement('span');
+         tabIcon.classList.add('tab-icon');
+         tabEl.appendChild(tabIcon);
 
-        var tabText = document.createElement('span');
-        tabText.classList.add('tab-text');
-        tabText.innerHTML = tab.name || 'File';
-        tabEl.appendChild(tabText);
+         var tabText = document.createElement('span');
+         tabText.classList.add('tab-text');
+         tabText.innerHTML = tab.name || 'File';
+         tabEl.appendChild(tabText);
 
 
-        var tabClose = document.createElement('a');
-        tabClose.setAttribute('href', '#');
-        tabClose.classList.add('tab-close');
-        tabEl.appendChild(tabClose);
+         var tabClose = document.createElement('a');
+         tabClose.setAttribute('href', '#');
+         tabClose.classList.add('tab-close');
+         tabEl.appendChild(tabClose);
 
-        // Create the content of the tab
-        var contentEl = document.createElement('div');
-        contentEl.classList.add('content');
-        contentEl.setAttribute('id', 'content-' + tab.id);
+         // Create the content of the tab
+         var contentEl = document.createElement('div');
+         contentEl.classList.add('content');
+         contentEl.setAttribute('id', 'content-' + tab.id);
 
-        var div = document.createElement('div');
-        var viewerSubFolderName = 'codemirror';
-        if (tab.fileType !== 'text') {
-            var reIsImg = /\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i;
-            if (reIsImg.test(tab.name)) {
-                viewerSubFolderName = 'image';
-            }
-        }
+         var div = document.createElement('div');
+         var viewerSubFolderName = 'codemirror';
+         if (tab.adcConfig) {
+             viewerSubFolderName = 'adcconf';
+         } else if (tab.fileType !== 'text') {
+             var reIsImg = /\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i;
+             if (reIsImg.test(tab.name)) {
+                 viewerSubFolderName = 'image';
+             }
+         }
+
 
          var viewer = document.createElement('iframe');
          viewer.setAttribute('frameborder', 'no');
@@ -246,16 +249,16 @@ document.addEventListener('DOMContentLoaded', function () {
          viewer.src = '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
          div.appendChild(viewer);
 
-        contentEl.appendChild(div);
+         contentEl.appendChild(div);
 
-        var paneEl    = document.getElementById(pane + '_pane');
+         var paneEl = document.getElementById(pane + '_pane');
 
-        paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
-        paneEl.querySelector('.tabs-content').appendChild(contentEl);
+         paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
+         paneEl.querySelector('.tabs-content').appendChild(contentEl);
 
-        if (isActive) {
-            setActiveTab(tab, pane);
-        }
+         if (isActive) {
+             setActiveTab(tab, pane);
+         }
     }
 
     /**
