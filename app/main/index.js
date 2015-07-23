@@ -6,14 +6,12 @@
 
     resExpl.start();
 
-
     var resWorks = new adx.Resizer({
       element : document.getElementById('panel_workspace'),
       direction: 'vertical'
     });
 
     resWorks.start();
-
 
       (function () {
           var ipc = require('ipc'),

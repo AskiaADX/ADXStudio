@@ -24,7 +24,7 @@ app.on('window-all-closed', function() {
 //Default Menu of the app.
 app.once('ready', function() {
   var template;
-  if (process.platforn !== 'darwin') {
+  if (process.platform !== 'darwin') {
     template = [
       {
           label: '&File',
