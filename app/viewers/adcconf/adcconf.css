@@ -1,0 +1,35 @@
+
+
+.contain {
+  overflow: auto;
+  width: 1100px;
+  height : 750px;
+}
+
+.fileI {
+  width: 1100px;
+  height : 750px;
+  border: 1px solid black;
+}
+
+#description {
+  width: 500px;
+  height: 200px;
+  text-align: left;
+  wrap:physical;
+}
+
+input {
+  margin-left: 4px;
+}
+
+label {
+	display: block;
+	width: 150px;
+	float: left;
+}
+
+button {
+  margin-left: 25%;
+  margin-right: auto;
+}

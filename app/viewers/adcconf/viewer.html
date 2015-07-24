@@ -3,14 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <title>Image viewer</title>
+    <link rel="stylesheet" href="adcconf.css"/>
 </head>
 <body>
 
-TODO::Display information of the ADC config file in a form
+<div class="contain">
 
-<pre id="test"></pre>
+    <div class="fileI">
 
+      <p>File Informations : </p>
+      <label for="date">Date</label>
+      <input type="text"name="description" id= "date"/>
+      <br>
+      <br>
+      <label for="description">Description : </label>
+      <textarea type="text" name="description" id= "description"></textarea>
+      <br>
+      <br>
+      <label for="guid">GUID : </label>
+      <input id="guid" name="guid"/>
+      <br>
+      <br>
+      <label for="helpURL">URL-Help : </label>
+      <input id="helpURL" name="helpURL"/>
+      <br>
+      <br>
+      <label for="site">Web Site : </label>
+      <input id="site" name="site"/>
+      <br>
+      <br>
+      <label for="style">Style : </label>
+      <input id="style" name="style"/>
+      <br>
+      <br>
+      <label for="name">Name : </label>
+      <input id="name" name="name"/>
+  </div>
+  <div id="AboutAuthor"> About the Author
+    <br>
+    <br>
+<label for="author">Author :</label>
+<input id="author" name="author"/>
+<br>
+<br>
+<label for="category">Categories :</label>
+<input id="categories" name="category"/>
+<br>
+<br>
+    <div class="Company"> Company
+      <br>
+      <br>
+      <label for="CompanyName">Name :</label>
+      <input id="company" name="companyname"/>
+    </div>
+    <br>
+    <br>
+  </div>
+  <br>
+  <br>
+  <div id="controls">
+    <br>
+    <br>
+    <label for="label">Label :</label>
+    <input type="checkbox" id="label" name="label"/>
+    <br>
+    <br>
+    <label for="responseblock">Response Block :</label>
+    <input  type="checkbox" id="responseblock" name="RespBlock"/>
+    <br>
+    <br>
+    <label for="TextBox">Text Box :</label>
+    <input type="checkbox" id="textbox" name="textbox"/>
+    <br>
+    <br>
+  </div>
+  <div id="questions">
+    <br>
+    <br>
+    <label for="chapter">Chapter :</label>
+    <input type="checkbox" id="chapter" name="chapter"/>
+    <br>
+    <br>
+    <label for="date">Date :</label>
+    <input type="checkbox" id="date" name="date"/>
+    <br>
+    <br>
+    <label for="multiple">Multiple :</label>
+    <input type="checkbox" id="multiple" name="multiple"/>
+    <br>
+    <br>
+    <label for="numeric">Numeric :</label>
+    <input type="checkbox" id="numeric" name="numeric"/>
+    <br>
+    <br>
+    <label for="open">Open :</label>
+    <input type="checkbox" id="open" name="open"/>
+    <br>
+    <br>
+    <label for="requireParentLoop">Require Parent Loop :</label>
+    <input type="checkbox" id="requireParentLoop" name="requireParentLoop"/>
+    <br>
+    <br>
+    <label for="single">Single :</label>
+    <input type="checkbox" id="single" name="single"/>
+    <br>
+    <br>
+  </div>
+  <br>
+  <br>
+  <button type="button" name="button">Save Changes</button>
+  <pre id="test"></pre>
+
+</div>
 <script>
+var adcConfigInfo = {};
+
     (function () {
         var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
         if (!matchTabId || !matchTabId.length) {
@@ -20,9 +127,36 @@ TODO::Display information of the ADC config file in a form
         var parent   = window.parent;
         var tabs     = parent.tabs;
         var tab      = tabs[tabId];
+		    var info     = tab.adcConfig.info;
 
         console.log(tab);
         document.getElementById("test").innerHTML = JSON.stringify(tab.adcConfig, null, 4);
+
+        adcConfigInfo = {
+          date: 'date',
+          description: 'description' ,
+          guid: 'guid' ,
+          helpURL: 'helpURL',
+          site: 'site',
+          name: 'name'
+        };
+
+        var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
+        var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single'];
+
+        var infCons = info.constraints;
+        for (var i = 0; i < infoText.length; i++) {
+          document.getElementById(infoText[i]).value = info[infoText[i]];
+
+        }
+        for (var j = 0; j < infoConstraints.length; j++) {
+          if (infoConstraints[j] === 'label' || infoConstraints[j] === 'responseblock' || infoConstraints[j] === 'textbox') {
+            document.getElementById(infoConstraints[j]).checked = infCons.controls[infoConstraints[j]];
+          } else {
+
+          document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
+        }
+      }
 
     }());
 

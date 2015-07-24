@@ -10,7 +10,6 @@
     exp.addEventListener('console-message', catchConsoleLog);
     wks.addEventListener('console-message', catchConsoleLog);
 
-
     // Dev tools of the webview
     wks.addEventListener("dom-ready", function(){
       wks.openDevTools();

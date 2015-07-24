@@ -3,30 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Image viewer</title>
+    <link rel="stylesheet" href="image.css">
 </head>
 <body>
-
-<script>
-    (function () {
-        var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
-        if (!matchTabId || !matchTabId.length) {
-            throw new Error("Invalid context, the tab id is not defined");
-        }
-        var tabId    = matchTabId[1];
-        var parent   = window.parent;
-        var tabs     = parent.tabs;
-        var tab      = tabs[tabId];
-
-        var img = document.createElement('img');
-        img.src = 'file:///' + tab.path;
-        img.alt = tab.name;
-        img.title = tab.name;
-        img.style.backgroundImage = "url('bg.png')";
-        img.style.backgroundRepeat = "repeat";
-        document.body.appendChild(img);
-    }());
-
-
-</script>
+  <div class="toolbar" id="toolbarimg">
+      <button class="zoomIn tool"><img src="zoom-in.png"/></button>
+      <button class="zoomOut tool"><img src="zoom-out.png"/></button>
+      <button class="initialSize tool"><img src="resize-init.png"/></button>
+      <button class="chessControl tool"><img src="chess.png"/></button>
+  </div>
+  <br>
+  <div id="contener"></div>
+<script src="image.js"></script>
 </body>
 </html>
