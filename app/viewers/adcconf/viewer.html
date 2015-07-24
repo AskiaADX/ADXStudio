@@ -144,16 +144,16 @@ var adcConfigInfo = {};
         var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
         var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single'];
 
-        infCons = info.constraints;
+        var infCons = info.constraints;
         for (var i = 0; i < infoText.length; i++) {
           document.getElementById(infoText[i]).value = info[infoText[i]];
 
         }
         for (var j = 0; j < infoConstraints.length; j++) {
-          if (infoConstraints[j] === 'label' || 'responseblock' || 'textbox') {
+          if (infoConstraints[j] === 'label' || infoConstraints[j] === 'responseblock' || infoConstraints[j] === 'textbox') {
             document.getElementById(infoConstraints[j]).checked = infCons.controls[infoConstraints[j]];
-          }
-          if (infoConstraints[j] !== 'label' || 'responseblock' || 'textbox') {
+          } else {
+
           document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
         }
       }
