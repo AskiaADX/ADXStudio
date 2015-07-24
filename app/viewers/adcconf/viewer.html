@@ -13,7 +13,7 @@
 
       <p>File Informations : </p>
       <label for="date">Date</label>
-      <input type="text"name="description" id= "dateInfo"/>
+      <input type="text"name="description" id= "date"/>
       <br>
       <br>
       <label for="description">Description : </label>
@@ -47,21 +47,21 @@
 <br>
 <br>
 <label for="category">Categories :</label>
-<input id="category" name="category"/>
+<input id="categories" name="category"/>
 <br>
 <br>
     <div class="Company"> Company
       <br>
       <br>
       <label for="CompanyName">Name :</label>
-      <input id="companyName" name="companyname"/>
+      <input id="company" name="companyname"/>
     </div>
     <br>
     <br>
   </div>
   <br>
   <br>
-  <div id="Controls">
+  <div id="controls">
     <br>
     <br>
     <label for="label">Label :</label>
@@ -69,15 +69,15 @@
     <br>
     <br>
     <label for="responseblock">Response Block :</label>
-    <input  type="checkbox" id="RespBlock" name="RespBlock"/>
+    <input  type="checkbox" id="responseblock" name="RespBlock"/>
     <br>
     <br>
     <label for="TextBox">Text Box :</label>
-    <input id="textBox" name="textBox"/>
+    <input type="checkbox" id="textbox" name="textbox"/>
     <br>
     <br>
   </div>
-  <div id="Questions">
+  <div id="questions">
     <br>
     <br>
     <label for="chapter">Chapter :</label>
@@ -133,46 +133,30 @@ var adcConfigInfo = {};
         document.getElementById("test").innerHTML = JSON.stringify(tab.adcConfig, null, 4);
 
         adcConfigInfo = {
-          date: info.date,
-          description: info.description,
-          guid: info.guid,
-          helpURL: info.helpURL,
-          site: info.site,
-          name: info.name
+          date: 'date',
+          description: 'description' ,
+          guid: 'guid' ,
+          helpURL: 'helpURL',
+          site: 'site',
+          name: 'name'
         };
-        //Info
-  document.getElementById("name").value = info.name;
-  document.getElementById("dateInfo").value = info.date;
-  document.getElementById("description").value = info.description;
-  document.getElementById("guid").value = info.guid;
-  document.getElementById("helpURL").value = info.helpURL;
-  document.getElementById("site").value = info.site;
-  document.getElementById("style").value = info.style[0] + ' ' + info.style[1];
 
-        //Author
-  document.getElementById("author").value = info.author;
-  document.getElementById("category").value = info.categories[0];
+        var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
+        var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single'];
 
-        //Company
-  document.getElementById("companyName").value = info.company;
+        infCons = info.constraints;
+        for (var i = 0; i < infoText.length; i++) {
+          document.getElementById(infoText[i]).value = info[infoText[i]];
 
-        //Controls
-  var constraints = info.constraints;
-  var controlInfo = constraints.controls;
-
-  document.getElementById("label").checked = controlInfo.label;
-  document.getElementById("RespBlock").checked = controlInfo.responseblock;
-  document.getElementById("textBox").value = controlInfo.textBox;
-
-      //Questions
-      var questionsInfo = constraints.questions;
-  document.getElementById("chapter").checked = questionsInfo.chapter;
-  document.getElementById("date").checked = questionsInfo.date;
-  document.getElementById("multiple").checked = questionsInfo.multiple;
-  document.getElementById("numeric").checked = questionsInfo.numeric;
-  document.getElementById("open").checked = questionsInfo.open;
-  document.getElementById("requireParentLoop").checked = questionsInfo.requireParentLoop;
-  document.getElementById("single").checked = questionsInfo.single;
+        }
+        for (var j = 0; j < infoConstraints.length; j++) {
+          if (infoConstraints[j] === 'label' || 'responseblock' || 'textbox') {
+            document.getElementById(infoConstraints[j]).checked = infCons.controls[infoConstraints[j]];
+          }
+          if (infoConstraints[j] !== 'label' || 'responseblock' || 'textbox') {
+          document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
+        }
+      }
 
     }());
 
