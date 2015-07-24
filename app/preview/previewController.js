@@ -1,5 +1,4 @@
 var app     = require('app');
-var adcutil = require('adcutil');
 var http    = require("http");
 var path    = require('path');
 var shell   = require('shell');
@@ -25,13 +24,13 @@ function createServer() {
 
 // Reply on HTTP request
 function reply(request, response) {
-    var adcPath = (global.project && global.project.path);
+    var adc = global.project.adc;
     response.writeHead(200, {"Content-Type": "text/html"});
-    adcutil.show({
+    adc.show({
         output : 'default',
         fixture : 'date.xml',
         masterPage : 'node_modules/adcutil/templates/master_page/default.html'
-    }, adcPath, function (err, output) {
+    }, function (err, output) {
         if (err) {
             response.write(err.message);
         } else {

@@ -2,7 +2,6 @@ var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
 var workspace = require('../../src/workspace/workspace.js');
-var ADCConfigurator = require('adcutil').Configurator;
 
 ipc.on('workspace-ready', function (event) {
     var sender = event.sender;
@@ -43,11 +42,11 @@ ipc.on('workspace-ready', function (event) {
 
 
     function openProjectSettings() {
-        var folderPath = global.project.path;
-        if (!folderPath) {
+        var adc = global.project.adc;
+        if (!adc || !adc.path) {
             return;
         }
-        workspace.find(folderPath, function (err, tab, pane) {
+        workspace.find(adc.path, function (err, tab, pane) {
 
             // If the tab already exist only focus it
             if (tab) {
@@ -58,12 +57,11 @@ ipc.on('workspace-ready', function (event) {
             }
 
             // When the tab doesn't exist, create it
-            workspace.createTab(folderPath, function (err, tab, pane) {
+            workspace.createTab(adc.path, function (err, tab, pane) {
                 // TODO::Don't throw the error but send it to the view
                 if (err) throw err;
-                var configurator = new ADCConfigurator(folderPath);
-                configurator.load(function (err) {
-                    tab.adcConfig = (!err)  ? { info : configurator.info.get() } : {};
+                adc.load(function (err) {
+                    tab.adcConfig = (!err)  ? { info : adc.configurator.info.get() } : {};
                     sender.send('workspace-create-and-focus-tab', err, tab, pane);
                 });
             });
