@@ -8,7 +8,7 @@
 <body>
 
 <div class="contain">
-
+<div class="containContent">
     <div class="fileI">
 
       <p>File Informations : </p>
@@ -124,6 +124,7 @@
   <br>
   <br>
   <button type="button" name="button">Save Changes</button>
+</div>
   <pre id="test"></pre>
 
 </div>
@@ -157,6 +158,7 @@ var adcConfigInfo = {};
         var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single','min', 'max'];
 
         var infCons = info.constraints;
+
         for (var i = 0; i < infoText.length; i++) {
           document.getElementById(infoText[i]).value = info[infoText[i]];
 
@@ -173,6 +175,7 @@ var adcConfigInfo = {};
             if (document.getElementById('min').value > document.getElementById('max').value) {
               console.log('PAS POSSIBLE');
             }
+
           } else {
 
           document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
