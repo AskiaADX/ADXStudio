@@ -172,8 +172,10 @@ var adcConfigInfo = {};
 
             document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
 
-            if (document.getElementById('min').value > document.getElementById('max').value) {
+            if (parseInt(document.getElementById('min').value) > parseInt(document.getElementById('max').value)) {
               console.log('PAS POSSIBLE');
+
+              document.getElementById('responses').classList.add('error');
             }
 
           } else {

@@ -42,3 +42,7 @@ button {
   border-radius: 5px;
   background: #ccc;
 }
+
+.error {
+  background: red;
+}
