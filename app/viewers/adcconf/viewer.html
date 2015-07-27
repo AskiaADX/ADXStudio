@@ -77,6 +77,18 @@
     <br>
     <br>
   </div>
+  <div id="responses">
+    <br>
+    <br>
+    <label for="maximum">Maximum :</label>
+    <input type="number" id="max" name="maximum" min="0"/>
+    <br>
+    <br>
+    <label for="minimum">Minimum :</label>
+    <input  type="number" id="min" name="minimum" min="0"/>
+    <br>
+    <br>
+  </div>
   <div id="questions">
     <br>
     <br>
@@ -142,7 +154,7 @@ var adcConfigInfo = {};
         };
 
         var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
-        var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single'];
+        var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single','min', 'max'];
 
         var infCons = info.constraints;
         for (var i = 0; i < infoText.length; i++) {
@@ -151,7 +163,13 @@ var adcConfigInfo = {};
         }
         for (var j = 0; j < infoConstraints.length; j++) {
           if (infoConstraints[j] === 'label' || infoConstraints[j] === 'responseblock' || infoConstraints[j] === 'textbox') {
+
             document.getElementById(infoConstraints[j]).checked = infCons.controls[infoConstraints[j]];
+
+          } if (infoConstraints[j] === 'min' || infoConstraints[j] === 'max') {
+
+            document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
+
           } else {
 
           document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
