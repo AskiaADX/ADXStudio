@@ -170,6 +170,9 @@ var adcConfigInfo = {};
 
             document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
 
+            if (document.getElementById('min').value > document.getElementById('max').value) {
+              console.log('PAS POSSIBLE');
+            }
           } else {
 
           document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
