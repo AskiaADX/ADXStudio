@@ -156,8 +156,8 @@ var adcConfigInfo = {};
 
         var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
         var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single','min', 'max'];
-
         var infCons = info.constraints;
+        var responses = document.getElementById('responses');
 
         for (var i = 0; i < infoText.length; i++) {
           document.getElementById(infoText[i]).value = info[infoText[i]];
@@ -170,13 +170,21 @@ var adcConfigInfo = {};
 
           } if (infoConstraints[j] === 'min' || infoConstraints[j] === 'max') {
 
+            responses.addEventListener('click', function (event) {
+
+              var min = document.getElementById('min');
+              var max = document.getElementById('max');
+
+              if (parseInt(min.value) > parseInt(max.value)) {
+                console.log('PAS POSSIBLE');
+                responses.classList.add('error');
+              } else {
+                responses.classList.remove('error');
+              }
+            });
+
             document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
 
-            if (parseInt(document.getElementById('min').value) > parseInt(document.getElementById('max').value)) {
-              console.log('PAS POSSIBLE');
-
-              document.getElementById('responses').classList.add('error');
-            }
 
           } else {
 
@@ -185,6 +193,8 @@ var adcConfigInfo = {};
       }
 
     }());
+
+
 
 
 </script>
