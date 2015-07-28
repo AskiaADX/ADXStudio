@@ -8,7 +8,7 @@
 <body>
 
 <div class="contain">
-
+<div class="containContent">
     <div class="fileI">
 
       <p>File Informations : </p>
@@ -124,6 +124,7 @@
   <br>
   <br>
   <button type="button" name="button">Save Changes</button>
+</div>
   <pre id="test"></pre>
 
 </div>
@@ -155,8 +156,9 @@ var adcConfigInfo = {};
 
         var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
         var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single','min', 'max'];
-
         var infCons = info.constraints;
+        var responses = document.getElementById('responses');
+
         for (var i = 0; i < infoText.length; i++) {
           document.getElementById(infoText[i]).value = info[infoText[i]];
 
@@ -168,7 +170,21 @@ var adcConfigInfo = {};
 
           } if (infoConstraints[j] === 'min' || infoConstraints[j] === 'max') {
 
+            responses.addEventListener('click', function (event) {
+
+              var min = document.getElementById('min');
+              var max = document.getElementById('max');
+
+              if (parseInt(min.value) > parseInt(max.value)) {
+                console.log('PAS POSSIBLE');
+                responses.classList.add('error');
+              } else {
+                responses.classList.remove('error');
+              }
+            });
+
             document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
+
 
           } else {
 
@@ -177,6 +193,8 @@ var adcConfigInfo = {};
       }
 
     }());
+
+
 
 
 </script>
