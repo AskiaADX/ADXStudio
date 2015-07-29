@@ -22,21 +22,32 @@ function createServer() {
     });
 }
 
-// Reply on HTTP request
+/**
+ * Reply on HTTP request
+ */
 function reply(request, response) {
     var adc = global.project.adc;
     response.writeHead(200, {"Content-Type": "text/html"});
-    adc.show({
-        output : 'default',
-        fixture : 'single.xml',
-        masterPage : 'node_modules/adcutil/templates/master_page/default.html'
-    }, function (err, output) {
+
+    // Always reload to obtain the up to date info
+    adc.load(function (err) {
         if (err) {
             response.write(err.message);
-        } else {
-            response.write(output);
+            response.end();
+            return;
         }
-        response.end();
+        adc.show({
+            output : adc.configurator.outputs.defaultOutput(),
+            fixture : 'single.xml',
+            masterPage : 'node_modules/adcutil/templates/master_page/default.html'
+        }, function (err, output) {
+            if (err) {
+                response.write(err.message);
+            } else {
+                response.write(output);
+            }
+            response.end();
+        });
     });
 }
 
