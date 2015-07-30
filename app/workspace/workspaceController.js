@@ -61,7 +61,7 @@ ipc.on('workspace-ready', function (event) {
                 // TODO::Don't throw the error but send it to the view
                 if (err) throw err;
                 adc.load(function (err) {
-                    tab.adcConfig = (!err)  ? { info : adc.configurator.info.get() } : {};
+                    tab.adcConfig = (!err)  ? adc.configurator.get(): {};
                     sender.send('workspace-create-and-focus-tab', err, tab, pane);
                 });
             });
