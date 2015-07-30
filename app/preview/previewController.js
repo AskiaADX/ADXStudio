@@ -28,7 +28,7 @@ function reply(request, response) {
     response.writeHead(200, {"Content-Type": "text/html"});
     adc.show({
         output : 'default',
-        fixture : 'date.xml',
+        fixture : 'single.xml',
         masterPage : 'node_modules/adcutil/templates/master_page/default.html'
     }, function (err, output) {
         if (err) {
