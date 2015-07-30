@@ -9,14 +9,14 @@ ipc.on('explorer-ready', function(event) {
 
     var defaultPath = path.join(__dirname, '../../');
     explorer.load(defaultPath, function(err, files) {
-        sender.send('loadFolder', err, files, 'root');
+        sender.send('explorer-expand-folder', err, files, 'root');
         global.project.path = defaultPath;
         global.project.adc  = new ADC(global.project.path);
     });
 
     app.on('menu-open-project', function (folderpath) {
         explorer.load(folderpath, function(err, files) {
-            sender.send('loadFolder', err, files, 'root');
+            sender.send('explorer-expand-folder', err, files, 'root');
             global.project.path = folderpath;
             global.project.adc  = new ADC(global.project.path);
         });
@@ -25,6 +25,6 @@ ipc.on('explorer-ready', function(event) {
 
 ipc.on('explorer-load-folder', function(event, folderpath, elementid) {
   explorer.load(folderpath, function(err, files) {
-    event.sender.send('loadFolder', err, files, elementid);
+    event.sender.send('explorer-expand-folder', err, files, elementid);
   });
 });

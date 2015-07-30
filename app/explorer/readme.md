@@ -24,10 +24,6 @@ The 'explorer-ready' event is fire when the DOM of the explorer is fully loaded 
 
 **In fact, the event 'explorer-ready' load a default folder (see 'explorer-load-file' event) that we will be able to change.**
 
-## *Events about Loading Files and Folders*
-
-Those both events have been created in order to load **files** or **folders**.
-
 ### explorer-load-file
 
 This event gives to the explorer the file we want to load. More precisely, the file selected.
@@ -52,7 +48,8 @@ This event gives to the explorer the folder, and its content.
 
 The controller, will receive all sending messages, and execute functions with it :
 
-## explorer-ready
+## explorer-expand-folder
+
 The controller will manage the reception of the event 'explorer-ready',
 by create a function which will use the file send in param in the view side.
 
@@ -63,7 +60,7 @@ by create a function which will use the file send in param in the view side.
         ipc.on('explorer-ready', function(event) {
           var defaultPath = path.join(__dirname, '../../');
           explorer.load(defaultPath, function(err, files) {
-            sender.send('loadFolder', err, files, root);
+            sender.send('explorer-expand-folder', err, files, root);
             //...
             });
           });
@@ -76,14 +73,13 @@ by create a function which will use the file send in param in the view side.
   * 'files', the file selected.
   * 'root', the origin of the path.
 
-## explorer-load-folder
 
 This event had been created in order to send message to the controller.
 It will load the folder chosen.
 
         ipc.on('explorer-loadfolder', function(event, folderpath, elementid) {
           explorer.load(folderpath, function(err, files) {
-            event.sender.send('loadFolder', err, files, elementid);
+            event.sender.send('explorer-expand-folder', err, files, elementid);
           });
         });
 

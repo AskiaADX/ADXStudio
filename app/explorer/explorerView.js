@@ -41,7 +41,7 @@ function itemclick(itemInfo) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  ipc.on('loadFolder', function( err, files, elementid) {
+  ipc.on('explorer-expand-folder', function( err, files, elementid) {
     var root = document.getElementById(elementid).querySelector('.child');
     var deep = parseInt(root.getAttribute('data-deep'), 10);
     root.innerHTML = '';
