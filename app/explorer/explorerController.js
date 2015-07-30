@@ -23,12 +23,8 @@ ipc.on('explorer-ready', function(event) {
     });
 });
 
-ipc.on('explorer-loadfolder', function(event, folderpath, elementid) {
+ipc.on('explorer-load-folder', function(event, folderpath, elementid) {
   explorer.load(folderpath, function(err, files) {
     event.sender.send('loadFolder', err, files, elementid);
   });
 });
-
-
-
-

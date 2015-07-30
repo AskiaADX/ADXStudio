@@ -29,12 +29,12 @@ function itemclick(itemInfo) {
     }
 
     if(!file.loaded) {
-      ipc.send('explorer-loadfolder', file.path, item.id);
+      ipc.send('explorer-load-folder', file.path, item.id);
       file.loaded = true;
     }
   } else {
     itemInfo.classList.add('selected');
-    ipc.send('explorer-loadfile', file);
+    ipc.send('explorer-load-file', file);
     divGlobal.classList.remove('selected');
   }
 

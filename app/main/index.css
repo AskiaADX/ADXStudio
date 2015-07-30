@@ -42,3 +42,14 @@ webview {
   left: 250px;
   cursor: ew-resize;
 }
+
+.hideWindow {
+  opacity: 0.4;
+  background: black;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
