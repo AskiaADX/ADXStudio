@@ -29,19 +29,19 @@ function itemclick(itemInfo) {
     }
 
     if(!file.loaded) {
-      ipc.send('explorer-loadfolder', file.path, item.id);
+      ipc.send('explorer-load-folder', file.path, item.id);
       file.loaded = true;
     }
   } else {
     itemInfo.classList.add('selected');
-    ipc.send('explorer-loadfile', file);
+    ipc.send('explorer-load-file', file);
     divGlobal.classList.remove('selected');
   }
 
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  ipc.on('loadFolder', function( err, files, elementid) {
+  ipc.on('explorer-expand-folder', function( err, files, elementid) {
     var root = document.getElementById(elementid).querySelector('.child');
     var deep = parseInt(root.getAttribute('data-deep'), 10);
     root.innerHTML = '';

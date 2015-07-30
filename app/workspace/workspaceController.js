@@ -34,7 +34,7 @@ ipc.on('workspace-ready', function (event) {
     }
 
 
-    ipc.on('explorer-loadfile', function(event, file) {
+    ipc.on('explorer-load-file', function(event, file) {
         openFile(file);
     });
     app.on('menu-open-file', openFile);

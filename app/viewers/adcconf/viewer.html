@@ -176,7 +176,6 @@ var adcConfigInfo = {};
               var max = document.getElementById('max');
 
               if (parseInt(min.value) > parseInt(max.value)) {
-                console.log('PAS POSSIBLE');
                 responses.classList.add('error');
               } else {
                 responses.classList.remove('error');
@@ -184,7 +183,6 @@ var adcConfigInfo = {};
             });
 
             document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
-
 
           } else {
 
