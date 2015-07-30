@@ -68,11 +68,13 @@ by create a function which will use the file send in param in the view side.
             });
           });
 
-    **In the sender.send(...)**
-    * 'loadFolder' is message sent.
-    * 'err' parameter which describe an error.
-    * 'files', the file selected.
-    * 'root', the origin of the path.
+
+**In the sender.send(...)**
+
+  * 'loadFolder' is message sent.
+  * 'err' parameter which describe an error.
+  * 'files', the file selected.
+  * 'root', the origin of the path.
 
 ## explorer-load-folder
 
@@ -85,7 +87,7 @@ It will load the folder chosen.
           });
         });
 
-    **About the 'event.sender.send'**
+  **About the 'event.sender.send'**
   * 'loadFoler' the message sent.
   * 'err' the information about the potential error.
   * 'files' the files selected.
