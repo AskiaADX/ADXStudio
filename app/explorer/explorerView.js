@@ -1,9 +1,14 @@
 // the object map is created to give unique id to each item
+var remote = require('remote');
+var menu = remote.require('menu');
+var menuItem = remote.require('menu-item');
+var ipc = require('ipc');
+
 var map = {
   autoincrement: 0
 };
 
-var ipc = require('ipc');
+
 
 function itemclick(itemInfo) {
 
@@ -40,6 +45,10 @@ function itemclick(itemInfo) {
 
 }
 
+function rightClick () {
+console.log('g');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   ipc.on('explorer-expand-folder', function( err, files, elementid) {
     var root = document.getElementById(elementid).querySelector('.child');
@@ -58,10 +67,24 @@ document.addEventListener('DOMContentLoaded', function() {
       var itemInfo = document.createElement('div');
       itemInfo.className = 'item-info';
       //The function when someone click on a div itemInfo
-      itemInfo.onclick = function() {
+      itemInfo.onclick = function(e) {
+
+        if(e.button == 0) {
+          console.log(e);
         itemclick(this);
+        }
       };
 
+      itemInfo.addEventListener('contextmenu', function(e) {
+
+        console.log(e.srcElement.parentNode);
+        var menu1 = new menu();
+        menu1.append(new menuItem({ label: 'Rename', click: function() { console.log('item 1 clicked'); } }));
+
+        e.preventDefault();
+        menu1.popup(remote.getCurrentWindow());
+      }, false);
+      
 
       var toggle = document.createElement('div');
       toggle.className = 'toggle';
