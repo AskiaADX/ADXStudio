@@ -394,7 +394,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     tabEl.classList.remove('edit');
                 }
-                tabTextEl.innerHTML = (isModified ? '* ' : '') + (tab.name || 'File');
             }
         }
 
