@@ -1,7 +1,7 @@
 /* ========================================
 
     CSS for ADX STUDIO THEMES.
-    This will serve to change Theme of the Application.
+    This will serve to change theme of the application.
 
    ======================================== */
 
@@ -14,16 +14,16 @@ body {
 }
 
 body.grey {
-    background: #111;
-    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    background  : #111;
+    font-family : "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .splitter {
     background: transparent;
 }
 .splitter.drag {
-    background: #333;
-    cursor: ne-resize;
+    background  : rgba(33,33,33,.3);
+    cursor      : ne-resize;
 }
 
 
@@ -32,9 +32,9 @@ body.grey {
    ======================================== */
 
 .toggle {
-  background-image: url(adxs-toggle-closed.png);
-  width: 20px;
-  height: 20px;
+  background-image  : url(adxs-toggle-closed.png);
+  width             : 20px;
+  height            : 20px;
 }
 
 .file > .item-info > .toggle, .file > .item-info:hover > .toggle {
@@ -42,28 +42,28 @@ body.grey {
 }
 
 .item-info:hover .toggle {
-  background-image: url(adxs-toggle-closed-hover.png);
-  width: 20px;
-  height: 20px;
+  background-image  : url(adxs-toggle-closed-hover.png);
+  width             : 20px;
+  height            : 20px;
 }
 
 .toggle.open {
-  background-image: url(adxs-toggle-open.png);
-  width: 20px;
-  height: 20px;
+  background-image  : url(adxs-toggle-open.png);
+  width             : 20px;
+  height            : 20px;
 }
 
 .item-info:hover .toggle.open {
-  background-image: url(adxs-toggle-open-hover.png);
-  width: 20px;
-  height: 20px;
+  background-image  : url(adxs-toggle-open-hover.png);
+  width             : 20px;
+  height            : 20px;
 }
 
 .folder > .item-info > .icon {
-  background-image: url(adxs-folder.png);
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+  background-image  : url(adxs-folder.png);
+  display           : inline-block;
+  width             : 20px;
+  height            : 20px;
 }
 
 .folder > .item-info:hover > .icon {
@@ -71,10 +71,10 @@ body.grey {
 }
 
 .file > .item-info > .icon {
-  background-image: url(adxs-file.png);
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+  background-image  : url(adxs-file.png);
+  display           : inline-block;
+  width             : 20px;
+  height            : 20px;
 }
 
 .file > .item-info:hover > .icon {
@@ -86,26 +86,26 @@ body.grey {
 }
 
 .item-info {
-  display: flex;
+  display       : flex;
   flex-direction: row;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  padding: 2px 0px;
-  width: 100%;
+  flex-wrap     : nowrap;
+  white-space   : nowrap;
+  padding       : 2px 0px;
+  width         : 100%;
 }
 
 .item {
 }
 
 .name {
-  flex: 1;
+  flex      : 1;
   align-self: center;
-  font-size: 14px;
-  padding: 0 0 0 8px;
+  font-size : 14px;
+  padding   : 0 0 0 8px;
 }
 
 .folder {
-  color: #BBB;
+  color : #BBB;
   cursor: pointer;
 }
 
@@ -115,7 +115,7 @@ body.grey {
 
 .file {
   cursor: pointer;
-  color: #BBB;
+  color : #BBB;
 }
 
 .file:hover {
@@ -141,8 +141,8 @@ body.grey {
 
 .tab {
     background      : #21252B;
-    border-right    : 1px solid #111111;
-    border-bottom   : 1px solid #111111;
+    border-right    : 1px solid #111;
+    border-bottom   : 1px solid #111;
     cursor          : pointer;
     font-size       : 14px;
     color           : #B0B0B0;
@@ -154,24 +154,24 @@ body.grey {
 
 .tab-icon {
     background-image: url(adxs-file-tab.png);
-    display: inline-block;
-    width: 20px;
-    height: 20px;
+    display         : inline-block;
+    width           : 20px;
+    height          : 20px;
 }
 
 .tab-close {
     background-image: url(adxs-close.png);
-    width: 20px;
-    height: 20px;
-    visibility: hidden;
+    width           : 20px;
+    height          : 20px;
+    visibility      : hidden;
 }
 .tab:hover .tab-close {
     visibility: visible;
 }
 
 .tab-end {
-    background : #21252B;
-    border-bottom: 1px solid #111;
+    background      : #21252B;
+    border-bottom   : 1px solid #111;
 }
 
 .tab.active {
@@ -185,14 +185,14 @@ body.grey {
 }
 
 .tab.active::before {
-    position: absolute;
-    display: block;
-    width: 4px;
-    content: ' ';
+    position        : absolute;
+    display         : block;
+    width           : 4px;
+    content         : ' ';
     background-color: #007DC5;
-    height: 100%;
-    top: 0;
-    left: 0;
+    height          : 100%;
+    top             : 0;
+    left            : 0;
 }
 
 .content {
