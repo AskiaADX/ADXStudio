@@ -147,6 +147,8 @@ body.grey {
     font-size       : 14px;
     color           : #B0B0B0;
     padding         : 10px;
+    position        : relative;
+    height          : 24px;
 }
 
 .tab-icon {
@@ -175,6 +177,17 @@ body.grey {
     background          : #282C34;
     color               : #FFF;
     border-bottom-color : transparent;
+}
+
+.tab.active::before {
+    position: absolute;
+    display: block;
+    width: 4px;
+    content: ' ';
+    background-color: #007DC5;
+    height: 100%;
+    top: 0;
+    left: 0;
 }
 
 .content {
