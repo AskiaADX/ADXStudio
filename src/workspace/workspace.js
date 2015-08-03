@@ -64,6 +64,31 @@ var panes = {
 var tabs  = [];
 
 /**
+ * Initialize the workspace
+ *
+ * @param {Object} [config] Config (TODO::To be defined)
+ * @param {Function} callback Callback
+ * @param {Error} callback.err Error
+ */
+function init(config, callback) {
+    // Swap arguments
+    if (typeof config === 'function') {
+        callback = config;
+        config   = null;
+    }
+
+    // Clean up first
+    tabs = [];
+    panes.mapByTabId = {};
+    currentPane = 'main';
+    currentTab = null;
+    panes.orientation = '';
+
+
+    callback(null);
+}
+
+/**
  * Create a new instance of tab in the current pane
  *
  * @param {Object} config Configuration of tab
@@ -240,7 +265,7 @@ function getSetCurrentTab(tab, callback) {
     }
 }
 
-
+exports.init = init;
 exports.createTab = createTab;
 exports.removeTab = removeTab;
 exports.where = where;

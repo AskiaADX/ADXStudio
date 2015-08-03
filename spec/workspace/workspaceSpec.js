@@ -313,4 +313,24 @@ describe("workspace", function () {
         });
 
     });
+
+    describe("#init", function () {
+        it("should clean up the collection when called without `config` argument", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function (err) {
+                    workspace.panes.current("second");
+                    workspace.init(function () {
+                        expect(workspace.panes.orientation).toEqual('');
+                        expect(workspace.panes.mapByTabId).toEqual({});
+                        expect(workspace.panes.current().name).toEqual('main');
+                        workspace.currentTab(function (err, tab) {
+                            expect(tab).toBe(null);
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+    });
 });

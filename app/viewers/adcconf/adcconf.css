@@ -1,46 +1,20 @@
+html, body {
+  margin: 0;
+  padding:0;
+  height :100%;
+}
 
+/* TODO::Move it in theme */
+body {
+  background: #eee;
+}
 
-.contain {
+form {
+  padding:0;
+  margin:0;
   overflow: auto;
-  width: 1100px;
-  height : 750px;
-}
-
-.fileI {
-  width: 1100px;
-  height : 550px;
-}
-
-#description {
-  width: 500px;
-  height: 200px;
-  text-align: left;
-  wrap:physical;
-}
-
-input {
-  margin-left: 4px;
-}
-
-label {
-  margin-left: 60px;
-	display: block;
-	width: 150px;
-	float: left;
-}
-
-button {
-  margin-left: 25%;
-  margin-right: auto;
-}
-
-.containContent {
-  width: 850px;
-  margin-left: 4px;
-  border: 1px solid white;
-  border-collapse: collapse;
-  border-radius: 5px;
-  background: #ccc;
+  width:100vw;
+  max-height:100vh;
 }
 
 .error {

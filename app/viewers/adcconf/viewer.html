@@ -6,193 +6,219 @@
     <link rel="stylesheet" href="adcconf.css"/>
 </head>
 <body>
+<form>
+    <fieldset>
+        <legend>General</legend>
+        <p>
+            <label for="guid">GUID:</label>
+            <input type="text" id="guid" name="guid" readonly="readonly"/>
+        </p>
 
-<div class="contain">
-<div class="containContent">
-    <div class="fileI">
+        <p>
+            <label for="date">Created at:</label>
+            <input type="text" id="date" name="date" readonly="readonly"/>
+        </p>
 
-      <p>File Informations : </p>
-      <label for="date">Date</label>
-      <input type="text"name="description" id= "date"/>
-      <br>
-      <br>
-      <label for="description">Description : </label>
-      <textarea type="text" name="description" id= "description"></textarea>
-      <br>
-      <br>
-      <label for="guid">GUID : </label>
-      <input id="guid" name="guid"/>
-      <br>
-      <br>
-      <label for="helpURL">URL-Help : </label>
-      <input id="helpURL" name="helpURL"/>
-      <br>
-      <br>
-      <label for="site">Web Site : </label>
-      <input id="site" name="site"/>
-      <br>
-      <br>
-      <label for="style">Style : </label>
-      <input id="style" name="style"/>
-      <br>
-      <br>
-      <label for="name">Name : </label>
-      <input id="name" name="name"/>
-  </div>
-  <div id="AboutAuthor"> About the Author
-    <br>
-    <br>
-<label for="author">Author :</label>
-<input id="author" name="author"/>
-<br>
-<br>
-<label for="category">Categories :</label>
-<input id="categories" name="category"/>
-<br>
-<br>
-    <div class="Company"> Company
-      <br>
-      <br>
-      <label for="CompanyName">Name :</label>
-      <input id="company" name="companyname"/>
-    </div>
-    <br>
-    <br>
-  </div>
-  <br>
-  <br>
-  <div id="controls">
-    <br>
-    <br>
-    <label for="label">Label :</label>
-    <input type="checkbox" id="label" name="label"/>
-    <br>
-    <br>
-    <label for="responseblock">Response Block :</label>
-    <input  type="checkbox" id="responseblock" name="RespBlock"/>
-    <br>
-    <br>
-    <label for="TextBox">Text Box :</label>
-    <input type="checkbox" id="textbox" name="textbox"/>
-    <br>
-    <br>
-  </div>
-  <div id="responses">
-    <br>
-    <br>
-    <label for="maximum">Maximum :</label>
-    <input type="number" id="max" name="maximum" min="0"/>
-    <br>
-    <br>
-    <label for="minimum">Minimum :</label>
-    <input  type="number" id="min" name="minimum" min="0"/>
-    <br>
-    <br>
-  </div>
-  <div id="questions">
-    <br>
-    <br>
-    <label for="chapter">Chapter :</label>
-    <input type="checkbox" id="chapter" name="chapter"/>
-    <br>
-    <br>
-    <label for="date">Date :</label>
-    <input type="checkbox" id="date" name="date"/>
-    <br>
-    <br>
-    <label for="multiple">Multiple :</label>
-    <input type="checkbox" id="multiple" name="multiple"/>
-    <br>
-    <br>
-    <label for="numeric">Numeric :</label>
-    <input type="checkbox" id="numeric" name="numeric"/>
-    <br>
-    <br>
-    <label for="open">Open :</label>
-    <input type="checkbox" id="open" name="open"/>
-    <br>
-    <br>
-    <label for="requireParentLoop">Require Parent Loop :</label>
-    <input type="checkbox" id="requireParentLoop" name="requireParentLoop"/>
-    <br>
-    <br>
-    <label for="single">Single :</label>
-    <input type="checkbox" id="single" name="single"/>
-    <br>
-    <br>
-  </div>
-  <br>
-  <br>
-  <button type="button" name="button">Save Changes</button>
-</div>
-  <pre id="test"></pre>
+        <p>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Name of the ADC"/>
+        </p>
 
-</div>
+        <p>
+            <label for="version">Version:</label>
+            <input type="text" id="version" name="version" placeholder="1.0.0, 1.0.0.alpha1, 1.0.0.beta1"/>
+        </p>
+
+        <p>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" placeholder="Description of the ADC"></textarea>
+        </p>
+
+        <p>
+            <label for="categories">Categories:</label>
+            <select id="categories" name="categories" multiple="multiple" size="5"></select>
+        </p>
+
+        <p>
+            <label for="style_width">Size (width x height):</label>
+            <input type="number" id="style_width" name="style[width]"/> <label for="style_height">x</label> <input
+                type="number" id="style_height" name="style[height]"/>
+        </p>
+
+        <p>
+            <label for="helpURL">Help URL: </label>
+            <input type="url" id="helpURL" name="helpURL" placeholder="http://url/of/the/adc/help/file"/>
+        </p>
+    </fieldset>
+
+    <fieldset>
+        <legend>About the author(s)</legend>
+        <p>
+            <label for="author">Author(s):</label>
+            <input type="text" id="author" name="author"
+                   placeholder="John Doe &lt;john.doe@domain.com&gt;, Foo Bar &lt;foo@bar.com&gt;"/>
+        </p>
+
+        <p>
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company" placeholder="Awesome company"/>
+        </p>
+
+        <p>
+            <label for="site">Company website:</label>
+            <input type="url" id="site" name="site" placeholder="http://my.website.com"/>
+        </p>
+    </fieldset>
+
+    <fieldset>
+        <legend>ADC available in:</legend>
+
+        <h3>Questions:</h3>
+        <ul>
+            <li>
+                <input type="checkbox" id="questions_chapter" name="questions[chapter]"/>
+                <label for="questions_chapter">Chapter</label>
+            </li>
+            <li>
+                <input type="checkbox" id="questions_single" name="questions[single]"/>
+                <label for="questions_single">Single closed</label>
+            </li>
+            <li>
+                <input type="checkbox" id="questions_multiple" name="questions[multiple]"/>
+                <label for="questions_multiple">Multi-coded</label>
+            </li>
+            <li>
+                <input type="checkbox" id="questions_numeric" name="questions[numeric]"/>
+                <label for="questions_numeric">Numeric</label>
+            </li>
+            <li>
+                <input type="checkbox" id="questions_open" name="questions[open]"/>
+                <label for="questions_open">Open</label>
+            </li>
+            <li>
+                <input type="checkbox" id="questions_date" name="questions[date]"/>
+                <label for="questions_date">Date</label>
+            </li>
+            <li>
+                <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
+                <label for="questions_requireParentLoop">Require parent loop question</label>
+            </li>
+        </ul>
+
+        <h3>Responses</h3>
+        <ul>
+            <li>
+                <label for="responses_min">Minimum:</label>
+                <input type="number" id="responses_min" name="responses[min]" min="0"/>
+            </li>
+            <li>
+                <label for="responses_max">Maximum:</label>
+                <input type="number" id="responses_max" name="responses[max]" min="0"/>
+            </li>
+        </ul>
+
+        <h3>Controls:</h3>
+        <ul>
+            <li>
+                <input type="checkbox" id="controls_responseblock" name="controls[responseblock]"/>
+                <label for="controls_responseblock">Response block</label>
+            </li>
+            <li>
+                <input type="checkbox" id="controls_label" name="controls[label]"/>
+                <label for="controls_label">Label</label>
+            </li>
+            <li>
+                <input type="checkbox" id="controls_textbox" name="controls[textbox]"/>
+                <label for="controls_textbox">Text box</label>
+            </li>
+            <li>
+                <input type="checkbox" id="controls_listbox" name="controls[listbox]"/>
+                <label for="controls_listbox">List box</label>
+            </li>
+            <li>
+                <input type="checkbox" id="controls_checkbox" name="controls[checkbox]"/>
+                <label for="controls_checkbox">Check box</label>
+            </li>
+            <li>
+                <input type="checkbox" id="controls_radiobutton" name="controls[radiobutton]"/>
+                <label for="controls_radiobutton">Radio button</label>
+            </li>
+        </ul>
+
+    </fieldset>
+
+</form>
 <script>
-var adcConfigInfo = {};
-
     (function () {
-        var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
+        var matchTabId = /\?tabid=([^&]+)/gi.exec(window.location.href);
         if (!matchTabId || !matchTabId.length) {
             throw new Error("Invalid context, the tab id is not defined");
         }
-        var tabId    = matchTabId[1];
-        var parent   = window.parent;
-        var tabs     = parent.tabs;
-        var tab      = tabs[tabId];
-		    var info     = tab.adcConfig.info;
-
-        console.log(tab);
-        document.getElementById("test").innerHTML = JSON.stringify(tab.adcConfig, null, 4);
-
-        adcConfigInfo = {
-          date: 'date',
-          description: 'description' ,
-          guid: 'guid' ,
-          helpURL: 'helpURL',
-          site: 'site',
-          name: 'name'
-        };
-
-        var infoText = ['author','categories',"name","guid","date",'description','helpURL','company','site','style'];
-        var infoConstraints = ['label', 'responseblock', 'textbox', 'chapter', 'multiple', 'numeric', 'open', 'requireParentLoop', 'single','min', 'max'];
+        var tabId = matchTabId[1];
+        var parent = window.parent;
+        var tabs = parent.tabs;
+        var tab = tabs[tabId];
+        var info = tab.adcConfig.info;
+        var i, l, str, key, constraints;
         var infCons = info.constraints;
         var responses = document.getElementById('responses');
 
-        for (var i = 0; i < infoText.length; i++) {
-          document.getElementById(infoText[i]).value = info[infoText[i]];
-
+        // Set the textual-information
+        var infoText = ['name', 'guid', 'date', 'version', 'description', 'helpURL', 'author', 'company', 'site'];
+        for (i = 0, l = infoText.length; i < l; i++) {
+            document.getElementById(infoText[i]).value = (info[infoText[i]] || '').trim();
         }
-        for (var j = 0; j < infoConstraints.length; j++) {
-          if (infoConstraints[j] === 'label' || infoConstraints[j] === 'responseblock' || infoConstraints[j] === 'textbox') {
 
-            document.getElementById(infoConstraints[j]).checked = infCons.controls[infoConstraints[j]];
-
-          } if (infoConstraints[j] === 'min' || infoConstraints[j] === 'max') {
-
-            responses.addEventListener('click', function (event) {
-
-              var min = document.getElementById('min');
-              var max = document.getElementById('max');
-
-              if (parseInt(min.value) > parseInt(max.value)) {
-                responses.classList.add('error');
-              } else {
-                responses.classList.remove('error');
-              }
-            });
-
-            document.getElementById(infoConstraints[j]).value = infCons.responses[infoConstraints[j]];
-
-          } else {
-
-          document.getElementById(infoConstraints[j]).checked = infCons.questions[infoConstraints[j]];
+        // Special case for the style which uses 2 data (width and height)
+        if (info.style) {
+            if (typeof info.style.width === 'number') {
+                document.getElementById("style_width").value = info.style.width;
+            }
+            if (typeof info.style.height === 'number') {
+                document.getElementById("style_height").value = info.style.height;
+            }
         }
-      }
+
+        // Set the categories in the selectbox
+        if (Array.isArray(info.categories)) {
+            str = [];
+            for (i = 0, l = info.categories.length; i < l; i++) {
+                str.push('<option value="' + info.categories[i].trim() + '">' + info.categories[i].trim() + '</option>');
+            }
+            document.getElementById('categories').innerHTML = str.join('');
+        }
+
+        // Set the constraints information
+        var infoConstraints = {
+            questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop'],
+            responses: ['min', 'max'],
+            controls: ['responseblock', 'label', 'textbox', 'listbox', 'checkbox', 'radiobutton']
+        };
+
+        for (key in infoConstraints) {
+            if (infoConstraints.hasOwnProperty(key)) {
+                constraints = infoConstraints[key];
+                for (i = 0, l = constraints.length; i < l; i++) {
+                    document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;
+                }
+            }
+        }
+
+        /*
+         responses.addEventListener('click', function (event) {
+
+         var min = document.getElementById('min');
+         var max = document.getElementById('max');
+
+         if (parseInt(min.value) > parseInt(max.value)) {
+         responses.classList.add('error');
+         } else {
+         responses.classList.remove('error');
+         }
+         });
+         */
 
     }());
-
-
 
 
 </script>

@@ -33,14 +33,9 @@ ipc.on('workspace-ready', function (event) {
         });
     }
 
-
-    ipc.on('explorer-load-file', function(event, file) {
-        openFile(file);
-    });
-    app.on('menu-open-file', openFile);
-
-
-
+    /**
+     * Open project settings
+     */
     function openProjectSettings() {
         var adc = global.project.adc;
         if (!adc || !adc.path) {
@@ -68,7 +63,13 @@ ipc.on('workspace-ready', function (event) {
         });
     }
 
-    app.on('menu-show-project-settings', openProjectSettings);
+    workspace.init(function () {
+        ipc.on('explorer-load-file', function(event, file) {
+            openFile(file);
+        });
+        app.on('menu-open-file', openFile);
+        app.on('menu-show-project-settings', openProjectSettings);
+    });
 
 });
 
