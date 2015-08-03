@@ -11,8 +11,8 @@
     wks.addEventListener('console-message', catchConsoleLog);
 
     // Dev tools of the webview
-    wks.addEventListener("dom-ready", function(){
-      wks.openDevTools();
+    exp.addEventListener("dom-ready", function(){
+      exp.openDevTools();
     });
 
 
@@ -48,4 +48,4 @@ function hideWindow() {
   }
 
 });
- */ 
+ */
