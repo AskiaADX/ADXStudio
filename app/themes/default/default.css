@@ -180,6 +180,10 @@ body.grey {
     border-bottom-color : transparent;
 }
 
+.tab.edit {
+  font-style: italic;
+}
+
 .tab.active::before {
     position: absolute;
     display: block;

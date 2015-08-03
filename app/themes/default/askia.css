@@ -3,7 +3,7 @@
 
 .CodeMirror pre {padding: 0 10px;}
 .cm-s-askia.CodeMirror {background: #282C34; color: #f8f8f2; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; font-size: 14px;}
-.cm-s-askia div.CodeMirror-selected {background: #007DC5 !important; color: #FFF;}
+.cm-s-askia div.CodeMirror-selected {background: #007DC5 !important; color: #FFF !important;}
 .cm-s-askia.CodeMirror ::selection { background: #007DC5; color: #FFF;}
 .cm-s-askia.CodeMirror ::-moz-selection { background: #007DC5; color: #FFF; }
 .cm-s-askia .CodeMirror-gutters {background: #282C34; border-right: 1px solid #2c323b;}
@@ -29,7 +29,8 @@
 .cm-s-askia span.cm-link {color: #ae81ff;}
 .cm-s-askia span.cm-error {background: #f92672; color: #f8f8f0;}
 
-.cm-s-askia .CodeMirror-activeline-background {background: #007DC5 !important;}
+.cm-s-askia .CodeMirror-activeline-background {background: #2c323b !important;}
+.cm-s-askia .CodeMirror-activeline-background > .CodeMirror-linenumber {color: #888;}
 .cm-s-askia .CodeMirror-matchingbracket {
   text-decoration: underline;
   color: white !important;
