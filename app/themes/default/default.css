@@ -149,6 +149,7 @@ body.grey {
     padding         : 10px;
     position        : relative;
     height          : 24px;
+    line-height     : 23px;
 }
 
 .tab-icon {
