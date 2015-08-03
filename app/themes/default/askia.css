@@ -1,0 +1,36 @@
+/* Based on Sublime Text's askia theme */
+
+
+.CodeMirror pre {padding: 0 10px;}
+.cm-s-askia.CodeMirror {background: #282C34; color: #f8f8f2; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; font-size: 14px;}
+.cm-s-askia div.CodeMirror-selected {background: #49483E !important;}
+.cm-s-askia.CodeMirror ::selection { background: rgba(73, 72, 62, .99); }
+.cm-s-askia.CodeMirror ::-moz-selection { background: rgba(73, 72, 62, .99); }
+.cm-s-askia .CodeMirror-gutters {background: #282C34; border-right: 1px solid #2c323b;}
+.cm-s-askia .CodeMirror-guttermarker { color: white; }
+.cm-s-askia .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
+.cm-s-askia .CodeMirror-linenumber {color: #666;}
+.cm-s-askia .CodeMirror-cursor {border-left: 1px solid #f8f8f0 !important;}
+
+.cm-s-askia span.cm-comment {color: #AAA;}
+.cm-s-askia span.cm-atom {color: #ae81ff;}
+.cm-s-askia span.cm-number {color: #ae81ff;}
+
+.cm-s-askia span.cm-property, .cm-s-askia span.cm-attribute {color: #a6e22e;}
+.cm-s-askia span.cm-keyword {color: #f92672;}
+.cm-s-askia span.cm-string {color: #e6db74;}
+
+.cm-s-askia span.cm-variable {color: #f8f8f2;}
+.cm-s-askia span.cm-variable-2 {color: #9effff;}
+.cm-s-askia span.cm-variable-3 {color: #66d9ef;}
+.cm-s-askia span.cm-def {color: #fd971f;}
+.cm-s-askia span.cm-bracket {color: #f8f8f2;}
+.cm-s-askia span.cm-tag {color: #f92672;}
+.cm-s-askia span.cm-link {color: #ae81ff;}
+.cm-s-askia span.cm-error {background: #f92672; color: #f8f8f0;}
+
+.cm-s-askia .CodeMirror-activeline-background {background: #373831 !important;}
+.cm-s-askia .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
+}

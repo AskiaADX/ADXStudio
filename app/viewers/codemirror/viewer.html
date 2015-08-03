@@ -4,6 +4,7 @@
     <title>AskiaScript mode</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="../../themes/default/askia.css">
     <script src="lib/codemirror.js"></script>
     <link rel="stylesheet" href="mode/askiascript/askiascript.css" />
     <script src="mode/askiascript/askiascript.js"></script>
@@ -28,8 +29,6 @@
             overflow: hidden;
         }
         .CodeMirror {
-            font-size   : 16px;
-            font-weight : bold;
             height      : 100vh;
         }
     </style>
@@ -41,7 +40,7 @@
             var contentTypeByFileExt = {
                 html : 'askiascript/html',
                 htm  : 'askiascript/html',
-                js   : 'askiascript/js',
+                js   : 'askiascript/javascript',
                 css  : 'askiascript/css'
             };
             var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
@@ -69,6 +68,7 @@
                 lineNumbers     : true,
                 gutters         : ["cms-gutter-errors", "CodeMirror-linenumbers"],
                 mode            : contentType,
+                theme           : 'askia',
                 /*currentQuestion : 'gender',
                  localExe : false,
                  questions       :  [
@@ -102,4 +102,3 @@
     </script>
 </body>
 </html>
-

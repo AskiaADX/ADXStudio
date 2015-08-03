@@ -6,26 +6,25 @@ html, body {
 }
 
 .pane {
-    display: flex;
-    flex-direction: column;
-    height : 100vh;
+    display         : flex;
+    flex-direction  : column;
+    height          : 100vh;
 }
 
 .tabs {
     margin      : 0;
     padding     : 0;
     display     : flex;
-    white-space: nowrap;
+    white-space : nowrap;
 }
 
 .tab {
-    display    : flex;
-    list-style: none;
-    min-width  : 75px;
-    width      : 150px;
-    max-width  : 200px;
-    margin     : 0;
-    padding    : 3px;
+    display     : flex;
+    list-style  : none;
+    min-width   : 75px;
+    width       : 150px;
+    max-width   : 200px;
+    margin      : 0;
 }
 
 
@@ -50,7 +49,6 @@ html, body {
 
 .content {
     display     : none;
-    padding-top : 5px;
     /* Fit  the tabs-content */
     position: absolute;
     top: 0;

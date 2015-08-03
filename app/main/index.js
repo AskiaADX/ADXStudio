@@ -15,6 +15,10 @@
       exp.openDevTools();
     });
 
+    wks.addEventListener("dom-ready", function(){
+      wks.openDevTools();
+    });
+
 
     // Resizer between the explorer element and the workspace
     var resExpl = new adx.Resizer({

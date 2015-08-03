@@ -40,9 +40,10 @@ function itemclick(itemInfo) {
   } else {
     itemInfo.classList.add('selected');
     ipc.send('explorer-load-file', file);
-    divGlobal.classList.remove('selected');
+    if (divGlobal){
+        divGlobal.classList.remove('selected')
+    }
   }
-
 }
 
 function rightClick () {
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         menu1.popup(remote.getCurrentWindow());
       }, false);
-      
+
 
       var toggle = document.createElement('div');
       toggle.className = 'toggle';
