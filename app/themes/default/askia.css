@@ -10,7 +10,7 @@
 .cm-s-askia .CodeMirror-guttermarker { color: white; }
 .cm-s-askia .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
 .cm-s-askia .CodeMirror-linenumber {color: #666;}
-.cm-s-askia .CodeMirror-cursor {border-left: 1px solid #f8f8f0 !important;}
+.cm-s-askia .CodeMirror-cursor {border-left: 2px solid #007DC5 !important;}
 
 .cm-s-askia span.cm-comment {color: #AAA;}
 .cm-s-askia span.cm-atom {color: #ae81ff;}

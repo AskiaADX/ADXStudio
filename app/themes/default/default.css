@@ -107,6 +107,7 @@ body.grey {
 .folder {
   color : #BBB;
   cursor: pointer;
+  transition: color ease-in .3s;
 }
 
 .folder:hover {
@@ -116,6 +117,7 @@ body.grey {
 .file {
   cursor: pointer;
   color : #BBB;
+  transition: color ease-in .3s;
 }
 
 .file:hover {
@@ -150,6 +152,12 @@ body.grey {
     position        : relative;
     height          : 24px;
     line-height     : 23px;
+    transition      : color ease-in .3s;
+}
+
+
+.tab:hover {
+    color: #DDDDDD;
 }
 
 .tab-icon {
@@ -164,6 +172,7 @@ body.grey {
     width           : 20px;
     height          : 20px;
     visibility      : hidden;
+    transition      : visibility ease-in .2s;
 }
 .tab:hover .tab-close {
     visibility: visible;

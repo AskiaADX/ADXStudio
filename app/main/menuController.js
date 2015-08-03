@@ -149,7 +149,7 @@ app.once('ready', function createAppMenu() {
                     },
                     {
                         label: '&About Askia Design',
-                        click: function() { shell.openExternal('http://blog.askia.com/category/askiadesign/') }
+                        click: function() { shell.openExternal('http://www.askia.com/design') }
                     },
                     {
                         label: '&The team',
@@ -165,8 +165,8 @@ app.once('ready', function createAppMenu() {
                 label: 'Help',
                 submenu: [
                     {
-                        label: 'ASKIA SCRIPT 2.0',
-                        click: function() { shell.openExternal('https://support.askia.com') }
+                        label: 'AskiaScript 2.0',
+                        click: function() { shell.openExternal('https://support.askia.com/hc/en-us/articles/200003251-AskiaScript-2-0-specification') }
                     }
                 ]
             }
