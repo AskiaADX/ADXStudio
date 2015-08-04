@@ -2,11 +2,31 @@ html, body {
   margin: 0;
   padding:0;
   height :100%;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 /* TODO::Move it in theme */
 body {
-  background: #eee;
+  background: #282C34;
+  color: #BBB;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+fieldset {
+    border-width: 0 0 1px 0;
+    border-color: #111;
+    margin-top: 20px;
+}
+
+legend {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+h3 {
+    font-size: 14px;
+    font-weight: bold;
 }
 
 form {
@@ -15,6 +35,29 @@ form {
   overflow: auto;
   width:100vw;
   max-height:100vh;
+}
+
+input, textarea, select {
+    padding: 10px;
+    border-radius: 2px;
+    border: 1px solid #151515;
+    background-color: #21252B;
+    color: #BBB;
+}
+
+input[readonly] {
+    color: #545961;
+}
+
+input[type="text"], input[type="url"], textarea, select {
+    width: 300px;
+}
+
+/*input[type="text"]:focus, input[type="url"]:focus {
+    border: 1px solid #007DC5;
+}*/
+input:focus, input:active {
+    border: 1px solid #007DC5;
 }
 
 .error {
