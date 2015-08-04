@@ -1,4 +1,4 @@
-html, body {
+html, body, textarea {
   margin: 0;
   padding:0;
   height :100%;
@@ -37,6 +37,11 @@ form {
   max-height:100vh;
 }
 
+label {
+  width: 170px;
+  display: inline-block;
+}
+
 input, textarea, select {
     padding: 10px;
     border-radius: 2px;
@@ -50,14 +55,32 @@ input[readonly] {
 }
 
 input[type="text"], input[type="url"], textarea, select {
-    width: 300px;
+    width: 400px;
 }
 
-/*input[type="text"]:focus, input[type="url"]:focus {
+#categories {
+    width: 421px;
+}
+
+#style_width, #style_height {
+    width: 181px;
+}
+
+#responses_min, #responses_max {
+    width: 400px;
+}
+
+input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
     border: 1px solid #007DC5;
-}*/
-input:focus, input:active {
-    border: 1px solid #007DC5;
+    outline: none;
+}
+
+ul {
+  list-style: none;
+}
+
+#responses-min {
+    margin-bottom: 13px;
 }
 
 .error {
