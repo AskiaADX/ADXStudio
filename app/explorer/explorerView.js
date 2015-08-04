@@ -80,7 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log(e.srcElement.parentNode);
         var menu1 = new menu();
-        menu1.append(new menuItem({ label: 'Rename', click: function() { console.log('item 1 clicked'); } }));
+        menu1.append(new menuItem({ label: 'Rename', click: function() {
+
+        
+
+          } }));
 
         e.preventDefault();
         menu1.popup(remote.getCurrentWindow());

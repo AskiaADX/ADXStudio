@@ -1,0 +1,145 @@
+/* Base styles */
+body {
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    color: #BBB;
+    font-size: 14px;
+    font-weight: normal;
+    background: #282C34; /*TO BE DELETED*/
+}
+
+::selection {
+    background-color: #007DC5;
+    color: #FEFEFE;
+}
+
+/* IDs/Classes styles */
+
+#dialog {
+  margin-top: -100px;
+  margin-left: -300px;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  width: 600px;
+  height: 200px;
+  opacity:1;
+  z-index: 10;
+  background: #282C34;
+  border: 1px solid #181818;
+  border-radius: 2px;
+  box-shadow: 0 0 12px 0 rgba(28,28,28,.6), 0 1px 0 rgba(230,230,230,.1) inset;
+}
+
+#icon {
+  width : 60px;
+  height: 60px;
+  opacity:1;
+}
+
+#iconTextContener {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 50px;
+}
+
+#hideWindow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  width :100vw;
+  height:100vh;
+  z-index:9;
+  background-color: rgba(33, 37, 43, 0.9);
+}
+
+#textContener {
+  display: flex;
+  flex-direction: column;
+  padding: 33px 40px 0 40px;
+}
+
+.prompt {
+  width : 488px;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 2px;
+  border: 1px solid #151515;
+  background-color: #21252B;
+  color: #BBB;
+  font-size: 14px;
+}
+
+.prompt:focus {
+    border: 1px solid #007DC5;
+    outline: none;
+}
+
+.text {
+    padding-left: 1px;
+}
+
+/* Action bar */
+
+#buttonContener {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 100px 50px 0 0;
+}
+
+.ok, .yes {
+    width: 115px;
+    height: 34px;
+    margin-left: 16px;
+    cursor: pointer;
+    background-color: #007dc5;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,.8);
+    box-shadow: 0 1px 0 rgba(255,255,255,.25) inset;
+    color: #BBB;
+    font-size: 14px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+    outline: none;
+    transition: all ease-in-out .3s;
+}
+
+.ok:hover, .yes:hover {
+    color: #FFF;
+    background-color: #028EDE;
+}
+
+.ok:active, .yes:active {
+    color: #FFF;
+    background-color: #007DC5;
+    box-shadow: 0 0 12px rgba(0,0,0,.6) inset;
+}
+
+.cancel, .no {
+    width: 115px;
+    height: 34px;
+    cursor: pointer;
+    background-color: #BBBBBB;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,.95);
+    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset;
+    color: #222;
+    font-size: 14px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    outline: none;
+    transition: all ease-in-out .3s;
+}
+
+.cancel:hover, .no:hover {
+    color: #111111;
+    background-color: #CCCCCC;
+}
+
+.cancel:active, .no:active {
+    color: #111111;
+    background-color: #BBBBBB;
+    box-shadow: 0 0 12px rgba(0,0,0,.6) inset;
+}

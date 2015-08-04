@@ -1,3 +1,4 @@
+
 (function () {
   var ipc = require('ipc'),
       exp = document.getElementById("explorer"),
@@ -29,27 +30,3 @@
     resExpl.start();
 
 }());
-
-//NEW CODE 27/07/2015 ---> hide background when dialog is open.
-
-
-function hideWindow() {
-  var hide = document.createElement('div');
-
-  hide.className = 'hideWindow';
-  document.body.appendChild(hide);
-}
-
-
-//TODO:: COMPLETE THE FUNCTION, DO THE IPC.SEND(...) IN MENUCONTROLLER.JS
-/* ipc.on('HIDEoption', function(){
-  var find = document.body.querySelector('.hideWindow');
-
-  if (find) {
-    return;
-  } else {
-    hideWindow();
-  }
-
-});
- */
