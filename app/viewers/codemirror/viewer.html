@@ -12,6 +12,7 @@
     <script src="lexicons/MasqueLanguage-en.js"></script>
     <script src="mode/xml/xml.js"></script>
     <script src="mode/javascript/javascript.js"></script>
+    <script src="mode/javascript/javascript.js"></script>
     <script src="mode/css/css.js"></script>
     <script src="mode/htmlmixed/htmlmixed.js"></script>
     <script src="addon/mode/multiplex.js"></script>
@@ -19,6 +20,7 @@
     <script src="mode/askiascriptjs/askiascriptjs.js"></script>
     <script src="mode/askiascriptcss/askiascriptcss.js"></script>
     <link rel="stylesheet" href="addon/sense/sense.css" />
+  	<script src="addon/selection/active-line.js"></script>
     <script src="addon/sense/sense.js"></script>
     <style>
         html, body
@@ -69,6 +71,7 @@
                 gutters         : ["cms-gutter-errors", "CodeMirror-linenumbers"],
                 mode            : contentType,
                 theme           : 'askia',
+                styleActiveLine: true,
                 /*currentQuestion : 'gender',
                  localExe : false,
                  questions       :  [
