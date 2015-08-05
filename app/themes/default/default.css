@@ -8,6 +8,11 @@
 /* ========================================
     Share styling
    ======================================== */
+html {
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
 body {
     font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
     line-height: 1.5;

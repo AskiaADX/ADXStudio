@@ -35,8 +35,10 @@
 .cm-s-askia span.cm-error {background: #f92672; color: #f8f8f0;}
 
 .cm-s-askia .CodeMirror-activeline-background {background: #2c323b !important;}
-.cm-s-askia .CodeMirror-activeline-background > .CodeMirror-linenumber {color: #888;}
 .cm-s-askia .CodeMirror-matchingbracket {
   text-decoration: underline;
   color: white !important;
+}
+.CodeMirror-activeline .CodeMirror-linenumber {
+    color: #AAA !important;
 }
