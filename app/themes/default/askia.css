@@ -2,6 +2,11 @@
 
 
 .CodeMirror pre {padding: 0 10px;}
+.CodeMirror-selected { background: #007DC5; color: #FFF;; }
+.CodeMirror-focused .CodeMirror-selected { background: #007DC5; color: #FFF; }
+.CodeMirror ::selection { background: #007DC5; color: #FFF;}
+.CodeMirror ::-moz-selection { background: #007DC5; color: #FFF; }
+
 .cm-s-askia.CodeMirror {background: #282C34; color: #f8f8f2; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; font-size: 14px;}
 .cm-s-askia div.CodeMirror-selected {background: #007DC5 !important; color: #FFF !important;}
 .cm-s-askia.CodeMirror ::selection { background: #007DC5; color: #FFF;}
