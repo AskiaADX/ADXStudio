@@ -69,6 +69,7 @@ body.grey {
   display           : inline-block;
   width             : 20px;
   height            : 20px;
+  transition        : background-image ease-in-out .3s;
 }
 
 .folder > .item-info:hover > .icon {
@@ -80,6 +81,7 @@ body.grey {
   display           : inline-block;
   width             : 20px;
   height            : 20px;
+  transition        : background-image ease-in-out .3s;
 }
 
 .file > .item-info:hover > .icon {
@@ -97,6 +99,7 @@ body.grey {
   white-space   : nowrap;
   padding       : 2px 0px;
   width         : 100%;
+  transition    : all ease-in-out .3s;
 }
 
 .item {

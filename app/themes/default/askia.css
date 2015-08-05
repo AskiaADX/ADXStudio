@@ -1,44 +1,124 @@
-/* Based on Sublime Text's askia theme */
+.CodeMirror pre {
+    padding: 0 10px;
+}
 
+.CodeMirror-selected {
+    background: #007DC5;
+    color: #FFF;
+}
 
-.CodeMirror pre {padding: 0 10px;}
-.CodeMirror-selected { background: #007DC5; color: #FFF;; }
-.CodeMirror-focused .CodeMirror-selected { background: #007DC5; color: #FFF; }
-.CodeMirror ::selection { background: #007DC5; color: #FFF;}
-.CodeMirror ::-moz-selection { background: #007DC5; color: #FFF; }
+.CodeMirror-focused .CodeMirror-selected {
+    background: #007DC5;
+    color: #FFF;
+}
 
-.cm-s-askia.CodeMirror {background: #282C34; color: #f8f8f2; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; font-size: 14px;}
-.cm-s-askia div.CodeMirror-selected {background: #007DC5 !important; color: #FFF !important;}
-.cm-s-askia.CodeMirror ::selection { background: #007DC5; color: #FFF;}
-.cm-s-askia.CodeMirror ::-moz-selection { background: #007DC5; color: #FFF; }
-.cm-s-askia .CodeMirror-gutters {background: #282C34; border-right: 1px solid #2c323b;}
-.cm-s-askia .CodeMirror-guttermarker { color: white; }
-.cm-s-askia .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
-.cm-s-askia .CodeMirror-linenumber {color: #666;}
-.cm-s-askia .CodeMirror-cursor {border-left: 2px solid #007DC5 !important;}
+.CodeMirror ::selection, .cm-s-askia.CodeMirror ::selection {
+    background: #007DC5;
+    color: #FFF;
+}
 
-.cm-s-askia span.cm-comment {color: #AAA;}
-.cm-s-askia span.cm-atom {color: #ae81ff;}
-.cm-s-askia span.cm-number {color: #ae81ff;}
+.CodeMirror ::-moz-selection, .cm-s-askia.CodeMirror ::-moz-selection {
+    background: #007DC5;
+    color: #FFF;
+}
 
-.cm-s-askia span.cm-property, .cm-s-askia span.cm-attribute {color: #a6e22e;}
-.cm-s-askia span.cm-keyword {color: #f92672;}
-.cm-s-askia span.cm-string {color: #e6db74;}
+.cm-s-askia.CodeMirror {
+    background: #282C34;
+    color: #f8f8f2;
+    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    font-size: 14px;
+}
 
-.cm-s-askia span.cm-variable {color: #f8f8f2;}
-.cm-s-askia span.cm-variable-2 {color: #9effff;}
-.cm-s-askia span.cm-variable-3 {color: #66d9ef;}
-.cm-s-askia span.cm-def {color: #fd971f;}
-.cm-s-askia span.cm-bracket {color: #f8f8f2;}
-.cm-s-askia span.cm-tag {color: #f92672;}
-.cm-s-askia span.cm-link {color: #ae81ff;}
-.cm-s-askia span.cm-error {background: #f92672; color: #f8f8f0;}
+.cm-s-askia div.CodeMirror-selected {
+    background: #007DC5 !important;
+    color: #FFF !important;
+}
 
-.cm-s-askia .CodeMirror-activeline-background {background: #2c323b !important;}
+.cm-s-askia .CodeMirror-gutters {
+    background: #282C34;
+    border-right: 1px solid #2C323B;
+}
+
+.cm-s-askia .CodeMirror-guttermarker {
+    color: white;
+}
+
+.cm-s-askia .CodeMirror-guttermarker-subtle {
+    color: #d0d0d0;
+}
+
+.cm-s-askia .CodeMirror-linenumber {
+    color: #666;
+}
+
+.cm-s-askia .CodeMirror-cursor {
+    border-left: 2px solid #007DC5 !important;
+}
+
+.cm-s-askia span.cm-comment {
+    color: #AAA;
+}
+
+.cm-s-askia span.cm-atom {
+    color: #AE81FF;
+}
+.cm-s-askia span.cm-number {
+    color: #AE81FF;
+}
+
+.cm-s-askia span.cm-property, .cm-s-askia span.cm-attribute {
+    color: #A6E22E;
+}
+
+.cm-s-askia span.cm-keyword {
+    color: #F92672;
+}
+
+.cm-s-askia span.cm-string {
+    color: #E6DB74;
+}
+
+.cm-s-askia span.cm-variable {
+    color: #F8F8F2;
+}
+.cm-s-askia span.cm-variable-2 {
+    color: #9EFFFF;
+}
+
+.cm-s-askia span.cm-variable-3 {
+    color: #66D9EF;
+}
+
+.cm-s-askia span.cm-def {
+    color: #FD971F;
+}
+
+.cm-s-askia span.cm-bracket {
+    color: #F8F8F2;
+}
+
+.cm-s-askia span.cm-tag {
+    color: #F92672;
+}
+
+.cm-s-askia span.cm-link {
+    color: #AE81FF;
+}
+
+.cm-s-askia span.cm-error {
+    background: #F92672;
+    color: #F8F8F0;
+}
+
+.cm-s-askia .CodeMirror-activeline-background {
+    background: #2C323B !important;
+}
+
 .cm-s-askia .CodeMirror-matchingbracket {
   text-decoration: underline;
-  color: white !important;
+  color: #FFF !important;
 }
+
 .CodeMirror-activeline .CodeMirror-linenumber {
     color: #AAA !important;
 }

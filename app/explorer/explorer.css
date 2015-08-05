@@ -1,19 +1,19 @@
 html, body {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #21252B;
+  width             : 100%;
+  margin            : 0;
+  padding           : 0;
+  background-color  : #21252B;
 }
 
 #root {
-  width: 100%;
-  color: #BBB;
-  padding-top: 8px;
+  width         : 100%;
+  color         : #BBBBBB;
+  padding-top   : 8px;
 }
 
 .folder {
-  font-size: 11px;
-  width: 100%;
+  font-size : 11px;
+  width     : 100%;
 }
 
 .folder:hover {
@@ -25,8 +25,8 @@ html, body {
 }
 
 .file {
-  font-size: 11px;
-  width: 100%;
+  font-size : 11px;
+  width     : 100%;
 }
 
 .file:hover {
@@ -34,8 +34,8 @@ html, body {
 }
 
 .toggle, .icon {
-    width: 20px;
-    height: 20px;
+    width   : 20px;
+    height  : 20px;
 }
 
 .icon {
