@@ -54,61 +54,6 @@
 .cm-s-askia .CodeMirror-cursor {
     border-left: 2px solid #007DC5 !important;
 }
-/*
-.cm-s-askia span.cm-comment {
-    color: #AAA;
-}
-
-.cm-s-askia span.cm-atom {
-    color: #AE81FF;
-}
-.cm-s-askia span.cm-number {
-    color: #AE81FF;
-}
-
-.cm-s-askia span.cm-property, .cm-s-askia span.cm-attribute {
-    color: #A6E22E;
-}
-
-.cm-s-askia span.cm-keyword {
-    color: #F92672;
-}
-
-.cm-s-askia span.cm-string {
-    color: #E6DB74;
-}
-
-.cm-s-askia span.cm-variable {
-    color: #F8F8F2;
-}
-.cm-s-askia span.cm-variable-2 {
-    color: #9EFFFF;
-}
-
-.cm-s-askia span.cm-variable-3 {
-    color: #66D9EF;
-}
-
-.cm-s-askia span.cm-def {
-    color: #FD971F;
-}
-
-.cm-s-askia span.cm-bracket {
-    color: #F8F8F2;
-}
-
-.cm-s-askia span.cm-tag {
-    color: #F92672;
-}
-
-.cm-s-askia span.cm-link {
-    color: #AE81FF;
-}
-
-.cm-s-askia span.cm-error {
-    background: #F92672;
-    color: #F8F8F0;
-}*/
 
 .cm-s-askia .CodeMirror-activeline-background {
     background: #2C323B !important;
@@ -123,8 +68,8 @@
     color: #AAA !important;
 }
 
+/* Code styling */
 
-/* NEW 20150806 - A VALIDER */
 .cm-s-askia span.cm-keyword { color: rgba(199, 146, 234, 1); }
 .cm-s-askia span.cm-operator { color: rgba(233, 237, 237, 1); }
 .cm-s-askia span.cm-variable-2 { color: #80CBC4; }
