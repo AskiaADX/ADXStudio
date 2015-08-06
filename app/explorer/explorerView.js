@@ -71,18 +71,18 @@ document.addEventListener('DOMContentLoaded', function() {
       itemInfo.onclick = function(e) {
 
         if(e.button == 0) {
-          console.log(e);
+          console.log(e.srcElement);
         itemclick(this);
         }
       };
 
       itemInfo.addEventListener('contextmenu', function(e) {
 
-        console.log(e.srcElement.parentNode);
+        console.log(e.srcElement);
         var menu1 = new menu();
         menu1.append(new menuItem({ label: 'Rename', click: function() {
 
-      //  ipc.send('explorer-rename', e.srcElement);
+          ipc.sendToHost('show-Modal-Dialog', {type: 'prompt', text:'Rename your file here:'});
 
           } }));
 

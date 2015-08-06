@@ -54,6 +54,17 @@ app.once('ready', function createAppMenu() {
                     {
                         type: 'separator'
                     },
+                      {
+                        label: '&Rename',
+                        accelerator: 'Ctrl+Q',
+                        click: function() {
+                            
+                            //Function to define in order to save current file changed.
+                        }
+                    },
+                   {
+                        type: 'separator'
+                    },
                     {
                         label: '&Save',
                         accelerator: 'Ctrl+S',

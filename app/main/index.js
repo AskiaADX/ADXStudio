@@ -29,11 +29,14 @@
 
     resExpl.start();
 
-/*ipc.on('explorer-rename', function() {
-  showModalDialog({type:'prompt', text:'Rename your file here:'}, function(){
-    console.log('ca marche');
-  });
-});
-*/
+
+    exp.addEventListener('ipc-message', function(event) {
+      if (event.channel === 'show-Modal-Dialog') {
+        console.log(event.args);
+        showModalDialog(event.args[0], example);
+      }
+
+
+    });
 
 }());
