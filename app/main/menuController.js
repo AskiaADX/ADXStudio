@@ -3,6 +3,7 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 var menu = require('menu');
 var dialog = require('dialog');
 var shell = require('shell');
+var fs = require('fs');
 
 // Default Menu of the app.
 app.once('ready', function createAppMenu() {
@@ -16,14 +17,27 @@ app.once('ready', function createAppMenu() {
                         label: '&New File',
                         accelerator: 'Ctrl+N',
                         click: function() {
+
                           var tab = {
                             name:'untitled'
                           };
-                          
-                          /*
-                          Send a message to other control in the main process in order to create new File.
-                          */
-                          app.emit('menu-new-file', tab);
+
+                          dialog.showSaveDialog({properties: ['openFile']}, function(filepath) {
+                            if (filepath) {
+                              fs.writeFile(filepath, '// Made with love', function(err){
+                                if (err) {
+                                  throw err;
+                                }
+                                /*
+                                Send a message to other control in the main process in order to create new File.
+                                */
+                                app.emit('menu-new-file', filepath);
+                              });
+                            }
+
+
+                          });
+
                             // Function to define in order to open a new tab and new content.
                         }
                     },
