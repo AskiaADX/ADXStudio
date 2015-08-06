@@ -54,7 +54,7 @@
 .cm-s-askia .CodeMirror-cursor {
     border-left: 2px solid #007DC5 !important;
 }
-
+/*
 .cm-s-askia span.cm-comment {
     color: #AAA;
 }
@@ -108,7 +108,7 @@
 .cm-s-askia span.cm-error {
     background: #F92672;
     color: #F8F8F0;
-}
+}*/
 
 .cm-s-askia .CodeMirror-activeline-background {
     background: #2C323B !important;
@@ -122,3 +122,29 @@
 .CodeMirror-activeline .CodeMirror-linenumber {
     color: #AAA !important;
 }
+
+
+/* NEW 20150806 - A VALIDER */
+.cm-s-askia span.cm-keyword { color: rgba(199, 146, 234, 1); }
+.cm-s-askia span.cm-operator { color: rgba(233, 237, 237, 1); }
+.cm-s-askia span.cm-variable-2 { color: #80CBC4; }
+.cm-s-askia span.cm-variable-3 { color: #82B1FF; }
+.cm-s-askia span.cm-builtin { color: #DECB6B; }
+.cm-s-askia span.cm-atom { color: #F77669; }
+.cm-s-askia span.cm-number { color: #F77669; }
+.cm-s-askia span.cm-def { color: rgba(233, 237, 237, 1); }
+.cm-s-askia span.cm-error {
+  color: rgba(255, 255, 255, 1.0);
+  background-color: #EC5F67;
+}
+.cm-s-askia span.cm-string { color: #C3E88D; }
+.cm-s-askia span.cm-string-2 { color: #80CBC4; }
+.cm-s-askia span.cm-comment { color: #546E7A; }
+.cm-s-askia span.cm-variable { color: #82B1FF; }
+.cm-s-askia span.cm-tag { color: #80CBC4; }
+.cm-s-askia span.cm-meta { color: #80CBC4; }
+.cm-s-askia span.cm-attribute { color: #FFCB6B; }
+.cm-s-askia span.cm-property { color: #80CBAE; }
+.cm-s-askia span.cm-qualifier { color: #DECB6B; }
+.cm-s-askia span.cm-variable-3 { color: #DECB6B; }
+.cm-s-askia span.cm-tag { color: rgba(255, 83, 112, 1); }
