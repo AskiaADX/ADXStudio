@@ -29,4 +29,11 @@
 
     resExpl.start();
 
+/*ipc.on('explorer-rename', function() {
+  showModalDialog({type:'prompt', text:'Rename your file here:'}, function(){
+    console.log('ca marche');
+  });
+});
+*/
+
 }());

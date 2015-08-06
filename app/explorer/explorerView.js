@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var menu1 = new menu();
         menu1.append(new menuItem({ label: 'Rename', click: function() {
 
-        
+      //  ipc.send('explorer-rename', e.srcElement);
 
           } }));
 

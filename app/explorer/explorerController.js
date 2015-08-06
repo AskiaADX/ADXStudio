@@ -12,7 +12,7 @@ ipc.on('explorer-ready', function(event) {
         sender.send('explorer-expand-folder', err, files, 'root');
         global.project.path = defaultPath;
         global.project.adc  = new ADC(global.project.path);
-    });
+    }); 
 
     app.on('menu-open-project', function (folderpath) {
         explorer.load(folderpath, function(err, files) {
