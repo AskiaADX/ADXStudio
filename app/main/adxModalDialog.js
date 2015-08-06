@@ -264,4 +264,5 @@ function example(e) {
   console.log(e, 'example callback');
  }
 
+
 //showModalDialog({type:'prompt', text:'Are you ready to face the futur ?', img: 'cross.png'});

@@ -16,9 +16,9 @@
       exp.openDevTools();
     });
 
-    wks.addEventListener("dom-ready", function(){
-      wks.openDevTools();
-    });
+  //  wks.addEventListener("dom-ready", function(){
+    //  wks.openDevTools();
+    //});
 
 
     // Resizer between the explorer element and the workspace
@@ -28,5 +28,15 @@
     });
 
     resExpl.start();
+
+
+    exp.addEventListener('ipc-message', function(event) {
+      if (event.channel === 'show-Modal-Dialog') {
+        console.log(event.args);
+        showModalDialog(event.args[0], example);
+      }
+
+
+    });
 
 }());
