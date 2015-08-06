@@ -44,6 +44,16 @@ This event gives to the explorer the folder, and its content.
         ipc.send('explorer-load-folder', file.path, item.id);
         //In order to send the path of the file selected and the id of the item.
 
+### explorer-rename
+
+This event give us the possibility to rename a file or a folder selected in the explorer.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **file** object that contains old item definition (name, path, type).
+* **newName** new name of the item.
+
 ## Events from Controller
 
 The controller, will receive all sending messages, and execute functions with it :

@@ -18,6 +18,7 @@
 *
 * @param {Object} config configuration of modalDialog.
 * @param {String | "okOnly" | "yesNoCancel" | "prompt" | "yesNo" | "okCancel"} config.type type of the modal.
+* @param {String} config.value innitial value for prompt window.
 * @param {Function} [callback] callback.
 *
 */
@@ -93,7 +94,7 @@ iconTextContener.id = 'iconTextContener';
     buttonContener.appendChild(cancel);
 
     prompt.className = 'prompt';
-
+    prompt.value = config.value || '';
     cancel.className = 'cancel';
     cancel.style.order = 1;
     cancel.innerHTML = 'Cancel';
@@ -250,7 +251,7 @@ iconTextContener.id = 'iconTextContener';
       return;
   }
 
-  callback(e);
+  callback(clicked);
   console.log(clicked);
     quit();
     return clicked;

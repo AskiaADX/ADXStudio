@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       var itemInfo = document.createElement('div');
       itemInfo.className = 'item-info';
+
       //The function when someone click on a div itemInfo
       itemInfo.onclick = function(e) {
 
@@ -78,11 +79,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
       itemInfo.addEventListener('contextmenu', function(e) {
 
-        console.log(e.srcElement);
+        var el = this.parentNode;
+        var file = map[el.id];
+        console.log(file);
         var menu1 = new menu();
         menu1.append(new menuItem({ label: 'Rename', click: function() {
 
-          ipc.sendToHost('show-Modal-Dialog', {type: 'prompt', text:'Rename your file here:'});
+            // send a messqge to the explorer host (To the View) --> index.js
+            //first argument is the channel: 'show-Modal-Dialog'
+            //second argument is an object which contains caracteristics of the first argument of the API.
+            //third argument is a message 'rename-file'
+            //fourth argument is the element selected
+          ipc.sendToHost('show-Modal-Dialog', {type: 'prompt', text:'Rename your file here:', value: file.name}, 'explorer-rename', file);
 
           } }));
 

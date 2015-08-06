@@ -29,11 +29,27 @@
 
     resExpl.start();
 
-
+      // Listen a potential ipc-message which channel is 'show-Modal-Dialog'.
+      // Once triggerd, we apply the showModalDialog API.
+      // in the callback of the API, we send the value returned : "result" ("clicked" in the API)
+      // event.args[1] send a message. 'rename-file'
+      // ipc.send --> explorerController.js
     exp.addEventListener('ipc-message', function(event) {
+
+
+
       if (event.channel === 'show-Modal-Dialog') {
-        console.log(event.args);
-        showModalDialog(event.args[0], example);
+
+        /*
+        event.args[0] =  {type: 'prompt', text:'Rename your file here:', value: file.name}
+        event.args[1] = 'explorer-rename'
+        event.args[2] = {name:'toto', path:'nlah/blaj', type:'file' || 'folder'}
+        */
+        showModalDialog(event.args[0], function(result) {
+          if(result.button === 'ok' && result.value) {
+          ipc.send(event.args[1], event.args[2], result.value);
+          }
+        });
       }
 
 
