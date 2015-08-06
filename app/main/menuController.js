@@ -16,6 +16,14 @@ app.once('ready', function createAppMenu() {
                         label: '&New File',
                         accelerator: 'Ctrl+N',
                         click: function() {
+                          var tab = {
+                            name:'untitled'
+                          };
+                          
+                          /*
+                          Send a message to other control in the main process in order to create new File.
+                          */
+                          app.emit('menu-new-file', tab);
                             // Function to define in order to open a new tab and new content.
                         }
                     },
@@ -58,7 +66,7 @@ app.once('ready', function createAppMenu() {
                         label: '&Rename',
                         accelerator: 'Ctrl+Q',
                         click: function() {
-                            
+
                             //Function to define in order to save current file changed.
                         }
                     },

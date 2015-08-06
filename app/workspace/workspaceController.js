@@ -67,6 +67,7 @@ ipc.on('workspace-ready', function (event) {
         ipc.on('explorer-load-file', function(event, file) {
             openFile(file);
         });
+        app.on('menu-new-file', openFile);
         app.on('menu-open-file', openFile);
         app.on('menu-show-project-settings', openProjectSettings);
     });
