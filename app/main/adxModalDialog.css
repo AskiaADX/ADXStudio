@@ -64,8 +64,8 @@ body {
 
 .prompt {
   width : 488px;
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 40px;
+  padding: 15px;
   border-radius: 2px;
   border: 1px solid #151515;
   background-color: #21252B;
@@ -88,7 +88,7 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 100px 50px 0 0;
+  margin: 100px 40px 0 0;
 }
 
 .ok, .yes {
