@@ -124,5 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
         root.appendChild(item);
     }
 });
+
   ipc.send('explorer-ready');
 });
