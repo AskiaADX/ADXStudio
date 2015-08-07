@@ -26,6 +26,9 @@ function openFile(file) {
             if (err) throw err;
             tab.loadFile(function (err) {
                 workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+
+                 // TODO::Just for test switch to the other pane for the next tab
+                workspace.panes.current(pane === 'main' ? 'second' : 'main');
             });
         });
     });
@@ -70,6 +73,35 @@ function openProjectSettings() {
     });
 }
 
+/**
+ * Close a tab
+ * @param event
+ * @param {String} tabId Id of the tab to close
+ */
+function closeTab(event, tabId) {
+    workspace.removeTab(tabId, function (err, tab, pane) {
+        workspaceView.send('workspace-remove-tab', err, tab, pane);
+    });
+}
+
+/**
+ * Save content
+ * @param event
+ * @param {String} tabId Id of the tab
+ * @param {String} content Content to save
+ */
+function saveContent(event, tabId, content) {
+    workspace.find(tabId, function (err, tab, pane) {
+        if (err) {
+            workspaceView.send('workspace-update-tab', err, null, null);
+            return;
+        }
+        tab.saveFile(content, function (err) {
+            workspaceView.send('workspace-update-tab', err, tab, pane);
+        });
+    });
+}
+
 ipc.on('workspace-ready', function (event) {
     // Keep the connection with the view
     workspaceView = event.sender;
@@ -77,6 +109,13 @@ ipc.on('workspace-ready', function (event) {
     workspace.init(function () {
         ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
         ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
+
+        ipc.removeListener('workspace-close-tab', closeTab);
+        ipc.on('workspace-close-tab', closeTab);
+
+        ipc.removeListener('workspace-save-content', saveContent);
+        ipc.on('workspace-save-content', saveContent);
+
 
         app.removeListener('menu-new-file', openFile);
         app.on('menu-new-file', openFile);
@@ -86,26 +125,10 @@ ipc.on('workspace-ready', function (event) {
 
         app.removeListener('menu-show-project-settings', openProjectSettings);
         app.on('menu-show-project-settings', openProjectSettings);
+
     });
 
 });
 
 
 
-ipc.on('workspace-close-tab', function (event, tabId) {
-    workspace.removeTab(tabId, function (err, tab, pane) {
-       event.sender.send('workspace-remove-tab', err, tab, pane);
-    });
-});
-
-ipc.on('workspace-save-content', function (event, tabId, content) {
-    workspace.find(tabId, function (err, tab, pane) {
-        if (err) {
-            event.sender.send('workspace-update-tab', err, null, null);
-            return;
-        }
-        tab.saveFile(content, function (err) {
-            event.sender.send('workspace-update-tab', err, tab, pane);
-        });
-    });
-});

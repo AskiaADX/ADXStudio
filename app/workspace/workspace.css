@@ -5,6 +5,14 @@ html, body {
     margin  :0;
 }
 
+#panes  {
+    display: flex;
+    flex-direction: row;
+}
+#second_pane {
+    flex: 1;
+}
+
 .pane {
     display         : flex;
     flex-direction  : column;
@@ -48,7 +56,7 @@ html, body {
 
 /* Placeholder styling */
 
-#placeholder-wrapper {
+.placeholder-wrapper {
     display                 : flex;
     align-items             : center;
     justify-content         : center;

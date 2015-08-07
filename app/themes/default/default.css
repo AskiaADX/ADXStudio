@@ -209,11 +209,11 @@ body.grey {
     left            : 0;
 }
 
-#panes #main_pane {
+.pane {
     background-color: #21252B;
 }
 
-#panes #placeholder {
+.pane .placeholder {
     text-align  : center;
     line-height : 1.3;
     font-size   : 2.6rem;
@@ -221,6 +221,6 @@ body.grey {
     color       : #2E333A;
 }
 
-#panes .content {
+.pane .content {
     background-color: #21252B;
 }

@@ -200,7 +200,13 @@ window.tabs  = {
 document.addEventListener('DOMContentLoaded', function () {
 
     var ipc  = require('ipc'),
-        tabs = window.tabs;
+        tabs = window.tabs,
+        resizer = new adx.Resizer({
+            element : document.getElementById('main_pane')
+        });
+
+    resizer.start();
+
      /**
       * Add a tab
       *
