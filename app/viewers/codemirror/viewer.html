@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="addon/sense/sense.css" />
   	<script src="addon/selection/active-line.js"></script>
     <script src="addon/sense/sense.js"></script>
+    <script src="../viewer.js"></script>
     <style>
         html, body
         {
@@ -49,14 +50,8 @@
                 xml  : 'askiascript/xml',
                 md   : 'text/x-markdown'
             };
-            var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
-            if (!matchTabId || !matchTabId.length) {
-                throw new Error("Invalid context, the tab id is not defined");
-            }
-            var tabId    = matchTabId[1];
-            var parent   = window.parent;
-            var tabs     = parent.tabs;
-            var tab      = tabs[tabId];
+            var tabs     = viewer.tabs;
+            var tab      = viewer.currentTab;
             var textarea = document.getElementById('code');
 
             var matchFileExt = /\.(.*?)$/.exec(tab.name);
@@ -67,10 +62,10 @@
 
             // Map save command
             CodeMirror.commands.save = function (instance) {
-                tabs.onSave(tabId, instance.getValue());
+                tabs.onSave(tab.id, instance.getValue());
             };
 
-            window.editor = CodeMirror.fromTextArea(textarea, {
+            tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
                 lineNumbers     : true,
                 gutters         : ["cms-gutter-errors", "CodeMirror-linenumbers"],
                 mode            : contentType,
@@ -93,17 +88,12 @@
                  }*/
             }).suggest();
 
-
-            tab.window = window;
-            tab.editor = window.editor;
-
             window.editor.on('change', function onChange(instance) {
-                tabs.onContentChange(tabId, instance.getValue());
+                tabs.onContentChange(tab.id, instance.getValue());
             });
 
 
-            tabs.onEditorLoaded(tab);
-
+            viewer.fireReady();
         }());
 
     </script>

@@ -115,6 +115,40 @@ describe("Tab", function () {
             });
         });
 
+        it("should set the #fileType to `image` if the file extension is recognise as image", function () {
+            spies.isTextOrBinary.andCallFake(function (path, cb) {
+                cb(null, 'binary');
+            });
+            [
+                'path/to/test.gif', 'path/to/test.jpeg', 'path/to/test.jpg',
+                'path/to/test.tif', 'path/to/test.tiff', 'path/to/test.png',
+                'path/to/test.bmp', 'path/to/test.pdf', 'path/to/test.ico',
+                'path/to/test.cur'
+            ].forEach(function (p) {
+                var tab = new Tab({
+                    path : p
+                });
+
+                tab.loadFile(function () {
+                    expect(tab.fileType).toBe('image');
+                });
+            });
+        });
+
+        it("should not read the file, if the file is `image`", function () {
+            spies.fs.readFile.andCallFake(function (path, cb) {
+                cb(null, 'Should not be set');
+            });
+
+            var tab = new Tab({
+                path : 'file/to/load/test.png'
+            });
+
+            tab.loadFile(function () {
+                expect(tab.content).toBe(null);
+            });
+        });
+
         it("should, if the file is `text`, read the content and assign it to the #content property", function () {
             spies.fs.readFile.andCallFake(function (path, cb) {
                 cb(null, 'Hello');

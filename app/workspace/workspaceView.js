@@ -112,6 +112,10 @@ window.tabs  = {
      * @param {CodeMirror} tab.editor Code mirror instance on the tab
      */
     onEditorLoaded : function onEditorLoaded(tab) {
+        // Make the tab visible
+        document.getElementById('content-' + tab.id).childNodes[0].style.visibility = '';
+
+        // Focus on the code-mirror editor
         if (tab.id === this.currentTabId && tab.editor) {
             tab.editor.focus && tab.editor.focus();
         }
@@ -234,11 +238,8 @@ document.addEventListener('DOMContentLoaded', function () {
          var viewerSubFolderName = 'codemirror';
          if (tab.adcConfig) {
              viewerSubFolderName = 'adcconf';
-         } else if (tab.fileType !== 'text') {
-             var reIsImg = /\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i;
-             if (reIsImg.test(tab.name)) {
-                 viewerSubFolderName = 'image';
-             }
+         } else if (tab.fileType === 'image') {
+             viewerSubFolderName = 'image';
          }
 
 
@@ -248,6 +249,8 @@ document.addEventListener('DOMContentLoaded', function () {
          tabs.addTab(tab);
          viewer.src = '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
          div.appendChild(viewer);
+         // While waiting the iframe load, hide the content to avoid the white flash
+         div.style.visibility = "hidden";
 
          contentEl.appendChild(div);
 
