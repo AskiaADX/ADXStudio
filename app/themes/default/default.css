@@ -93,16 +93,13 @@ body.grey {
 }
 
 .item-info {
-  display       : flex;
-  flex-direction: row;
-  flex-wrap     : nowrap;
-  white-space   : nowrap;
-  padding       : 2px 0px;
-  width         : 100%;
-  transition    : all ease-in-out .3s;
-}
-
-.item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    padding: 2px 0px;
+    width: 100%;
+    transition: all ease-in-out .3s;
 }
 
 .name {
@@ -212,10 +209,18 @@ body.grey {
     left            : 0;
 }
 
-.content {
-    background  : #eee;
+.pane {
+    background-color: #21252B;
 }
 
-.content div {
-    background: #fff;
+.pane .placeholder {
+    text-align  : center;
+    line-height : 1.3;
+    font-size   : 2.6rem;
+    font-weight : 700;
+    color       : #2E333A;
+}
+
+.pane .content {
+    background-color: #21252B;
 }

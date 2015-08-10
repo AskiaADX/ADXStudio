@@ -5,6 +5,7 @@
     <title>Image viewer</title>
     <link rel="stylesheet" href="adcconf.css"/>
     <link rel="stylesheet" href="../../../themes/default/default.css"/>
+    <script src="../viewer.js"></script>
 </head>
 <body>
 <form>
@@ -143,14 +144,7 @@
 </form>
 <script>
     (function () {
-        var matchTabId = /\?tabid=([^&]+)/gi.exec(window.location.href);
-        if (!matchTabId || !matchTabId.length) {
-            throw new Error("Invalid context, the tab id is not defined");
-        }
-        var tabId = matchTabId[1];
-        var parent = window.parent;
-        var tabs = parent.tabs;
-        var tab = tabs[tabId];
+        var tab = viewer.currentTab;
         var info = tab.adcConfig.info;
         var i, l, str, key, constraints;
         var infCons = info.constraints;
@@ -211,9 +205,8 @@
          });
          */
 
+        viewer.fireReady();
     }());
-
-
 </script>
 </body>
 </html>

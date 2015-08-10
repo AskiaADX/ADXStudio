@@ -1,15 +1,5 @@
-
-
-
 (function () {
-    var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
-    if (!matchTabId || !matchTabId.length) {
-        throw new Error("Invalid context, the tab id is not defined");
-    }
-    var tabId    = matchTabId[1];
-    var parent   = window.parent;
-    var tabs     = parent.tabs;
-    var tab      = tabs[tabId];
+    var tab      = viewer.currentTab; // From viewer.js
 
     var contener = document.getElementById('contener');
     var img = document.createElement('img');
@@ -23,6 +13,8 @@
     img.style.backgroundRepeat = "repeat";
     document.body.appendChild(img);
     contener.appendChild(img);
+
+    viewer.fireReady();
 }());
 
 var img = document.getElementById('imageLoaded');
@@ -44,10 +36,8 @@ toolbar.addEventListener('click', function(event) {
 function toolbarexe() {
   //function click ZOOMIN
   if (element.elclass == 'zoomIn tool') {
-    console.log(img.style.width);
     i += 10;
     img.style.width = i + '%';
-    console.log(i);
   }
 
 //function click ZOOMOUT

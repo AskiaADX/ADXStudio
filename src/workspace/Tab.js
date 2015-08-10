@@ -43,6 +43,16 @@ Tab.prototype.loadFile = function loadFile(callback) {
                 change   : stats.ctime
             };
         }
+        // Look at known extension first
+        if (/\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i.test(self.path)) {
+            self.fileType = 'image';
+            if (typeof callback === 'function') {
+                callback();
+            }
+            return;
+        }
+
+        // Try to look at the nature of the file itself
         Tab.isTextOrBinaryFile(self.path, function (err, type) {
             self.fileType = type;
             if (type === 'text') {
