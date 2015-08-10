@@ -24,12 +24,12 @@ app.once('ready', function createAppMenu() {
 
                           dialog.showSaveDialog({properties: ['openFile']}, function(filepath) {
                             if (filepath) {
-                              fs.writeFile(filepath, '// Made with love', function(err){
+                              fs.writeFile(filepath, '// Made with love in Paris', function(err){
                                 if (err) {
                                   throw err;
                                 }
                                 /*
-                                Send a message to other control in the main process in order to create new File.
+                                Send a message to other controllers in the main process in order to create a new File.
                                 */
                                 app.emit('menu-new-file', filepath);
                               });
