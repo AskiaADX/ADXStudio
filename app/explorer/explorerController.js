@@ -3,7 +3,6 @@ var ipc = require('ipc');
 var explorer = require('../../src/explorer/explorer.js');
 var path = require('path');
 var ADC   = require('adcutil').ADC;
-var fs = require('fs');
 var explorerView;
 
     /**
@@ -12,7 +11,7 @@ var explorerView;
  */
 function openProject(folderpath) {
     explorer.load(folderpath, function(err, files) {
-        explorerView.send('explorer-expand-folder', err, files, 'root');
+        explorerView.send('explorer-expand-folder', err, folderpath, files, true);
         global.project.path = folderpath;
         global.project.adc  = new ADC(global.project.path);
     });
@@ -28,30 +27,20 @@ function openProject(folderpath) {
 function renameFile(event, file, newName) {
     var oldPath = file.path;
     var newPath = path.join(oldPath, '..', newName);
-
-    fs.stat(newPath, function(err, stats) {
-
-        //if folder/file doesn't exist.
-        if (err || (!stats.isFile() && !stats.isDirectory())) {
-
-            fs.rename(oldPath, newPath, function(err) {
-                if(err) {
-                    console.log(err.message);
-                } else {
-                    console.log('Cool ca marche');
-
-                    var parent = path.join(newPath,'..');
-                    explorer.load(parent, function(err, files) {
-                      explorerView.send('explorer-expand-folder', err, parent, files);
-                    });
-                }
-            });
-        } else {
-            console.log('File or folder already exists.');
-
-        }
+    explorer.rename(oldPath, newPath, function(err) {
+      if (err) {
+          console.log(err.message);
+      }
     });
+}
 
+/**
+ * When a directory change reload it
+ * @param {String} dir Path of the directory that has changed
+ * @param {Array} files Files or folders in the directory
+ */
+function onChange(dir, files) {
+    explorerView.send('explorer-expand-folder', null, dir, files);
 }
 
 ipc.on('explorer-ready', function(event) {
@@ -72,6 +61,10 @@ ipc.on('explorer-ready', function(event) {
     // Here we receive the object sent from index.js.
     ipc.removeListener('explorer-rename', renameFile); // Remove it first
     ipc.on('explorer-rename', renameFile); // Add it back again
+
+    // When the directory structure change, reload the view
+    explorer.removeListener('change', onChange); // Remove it first
+    explorer.on('change', onChange); // Add it back
 });
 
 ipc.on('explorer-load-folder', function(event, folderpath) {

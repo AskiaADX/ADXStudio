@@ -5,15 +5,56 @@ var menuItem = remote.require('menu-item');
 var ipc = require('ipc');
 
 
+function selectItem() {
+  var divGlobal = document.querySelector('.selected');
+  var itemInfo = this;
 
-function itemclick(itemInfo) {
+    if (divGlobal) {
+        divGlobal.classList.remove('selected')
+    }
+    
+  itemInfo.classList.add('selected');
 
+
+}
+
+
+
+
+function itemRightClick(e) {
+
+ var el = this.parentNode;
+ var file = el.file;
+  selectItem.call(this);
+
+ var menu1 = new menu();
+ menu1.append(new menuItem({ label: 'Rename', click: function() {
+
+     // send a messqge to the explorer host (To the View) --> index.js
+     //first argument is the channel: 'show-Modal-Dialog'
+     //second argument is an object which contains caracteristics of the first argument of the API.
+     //third argument is a message 'rename-file'
+     //fourth argument is the element selected
+   ipc.sendToHost('show-Modal-Dialog', {type: 'prompt', text:'Rename your file here:', value: file.name}, 'explorer-rename', file);
+
+   } }));
+
+ e.preventDefault();
+ menu1.popup(remote.getCurrentWindow());
+}
+
+
+
+function itemclick() {
+
+  var itemInfo = this;
   var item = itemInfo.parentNode;
   var parentItem = item.parentNode;
-  var divGlobal = document.querySelector('.selected');
   var file = item.file;
   var child = item.querySelector('.child');
   var toggle;
+
+  selectItem.call(this);
 
   // Folder system
   if (file.type === 'folder') {
@@ -33,18 +74,12 @@ function itemclick(itemInfo) {
       ipc.send('explorer-load-folder', file.path);
       file.loaded = true;
     }
+
   } else {
-    itemInfo.classList.add('selected');
-    ipc.send('explorer-load-file', file);
-    if (divGlobal){
-        divGlobal.classList.remove('selected')
-    }
+      ipc.send('explorer-load-file', file);
   }
 }
 
-function rightClick () {
-console.log('g');
-}
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -81,33 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
       itemInfo.className = 'item-info';
 
       //The function when someone click on a div itemInfo
-      itemInfo.onclick = function(e) {
+      itemInfo.onclick = itemclick;
 
-        if(e.button == 0) {
-          itemclick(this);
-        }
-      };
-
-      itemInfo.addEventListener('contextmenu', function(e) {
-
-        var el = this.parentNode;
-        var file = el.file;
-        console.log(file);
-        var menu1 = new menu();
-        menu1.append(new menuItem({ label: 'Rename', click: function() {
-
-            // send a messqge to the explorer host (To the View) --> index.js
-            //first argument is the channel: 'show-Modal-Dialog'
-            //second argument is an object which contains caracteristics of the first argument of the API.
-            //third argument is a message 'rename-file'
-            //fourth argument is the element selected
-          ipc.sendToHost('show-Modal-Dialog', {type: 'prompt', text:'Rename your file here:', value: file.name}, 'explorer-rename', file);
-
-          } }));
-
-        e.preventDefault();
-        menu1.popup(remote.getCurrentWindow());
-      }, false);
+      itemInfo.addEventListener('contextmenu', itemRightClick, false);
 
 
       var toggle = document.createElement('div');
