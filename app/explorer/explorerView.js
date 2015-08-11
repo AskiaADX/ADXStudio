@@ -4,10 +4,6 @@ var menu = remote.require('menu');
 var menuItem = remote.require('menu-item');
 var ipc = require('ipc');
 
-var map = {
-  autoincrement: 0
-};
-
 
 
 function itemclick(itemInfo) {
@@ -15,7 +11,7 @@ function itemclick(itemInfo) {
   var item = itemInfo.parentNode;
   var parentItem = item.parentNode;
   var divGlobal = document.querySelector('.selected');
-  var file = map[item.id];
+  var file = item.file;
   var child = item.querySelector('.child');
   var toggle;
 
@@ -23,7 +19,7 @@ function itemclick(itemInfo) {
   if (file.type === 'folder') {
     toggle = itemInfo.querySelector('.toggle');
 
-    if(child.style.display === 'block') {
+    if (child.style.display === 'block') {
       //if it's open, then we close it on click
       child.style.display = '';
       toggle.classList.remove('open');
@@ -33,8 +29,8 @@ function itemclick(itemInfo) {
       toggle.classList.add('open');
     }
 
-    if(!file.loaded) {
-      ipc.send('explorer-load-folder', file.path, item.id);
+    if (!file.loaded) {
+      ipc.send('explorer-load-folder', file.path);
       file.loaded = true;
     }
   } else {
@@ -51,19 +47,35 @@ console.log('g');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  ipc.on('explorer-expand-folder', function( err, files, elementid) {
-    var root = document.getElementById(elementid).querySelector('.child');
+
+  /*
+  *
+  * @param {String} path Path of Directory.
+  * @param {Array} files files or folder inside rootPath.
+  * @param {Boolean} isRoot indicate if e are on root.
+  */
+  ipc.on('explorer-expand-folder', function( err, path, files, isRoot) {
+    console.log(path);
+    var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
+                          document.querySelector('div[data-path=\''+ path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') +'\']').querySelector('.child');
     var deep = parseInt(root.getAttribute('data-deep'), 10);
     root.innerHTML = '';
 
-    for (var i = 0; i < files.length; i += 1) {
+    if (isRoot) {
+      root.parentNode.setAttribute('data-path', path);
+      root.parentNode.file = {
+        path: path,
+        type: 'folder',
+        name: /(?:\/|\\)([^\/\\]+)(?:\/|\\)?$/.exec(path)[1]
+      };
+    }
 
-      map.autoincrement++;
-      map['item'+ map.autoincrement] = files[i];
+    for (var i = 0; i < files.length; i += 1) {
 
       var item = document.createElement('div');
       item.className = files[i].type;
-      item.id = 'item'+ map.autoincrement;
+      item.setAttribute('data-path', files[i].path);
+      item.file = files[i];
 
       var itemInfo = document.createElement('div');
       itemInfo.className = 'item-info';
@@ -72,15 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
       itemInfo.onclick = function(e) {
 
         if(e.button == 0) {
-          console.log(e.srcElement);
-        itemclick(this);
+          itemclick(this);
         }
       };
 
       itemInfo.addEventListener('contextmenu', function(e) {
 
         var el = this.parentNode;
-        var file = map[el.id];
+        var file = el.file;
         console.log(file);
         var menu1 = new menu();
         menu1.append(new menuItem({ label: 'Rename', click: function() {
@@ -115,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       item.appendChild(itemInfo);
 
-      if(files[i].type == 'folder') {
+      if (files[i].type == 'folder') {
         var child = document.createElement('div');
         child.className="child";
         child.setAttribute('data-deep', deep + 1);

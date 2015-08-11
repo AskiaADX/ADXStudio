@@ -27,7 +27,7 @@ function openProject(folderpath) {
  */
 function renameFile(event, file, newName) {
     var oldPath = file.path;
-    var newPath = path.join(oldPath, '../', '/' + newName);
+    var newPath = path.join(oldPath, '..', newName);
 
     fs.stat(newPath, function(err, stats) {
 
@@ -39,6 +39,11 @@ function renameFile(event, file, newName) {
                     console.log(err.message);
                 } else {
                     console.log('Cool ca marche');
+
+                    var parent = path.join(newPath,'..');
+                    explorer.load(parent, function(err, files) {
+                      explorerView.send('explorer-expand-folder', err, parent, files);
+                    });
                 }
             });
         } else {
@@ -55,7 +60,7 @@ ipc.on('explorer-ready', function(event) {
     // Load the default path
     var defaultPath = path.join(__dirname, '../../');
     explorer.load(defaultPath, function(err, files) {
-        explorerView.send('explorer-expand-folder', err, files, 'root');
+        explorerView.send('explorer-expand-folder', err, defaultPath, files, true);
         global.project.path = defaultPath;
         global.project.adc  = new ADC(global.project.path);
     });
@@ -69,8 +74,8 @@ ipc.on('explorer-ready', function(event) {
     ipc.on('explorer-rename', renameFile); // Add it back again
 });
 
-ipc.on('explorer-load-folder', function(event, folderpath, elementid) {
+ipc.on('explorer-load-folder', function(event, folderpath) {
   explorer.load(folderpath, function(err, files) {
-    event.sender.send('explorer-expand-folder', err, files, elementid);
+    event.sender.send('explorer-expand-folder', err, folderpath, files);
   });
 });
