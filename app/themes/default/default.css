@@ -97,7 +97,7 @@ body.grey {
     flex-direction: row;
     flex-wrap: nowrap;
     white-space: nowrap;
-    padding: 2px 0px;
+    padding: 4px 0px;
     width: 100%;
     transition: all ease-in-out .3s;
 }

@@ -38,8 +38,12 @@ form {
 }
 
 label {
-  width: 170px;
-  display: inline-block;
+  width     : 170px;
+  display   : inline-block;
+}
+
+ul > li > label, input[type="checkbox"] {
+  cursor: pointer;
 }
 
 input, textarea, select {
