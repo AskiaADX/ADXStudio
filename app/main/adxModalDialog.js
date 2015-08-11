@@ -94,6 +94,7 @@ iconTextContener.id = 'iconTextContener';
     buttonContener.appendChild(cancel);
 
     prompt.className = 'prompt';
+    prompt.focus();
     prompt.value = config.value || '';
     cancel.className = 'cancel';
     cancel.style.order = 1;
