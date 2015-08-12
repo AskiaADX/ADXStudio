@@ -124,6 +124,7 @@ Explorer.prototype.rename = function (oldPath, newPath, callback) {
 
     callback(null);
 
+    //Part to reload parent folder when path have bben changed.
     var parentDir = path.join(newPath, '..');
     module.exports.load(parentDir, function(err, files) {
       if (err) {
@@ -133,6 +134,35 @@ Explorer.prototype.rename = function (oldPath, newPath, callback) {
     });
 
   });
+
+};
+
+Explorer.prototype.remove = function(path, callback) {
+  var parentDir = path.join(path, '..');
+    if ((!path && !callback)) {
+      throw new Error('Invalid argument');
+    }
+
+    callback = callback || function () {};
+    fs.unlink(path, function(err) {
+
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      callback(null);
+
+      //Part to reload parent folder when path have bben changed.
+
+      module.exports.load(parentDir, function(err) {
+        if (err) {
+            return;
+        }
+        module.exports.emit('change', parentDir);
+      });
+
+    });
 
 };
 
