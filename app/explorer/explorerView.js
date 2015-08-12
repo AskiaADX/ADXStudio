@@ -12,14 +12,9 @@ function selectItem() {
     if (divGlobal) {
         divGlobal.classList.remove('selected')
     }
-    
+
   itemInfo.classList.add('selected');
-
-
 }
-
-
-
 
 function itemRightClick(e) {
 
@@ -38,6 +33,12 @@ function itemRightClick(e) {
    ipc.sendToHost('show-Modal-Dialog', {type: 'prompt', text:'Rename your file here:', value: file.name}, 'explorer-rename', file);
 
    } }));
+
+  menu1.append(new menuItem({ label: 'Remove', click: function() {
+
+     ipc.sendToHost('show-Modal-Dialog-remove', {type: 'yesNo', text: 'Remove the element :', value: file.name}, 'explorer-remove', file);
+
+     } }));
 
  e.preventDefault();
  menu1.popup(remote.getCurrentWindow());

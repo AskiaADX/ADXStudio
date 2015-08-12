@@ -17,6 +17,31 @@ function openProject(folderpath) {
     });
 }
 
+
+ /**
+ * Can remove file or folder from the explorer.
+ *
+ * @param event
+ * @param {String} folder-file/path Path of the folder or the file selected.
+ *
+ */
+function removeFile(event, file, yes) {
+
+
+    console.log(event);
+    console.log('ooooooooooooooooooooooooook');
+
+
+
+  var pathToRemove = file.path;
+
+  explorer.remove(pathToRemove, function(err) {
+    if (err) {
+      console.log(err.message);
+    }
+  });
+}
+
 /**
  * Rename file event
  *
@@ -61,6 +86,9 @@ ipc.on('explorer-ready', function(event) {
     // Here we receive the object sent from index.js.
     ipc.removeListener('explorer-rename', renameFile); // Remove it first
     ipc.on('explorer-rename', renameFile); // Add it back again
+
+    ipc.removeListener('explorer-remove', removeFile);
+    ipc.on('explorer-remove', removeFile);
 
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first

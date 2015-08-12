@@ -10,7 +10,8 @@ describe('explorer', function () {
                 stat: spyOn(fs, 'stat'),
                 statSync: spyOn(fs, 'statSync'),
                 readdir: spyOn(fs, 'readdir'),
-                rename: spyOn(fs, 'rename')
+                rename: spyOn(fs, 'rename'),
+                remove: spyOn(fs, 'remove')
             }
         };
 
@@ -200,6 +201,27 @@ describe('explorer', function () {
           explorer.rename('path/old', 'path/new');
         });
 
-      })
+      });
+
+      it('Should trigger the `change`event after remove.', function() {
+
+        spies.fs.unlink.andCallFake(function(path, callback) {
+           callback(null);
+           
+           runSync(function(done) {
+             function onchange(dir, files) {
+               expect(dir).toBe('path');
+               var arr = [];
+               files.forEach(function (f) {
+                   arr.push(f.name);
+               });
+               expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
+               done();
+             }
+             explorer.on('change', onchange);
+             explorer.remove('path');
+           });
+        });
+      });
     });
 });

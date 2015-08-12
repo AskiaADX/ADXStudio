@@ -68,10 +68,12 @@ iconTextContener.id = 'iconTextContener';
 
     case 'yesNo':
     var yes = document.createElement('button'),
-        no  = document.createElement('button');
+        no  = document.createElement('button'),
+        prompt = document.createElement('input');
 
         buttonContener.appendChild(no);
         buttonContener.appendChild(yes);
+        textContener.appendChild(prompt);
 
         no.className = 'no';
         no.style.order = 2;
@@ -81,6 +83,11 @@ iconTextContener.id = 'iconTextContener';
         yes.style.order = 3;
         yes.innerHTML = 'Yes';
 
+        prompt.className = 'prompt';
+        prompt.style.border = 'none';
+        prompt.style.background = 'none';
+        prompt.setAttribute('readonly', 'true');
+        prompt.value = config.value || '';
         text.innerHTML = textValue;
       break;
 
