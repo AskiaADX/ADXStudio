@@ -20,7 +20,6 @@ body {
 
 body.grey {
     background  : #111;
-    font-family : "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .splitter {
@@ -97,7 +96,7 @@ body.grey {
     flex-direction: row;
     flex-wrap: nowrap;
     white-space: nowrap;
-    padding: 4px 0px;
+    padding: 2px 0px;
     width: 100%;
     transition: all ease-in-out .3s;
 }
@@ -137,9 +136,11 @@ body.grey {
     color: #EEE;
 }
 
+/* TODO::IS THIS CLASS IS USED??? --- */
 .theDivExplorer {
   background-color : #003050;
 }
+/* --- END TODO */
 
 
 /* ========================================
@@ -198,7 +199,7 @@ body.grey {
   font-style: italic;
 }
 
-.tab.active::before {
+.pane.focused .tab.active::before {
     position        : absolute;
     display         : block;
     width           : 4px;

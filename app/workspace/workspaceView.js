@@ -145,6 +145,35 @@ window.tabs  = {
     },
 
     /**
+     * Return the pane HTMLElement that host the specified tab
+     * @param {String} tabId Id of the tab
+     * @return {HTMLElement} Panel
+     */
+    getPaneElementByTabId : function getPaneElementByTabId(tabId) {
+        var el      = document.getElementById('tab-' + tabId),
+            paneEl  = el && el.parentNode;
+        if (!el) {
+            return null;
+        }
+
+        while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
+            paneEl = paneEl.parentNode;
+        }
+        return (paneEl.classList.contains('pane')) ? paneEl : null;
+    },
+
+    onFocus : function onFocus(tabId) {
+        var paneEl = this.getPaneElementByTabId(tabId),
+            oldActive = document.querySelector('.pane.focused');
+        if (!paneEl || oldActive === paneEl) {
+            return;
+        }
+
+        oldActive.classList.remove('focused');
+        paneEl.classList.add('focused');
+    },
+
+    /**
      * Event fire when the content of the editor has changed
      *
      * @param {String} tabId Id of the tab
@@ -163,7 +192,6 @@ window.tabs  = {
     onSave       : function onSave(tabId, content) {
         this.dispatchEvent('tabcontentsave', tabId, content);
     },
-
 
     /**
      * Set the current tab and focus the editor
@@ -277,10 +305,17 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {String} pane Name of the pane where the tab is located
      */
     function setActiveTab(tab, pane) {
-        var el              = document.getElementById('tab-' + tab.id),
+        var paneEl          = document.getElementById(pane + '_pane'),
+            el              = document.getElementById('tab-' + tab.id),
             content         = document.getElementById('content-' + tab.id),
+            oldPane         = document.querySelector('.pane.focused'),
             oldActiveTab    = document.getElementById(pane + '_pane').querySelector('.tab.active'),
             oldContent      = oldActiveTab && document.getElementById(oldActiveTab.id.replace(/^tab-/, "content-"));
+
+        if (oldPane && oldPane !== paneEl) {
+            oldPane.classList.remove('focused');
+        }
+        paneEl.classList.add('focused');
 
         if (el === oldActiveTab) {
             return;
@@ -353,6 +388,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function onTabsClick(event) {
             var el = event.srcElement,
                 paneEl,
+                tabId,
                 tab,
                 pane,
                 shouldClose = el.classList.contains('tab-close');
@@ -369,20 +405,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                if (el.classList.contains('active')) {
+                tabId = el.id.replace(/^(tab-)/, '');
+                paneEl = tabs.getPaneElementByTabId(tabId);
+                if (!paneEl) {
                     return;
                 }
-
-                paneEl = el.parentNode;
-                while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
-                    paneEl = paneEl.parentNode;
-                }
-                pane = paneEl.id.replace(/(_pane)$/, '');
-
-                if (paneEl.classList.contains('pane')) {
-                    tab = tabs[el.id.replace(/^(tab-)/, '')];
-                    setActiveTab(tab, pane);
-                }
+                pane   = paneEl.id.replace(/(_pane)$/, '');
+                tab = tabs[tabId];
+                setActiveTab(tab, pane);
             }
         }
 

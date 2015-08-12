@@ -9,6 +9,10 @@ var viewer = (function () {
     var tab      = tabs[tabId];
 
     tab.window = window;
+
+    window.addEventListener('focus', function () {
+        tabs.onFocus(tab.id);
+    });
     return {
         /**
          * Parent window
@@ -25,7 +29,7 @@ var viewer = (function () {
         /**
          * Fire loaded event
          */
-        fireReady : function () {
+        fireReady : function fireReady() {
             tabs.onEditorLoaded(tab);
         }
     };

@@ -1,3 +1,13 @@
+* {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input, textarea, select {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 div.adx-horizontal-drag {
     cursor: ew-resize;
     background: #333;
@@ -12,18 +22,17 @@ div.adx-vertical-drag {
   position: absolute;
   top:0;
   left: 0;
-  background-color: #111;
 }
 
 .adx-horizontal {
   cursor: ew-resize;
-  width: 4px;
+  width: 6px;
   height: 100%;
 }
 
 .adx-vertical {
   cursor: ns-resize;
-  height: 4px;
+  height: 6px;
   width: 100%;
 }
 
