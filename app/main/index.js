@@ -1,11 +1,13 @@
 
+
+
 (function () {
   var ipc = require('ipc'),
       exp = document.getElementById("explorer"),
       wks = document.getElementById("workspace");
 
     function catchConsoleLog(event) {
-      console.log( event.message );
+      console.log(event.message);
     }
 
     exp.addEventListener('console-message', catchConsoleLog);
@@ -36,8 +38,6 @@
       // ipc.send --> explorerController.js
     exp.addEventListener('ipc-message', function(event) {
 
-
-
       if (event.channel === 'show-Modal-Dialog') {
 
         /*
@@ -46,6 +46,7 @@
         event.args[2] = {name:'toto', path:'nlah/blaj', type:'file' || 'folder'}
         */
         showModalDialog(event.args[0], function(result) {
+
           if(result.button === 'ok' && result.value) {
           ipc.send(event.args[1], event.args[2], result.value);
           }

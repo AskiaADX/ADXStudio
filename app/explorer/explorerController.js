@@ -4,6 +4,7 @@ var explorer = require('../../src/explorer/explorer.js');
 var path = require('path');
 var ADC   = require('adcutil').ADC;
 var fs = require('fs');
+var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var explorerView;
 
     /**
@@ -46,7 +47,6 @@ function renameFile(event, file, newName) {
 
         }
     });
-
 }
 
 ipc.on('explorer-ready', function(event) {

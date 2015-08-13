@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var file = map[el.id];
         console.log(file);
         var menu1 = new menu();
-        menu1.append(new menuItem({ label: 'Rename', click: function() {
+        menu1.append(new menuItem({ label: 'Rename', click: function(e) {
+
 
             // send a messqge to the explorer host (To the View) --> index.js
             //first argument is the channel: 'show-Modal-Dialog'
