@@ -84,6 +84,14 @@ app.once('ready', function createAppMenu() {
                             //Function to define in order to save current file changed.
                         }
                     },
+                  	{
+                        label: '&Remove',
+                        accelerator: 'Ctrl+B',
+                        click: function() {
+
+                            //Function to define in order to save current file changed.
+                        }
+                    },
                    {
                         type: 'separator'
                     },
