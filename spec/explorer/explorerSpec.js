@@ -9,7 +9,9 @@ describe('explorer', function () {
             fs: {
                 stat: spyOn(fs, 'stat'),
                 statSync: spyOn(fs, 'statSync'),
-                readdir: spyOn(fs, 'readdir')
+                readdir: spyOn(fs, 'readdir'),
+                rename: spyOn(fs, 'rename'),
+                remove: spyOn(fs, 'remove')
             }
         };
 
@@ -137,5 +139,89 @@ describe('explorer', function () {
                 });
             });
         });
+    });
+
+    describe('#rename', function() {
+
+      it("Should be a function", function () {
+          expect(typeof explorer.rename).toBe('function');
+      });
+
+      it("Should throw an exception when no argument", function () {
+          expect(function () {
+              explorer.rename();
+          }).toThrow(new Error('Invalid argument'));
+      });
+
+      it("Should rename the file or folder with specified arguments", function () {
+          runSync(function (done) {
+            var oldReceived,
+                newReceived;
+
+            spies.fs.rename.andCallFake(function(oldPath, newPath, callback) {
+              oldReceived = oldPath;
+              newReceived = newPath;
+               callback();
+            });
+              explorer.rename('path/old', 'path/new', function () {
+                  expect(oldReceived).toBe('path/old');
+                  expect(newReceived).toBe('path/new');
+                  done();
+              });
+          })
+        });
+    });
+
+    describe('events', function() {
+
+      it('Should inherit of eventListener from nodeJS.', function () {
+        expect(typeof explorer.on).toBe('function');
+        expect(typeof explorer.addListener).toBe('function');
+        expect(typeof explorer.removeListener).toBe('function');
+        expect(typeof explorer.emit).toBe('function');
+      });
+
+      it('Should trigger the `change`event after rename.', function () {
+
+        spies.fs.rename.andCallFake(function(oldPath, newPath, callback) {
+           callback(null);
+        });
+
+        runSync(function(done) {
+          function onchange(dir, files) {
+            expect(dir).toBe('path');
+            var arr = [];
+            files.forEach(function (f) {
+                arr.push(f.name);
+            });
+            expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
+            done();
+          }
+          explorer.on('change', onchange);
+          explorer.rename('path/old', 'path/new');
+        });
+
+      });
+
+      it('Should trigger the `change`event after remove.', function() {
+
+        spies.fs.unlink.andCallFake(function(path, callback) {
+           callback(null);
+           
+           runSync(function(done) {
+             function onchange(dir, files) {
+               expect(dir).toBe('path');
+               var arr = [];
+               files.forEach(function (f) {
+                   arr.push(f.name);
+               });
+               expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
+               done();
+             }
+             explorer.on('change', onchange);
+             explorer.remove('path');
+           });
+        });
+      });
     });
 });

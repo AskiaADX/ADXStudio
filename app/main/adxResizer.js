@@ -43,18 +43,10 @@ adx.Resizer = (function() {
        this.resizeEl = document.createElement('div');
        this.resizeEl.adxEl = this.element;
        this.resizeEl.adxResizer = this;
-       this.resizeEl.className = 'adx-' + this.direction;
+       this.resizeEl.className = 'adx-' + this.direction + ' hide'; // Make it hidden by default
 
-       if (this.resizeEl.className === 'adx-horizontal') {
-
-         this.resizeEl.style.left = this.element.offsetWidth + 'px';
-         this.element.parentNode.appendChild(this.resizeEl);
-
-       } else if (this.resizeEl.className === 'adx-vertical') {
-
-         this.resizeEl.style.top = this.element.offsetHeight + 'px';
-         this.element.parentNode.appendChild(this.resizeEl);
-       }
+      this.refreshPosition();
+      this.element.parentNode.appendChild(this.resizeEl);
     }
 
 
@@ -80,19 +72,30 @@ adx.Resizer = (function() {
         document.body.removeEventListener('mouseup', up);
         document.body.removeEventListener('mousemove', move);
         currentEl.adxEl.style[config.size] = currentEl[config.offsetPos] + 'px';
-        var widthEl = currentEl.adxEl[config.offsetSize];
-        currentEl.style[config.pos] = widthEl + 'px';
+        currentEl.adxResizer.refreshPosition();
       }
     }
+
+    /**
+     * Reset the position of the resizer element
+     */
+    Resizer.prototype.refreshPosition = function () {
+        var self = this,
+            config  = self.config,
+            resizeEl = self.resizeEl,
+            sizeElement = self.element[config.offsetSize];
+
+        resizeEl.style[config.pos] = sizeElement + 'px';
+    };
 
     Resizer.prototype.start = function() {
 
       var self = this;
-
-          var elementToMove = self.resizeEl;
-          elementToMove.classList.remove('hide');
-          elementToMove.addEventListener('mousedown',  down);
-    }
+      self.refreshPosition();
+      var elementToMove = self.resizeEl;
+      elementToMove.classList.remove('hide');
+      elementToMove.addEventListener('mousedown',  down);
+    };
 
     Resizer.prototype.stop = function() {
       var self = this;
@@ -101,7 +104,7 @@ adx.Resizer = (function() {
       elementToMove.removeEventListener('mousedown', down);
       elementToMove.removeEventListener('mousedown', down);
       elementToMove.classList.add('hide');
-    }
+    };
 
     return Resizer;
 

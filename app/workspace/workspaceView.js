@@ -138,10 +138,36 @@ window.tabs  = {
             'detail': {
                 'tab'     : tab,
                 'content' : content,
-                'isModified' : (tab.content !== content)
+                'isModified' : (content !== undefined && tab.content !== content)
             }
         });
         document.body.dispatchEvent(event);
+    },
+
+    /**
+     * Return the pane HTMLElement that host the specified tab
+     * @param {String} tabId Id of the tab
+     * @return {HTMLElement} Panel
+     */
+    getPaneElementByTabId : function getPaneElementByTabId(tabId) {
+        var el      = document.getElementById('tab-' + tabId),
+            paneEl  = el && el.parentNode;
+        if (!el) {
+            return null;
+        }
+
+        while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
+            paneEl = paneEl.parentNode;
+        }
+        return (paneEl.classList.contains('pane')) ? paneEl : null;
+    },
+
+    /**
+     * Event fire when a tab is focused
+     * @param {String} tabId Id of the focused tab
+     */
+    onFocus : function onFocus(tabId) {
+        this.dispatchEvent('tabfocused', tabId);
     },
 
     /**
@@ -163,7 +189,6 @@ window.tabs  = {
     onSave       : function onSave(tabId, content) {
         this.dispatchEvent('tabcontentsave', tabId, content);
     },
-
 
     /**
      * Set the current tab and focus the editor
@@ -205,8 +230,6 @@ document.addEventListener('DOMContentLoaded', function () {
             element : document.getElementById('main_pane')
         });
 
-    resizer.start();
-
      /**
       * Add a tab
       *
@@ -215,6 +238,9 @@ document.addEventListener('DOMContentLoaded', function () {
       * @param {Boolean} [isActive=false] Activate the tab after his creation
       */
     function addTab(tab, pane, isActive) {
+         // Open the pane
+         openPane(pane);
+
          // Create the tab
          var tabEl = document.createElement('li');
          tabEl.classList.add('tab');
@@ -246,6 +272,8 @@ document.addEventListener('DOMContentLoaded', function () {
              viewerSubFolderName = 'adcconf';
          } else if (tab.fileType === 'image') {
              viewerSubFolderName = 'image';
+         } else if (tab.fileType === 'preview') {
+             viewerSubFolderName = 'preview';
          }
 
 
@@ -282,6 +310,8 @@ document.addEventListener('DOMContentLoaded', function () {
             oldActiveTab    = document.getElementById(pane + '_pane').querySelector('.tab.active'),
             oldContent      = oldActiveTab && document.getElementById(oldActiveTab.id.replace(/^tab-/, "content-"));
 
+        setActivePane(pane);
+
         if (el === oldActiveTab) {
             return;
         }
@@ -316,7 +346,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var el              = document.getElementById('tab-' + tab.id),
             contentEl       = document.getElementById('content-' + tab.id),
             tabToSelect     = null,
-            currentTab      = tabs[tab.id];
+            currentTab      = tabs[tab.id],
+            paneState       = getPanesState();
 
 
 
@@ -337,9 +368,72 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tabToSelect) {
             setActiveTab(tabToSelect, pane);
         }
+
+        // Close the empty pane but never close both pane
+        if ((paneState.main && paneState.second) && !isPaneHasTab(pane)) {
+            closePane(pane);
+        }
     }
 
+    /**
+     * Set the active pane
+     * @param {String} pane Name of the pane to activate
+     */
+    function setActivePane(pane) {
+        var paneEl          = typeof pane === 'string' ?  document.getElementById(pane + '_pane') : pane,
+            oldPane         = document.querySelector('.pane.focused');
+        if (oldPane && oldPane !== paneEl) {
+            oldPane.classList.remove('focused');
+        }
+        paneEl.classList.add('focused');
+    }
 
+    /**
+     * Return the state of panes
+     * @return {Object} state
+     */
+    function getPanesState() {
+        return {
+            main : document.getElementById('main_pane').classList.contains('open'),
+            second : document.getElementById('second_pane').classList.contains('open')
+        };
+    }
+
+    /**
+     * Open the specified pane
+     * @param {String} pane Name of the pane to open
+     */
+    function openPane(pane) {
+        document.getElementById(pane + '_pane').classList.add('open');
+        var state = getPanesState();
+        if (state.main && state.second) {
+            document.getElementById('panes').classList.remove('full');
+            document.getElementById('panes').classList.add('split');
+            resizer.start();
+        }
+    }
+
+    /**
+     * Indicates if the specified pane has tab
+     * @param {String} pane Name of the pane to examine
+     */
+    function isPaneHasTab(pane) {
+        return document.getElementById(pane + '_pane').querySelectorAll('.tabs > li.tab').length;
+    }
+
+    /**
+     * Close the specified pane
+     * @param {String} pane Name of the pane to close
+     */
+    function closePane(pane) {
+        document.getElementById(pane + '_pane').classList.remove('open');
+        var state = getPanesState();
+        if (!state.main || !state.second) {
+            document.getElementById('panes').classList.remove('split');
+            document.getElementById('panes').classList.add('full');
+            resizer.stop();
+        }
+    }
 
     (function initTabEvents() {
         var i, l,
@@ -353,6 +447,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function onTabsClick(event) {
             var el = event.srcElement,
                 paneEl,
+                tabId,
                 tab,
                 pane,
                 shouldClose = el.classList.contains('tab-close');
@@ -369,20 +464,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                if (el.classList.contains('active')) {
+                tabId = el.id.replace(/^(tab-)/, '');
+                paneEl = tabs.getPaneElementByTabId(tabId);
+                if (!paneEl) {
                     return;
                 }
-
-                paneEl = el.parentNode;
-                while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
-                    paneEl = paneEl.parentNode;
-                }
-                pane = paneEl.id.replace(/(_pane)$/, '');
-
-                if (paneEl.classList.contains('pane')) {
-                    tab = tabs[el.id.replace(/^(tab-)/, '')];
-                    setActiveTab(tab, pane);
-                }
+                pane   = paneEl.id.replace(/(_pane)$/, '');
+                tab = tabs[tabId];
+                setActiveTab(tab, pane);
             }
         }
 
@@ -421,6 +510,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         document.body.addEventListener('tabcontentsave', onTabContentSave);
+
+        /**
+         * Event when a tab is focused
+         *
+         * @param {CustomEvent} event
+         */
+        function onTabFocused(event) {
+            var tab  = event.detail.tab,
+                pane =  tabs.getPaneElementByTabId(tab.id);
+
+            setActivePane(pane);
+
+            ipc.send('workspace-set-current-tab', tab.id);
+        }
+
+        document.body.addEventListener('tabfocused', onTabFocused);
 
         for (i = 0, l = els.length; i < l; i += 1) {
             els[i].addEventListener('click', onTabsClick);

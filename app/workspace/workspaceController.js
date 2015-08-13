@@ -22,13 +22,9 @@ function openFile(file) {
 
         // When the tab doesn't exist, create it
         workspace.createTab(file, function (err, tab, pane) {
-            // TODO::Don't throw the error but send it to the view
             if (err) throw err;
             tab.loadFile(function (err) {
                 workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
-
-                 // TODO::Just for test switch to the other pane for the next tab
-                workspace.panes.current(pane === 'main' ? 'second' : 'main');
             });
         });
     });
@@ -74,6 +70,50 @@ function openProjectSettings() {
 }
 
 /**
+ * Open the ADX preview
+ */
+function openPreview() {
+    var adc = global.project.adc;
+    if (!adc || !adc.path) {
+        return;
+    }
+    workspace.find('::preview', function (err, tab, pane) {
+
+        // If the tab already exist only focus it
+        if (tab) {
+            workspaceView.send('workspace-focus-tab', err, tab, pane);
+            return;
+        }
+
+        // When the tab doesn't exist, create it
+        // and enforce his creation on the second panel by default
+        var previousPane = workspace.panes.current();
+        workspace.panes.current('second');
+        workspace.createTab('::preview', function (err, tab, pane) {
+            if (err) throw err;
+            workspace.panes.current(previousPane); // Restore the previous active pane
+            tab.name = 'Preview';
+            tab.fileType  = 'preview';
+            workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+        });
+    });
+}
+
+/**
+ * Set the current tab
+ * @param event
+ * @param {String} tabId Id of the tab
+ */
+function setCurrentTab(event, tabId) {
+    workspace.find(tabId, function (err, tab) {
+        if (err) {
+            return;
+        }
+        workspace.currentTab(tab);
+    });
+}
+
+/**
  * Close a tab
  * @param event
  * @param {String} tabId Id of the tab to close
@@ -102,6 +142,8 @@ function saveContent(event, tabId, content) {
     });
 }
 
+
+
 ipc.on('workspace-ready', function (event) {
     // Keep the connection with the view
     workspaceView = event.sender;
@@ -109,6 +151,9 @@ ipc.on('workspace-ready', function (event) {
     workspace.init(function () {
         ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
         ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
+
+        ipc.removeListener('workspace-set-current-tab', setCurrentTab);
+        ipc.on('workspace-set-current-tab', setCurrentTab);
 
         ipc.removeListener('workspace-close-tab', closeTab);
         ipc.on('workspace-close-tab', closeTab);
@@ -125,6 +170,10 @@ ipc.on('workspace-ready', function (event) {
 
         app.removeListener('menu-show-project-settings', openProjectSettings);
         app.on('menu-show-project-settings', openProjectSettings);
+
+
+        app.removeListener('menu-preview', openPreview);
+        app.on('menu-preview', openPreview);
 
     });
 

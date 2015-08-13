@@ -23,6 +23,15 @@ use.
         // ... code that uses the workspace 
      });
 
+### workspace-set-current-tab
+
+The `workspace-set-current-tab` event is fire when the current tab change
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the current active and focused tab     
+
 ### workspace-close-tab
 
 The `workspace-close-tab` event is fire when the user try to close a tab.

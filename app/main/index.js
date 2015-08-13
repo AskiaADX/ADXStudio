@@ -38,6 +38,7 @@
       // ipc.send --> explorerController.js
     exp.addEventListener('ipc-message', function(event) {
 
+
       if (event.channel === 'show-Modal-Dialog') {
 
         /*
@@ -53,6 +54,18 @@
         });
       }
 
+
+      if (event.channel === 'show-Modal-Dialog-remove') {
+
+
+        showModalDialog(event.args[0], function(result) {
+
+          if(result.button === 'yes' && result.value) {
+            console.log(result.value, 'IndexJS');
+          ipc.send(event.args[1], event.args[2], 'yes');
+          }
+        });
+      }
 
     });
 

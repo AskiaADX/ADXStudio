@@ -1,5 +1,8 @@
 var fs = require('fs');
 var path = require("path");
+var util = require("util");
+var EventEmitter = require("events").EventEmitter;
+
 
 /**
  * Sort the files with folder first
@@ -16,7 +19,16 @@ function sortFiles(a, b) {
 }
 
 /**
- * load.SpecifiedDirectory and return all files and folders
+ * Create a new instance of the explorer object
+ */
+function Explorer() {
+  EventEmitter.call(this);
+}
+
+util.inherits(Explorer, EventEmitter);
+
+/**
+ * load the specified directory and return all files and folders
  *
  *    var explorer=require('ADXStudio/src/explorer/explorer.js');
  *    explorer.load('C:/',function(err,files){
@@ -31,7 +43,7 @@ function sortFiles(a, b) {
  * @param {Error} callback.err Error
  * @param {Array} callback.files return an array of files/folders
  */
-exports.load = function (dir, callback) {
+Explorer.prototype.load = function (dir, callback) {
     if (!callback) {
         throw new Error('Invalid argument, expected callback');
     }
@@ -81,3 +93,77 @@ exports.load = function (dir, callback) {
         });
     });
 };
+
+
+/**
+ * Rename the file or directory.
+ *
+ *    var explorer=require('ADXStudio/src/explorer/explorer.js');
+ *    explorer.rename('old/path', 'path/new', function(err) {
+ *       console.log(err);
+ *    });
+ *
+ * @param {String} oldPath Path of file or folder to change.
+ * @param {String} newPath Path of new file or folder changed.
+ * @param {Function} callback
+ * @param {Error} callback.err Error
+ */
+Explorer.prototype.rename = function (oldPath, newPath, callback) {
+
+  if ((!oldPath || !newPath) && !callback) {
+    throw new Error('Invalid argument');
+  }
+
+  callback = callback || function () {};
+  fs.rename(oldPath, newPath, function(err) {
+
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    callback(null);
+
+    //Part to reload parent folder when path have bben changed.
+    var parentDir = path.join(newPath, '..');
+    module.exports.load(parentDir, function(err, files) {
+      if (err) {
+          return;
+      }
+      module.exports.emit('change', parentDir, files);
+    });
+
+  });
+
+};
+
+Explorer.prototype.remove = function(path, callback) {
+  var parentDir = path.join(path, '..');
+    if ((!path && !callback)) {
+      throw new Error('Invalid argument');
+    }
+
+    callback = callback || function () {};
+    fs.unlink(path, function(err) {
+
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      callback(null);
+
+      //Part to reload parent folder when path have bben changed.
+
+      module.exports.load(parentDir, function(err) {
+        if (err) {
+            return;
+        }
+        module.exports.emit('change', parentDir);
+      });
+
+    });
+
+};
+
+module.exports = new Explorer();
