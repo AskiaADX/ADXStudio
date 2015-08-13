@@ -19,7 +19,7 @@ function openProject(folderpath) {
 }
 
 
- /**
+  /**
  * Can remove file or folder from the explorer.
  *
  * @param event
@@ -30,7 +30,7 @@ function removeFile(event, file, yes) {
 
 
     console.log(event);
-    console.log('ooooooooooooooooooooooooook');
+    console.log('TEST REMOVE DONE');
 
 
 
