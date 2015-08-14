@@ -28,23 +28,35 @@ html, body {
     height          : 100vh;
 }
 
-
-
 .tabs {
     height      : 45px;
     margin      : 0;
     padding     : 0;
     display     : flex;
     white-space : nowrap;
+    position    : relative;
 }
 
-.tab {
+.tab, .tab-placeholder {
     display     : flex;
     list-style  : none;
     min-width   : 75px;
     width       : 150px;
     max-width   : 200px;
     margin      : 0;
+}
+
+.tab-placeholder {
+    display : none;
+}
+
+.on-tab-dragging .tab-placeholder {
+    display : flex;
+}
+
+.tab.dragging {
+    position : absolute;
+    z-index  : 100;
 }
 
 .tab-text {

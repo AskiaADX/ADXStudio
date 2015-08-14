@@ -184,6 +184,11 @@ body.grey {
     visibility: visible;
 }
 
+/* TODO::SHOULD BE STYLED PROPERLY */
+.tab-placeholder {
+    background: red;
+}
+
 .tab-end {
     background      : #21252B;
     border-bottom   : 1px solid #111;
