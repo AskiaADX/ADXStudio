@@ -88,6 +88,7 @@ app.once('ready', function createAppMenu() {
                         label: '&Remove',
                         accelerator:'Ctrl+Delete',
                         click: function() {
+                          //app.emit('menu-rename');
 
                             //Function to define in order to save current file changed.
                         }

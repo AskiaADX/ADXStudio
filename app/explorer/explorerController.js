@@ -88,6 +88,10 @@ ipc.on('explorer-ready', function(event) {
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
 
+    
+  /*  app.removeListener('menu-remove', removeFile);
+    app.on('menu-remove', removeFile); */
+
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
     explorer.on('change', onChange); // Add it back
