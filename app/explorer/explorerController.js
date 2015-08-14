@@ -3,6 +3,7 @@ var ipc = require('ipc');
 var explorer = require('../../src/explorer/explorer.js');
 var path = require('path');
 var ADC   = require('adcutil').ADC;
+var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var explorerView;
 
     /**
@@ -18,20 +19,17 @@ function openProject(folderpath) {
 }
 
 
- /**
+  /**
  * Can remove file or folder from the explorer.
  *
  * @param event
  * @param {String} folder-file/path Path of the folder or the file selected.
  *
  */
-function removeFile(event, file, yes) {
-
+function removeFile(event, file) {
 
     console.log(event);
-    console.log('ooooooooooooooooooooooooook');
-
-
+    console.log('TEST REMOVE DONE');
 
   var pathToRemove = file.path;
 

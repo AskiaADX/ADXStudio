@@ -63,6 +63,7 @@ adx.Resizer = (function() {
 
       function move(event) {
         currentEl.style[config.pos] = (event[config.pageCoord] - config.delta) + 'px';
+
       }
 
       function up(event) {

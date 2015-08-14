@@ -1,11 +1,13 @@
 
+
+
 (function () {
   var ipc = require('ipc'),
       exp = document.getElementById("explorer"),
       wks = document.getElementById("workspace");
 
     function catchConsoleLog(event) {
-      console.log( event.message );
+      console.log(event.message);
     }
 
     exp.addEventListener('console-message', catchConsoleLog);
@@ -45,6 +47,7 @@
         event.args[2] = {name:'toto', path:'nlah/blaj', type:'file' || 'folder'}
         */
         showModalDialog(event.args[0], function(result) {
+
           if(result.button === 'ok' && result.value) {
           ipc.send(event.args[1], event.args[2], result.value);
           }
@@ -57,9 +60,9 @@
 
         showModalDialog(event.args[0], function(result) {
 
-          if(result.button === 'yes' && result.value) {
-            console.log(result.value, 'IndexJS');
-          ipc.send(event.args[1], event.args[2], 'yes');
+          if(result.button === 'yes') {
+            console.log('send ' + event.args[1]);
+          ipc.send(event.args[1], event.args[2]);
           }
         });
       }
