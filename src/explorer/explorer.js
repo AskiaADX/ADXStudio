@@ -188,6 +188,7 @@ Explorer.prototype.remove = function(pathToRemove, callback) {
       //If the item selected is a folder
       if (stats.isDirectory()) {
 
+
         fs.rmdir(pathToRemove, function(err) {
 
           if (err) {
