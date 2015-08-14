@@ -475,6 +475,128 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        /**
+         * Event when mousedown on tabs
+         *
+         * @param {Event} event
+         */
+        function onTabsMousedown(event) {
+            var el = event.srcElement,
+                paneEl,
+                tabId,
+                tab,
+                shouldClose = el.classList.contains('tab-close');
+
+            // Has click on the element to close the tab?
+            if (shouldClose) {
+                return;
+            }
+
+            // Click on child nodes
+            if (el.parentNode.classList.contains('tab')) {
+                el = el.parentNode;
+            }
+
+            if (el.classList.contains('tab')) {
+
+                tabId = el.id.replace(/^(tab-)/, '');
+                paneEl = tabs.getPaneElementByTabId(tabId);
+                if (!paneEl) {
+                    return;
+                }
+                tab = tabs[tabId];
+
+                paneEl.dragDetails = {
+                    tab         : tab,
+                    el          : el,
+                    elWidth     : el.offsetWidth,
+                    placeholder : paneEl.querySelector('.tab-placeholder'),
+                    delta       : event.pageX - el.offsetLeft,
+                    hasMoved    : false,
+                    maxLeft     : paneEl.offsetWidth - (el.offsetWidth + 10)
+                };
+                paneEl.addEventListener('mousemove', onTabDrag);
+                paneEl.addEventListener('mouseup', onTabStopDrag);
+            }
+        }
+
+        /**
+         * Drag a tab
+         * @param event
+         */
+        function onTabDrag(event) {
+            var details = this.dragDetails;
+            var siblingEl, siblingLeftLimit, nextEl, pos;
+            if (!this.classList.contains('on-tab-dragging')) {
+                details.el.classList.add('dragging');
+                details.el.parentNode.insertBefore(details.placeholder, details.el);
+                details.placeholder.style.width = details.el.offsetWidth + 'px';
+                this.classList.add('on-tab-dragging');
+            }
+
+            // Lower and upper bound of the element
+            pos = (event.pageX - details.delta);
+            if (pos > details.maxLeft) {
+                pos = details.maxLeft;
+            }
+
+            // Move it
+            details.el.style.left = pos + 'px';
+
+            // Is the bound the el is lower than the half of the previous el?
+            siblingEl = details.placeholder.previousElementSibling;
+            while (siblingEl && siblingEl === details.el) {
+                siblingEl = siblingEl.previousElementSibling;
+            }
+            if (siblingEl && siblingEl.classList.contains('tab')) {
+                siblingLeftLimit = siblingEl.offsetLeft + (siblingEl.offsetWidth / 2);
+                if (pos < siblingLeftLimit) {
+                    siblingEl.parentNode.insertBefore(details.placeholder, siblingEl);
+                    details.hasMoved = true;
+                    return;
+                }
+            }
+
+
+            // Is the bound the el is greater than the half of the next el?
+            siblingEl = details.placeholder.nextElementSibling;
+            while (siblingEl && siblingEl === details.el) {
+                siblingEl = siblingEl.nextElementSibling;
+            }
+            if (siblingEl && siblingEl.classList.contains('tab')) {
+                siblingLeftLimit = siblingEl.offsetLeft + (siblingEl.offsetWidth / 2);
+                if ((pos + details.elWidth) > siblingLeftLimit) {
+                    nextEl = siblingEl.nextElementSibling;
+                    while(nextEl && nextEl === details.el) {
+                        nextEl = nextEl.nextElementSibling;
+                    }
+                    siblingEl.parentNode.insertBefore(details.placeholder, nextEl);
+                    details.hasMoved = true;
+                }
+            }
+        }
+
+        /**
+         * Stop drag event
+         * @param event
+         */
+        function onTabStopDrag() {
+            this.removeEventListener('mousemove', onTabDrag);
+            this.removeEventListener('mouseup', onTabStopDrag);
+            this.classList.remove('on-tab-dragging');
+
+            var details = this.dragDetails;
+            details.el.classList.remove('dragging');
+            details.el.style.left = '';
+            if (details.hasMoved) {
+                details.placeholder.parentNode.insertBefore(details.el, details.placeholder);
+            }
+        }
+
+        for (i = 0, l = els.length; i < l; i += 1) {
+            els[i].addEventListener('click', onTabsClick);
+            els[i].addEventListener('mousedown', onTabsMousedown);
+        }
 
         /**
          * Event when the content of a tab has changed
@@ -527,9 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.body.addEventListener('tabfocused', onTabFocused);
 
-        for (i = 0, l = els.length; i < l; i += 1) {
-            els[i].addEventListener('click', onTabsClick);
-        }
+
     } ());
 
 
