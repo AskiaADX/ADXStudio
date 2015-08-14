@@ -1,4 +1,5 @@
 var fs = require('fs');
+var fsExtra = require('fs.extra');
 var path = require("path");
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
@@ -189,7 +190,7 @@ Explorer.prototype.remove = function(pathToRemove, callback) {
       if (stats.isDirectory()) {
 
 
-        fs.rmdir(pathToRemove, function(err) {
+        fsExtra.rmrf(pathToRemove, function(err) {
 
           if (err) {
             callback(err);
