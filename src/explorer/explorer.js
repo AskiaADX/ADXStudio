@@ -137,32 +137,79 @@ Explorer.prototype.rename = function (oldPath, newPath, callback) {
 
 };
 
-Explorer.prototype.remove = function(path, callback) {
-  var parentDir = path.join(path, '..');
-    if ((!path && !callback)) {
+
+/**
+ * Remove the file or folder.
+ *
+ *    var explorer = require('ADXStudio/src/explorer/explorer.js');
+ *    explorer.remove(pathToRemove, function(err) {
+ *       console.log(err);
+ *    });
+ *
+ * @param {String} pathToRemove Path of file or folder to remove.
+ * @param {Function} callback
+ * @param {Error} callback.err Error
+ */
+Explorer.prototype.remove = function(pathToRemove, callback) {
+
+  var parentDir = path.join(pathToRemove, '..');
+
+    if (!pathToRemove && !callback) {
       throw new Error('Invalid argument');
     }
 
     callback = callback || function () {};
-    fs.unlink(path, function(err) {
 
-      if (err) {
-        callback(err);
-        return;
-      }
+    fs.stat(pathToRemove, function(err, stats) {
 
-      callback(null);
+      // if the item is a file.
+      if (!stats.isDirectory()) {
 
-      //Part to reload parent folder when path have bben changed.
+        fs.unlink(pathToRemove, function(err) {
 
-      module.exports.load(parentDir, function(err) {
-        if (err) {
+          if (err) {
+            callback(err);
             return;
-        }
-        module.exports.emit('change', parentDir);
-      });
+          }
 
+          callback(null);
+
+          //Part to reload parent folder when path have bben changed.
+
+          module.exports.load(parentDir, function(err, files) {
+            if (err) {
+                return;
+            }
+            module.exports.emit('change', parentDir, files);
+          });
+
+        });
+      }
+      //If the item selected is a folder
+      if (stats.isDirectory()) {
+
+        fs.rmdir(pathToRemove, function(err) {
+
+          if (err) {
+            callback(err);
+            return;
+          }
+
+          callback(null);
+
+          //Part to reload parent folder when path have bben changed.
+
+          module.exports.load(parentDir, function(err, files) {
+            if (err) {
+                return;
+            }
+            module.exports.emit('change', parentDir, files);
+          });
+        });
+      }
     });
+
+
 
 };
 

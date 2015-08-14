@@ -60,9 +60,9 @@
 
         showModalDialog(event.args[0], function(result) {
 
-          if(result.button === 'yes' && result.value) {
-            console.log(result.value, 'IndexJS');
-          ipc.send(event.args[1], event.args[2], 'yes');
+          if(result.button === 'yes') {
+            console.log('send ' + event.args[1]);
+          ipc.send(event.args[1], event.args[2]);
           }
         });
       }

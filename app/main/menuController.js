@@ -86,7 +86,7 @@ app.once('ready', function createAppMenu() {
                     },
                   	{
                         label: '&Remove',
-                        accelerator: 'Ctrl+B',
+                        accelerator:'Ctrl+Delete',
                         click: function() {
 
                             //Function to define in order to save current file changed.

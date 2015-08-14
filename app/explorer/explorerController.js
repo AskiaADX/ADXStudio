@@ -26,13 +26,10 @@ function openProject(folderpath) {
  * @param {String} folder-file/path Path of the folder or the file selected.
  *
  */
-function removeFile(event, file, yes) {
-
+function removeFile(event, file) {
 
     console.log(event);
     console.log('TEST REMOVE DONE');
-
-
 
   var pathToRemove = file.path;
 
