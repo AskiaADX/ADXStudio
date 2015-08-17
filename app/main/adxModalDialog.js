@@ -202,6 +202,7 @@ iconTextContener.id = 'iconTextContener';
       tmpContener.appendChild(tmpForm);
 
       nameForm.className = 'formInput';
+      nameForm.focus();
       pathForm.className = 'formInput';
       pathButton.innerHTML = '...';
       pathButton.id = 'formPathButton';
