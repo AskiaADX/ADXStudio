@@ -59,6 +59,10 @@ function renameFile(event, file, newName) {
 }
 
 
+function newProject(event, projectOptions) {
+  ADC.generate(projectOptions.name, { output: projectOptions.path, template: projectOptions.tmp }, openProject );
+}
+
 /**
 * Send a message to the view to Open new project.
 *
@@ -97,6 +101,9 @@ ipc.on('explorer-ready', function(event) {
 
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
+
+    ipc.removeListener('explorer-new-project', newProject);
+    ipc.on('explorer-new-project', newProject);
 
     //Send a message to the view, to open a new Project.
     app.removeListener('menu-new-project', sendOpenProject);

@@ -61,7 +61,6 @@
         showModalDialog(event.args[0], function(result) {
 
           if(result.button === 'yes') {
-            console.log('send ' + event.args[1]);
           ipc.send(event.args[1], event.args[2]);
           }
         });
@@ -71,6 +70,7 @@
 
         showModalDialog(event.args[0], function(result) {
           //Send informations.
+          ipc.send(event.args[1], result);
           return result;
         });
       }
