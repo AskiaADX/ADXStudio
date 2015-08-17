@@ -67,6 +67,14 @@
         });
       }
 
+      if (event.channel ==='show-Modal-Dialog-form') {
+
+        showModalDialog(event.args[0], function(result) {
+          //Send informations.
+          return result;
+        });
+      }
+
     });
 
 }());

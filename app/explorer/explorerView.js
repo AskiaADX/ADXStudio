@@ -45,6 +45,10 @@ function itemRightClick(e) {
 }
 
 
+ipc.on('menu-new-project', function(event, callback){
+  ipc.sendToHost('show-Modal-Dialog-form', {type: 'form', text: ''}, 'explorer-new-project');
+});
+
 
 function itemclick() {
 

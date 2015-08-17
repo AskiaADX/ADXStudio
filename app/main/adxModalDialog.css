@@ -82,6 +82,86 @@ body {
     padding-left: 1px;
 }
 
+/* Form :  New Project for ADC */
+
+#nameContener {
+  display: flex;
+  padding-left: 15px;
+
+}
+
+#pathContener {
+  display: flex;
+  padding-left: 15px;
+
+}
+
+#descrContener {
+  display: flex;
+  padding-left: 15px;
+
+}
+
+#tmpContener {
+  display: flex;
+  padding-left: 15px;
+
+}
+
+.formInput {
+  padding: 10px;
+  width: 300px;
+  border-radius: 2px;
+  border: 1px solid #151515;
+  background-color: #21252B;
+  color: #BBB;
+  align-self: flex-start;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.formInput:focus {
+  border: 1px solid #007DC5;
+  outline: none;
+}
+
+.formLabel {
+  	display: block;
+  	width: 100px;
+  	float: left;
+    align-self: center;
+}
+
+.formDescr {
+  height: 60px;
+}
+
+.formSelect {
+  padding: 10px;
+  width: 325px;
+}
+
+#formPathButton {
+  width: 40px;
+  height: 30px;
+  cursor: pointer;
+  align-self: center;
+  margin-left: 10px;
+  background-color: #BBBBBB;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,.95);
+  box-shadow: 0 1px 0 rgba(255,255,255,.4) inset;
+  color: #222;
+  font-size: 14px;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  outline: none;
+  transition: all ease-in-out .3s;
+}
+
+
+
+
+
 /* Action bar */
 
 #buttonContener {

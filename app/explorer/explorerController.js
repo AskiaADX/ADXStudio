@@ -1,5 +1,6 @@
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
+var dialog = require('dialog');
 var explorer = require('../../src/explorer/explorer.js');
 var path = require('path');
 var ADC   = require('adcutil').ADC;
@@ -57,6 +58,15 @@ function renameFile(event, file, newName) {
     });
 }
 
+
+/**
+* Send a message to the view to Open new project.
+*
+*/
+function sendOpenProject(event) {
+  explorerView.send('menu-new-project');
+}
+
 /**
  * When a directory change reload it
  * @param {String} dir Path of the directory that has changed
@@ -88,9 +98,9 @@ ipc.on('explorer-ready', function(event) {
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
 
-    
-  /*  app.removeListener('menu-remove', removeFile);
-    app.on('menu-remove', removeFile); */
+    //Send a message to the view, to open a new Project.
+    app.removeListener('menu-new-project', sendOpenProject);
+    app.on('menu-new-project', sendOpenProject);
 
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
