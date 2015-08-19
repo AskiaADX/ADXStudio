@@ -1,36 +1,55 @@
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
+var dialog = require('dialog');
 var explorer = require('../../src/explorer/explorer.js');
 var path = require('path');
 var ADC   = require('adcutil').ADC;
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var explorerView;
 
-    /**
- * Open a new project in the explorer
+/**
+ * Open a project in the explorer
+ * @param {Object} event Event arg
+ * @param {String} folderpath Path of the folder to load as root
+ */
+function newProject(event, projectOptions) {
+  ADC.generate(projectOptions.name, { output: projectOptions.path, template: projectOptions.tmp }, function(err, adc) {
+    // TODO::Manage error
+    if (err) {
+      console.log(err);
+      return;
+    }
+    openProject(adc.path);
+  });
+}
+
+/**
+ * Open a project in the explorer
  * @param {String} folderpath Path of the folder to load as root
  */
 function openProject(folderpath) {
-    explorer.load(folderpath, function(err, files) {
-        explorerView.send('explorer-expand-folder', err, folderpath, files, true);
-        global.project.path = folderpath;
-        global.project.adc  = new ADC(global.project.path);
+
+  explorer.load(folderpath, function(err, files) {
+    var adc = new ADC(folderpath);
+    global.project.path = folderpath;
+    global.project.adc  = adc;
+
+    adc.load(function(err) {
+      var name = (!err) ? adc.configurator.info.name() : path.basename(folderpath);
+      explorerView.send('explorer-expand-folder', err, folderpath, files, true, name);
     });
+
+  });
 }
 
 
-  /**
+/**
  * Can remove file or folder from the explorer.
  *
  * @param event
  * @param {String} folder-file/path Path of the folder or the file selected.
- *
  */
 function removeFile(event, file) {
-
-    console.log(event);
-    console.log('TEST REMOVE DONE');
-
   var pathToRemove = file.path;
 
   explorer.remove(pathToRemove, function(err) {
@@ -57,6 +76,16 @@ function renameFile(event, file, newName) {
     });
 }
 
+
+
+/**
+* Send a message to the view to Open new project.
+*
+*/
+function sendOpenProject(event) {
+  explorerView.send('menu-new-project');
+}
+
 /**
  * When a directory change reload it
  * @param {String} dir Path of the directory that has changed
@@ -72,9 +101,14 @@ ipc.on('explorer-ready', function(event) {
     // Load the default path
     var defaultPath = path.join(__dirname, '../../');
     explorer.load(defaultPath, function(err, files) {
-        explorerView.send('explorer-expand-folder', err, defaultPath, files, true);
-        global.project.path = defaultPath;
-        global.project.adc  = new ADC(global.project.path);
+      var adc = new ADC(defaultPath);
+      global.project.path = defaultPath;
+      global.project.adc  = adc;
+
+      adc.load(function(err) {
+        var name = (!err) ? adc.configurator.info.name() : path.basename(defaultPath);
+        explorerView.send('explorer-expand-folder', err, defaultPath, files, true, name);
+      });
     });
 
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event
@@ -87,6 +121,13 @@ ipc.on('explorer-ready', function(event) {
 
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
+
+    ipc.removeListener('explorer-new-project', newProject);
+    ipc.on('explorer-new-project', newProject);
+
+    //Send a message to the view, to open a new Project.
+    app.removeListener('menu-new-project', sendOpenProject);
+    app.on('menu-new-project', sendOpenProject);
 
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first

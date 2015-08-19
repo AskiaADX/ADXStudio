@@ -110,6 +110,14 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
   height            : 20px;
 }
 
+#root > .item-info > .icon {
+  background-image  : url(adxs-folder.png);
+  display           : inline-block;
+  width             : 20px;
+  height            : 20px;
+  transition        : background-image ease-in-out .3s;
+}
+
 .folder > .item-info > .icon {
   background-image  : url(adxs-folder.png);
   display           : inline-block;

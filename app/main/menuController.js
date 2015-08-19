@@ -45,7 +45,8 @@ app.once('ready', function createAppMenu() {
                         label: '&New Project',
                         accelerator : 'Ctrl+Shift+N',
                         click: function() {
-                            //Function to define in order to initialized a new project.
+                          app.emit('menu-new-project');
+                            
                         }
                     },
                     {
@@ -88,6 +89,7 @@ app.once('ready', function createAppMenu() {
                         label: '&Remove',
                         accelerator:'Ctrl+Delete',
                         click: function() {
+                          //app.emit('menu-rename');
 
                             //Function to define in order to save current file changed.
                         }

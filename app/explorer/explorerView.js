@@ -3,6 +3,7 @@ var remote = require('remote');
 var menu = remote.require('menu');
 var menuItem = remote.require('menu-item');
 var ipc = require('ipc');
+var ADC   = require('adcutil').ADC;
 
 
 function selectItem() {
@@ -45,6 +46,10 @@ function itemRightClick(e) {
 }
 
 
+ipc.on('menu-new-project', function(event, callback){
+  ipc.sendToHost('show-Modal-Dialog-form', {type: 'form', text: ''}, 'explorer-new-project');
+});
+
 
 function itemclick() {
 
@@ -54,11 +59,11 @@ function itemclick() {
   var file = item.file;
   var child = item.querySelector('.child');
   var toggle;
-
+  console.log(item);
   selectItem.call(this);
 
   // Folder system
-  if (file.type === 'folder') {
+  if (file.type === 'folder' || item.id === 'root') {
     toggle = itemInfo.querySelector('.toggle');
 
     if (child.style.display === 'block') {
@@ -90,12 +95,12 @@ document.addEventListener('DOMContentLoaded', function() {
   * @param {Array} files files or folder inside rootPath.
   * @param {Boolean} isRoot indicate if e are on root.
   */
-  ipc.on('explorer-expand-folder', function( err, path, files, isRoot) {
+  ipc.on('explorer-expand-folder', function( err, path, files, isRoot, rootName) {
     console.log(path);
     var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
                           document.querySelector('div[data-path=\''+ path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') +'\']').querySelector('.child');
     var deep = parseInt(root.getAttribute('data-deep'), 10);
-    root.innerHTML = '';
+    root.innerHTML = '' ;
 
     if (isRoot) {
       root.parentNode.setAttribute('data-path', path);
@@ -104,7 +109,11 @@ document.addEventListener('DOMContentLoaded', function() {
         type: 'folder',
         name: /(?:\/|\\)([^\/\\]+)(?:\/|\\)?$/.exec(path)[1]
       };
+      root.parentNode.querySelector('.item-info').onclick = itemclick;
+      root.parentNode.querySelector('.name').innerHTML =  rootName;
     }
+
+
 
     for (var i = 0; i < files.length; i += 1) {
 

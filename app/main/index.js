@@ -61,9 +61,17 @@
         showModalDialog(event.args[0], function(result) {
 
           if(result.button === 'yes') {
-            console.log('send ' + event.args[1]);
           ipc.send(event.args[1], event.args[2]);
           }
+        });
+      }
+
+      if (event.channel ==='show-Modal-Dialog-form') {
+
+        showModalDialog(event.args[0], function(result) {
+          //Send informations.
+          ipc.send(event.args[1], result);
+          return result;
         });
       }
 

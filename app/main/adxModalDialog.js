@@ -1,6 +1,3 @@
-
-
-
 //TODO::Functions inside all parts of case (function cancel, ok, yes...).
 
 
@@ -130,6 +127,106 @@ iconTextContener.id = 'iconTextContener';
     text.innerHTML = textValue;
       break;
 
+      /**
+      * Form : made for the New Project options.
+      *
+      * showModalDialog({type: 'form', text: ''}, function(callback) )
+      *
+      * This function should return an pbject with all values that's have been written in the form.
+       */
+      case 'form':
+
+      dialog.removeChild(iconTextContener);
+      dialog.removeChild(buttonContener);
+
+      //Creation of new component in the dialog
+      var nameContener       = document.createElement('div'),
+          pathContener       = document.createElement('div'),
+          descrContener      = document.createElement('div'),
+          tmpContener        = document.createElement('div'),
+          nameTextForm       = document.createElement('label'),
+          nameForm           = document.createElement('input'),
+          pathTextForm       = document.createElement('label'),
+          pathForm           = document.createElement('input'),
+          pathButton         = document.createElement('button'),
+          descrTextForm      = document.createElement('label'),
+          descrForm          = document.createElement('textarea'),
+          tmpTextForm        = document.createElement('label'),
+          tmpForm            = document.createElement('select')
+          ok                 = document.createElement('button'),
+          cancel             = document.createElement('button');
+
+
+      // Initialize buttons of the dialog.
+      buttonContener.appendChild(cancel);
+      buttonContener.appendChild(ok);
+
+
+      ok.className = 'ok';
+      ok.innerHTML = 'OK';
+      cancel.className = 'cancel';
+      cancel.innerHTML = 'Cancel';
+
+      text.innerHTML = textValue;
+
+      // Resizing the Dialog to get a larger DIVISION
+      dialog.style.display = 'flex';
+      dialog.style.paddingTop = '40px';
+      dialog.style.flexDirection = 'column';
+      dialog.style.justifyContent = 'space-around';
+      dialog.style.top = '30%';
+      dialog.style.height = 500 + 'px';
+
+
+      //Define position of all divContener inside the Dialog.
+      dialog.appendChild(nameContener);
+      dialog.appendChild(pathContener);
+      dialog.appendChild(descrContener);
+      dialog.appendChild(tmpContener);
+      dialog.appendChild(buttonContener);
+      tmpContener.id   = 'tmpContener';
+      pathContener.id  = 'pathContener';
+      nameContener.id  = 'nameContener';
+      descrContener.id = 'descrContener';
+
+      //Define all Label and input inside each divContener.
+      nameContener.appendChild(nameTextForm);
+      nameContener.appendChild(nameForm);
+      pathContener.appendChild(pathTextForm);
+      pathContener.appendChild(pathForm);
+      pathContener.appendChild(pathButton);
+      pathContener.appendChild(pathButton);
+      descrContener.appendChild(descrTextForm);
+      descrContener.appendChild(descrForm);
+      tmpContener.appendChild(tmpTextForm);
+      tmpContener.appendChild(tmpForm);
+
+      nameForm.className = 'formInput';
+      nameForm.focus();
+      pathForm.className = 'formInput';
+      pathButton.innerHTML = '...';
+      pathButton.id = 'formPathButton';
+      descrForm.className = 'formInput';
+      descrForm.classList.add('formDescr');
+      tmpForm.className = 'formInput';
+      tmpForm.classList.add('formSelect');
+
+
+      nameTextForm.className = 'formLabel';
+      pathTextForm.className = 'formLabel';
+      descrTextForm.className = 'formLabel';
+      tmpTextForm.className = 'formLabel';
+
+      nameTextForm.innerHTML = 'Name: ';
+      pathTextForm.innerHTML = 'Path: ';
+      descrTextForm.innerHTML = 'Description: ';
+      tmpTextForm.innerHTML = 'Template: ';
+
+      pathButton.addEventListener('click', connectToDialog);
+
+      break;
+
+
     default:
     break;
   }
@@ -160,6 +257,12 @@ iconTextContener.id = 'iconTextContener';
 
       yes.addEventListener('click', clickon);
       no.addEventListener('click', clickonCancel);
+      cancel.addEventListener('click', clickonCancel);
+    }
+
+    if (config.type === 'form') {
+
+      ok.addEventListener('click', formClickon);
       cancel.addEventListener('click', clickonCancel);
     }
 
@@ -197,6 +300,11 @@ iconTextContener.id = 'iconTextContener';
       cancel.removeEventListener('click', clickonCancel);
 
     }
+    if (config.type === 'form') {
+
+      ok.removeEventListener('click', formClickon);
+      cancel.removeEventListener('click', clickonCancel);
+    }
   }
 
   function clickon(event) {
@@ -220,6 +328,8 @@ iconTextContener.id = 'iconTextContener';
     return clicked;
   }
 
+
+//Function which disable the modal dialog when cancel button is clicked.
   function clickonCancel() {
 
     console.log(event.srcElement);
@@ -227,6 +337,46 @@ iconTextContener.id = 'iconTextContener';
     document.body.removeChild(lightBox);
     document.body.removeChild(dialog);
   }
+
+
+
+// function special for the form when ok is click
+  function formClickon(event) {
+
+    var  clicked = {
+      button: event.srcElement.className
+    };
+
+    if (clicked.button === 'ok') {
+
+      clicked.name = nameForm.value;
+      clicked.path =  pathForm.value;
+      clicked.description = descrForm.value;
+      clicked.tmp = tmpForm.value;
+
+      callback(clicked);
+    }
+
+    console.log(clicked);
+    quit();
+    return clicked;
+
+}
+
+  //function to open a dialog, in order o get path selected.
+  function connectToDialog (event) {
+    var remote = require('remote');
+    var openDialog = remote.require('dialog');
+
+      openDialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
+        if (folderpath != undefined) {
+          pathForm.value = folderpath;
+        }
+
+      });
+  }
+
+
 
   // function for enter and Echap.
   function enterEchap(e) {
