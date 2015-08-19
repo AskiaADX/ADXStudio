@@ -8,15 +8,34 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 var explorerView;
 
     /**
- * Open a new project in the explorer
+ * Open a project in the explorer
  * @param {String} folderpath Path of the folder to load as root
  */
 function openProject(folderpath) {
-    explorer.load(folderpath, function(err, files) {
-        explorerView.send('explorer-expand-folder', err, folderpath, files, true);
-        global.project.path = folderpath;
-        global.project.adc  = new ADC(global.project.path);
-    });
+
+  explorer.load(folderpath, function(err, files) {
+      explorerView.send('explorer-expand-folder', err, folderpath, files, true);
+      global.project.path = folderpath;
+      global.project.adc  = new ADC(global.project.path);
+  });
+}
+
+/**
+* Open a new project when a new project has been created in the explorer
+*
+* @param {Event} events Event of the message received.
+* @param {String} folderpath Path of the folder to load as root
+*/
+function openNewProject(events, folderpath) {
+
+  if (events || events === null) {
+      explorer.load(folderpath.path, function(err, files) {
+          explorerView.send('explorer-expand-folder', err, folderpath.path, files, true);
+          global.project.path = folderpath.path;
+          global.project.adc  = new ADC(global.project.path);
+      });
+  }
+
 }
 
 
@@ -60,7 +79,10 @@ function renameFile(event, file, newName) {
 
 
 function newProject(event, projectOptions) {
-  ADC.generate(projectOptions.name, { output: projectOptions.path, template: projectOptions.tmp }, openProject );
+
+  console.log(projectOptions.path);
+
+  ADC.generate(projectOptions.name, { output: projectOptions.path, template: projectOptions.tmp }, openNewProject );
 }
 
 /**
