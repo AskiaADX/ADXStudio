@@ -22,6 +22,54 @@ body.grey {
     background  : #111;
 }
 
+body.form-viewer {
+    background: #282C34;
+    color: #BBB;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+h3 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+fieldset {
+    border-width: 0 0 1px 0;
+    border-color: #111;
+    margin-top: 20px;
+}
+
+legend {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+label, input[type="checkbox"] {
+    cursor: pointer;
+}
+
+input, textarea, select {
+    border-radius: 2px;
+    border: 1px solid #151515;
+    background-color: #21252B;
+    color: #BBB;
+}
+
+textarea {
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+input[readonly] {
+    color: #545961;
+}
+
+input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
+    border: 1px solid #007DC5;
+    outline: none;
+}
+
 .splitter {
     background: transparent;
 }
@@ -29,7 +77,6 @@ body.grey {
     background  : rgba(33,33,33,.3);
     cursor      : ne-resize;
 }
-
 
 /* ========================================
    Explorer Part

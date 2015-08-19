@@ -3,19 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <title>ADX - Preview</title>
+    <link href="../../themes/default/default.css" rel="stylesheet" />
     <style>
+        html, body {
+            padding :0;
+            margin  :0;
+            width : 100vw;
+            height : 100vh;
+        }
         body {
+            position:relative;
+        }
+        h3 {
+            text-align: center;
+            margin:10px;
+        }
+        #main {
+            display : flex;
+            flex-direction: row;;
+
+            /* Fit  the tabs-content */
+            position: absolute;
+            top     : 0;
+            right   : 0;
+            bottom  : 0;
+            left    : 0;
+        }
+        #grid {
+            width : 300px;
+            max-width : 50%;
+            height:100%;
+            overflow: auto;
+        }
+        #grid table {
+            table-layout: fixed;
+            width : 100%;
+            border-collapse: collapse;
+        }
+        #grid table td {
+            padding :  5px 10px 5px 5px;
+        }
+        #grid input {
+            max-width : 100%;
+        }
+        #grid input[type=text] {
+            width : 100%;
+        }
+        #grid input[type=number] {
+            width : 100px;
+        }
+        #grid select {
+            width : 100%;
+        }
+
+        #preview {
+            flex:1;
+            position:relative;
             background: #fff;
+        }
+        #preview_frame {
+            margin  :0;
+            padding :0;
+            border  :0;
+            width   :100%;
+            height  :100%;
+            position:absolute;
+            top     :0;
+            bottom  :0;
+            left    :0;
+            right   :0;
         }
     </style>
     <script src="../viewer.js"></script>
 </head>
-<body>
+<body class="form-viewer">
 
-TODO::ADX PREVIEW
+<div id="main">
+    <div id="grid">Loading...</div>
+    <div id="preview">
+        <iframe id="preview_frame" src="http://localhost:3500/output/" scrolling="auto" frameborder="0"></iframe>
+    </div>
+</div>
 
 <script>
-    viewer.fireReady();
+    document.addEventListener('DOMContentLoaded', function () {
+        var gridEl = document.getElementById("grid"),
+            iframeEl = document.getElementById("preview_frame");
+
+        /**
+         * Do an ajax query
+         * @param {Object} options Options
+         * @param {String} options.url URL to call
+         * @param {Function} [options.success] Success callback
+         * @param {Function} [options.error] Error callback
+         */
+        function ajax(options){
+            var request = new XMLHttpRequest();
+            request.open('GET', options.url, true);
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    if (typeof options.success === 'function') {
+                        options.success(request.response);
+                    }
+                } else {
+                    if (typeof options.error === 'function') {
+                        options.error(request.response);
+                    }
+                }
+            };
+
+            request.onerror = function() {
+                if (typeof options.error === 'function') {
+                    options.error(request.response);
+                }
+            };
+
+            request.send();
+        }
+
+        /**
+         * Transform a property his HTML representation
+         * @param {Object} property ADC Property
+         * #return {String}
+         */
+        function propertyToHTML(property) {
+            var html = [],
+                    type = property.type,
+                    attrs = [];
+
+            html.push('<tr>');
+            html.push('<td><label for="property_' + property.id  + '">' + property.name + '</label></td>');
+            html.push('<td>');
+
+            if (type === 'string' || type === 'question') {
+                type = 'text';
+            }
+            if (typeof property.min === 'number' && isFinite(property.min)) {
+                attrs.push('min="' + property.min + '"');
+            }
+            if (typeof property.max === 'number' && isFinite(property.max)) {
+                attrs.push('max="' + property.max + '"');
+            }
+            if (property.pattern) {
+                attrs.push('pattern="' + property.pattern + '"');
+            }
+            if (property.require) {
+                attrs.push('required="required"');
+            }
+            if (Array.isArray(property.options) || type === 'boolean') {
+                var opts = property.options || [{value : 0, text : "False"}, {value : 1, text : "True"}];
+                html.push('<select id="property_' + property.id + '">');
+                opts.forEach(function (opt) {
+                    var selected = opt.value === property.value ? ' selected="selected"' : '';
+                    html.push('<option value="' + opt.value + '"' + selected + '>' + opt.text + '</option>');
+                });
+                html.push('</select>');
+            } else {
+                html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + property.value + '" ' + attrs.join(' ') + '/>');
+            }
+            html.push('</td>');
+            html.push('</tr>');
+            return html.join('');
+        }
+
+        /**
+         * Transform a category to his HTML representation
+         * @param {Object} category ADC Category
+         * #return {String}
+         */
+        function categoryToHTML(category) {
+            var html = [], i, l;
+            html.push('<h3>' + category.name + '</h3>');
+            html.push('<table>');
+            for (i = 0, l = category.properties.length; i < l; i++) {
+                html.push(propertyToHTML(category.properties[i]));
+            }
+            html.push('</table>');
+            return html.join('');
+        }
+
+        /**
+         * Transform the outputs to his HTML representation
+         * @param {Object} outputs ADC Outputs
+         * @param {String} defaultOutput Default outputs
+         * #return {String}
+         */
+        function outputsToHTML(outputs, defaultOutput) {
+            var i, l, html = [], selected;
+            html.push('<table>');
+            html.push('<tr><td><label for="output">Output:</label></td>');
+            html.push('<td><select id="output">');
+            for (i = 0, l = outputs.length; i < l; i++) {
+                selected = outputs[i].id === defaultOutput ? ' selected="selected"' : '';
+                html.push('<option id="' + outputs[i].id + '"' + selected + '>' + outputs[i].id + '</option>');
+            }
+            html.push('</select></td></tr>');
+            html.push('<tr><td><label for="fixture">Fixture:</label></td>');
+            html.push('<td><select id="fixture">');
+            /*for (i = 0, l = outputs.length; i < l; i++) {
+             html.push('<option id="' + outputs[i].id + '">' + outputs[i].id + '</option>');
+             }*/
+            html.push('</select></td></tr>');
+            html.push('</table>');
+            return html.join('');
+        }
+
+        /**
+         * Fill the property grid with the AJAX response
+         * @param response
+         */
+        function fillPropertyGrid(response) {
+            var adc = JSON.parse(response),
+                    cats = adc.properties.categories,
+                    outs = adc.outputs,
+                    i, l, html = [];
+
+            html.push(outputsToHTML(outs.outputs, outs.defaultOutput));
+
+            for (i = 0, l = cats.length; i < l; i += 1) {
+                html.push(categoryToHTML(cats[i]));
+            }
+            gridEl.innerHTML = html.join('');
+            gridEl.addEventListener('change', function (event) {
+                var el = event.srcElement;
+                if (el.id === 'output') {
+                    iframeEl.src = "http://localhost:3500/output/" + el.value + "/";
+                }
+                console.log('on change ', event.srcElement);
+            });
+
+        }
+
+
+        ajax({
+            url : 'http://localhost:3500/config/',
+            success : fillPropertyGrid,
+            error : function (response) {
+                console.log(response);
+            }
+        });
+
+
+
+        viewer.fireReady();
+    });
 </script>
 </body>
 </html>

@@ -104,6 +104,26 @@ function serveADCOutput(err, request, response) {
     });
 }
 
+
+/**
+ * Serve the ADC configuration
+ *
+ * @param {Error} err Error
+ * @param {Object} request HTTP Request
+ * @param {Object} response HTTP Response
+ */
+function serveADCConfig(err, request, response) {
+    var adc = global.project.adc;
+    if (err) {
+        throwHttpError(err, response);
+        return;
+    }
+
+    response.writeHead(200, {"Content-Type": "application/json"});
+    response.write(JSON.stringify(adc.configurator.get()));
+    response.end();
+}
+
 /**
  * Reply on HTTP request
  */
@@ -115,6 +135,11 @@ function reply(request, response) {
 
         if (/^\/output\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
             serveADCOutput(err, request, response);
+            return;
+        }
+
+        if (/^\/config\//i.test(uri)) {
+            serveADCConfig(err, request, response);
             return;
         }
 
@@ -220,7 +245,8 @@ function stopServer(callback) {
 
 app.on('menu-preview', function () {
     startServer(function (port) {
-        shell.openExternal('http://localhost:' + port + '/output/');
+        // TODO::Don't open it externally for the moment
+        // shell.openExternal('http://localhost:' + port + '/output/');
     });
 });
 
