@@ -13,7 +13,18 @@ var explorerView;
  * @param {String} folderpath Path of the folder to load as root
  */
 function newProject(event, projectOptions) {
-  ADC.generate(projectOptions.name, { output: projectOptions.path, template: projectOptions.tmp }, function(err, adc) {
+  ADC.generate(projectOptions.name, {
+      output: projectOptions.path,
+      template: projectOptions.tmp,
+      description: projectOptions.description,
+      author: {
+        name: 'Maxime',
+        email:'nanana@gmail.com',
+        company: 'askia',
+        website: 'http://askia.com'
+      }
+
+    }, function(err, adc) {
     // TODO::Manage error
     if (err) {
       console.log(err);
