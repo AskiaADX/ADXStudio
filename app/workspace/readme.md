@@ -9,7 +9,7 @@ ADXStudio provide different kind of edition according to the type of file:
  * Multimedia (Image / Video / Audio)
  
   
- ## Events from View
+## Events from View
  
  The workspace view trigger the following events:
  
