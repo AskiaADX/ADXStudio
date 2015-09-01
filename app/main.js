@@ -1,5 +1,6 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
+var ipc = require('ipc');
 require('./workspace/workspaceController.js');
 require('./explorer/explorerController.js');
 require('./preview/previewController.js');
@@ -46,4 +47,19 @@ app.on('ready', function loadMainWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+});
+
+/**
+ * Fire when the main window is ready
+ */
+ipc.on('main-ready', function (event) {
+    var ADC = require('adcutil').ADC;
+
+    ADC.getTemplateList(function (err, templates) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+       event.sender.send('set-template-list', templates);
+    });
 });

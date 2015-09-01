@@ -1,13 +1,21 @@
-
-
-
 (function () {
   var ipc = require('ipc'),
       exp = document.getElementById("explorer"),
-      wks = document.getElementById("workspace");
+      wks = document.getElementById("workspace"),
+      countDownReadyWebView = 2; // 2 webviews must be loaded
 
     function catchConsoleLog(event) {
       console.log(event.message);
+    }
+
+    /**
+     * Look how many web-views are loaded and fire the ready event when all are ready
+     */
+    function onWebViewLoaded(){
+      countDownReadyWebView--;
+      if (!countDownReadyWebView) {
+        ipc.send('main-ready');
+      }
     }
 
     exp.addEventListener('console-message', catchConsoleLog);
@@ -15,10 +23,12 @@
 
     // Dev tools of the webview
     exp.addEventListener("dom-ready", function(){
+      onWebViewLoaded();
       exp.openDevTools();
     });
 
     wks.addEventListener("dom-ready", function(){
+      onWebViewLoaded();
       wks.openDevTools();
     });
 
@@ -32,7 +42,7 @@
     resExpl.start();
 
       // Listen a potential ipc-message which channel is 'show-Modal-Dialog'.
-      // Once triggerd, we apply the showModalDialog API.
+      // Once triggered, we apply the showModalDialog API.
       // in the callback of the API, we send the value returned : "result" ("clicked" in the API)
       // event.args[1] send a message. 'rename-file'
       // ipc.send --> explorerController.js
@@ -77,4 +87,11 @@
 
     });
 
+
+    /**
+     * Get the list of ADC templates
+     */
+    ipc.on('set-template-list', function (templates) {
+        showModalDialog.adcTemplates = templates;
+    });
 }());
