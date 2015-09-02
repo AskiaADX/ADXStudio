@@ -5,7 +5,7 @@
   "main": "app/main.js",
   "scripts": {
     "test": "jasmine-node spec/",
-    "build": "electron-packager . ADXStudio"
+    "build": "electron-packager C:/Users/Devteam_Paris/Documents/ADXStudio ADXStudio --platform=win32 --arch=ia32 --version=0.31.2"
   },
   "repository": {
     "type": "git",
