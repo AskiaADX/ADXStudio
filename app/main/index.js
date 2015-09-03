@@ -80,6 +80,8 @@
 
         showModalDialog(event.args[0], function(result) {
           //Send informations.
+
+
           ipc.send(event.args[1], result);
           return result;
         });
