@@ -152,7 +152,7 @@ iconTextContener.id = 'iconTextContener';
           descrTextForm      = document.createElement('label'),
           descrForm          = document.createElement('textarea'),
           tmpTextForm        = document.createElement('label'),
-          tmpForm            = document.createElement('select')
+          tmpForm            = document.createElement('select'),
           ok                 = document.createElement('button'),
           cancel             = document.createElement('button');
 
@@ -200,6 +200,17 @@ iconTextContener.id = 'iconTextContener';
       descrContener.appendChild(descrForm);
       tmpContener.appendChild(tmpTextForm);
       tmpContener.appendChild(tmpForm);
+
+      var optionValue = [' ', 'blank', 'all'];
+
+      for (var i = 0; i < optionValue.length; i++) {
+
+        var tmpOption = document.createElement('option');
+        tmpOption.innerHTML = optionValue[i];
+
+        tmpForm.appendChild(tmpOption);
+      }
+
 
       nameForm.className = 'formInput';
       nameForm.focus();
