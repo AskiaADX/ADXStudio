@@ -201,6 +201,7 @@
         function outputsToHTML(outputs, defaultOutput) {
             var i, l, html = [], selected;
             html.push('<table>');
+            html.push('<h2>ADC Properties</h2>');
             html.push('<tr><td><label for="output">Output:</label></td>');
             html.push('<td><select id="output">');
             for (i = 0, l = outputs.length; i < l; i++) {
