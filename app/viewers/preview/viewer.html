@@ -20,7 +20,7 @@
         }
         #main {
             display : flex;
-            flex-direction: row;;
+            flex-direction: column;
 
             /* Fit  the tabs-content */
             position: absolute;
@@ -30,9 +30,10 @@
             left    : 0;
         }
         #grid {
-            width : 300px;
-            max-width : 50%;
-            height:100%;
+            flex: 1;
+            order: 2;
+            width : 100%;
+            height:300px;
             overflow: auto;
         }
         #grid table {
@@ -57,7 +58,7 @@
         }
 
         #preview {
-            flex:1;
+            flex:2;
             position:relative;
             background: #fff;
         }
