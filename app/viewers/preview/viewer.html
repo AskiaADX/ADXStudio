@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>ADX - Preview</title>
     <link href="../../themes/default/default.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../../main/adxResizer.css"/>
+    <script type="text/javascript" src="../../main/adxResizer.js"></script>
     <style>
         html, body {
             padding :0;
@@ -102,7 +104,11 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var gridEl = document.getElementById("grid"),
-            iframeEl = document.getElementById("preview_frame");
+            iframeEl = document.getElementById("preview_frame"),
+            resizer = new adx.Resizer({
+              element: document.getElementById('preview'),
+              direction: 'horizontal'
+            });
 
         /**
          * Do an ajax query
