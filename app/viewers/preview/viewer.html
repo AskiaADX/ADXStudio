@@ -15,12 +15,14 @@
             position:relative;
         }
         h3 {
-            text-align: center;
-            margin:10px;
+            text-align: left;
+            margin: 10px;
         }
         #main {
             display : flex;
             flex-direction: column;
+            border-left: 4px solid #111;
+            border-top: 1px solid #111;
 
             /* Fit  the tabs-content */
             position: absolute;
@@ -42,19 +44,26 @@
             border-collapse: collapse;
         }
         #grid table td {
-            padding :  5px 10px 5px 5px;
+            padding :  10px;
         }
-        #grid input {
-            max-width : 100%;
+
+        #grid select, input, textarea {
+            padding: 10px;
+            cursor: pointer;
         }
-        #grid input[type=text] {
-            width : 100%;
+
+        #grid input[type=text], #grid input[type=number] {
+            width : 95%;
         }
-        #grid input[type=number] {
-            width : 100px;
-        }
+
         #grid select {
             width : 100%;
+            line-height: 26px;
+        }
+
+        #grid option {
+            padding: 10px;
+            font-size: 14px;
         }
 
         #preview {
