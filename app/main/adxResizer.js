@@ -60,10 +60,10 @@ adx.Resizer = (function() {
       modal.style.zIndex = 999;
       modal.style.width = 100+'vw';
       modal.style.height = 100+'vh';
-      modal.style.position = 'transparent';
+      modal.style.position = 'absolute';
       modal.style.top = 0;
       modal.style.left = 0;
-      modal.style.background = 'red';
+      modal.style.background = 'transparent';
       config.delta = event[config.pageCoord] - this[config.offsetPos];
       currentEl.classList.add('adx-'+ direction +'-drag');
       currentEl.style.zIndex = 1000;
