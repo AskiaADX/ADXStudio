@@ -239,9 +239,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     visibility: visible;
 }
 
-/* TODO::SHOULD BE STYLED PROPERLY */
 .tab-placeholder {
-    background: red;
+    background: #111;
 }
 
 .tab-end {
