@@ -55,8 +55,18 @@ adx.Resizer = (function() {
       var currentEl = this;
       var direction = currentEl.adxResizer.direction;
       var config = currentEl.adxResizer.config;
+      var modal = document.createElement('div');
+      document.body.appendChild(modal);
+      modal.style.zIndex = 999;
+      modal.style.width = 100+'vw';
+      modal.style.height = 100+'vh';
+      modal.style.position = 'transparent';
+      modal.style.top = 0;
+      modal.style.left = 0;
+      modal.style.background = 'red';
       config.delta = event[config.pageCoord] - this[config.offsetPos];
       currentEl.classList.add('adx-'+ direction +'-drag');
+      currentEl.style.zIndex = 1000;
       document.body.classList.add('adx-'+ direction +'-drag');
       document.body.addEventListener('mouseup', up);
       document.body.addEventListener('mousemove', move);
@@ -67,6 +77,7 @@ adx.Resizer = (function() {
       }
 
       function up(event) {
+       	document.body.removeChild(modal);
         currentEl.classList.remove('adx-'+ direction +'-drag');
         document.body.classList.remove('adx-'+ direction +'-drag');
         document.body.removeEventListener('mouseup', up);
@@ -100,7 +111,6 @@ adx.Resizer = (function() {
     Resizer.prototype.stop = function() {
       var self = this;
       var elementToMove = self.resizeEl;
-
       elementToMove.removeEventListener('mousedown', down);
       elementToMove.removeEventListener('mousedown', down);
       elementToMove.classList.add('hide');
