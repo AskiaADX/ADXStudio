@@ -11,7 +11,7 @@ describe('explorer', function () {
                 statSync: spyOn(fs, 'statSync'),
                 readdir: spyOn(fs, 'readdir'),
                 rename: spyOn(fs, 'rename'),
-                remove: spyOn(fs, 'remove')
+                unlink: spyOn(fs, 'unlink')
             }
         };
 

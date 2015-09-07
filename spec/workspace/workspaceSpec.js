@@ -258,6 +258,31 @@ describe("workspace", function () {
                 });
             });
         });
+
+        it("should not set the pane of the current tab is the fileType is `preview`", function () {
+            runSync(function (done) {
+                // Set the second pane
+                workspace.panes.current('second');
+
+                // Create the tab (on the second pane)
+                workspace.createTab('::preview', function (err, tab) {
+
+                    tab.name = 'Preview';
+                    tab.fileType  = 'preview';
+
+                    // Switch to the main pane
+                    workspace.panes.current('main');
+
+                    // Set the current tab
+                    workspace.currentTab(tab, function() {
+
+                        // The current pane should be the second
+                        expect(workspace.panes.current().name).toBe('main');
+                        done();
+                    });
+                });
+            });
+        });
     });
 
     describe("#removeTab", function () {

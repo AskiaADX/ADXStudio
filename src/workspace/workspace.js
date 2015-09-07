@@ -253,7 +253,9 @@ function getSetCurrentTab(tab, callback) {
 
     if (tab instanceof Tab) {
         currentTab = tab;
-        panes.current(panes.mapByTabId[currentTab.id]);
+        if (currentTab.fileType !== 'preview') {
+            panes.current(panes.mapByTabId[currentTab.id]);
+        }
     }
 
     if (currentTab) {

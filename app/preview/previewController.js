@@ -41,13 +41,56 @@ function throwHttpError(err, response) {
 }
 
 /**
+ * Return the ADC fixtures definition
+ * @param {Function} callback
+ * @param {Object} callback.fixtures Result
+ * @param {String[]} callback.fixtures.list List of fixtures
+ * @param {String} callback.fixtures.defaultFixture Default fixture
+ */
+function getFixtures(callback) {
+    var adc = global.project.adc;
+
+    adc.getFixtureList(function (err, fixtures) {
+        var result = {
+            list : fixtures  || []
+        };
+        // Search the first allowed question type
+        var defaultFixture = '';
+        var constraints = adc.configurator.info.constraints(),
+            i, l;
+        if (constraints.questions) {
+            for (var constraint in constraints.questions) {
+                if (constraints.questions.hasOwnProperty(constraint)) {
+                    for (i  = 0, l = result.list.length; i < l; i += 1) {
+                        if (result.list[i].toLocaleLowerCase() === constraint.toLocaleLowerCase() + '.xml') {
+                            defaultFixture = result.list[i];
+                            break;
+                        }
+                    }
+                    if (defaultFixture) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        result.defaultFixture = defaultFixture;
+        if (!result.defaultFixture && result.list.length) {
+            result.defaultFixture = result.list[0];
+        }
+        callback(result);
+    });
+}
+
+/**
  * Serve the ADC output
  *
  * @param {Error} err Error
  * @param {Object} request HTTP Request
  * @param {Object} response HTTP Response
+ * @param {Object} fixtures Fixtures
  */
-function serveADCOutput(err, request, response) {
+function serveADCOutput(err, request, response, fixtures) {
     var adc = global.project.adc;
     if (err) {
         throwHttpError(err, response);
@@ -62,19 +105,10 @@ function serveADCOutput(err, request, response) {
     var uriParse = url.parse(request.url);
     var uri   = decodeURIComponent(uriParse.pathname);
     var outputName = adc.configurator.outputs.defaultOutput();
-    var fixtureName = 'chapter.xml';
+    var fixtureName = fixtures.defaultFixture;
     var properties = uriParse.query || '';
     var arg = {};
-    // Search the first allowed question type
-    var constraints = adc.configurator.info.constraints();
-    if (constraints.questions) {
-        for (var constraint in constraints.questions) {
-            if (constraints.questions.hasOwnProperty(constraint)) {
-                fixtureName = constraint;
-                break;
-            }
-        }
-    }
+
     var match = /\/output\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
     if (match) {
         outputName = match[1];
@@ -111,16 +145,20 @@ function serveADCOutput(err, request, response) {
  * @param {Error} err Error
  * @param {Object} request HTTP Request
  * @param {Object} response HTTP Response
+ * @param {Object} fixtures Fixtures
  */
-function serveADCConfig(err, request, response) {
+function serveADCConfig(err, request, response, fixtures) {
     var adc = global.project.adc;
+
     if (err) {
         throwHttpError(err, response);
         return;
     }
-
     response.writeHead(200, {"Content-Type": "application/json"});
-    response.write(JSON.stringify(adc.configurator.get()));
+    response.write(JSON.stringify({
+        config    : adc.configurator.get(),
+        fixtures  : fixtures
+    }));
     response.end();
 }
 
@@ -134,12 +172,16 @@ function reply(request, response) {
         var uri = decodeURIComponent(url.parse(request.url).pathname);
 
         if (/^\/output\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
-            serveADCOutput(err, request, response);
+            getFixtures(function (fixtures) {
+                serveADCOutput(err, request, response, fixtures);
+            });
             return;
         }
 
         if (/^\/config\//i.test(uri)) {
-            serveADCConfig(err, request, response);
+            getFixtures(function (fixtures) {
+                serveADCConfig(err, request, response, fixtures);
+            });
             return;
         }
 

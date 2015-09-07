@@ -27,19 +27,12 @@
             display : flex;
             flex-direction: column;
             border-left: 4px solid #111;
-
-            /* Fit  the tabs-content */
-            position: absolute;
-            top     : 0;
-            right   : 0;
-            bottom  : 0;
-            left    : 0;
+            position: relative;
+            height: 100%;
         }
         #grid {
             flex: 1;
-            order: 2;
             width : 100%;
-            height:300px;
             overflow: auto;
             border-top: 4px solid #111;
         }
@@ -85,7 +78,7 @@
         }
 
         #preview {
-            flex:2;
+            height:50%;
             position:relative;
             background: #fff;
         }
@@ -107,10 +100,10 @@
 <body class="form-viewer">
 
 <div id="main">
-    <div id="grid">Loading...</div>
     <div id="preview">
         <iframe id="preview_frame" src="http://localhost:3500/output/" scrolling="auto" frameborder="0"></iframe>
     </div>
+    <div id="grid">Loading...</div>
 </div>
 
 <script>
@@ -119,8 +112,9 @@
             iframeEl = document.getElementById("preview_frame"),
             resizer = new adx.Resizer({
               element: document.getElementById('preview'),
-              direction: 'horizontal'
-            });
+              direction: 'vertical'
+            }),
+            urlInfo = {};
 
         /**
          * Do an ajax query
@@ -219,12 +213,13 @@
          * Transform the outputs to his HTML representation
          * @param {Object} outputs ADC Outputs
          * @param {String} defaultOutput Default outputs
+         * @param {String[]} fixtures List of fixtures
          * #return {String}
          */
-        function outputsToHTML(outputs, defaultOutput) {
+        function outputsToHTML(outputs, defaultOutput, fixtures) {
             var i, l, html = [], selected;
-            html.push('<table>');
             html.push('<h2>ADC Properties</h2>');
+            html.push('<table>');
             html.push('<tr><td><label for="output">Output:</label></td>');
             html.push('<td><select id="output">');
             for (i = 0, l = outputs.length; i < l; i++) {
@@ -234,9 +229,10 @@
             html.push('</select></td></tr>');
             html.push('<tr><td><label for="fixture">Fixture:</label></td>');
             html.push('<td><select id="fixture">');
-            /*for (i = 0, l = outputs.length; i < l; i++) {
-             html.push('<option id="' + outputs[i].id + '">' + outputs[i].id + '</option>');
-             }*/
+            for (i = 0, l = fixtures.list.length; i < l; i++) {
+                selected = fixtures.list[i] === fixtures.defaultFixture ? ' selected="selected"' : '';
+                html.push('<option id="' + fixtures.list[i] + '"' + selected + '>' + fixtures.list[i].replace(/\.xml$/, '') + '</option>');
+            }
             html.push('</select></td></tr>');
             html.push('</table>');
             return html.join('');
@@ -247,12 +243,17 @@
          * @param response
          */
         function fillPropertyGrid(response) {
-            var adc = JSON.parse(response),
-                    cats = adc.properties.categories,
-                    outs = adc.outputs,
-                    i, l, html = [];
+            var json = JSON.parse(response),
+                adc = json.config,
+                fixtures = json.fixtures,
+                cats = adc.properties.categories,
+                outs = adc.outputs,
+                i, l, html = [];
 
-            html.push(outputsToHTML(outs.outputs, outs.defaultOutput));
+            urlInfo.output = outs.defaultOutput;
+            urlInfo.fixture = fixtures.defaultFixture;
+
+            html.push(outputsToHTML(outs.outputs, outs.defaultOutput, fixtures));
 
             for (i = 0, l = cats.length; i < l; i += 1) {
                 html.push(categoryToHTML(cats[i]));
@@ -260,12 +261,20 @@
             gridEl.innerHTML = html.join('');
             gridEl.addEventListener('change', function (event) {
                 var el = event.srcElement;
-                if (el.id === 'output') {
-                    iframeEl.src = "http://localhost:3500/output/" + el.value + "/";
+                if (el.id === 'output' || el.id === 'fixture') {
+                    urlInfo[el.id] = el.value;
                 }
                 console.log('on change ', event.srcElement);
+                reloadPreview();
             });
 
+        }
+
+        /**
+         * Reload the preview
+         */
+        function reloadPreview(){
+            iframeEl.src = "http://localhost:3500/output/" + urlInfo.output + "/" + urlInfo.fixture.replace(/\.xml$/, '');
         }
 
 
@@ -277,8 +286,7 @@
             }
         });
 
-
-
+        resizer.start();
         viewer.fireReady();
     });
 </script>

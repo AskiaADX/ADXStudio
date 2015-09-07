@@ -91,7 +91,7 @@ function openPreview() {
         workspace.panes.current('second');
         workspace.createTab('::preview', function (err, tab, pane) {
             if (err) throw err;
-            workspace.panes.current(previousPane); // Restore the previous active pane
+            workspace.panes.current(previousPane.name); // Restore the previous active pane
             tab.name = 'Preview';
             tab.fileType  = 'preview';
             workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
