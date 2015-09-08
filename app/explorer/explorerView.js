@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       var item = document.createElement('div');
       item.className = files[i].type;
+      item.title = files[i].path;
       item.setAttribute('data-path', files[i].path);
       item.file = files[i];
 

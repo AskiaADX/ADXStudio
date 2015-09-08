@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
          // Create the tab
          var tabEl = document.createElement('li');
+         tabEl.setAttribute('title', tab.path);
          tabEl.classList.add('tab');
          tabEl.setAttribute('id', 'tab-' + tab.id);
 
