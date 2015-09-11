@@ -1,83 +1,112 @@
+    /*
+    * Saving Datas about ADXStudio configurations:
+    * -Last project opened
+    * -Last files opened
+    * -Last files modified
+    * -Window size
+    * -Window size of the preview
+    *
+    * Operation:
+    *   1- At the launchment of ADXStudio, will check if the folder AppData contains the folder ADXStudio
+    *      a. if not: Create the folder with all files needed
+    *      b. if yes: Get informations of files inside AppData/ADXStudio
+    *   2- The function will send informations that have been get from files AppData/ADXStudio.
+    *   3- Informations will be used to be open everywhere in the project. ( Example: in the menu bar, 'Most recently used')
+    *
+    */
+
+
 var fs = require('fs');
 var app = require('app');
 var path = require('path');
+var ipc = require('ipc');
+var pathInit    = app.getPath('appData'),
+    pathAppData = path.join(pathInit, 'ADXStudio');
 
-  /*
-  * Saving Datas about ADXStudio configurations:
-  * -Last project opened
-  * -Last files opened
-  * -Last files modified
-  * -Window size
-  * -Window size of the preview
-  *
-  * Operation:
-  *   1- At the launchment of ADXStudio, will check if the folder AppData contains the folder ADXStudio
-  *      a. if not: Create the folder with all files needed
-  *      b. if yes: Get informations of files inside AppData/ADXStudio
-  *   2- The function will send informations that have been get from files AppData/ADXStudio.
-  *   3- Informations will be used to be open everywhere in the project. ( Example: in the menu bar, 'Most recently used')
-  *
-  */
-
-
-
-      /*
-      * Sample of Code:
-      *       app.on(identifier +'-data-information', function(event, info) {
-      *
-      *         var wksData = {};
-      *         var explData = {};
-      *
-      *        switch(event) {
-      *           case 'explorer-data-information':
-      *
-      *            for(i = 0; i <= 4; i++ ) {
-      *              explData.lastItem[i].name = info.name;
-      *              explData.lastItem[i].path = info.path;
-      *            }
-      *
-      *           break;
-      *
-      *           case 'workspace-data-information':
-      *           //...
-      *           break;
-      *
-      *           default: ...
-      *         }
-      *
-      *       });
-      * @param event {String} To know the sender of data informations.
-      * @param info {Object} Contains all informations about data sent, ( info.item1|info.item2|info.item3|info.item4|info.resizerPane1|info.resizerPane2|info.resizerPreview )
-      *
-      */
-    function informationData() {
-
-      fs.writeFile('C:/Users/DevTeam_Paris/AppData/ADXStudio/ADXtmpInfo.txt', 'Test1', function(err, fls) {
-        console.log('test1 done');
-      });
-
-    }
 
      /*
-     * Verify if the folder ADXStudio exist in the AppData folder.
+     * Push all informations in a "data file" where we can have: explorer data, workspace data and at least user data informations. (TODO)
+     * this function will be called each time there is a changement in ADXStudio ( On event: resizer, open new folder... )
+     *
+     * There is twp files expData.txt and wksData.txt which are used to save user preferences.
      *
      *
-     *
+     * @param expData {Object} Object which contains all explorer user preferences and last projects opened
+     * @param wksData {Object} Object which contains all workspace user preferences and last tab opened
      */
-    function pushInfoData() {
+    function pushInfoData(expData, wksData) {
+      if (expData && (wksData === undefined || wksData)) {
 
-          var   objTemp = {
-                            super: '12342',
-                            cool: 'vrwerwe'
-                          },
-            pathInit    = app.getPath('appData'),
-            pathAppData = path.join(pathInit, 'ADXStudio');
-
-        console.log(pathInit);
-
-        fs.writeFile( pathAppData + '/tmp.txt', JSON.stringify(objTemp), function() {
-          console.log('Data have been saved inside: ' + pathAppData + '/tmp.txt');
+        // Write new informations about explorer data --> explorer size, last project created or opened.
+        fs.writeFile( pathAppData + '/expData.txt', JSON.stringify(expData), function(err) {
+          if (err) {
+            throw err;
+          }
+          console.log('Data have been saved inside: ' + pathAppData + '/expData.txt');
         });
+      }
+
+      if (wksData && (expData === undefined || expData)) {
+        // Write new informations about workspace data --> last tab open, preview size, grid size.
+        fs.writeFile( pathAppData + '/wksData.txt', JSON.stringify(wksData), function(err) {
+          if (err) {
+            throw err;
+          }
+          console.log('Data have been saved inside: ' + pathAppData + '/wksData.txt');
+        });
+      }
     }
 
-  pushInfoData();
+
+
+    /*
+    * Get all data of the workspace and the explorer to send it to other controlers/Views.
+    * This function will be usually used when we open a new window of ADXStudio.
+    *
+    */
+    function getDataInfo() {
+
+      // Get explorer's data.
+      fs.readFile(pathAppData + '/expData.txt','utf8', function(err1, data1) {
+
+        if (err1) {
+          throw err1;
+        }
+
+        var newExpInfo = JSON.parse(data1);
+
+        return newExpInfo;
+
+      });
+
+      //Get workspace's data.
+      fs.readFile(pathAppData + '/wksData.txt', 'utf8', function(err2, data2) {
+
+        if (err2) {
+          throw err2;
+        }
+
+        var newWksInfo = JSON.parse(data2);
+
+        return newWksInfo;
+
+      });
+
+      ipc.send('data-load-newData', newExpInfo, newWksInfo);
+    }
+
+ipc.on('main-get-data', getDataInfo);
+
+ipc.on('explorer-data-change', pushInfoData);
+ipc.on('workspace-data-change', pushInfoData);
+
+
+//exemple of the function pushInfoData.
+var b = {
+  testwks:'ok'
+  };
+var a = {
+  testexp:'ok'
+  };
+
+pushInfoData(a,b);
