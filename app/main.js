@@ -5,6 +5,7 @@ require('./workspace/workspaceController.js');
 require('./explorer/explorerController.js');
 require('./preview/previewController.js');
 require('./main/menuController.js');
+var data = require('./data/dataControler.js');
 
 // Report crashes to our server.
 require('crash-reporter').start();
