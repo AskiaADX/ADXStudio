@@ -38,7 +38,7 @@ var pathInit    = app.getPath('appData'),
       if (expData && (wksData === undefined || wksData)) {
 
         // Write new informations about explorer data --> explorer size, last project created or opened.
-        fs.writeFile( pathAppData + '/expData.txt', JSON.stringify(expData), function(err) {
+        fs.writeFile( pathAppData + '/expData.json', JSON.stringify(expData), function(err) {
           if (err) {
             throw err;
           }
@@ -48,7 +48,7 @@ var pathInit    = app.getPath('appData'),
 
       if (wksData && (expData === undefined || expData)) {
         // Write new informations about workspace data --> last tab open, preview size, grid size.
-        fs.writeFile( pathAppData + '/wksData.txt', JSON.stringify(wksData), function(err) {
+        fs.writeFile( pathAppData + '/wksData.json', JSON.stringify(wksData), function(err) {
           if (err) {
             throw err;
           }
@@ -67,7 +67,7 @@ var pathInit    = app.getPath('appData'),
     function getDataInfo() {
 
       // Get explorer's data.
-      fs.readFile(pathAppData + '/expData.txt','utf8', function(err1, data1) {
+      fs.readFile(pathAppData + '/expData.json','utf8', function(err1, data1) {
 
         if (err1) {
           throw err1;
@@ -80,7 +80,7 @@ var pathInit    = app.getPath('appData'),
       });
 
       //Get workspace's data.
-      fs.readFile(pathAppData + '/wksData.txt', 'utf8', function(err2, data2) {
+      fs.readFile(pathAppData + '/wksData.json', 'utf8', function(err2, data2) {
 
         if (err2) {
           throw err2;
