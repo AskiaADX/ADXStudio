@@ -3,8 +3,8 @@ describe("workspace", function () {
     var workspace, Tab;
 
     beforeEach(function () {
-        workspace = require("../../src/workspace/workspace.js");
-        Tab       = require("../../src/workspace/Tab.js").Tab;
+        workspace = require("../../app/workspace/workspaceModel.js");
+        Tab       = require("../../app/workspace/TabModel.js").Tab;
     });
 
     function runSync(fn) {

@@ -1,31 +1,29 @@
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
 var dialog = require('dialog');
-var explorer = require('../../src/explorer/explorer.js');
+var explorer = require('./explorerModel.js');
 var path = require('path');
 var ADC   = require('adcutil').ADC;
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var explorerView;
 
 /**
  * Open a project in the explorer
  * @param {Object} event Event arg
- * @param {String} folderpath Path of the folder to load as root
+ * @param {Object} options Project options
  */
-function newProject(event, projectOptions) {
-  ADC.generate(projectOptions.name, {
-      output: projectOptions.path,
-      template: projectOptions.tmp,
-      description: projectOptions.description,
-      author: {
+function newProject(event, options) {
+    var project = {
+        output      : options.path,
+        template    : options.template,
+        description : options.description
+    };
+    project.author = {
         name: 'Maxime',
         email:'nanana@gmail.com',
         company: 'askia',
         website: 'http://askia.com'
-      }
-
-    }, function(err, adc) {
-    // TODO::Manage error
+    };
+  ADC.generate(options.name, project, function(err, adc) {
     if (err) {
       console.log(err);
       return;

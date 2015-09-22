@@ -226,7 +226,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var ipc  = require('ipc'),
         tabs = window.tabs,
-        resizer = new adx.Resizer({
+        askia =  window.askia,
+        resizer = new askia.Resizer({
             element : document.getElementById('main_pane')
         });
 
@@ -268,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
          contentEl.setAttribute('id', 'content-' + tab.id);
 
          var div = document.createElement('div');
-         var viewerSubFolderName = 'codemirror';
+         var viewerSubFolderName = 'editor';
          if (tab.adcConfig) {
              viewerSubFolderName = 'adcconf';
          } else if (tab.fileType === 'image') {

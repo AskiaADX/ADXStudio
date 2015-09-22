@@ -1,7 +1,7 @@
 var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
-var workspace = require('../../src/workspace/workspace.js');
+var workspace = require('./workspaceModel.js');
 var workspaceView;
 
 /**

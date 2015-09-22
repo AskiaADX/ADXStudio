@@ -1,0 +1,59 @@
+* {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input, textarea, select {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+div.askia-resizer-horizontal-drag {
+    cursor: ew-resize;
+    background: #333;
+    z-index   : 1000;
+}
+
+div.askia-resizer-vertical-drag {
+    cursor: ns-resize;
+    background: #333;
+    z-index   : 1000;
+}
+
+div.askia-resizer-modal {
+    z-index   : 999;
+    width    : 100vw;
+    height   :  100vh;
+    position : absolute;
+    top      : 0;
+    left     : 0;
+    background :transparent;
+}
+div.askia-resizer-modal.vertical {
+    cursor: ns-resize;
+}
+div.askia-resizer-modal.horizontal {
+    cursor: ew-resize;
+}
+
+.askia-resizer-horizontal, .askia-resizer-vertical {
+  position: absolute;
+  top:0;
+  left: 0;
+}
+
+.askia-resizer-horizontal {
+  cursor: ew-resize;
+  width: 6px;
+  height: 100%;
+}
+
+.askia-resizer-vertical {
+  cursor: ns-resize;
+  height: 6px;
+  width: 100%;
+}
+
+.askia-resizer-hide {
+  display: none;
+}

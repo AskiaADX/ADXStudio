@@ -1,0 +1,61 @@
+.askia-modal-dialog.new-project {
+    top : 30%;
+    height : 500px;
+}
+
+.askia-modal-new-project-container {
+    padding: 15px;
+}
+
+
+.askia-modal-new-project-container input,
+.askia-modal-new-project-container textarea,
+.askia-modal-new-project-container select {
+    padding: 10px;
+    width: 300px;
+    border-radius: 2px;
+    border: 1px solid #151515;
+    background-color: #21252B;
+    color: #BBB;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.askia-modal-new-project-container input:focus,
+.askia-modal-new-project-container textarea:focus,
+.askia-modal-new-project-container select:focus {
+    border: 1px solid #007DC5;
+    outline: none;
+}
+
+.askia-modal-new-project-container label {
+    display: block;
+    width: 100px;
+    float: left;
+    align-self: center;
+}
+
+.askia-modal-new-project-container textarea {
+    height: 60px;
+}
+
+.askia-modal-new-project-container select {
+    width: 325px;
+}
+
+.askia-modal-new-project-container button {
+    width: 40px;
+    height: 30px;
+    cursor: pointer;
+    align-self: center;
+    margin-left: 10px;
+    background-color: #BBBBBB;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,.95);
+    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset;
+    color: #222;
+    font-size: 14px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    outline: none;
+    transition: all ease-in-out .3s;
+}

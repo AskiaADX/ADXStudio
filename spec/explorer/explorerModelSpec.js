@@ -2,7 +2,7 @@ describe('explorer', function () {
     var explorer, fs, spies, fakeStats;
 
     beforeEach(function () {
-        explorer = require("../../src/explorer/explorer.js");
+        explorer = require("../../app/explorer/explorerModel.js");
         fs = require('fs');
 
         spies = {

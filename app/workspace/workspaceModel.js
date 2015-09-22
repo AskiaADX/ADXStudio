@@ -1,4 +1,4 @@
-var Tab = require('./Tab.js').Tab;
+var Tab = require('./TabModel.js').Tab;
 
 /**
  * Current pane

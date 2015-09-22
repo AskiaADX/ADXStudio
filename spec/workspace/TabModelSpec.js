@@ -7,7 +7,7 @@ describe("Tab", function () {
 
 
     beforeEach(function () {
-        Tab = require('../../src/workspace/Tab.js').Tab;
+        Tab = require('../../app/workspace/TabModel.js').Tab;
 
         spies.isTextOrBinary = spyOn(Tab, 'isTextOrBinaryFile');
         spies.isTextOrBinary.andCallFake(function (path, cb) {

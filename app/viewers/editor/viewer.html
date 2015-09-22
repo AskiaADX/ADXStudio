@@ -1,29 +1,29 @@
 ﻿<!doctype html>
 <html>
 <head>
-    <title>AskiaScript mode</title>
+    <title>Editor</title>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="../../lib/codemirror/lib/codemirror.css">
+    <script src="../../lib/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="../../lib/codemirror/mode/askiascript/askiascript.css" />
+    <script src="../../lib/codemirror/mode/askiascript/askiascript.js"></script>
+    <script src="../../lib/codemirror/lexicons/AskiaLanguage-en.js"></script>
+    <script src="../../lib/codemirror/lexicons/MasqueLanguage-en.js"></script>
+    <script src="../../lib/codemirror/mode/xml/xml.js"></script>
+    <script src="../../lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="../../lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="../../lib/codemirror/mode/css/css.js"></script>
+    <script src="../../lib/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="../../lib/codemirror/mode/markdown/markdown.js"></script>
+    <script src="../../lib/codemirror/addon/mode/multiplex.js"></script>
+    <script src="../../lib/codemirror/mode/askiascripthtml/askiascripthtml.js"></script>
+    <script src="../../lib/codemirror/mode/askiascriptxml/askiascriptxml.js"></script>
+    <script src="../../lib/codemirror/mode/askiascriptjs/askiascriptjs.js"></script>
+    <script src="../../lib/codemirror/mode/askiascriptcss/askiascriptcss.js"></script>
+    <link rel="stylesheet" href="../../lib/codemirror/addon/sense/sense.css" />
+  	<script src="../../lib/codemirror/addon/selection/active-line.js"></script>
+    <script src="../../lib/codemirror/addon/sense/sense.js"></script>
     <link rel="stylesheet" href="../../themes/default/askia.css">
-    <script src="lib/codemirror.js"></script>
-    <link rel="stylesheet" href="mode/askiascript/askiascript.css" />
-    <script src="mode/askiascript/askiascript.js"></script>
-    <script src="lexicons/AskiaLanguage-en.js"></script>
-    <script src="lexicons/MasqueLanguage-en.js"></script>
-    <script src="mode/xml/xml.js"></script>
-    <script src="mode/javascript/javascript.js"></script>
-    <script src="mode/javascript/javascript.js"></script>
-    <script src="mode/css/css.js"></script>
-    <script src="mode/htmlmixed/htmlmixed.js"></script>
-    <script src="mode/markdown/markdown.js"></script>
-    <script src="addon/mode/multiplex.js"></script>
-    <script src="mode/askiascripthtml/askiascripthtml.js"></script>
-    <script src="mode/askiascriptxml/askiascriptxml.js"></script>
-    <script src="mode/askiascriptjs/askiascriptjs.js"></script>
-    <script src="mode/askiascriptcss/askiascriptcss.js"></script>
-    <link rel="stylesheet" href="addon/sense/sense.css" />
-  	<script src="addon/selection/active-line.js"></script>
-    <script src="addon/sense/sense.js"></script>
     <script src="../viewer.js"></script>
     <style>
         html, body
@@ -71,21 +71,7 @@
                 mode            : contentType,
                 theme           : 'askia',
                 styleActiveLine: true,
-                /*currentQuestion : 'gender',
-                 localExe : false,
-                 questions       :  [
-                 {shortcut : 'gender', type : 'single'},
-                 {shortcut : 'age', type : 'numeric'},
-                 {shortcut : 'brands', type : 'multiple'},
-                 {shortcut : 'preferred brands', type : 'single'}
-                 ],*/
-                questions       : []/*,
-                 onDragEvent     : function (instance, event) {
-                 if (event.type === 'drop') {
-                 return false;
-                 }
-                 return false;
-                 }*/
+                questions       : []
             }).suggest();
 
             window.editor.on('change', function onChange(instance) {

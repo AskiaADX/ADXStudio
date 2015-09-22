@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>ADX - Preview</title>
     <link href="../../themes/default/default.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="../../main/adxResizer.css"/>
-    <script type="text/javascript" src="../../main/adxResizer.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../lib/askia/Resizer.css"/>
+    <script type="text/javascript" src="../../lib/askia/Resizer.js"></script>
     <style>
         html, body {
             padding :0;
@@ -110,7 +110,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         var gridEl = document.getElementById("grid"),
             iframeEl = document.getElementById("preview_frame"),
-            resizer = new adx.Resizer({
+            askia =  window.askia,
+            resizer = new askia.Resizer({
               element: document.getElementById('preview'),
               direction: 'vertical'
             }),
