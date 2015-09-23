@@ -2,6 +2,7 @@ var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
 var workspace = require('./workspaceModel.js');
+var preview   = require('../preview/previewController.js');
 var workspaceView;
 
 /**
@@ -71,12 +72,16 @@ function openProjectSettings() {
 
 /**
  * Open the ADX preview
+ * @param {Object} options Options
+ * @param {Number} options.httpPort HTTP Port listen
+ * @param {Number} options.wsPort WS port listen
  */
-function openPreview() {
+function openPreview(options) {
     var adc = global.project.adc;
     if (!adc || !adc.path) {
         return;
     }
+
     workspace.find('::preview', function (err, tab, pane) {
 
         // If the tab already exist only focus it
@@ -94,7 +99,32 @@ function openPreview() {
             workspace.panes.current(previousPane.name); // Restore the previous active pane
             tab.name = 'Preview';
             tab.fileType  = 'preview';
+            tab.ports     = {
+                http : options.httpPort,
+                ws   : options.wsPort
+            };
             workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+        });
+    });
+}
+
+/**
+ * Start the preview servers
+ */
+function startPreview() {
+    if (!global.project.adc || !global.project.adc.path) {
+        return;
+    }
+
+    preview.servers.web.listen(function onHttpListening(httpPort) {
+        // TODO::Don't open it externally for the moment
+        // shell.openExternal('http://localhost:' + port + '/output/');
+
+        preview.servers.webSocket.listen(function onWSListening(wsPort) {
+            openPreview({
+                httpPort : httpPort,
+                wsPort   : wsPort
+            });
         });
     });
 }
@@ -172,8 +202,8 @@ ipc.on('workspace-ready', function (event) {
         app.on('menu-show-project-settings', openProjectSettings);
 
 
-        app.removeListener('menu-preview', openPreview);
-        app.on('menu-preview', openPreview);
+        app.removeListener('menu-preview', startPreview);
+        app.on('menu-preview', startPreview);
 
     });
 

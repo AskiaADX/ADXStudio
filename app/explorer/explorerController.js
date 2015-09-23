@@ -3,7 +3,7 @@ var ipc = require('ipc');
 var dialog = require('dialog');
 var explorer = require('./explorerModel.js');
 var path = require('path');
-var ADC   = require('adcutil').ADC;
+var ADC = require('adcutil').ADC;
 var explorerView;
 
 /**
@@ -13,23 +13,23 @@ var explorerView;
  */
 function newProject(event, options) {
     var project = {
-        output      : options.path,
-        template    : options.template,
-        description : options.description
+        output: options.path,
+        template: options.template,
+        description: options.description
     };
     project.author = {
         name: 'Maxime',
-        email:'nanana@gmail.com',
+        email: 'nanana@gmail.com',
         company: 'askia',
         website: 'http://askia.com'
     };
-  ADC.generate(options.name, project, function(err, adc) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    openProject(adc.path);
-  });
+    ADC.generate(options.name, project, function (err, adc) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        openProject(adc.path);
+    });
 }
 
 /**
@@ -38,17 +38,17 @@ function newProject(event, options) {
  */
 function openProject(folderpath) {
 
-  explorer.load(folderpath, function(err, files) {
-    var adc = new ADC(folderpath);
-    global.project.path = folderpath;
-    global.project.adc  = adc;
+    explorer.load(folderpath, function (err, files) {
+        var adc = new ADC(folderpath);
+        global.project.path = folderpath;
+        global.project.adc = adc;
 
-    adc.load(function(err) {
-      var name = (!err) ? adc.configurator.info.name() : path.basename(folderpath);
-      explorerView.send('explorer-expand-folder', err, folderpath, files, true, name);
+        adc.load(function (err) {
+            var name = (!err) ? adc.configurator.info.name() : path.basename(folderpath);
+            explorerView.send('explorer-expand-folder', err, folderpath, files, true, name);
+            explorer.watch(folderpath);
+        });
     });
-
-  });
 }
 
 
@@ -56,16 +56,16 @@ function openProject(folderpath) {
  * Can remove file or folder from the explorer.
  *
  * @param event
- * @param {String} folder-file/path Path of the folder or the file selected.
+ * @param {String} file Path of the folder or the file selected.
  */
 function removeFile(event, file) {
-  var pathToRemove = file.path;
+    var pathToRemove = file.path;
 
-  explorer.remove(pathToRemove, function(err) {
-    if (err) {
-      console.log(err.message);
-    }
-  });
+    explorer.remove(pathToRemove, function (err) {
+        if (err) {
+            console.log(err.message);
+        }
+    });
 }
 
 /**
@@ -78,21 +78,20 @@ function removeFile(event, file) {
 function renameFile(event, file, newName) {
     var oldPath = file.path;
     var newPath = path.join(oldPath, '..', newName);
-    explorer.rename(oldPath, newPath, function(err) {
-      if (err) {
-          console.log(err.message);
-      }
+    explorer.rename(oldPath, newPath, function (err) {
+        if (err) {
+            console.log(err.message);
+        }
     });
 }
 
 
-
 /**
-* Send a message to the view to Open new project.
-*
-*/
+ * Send a message to the view to Open new project.
+ *
+ */
 function sendOpenProject(event) {
-  explorerView.send('menu-new-project');
+    explorerView.send('menu-new-project');
 }
 
 /**
@@ -104,20 +103,21 @@ function onChange(dir, files) {
     explorerView.send('explorer-expand-folder', null, dir, files);
 }
 
-ipc.on('explorer-ready', function(event) {
+ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
     // Load the default path
     var defaultPath = path.join(__dirname, '../../');
-    explorer.load(defaultPath, function(err, files) {
-      var adc = new ADC(defaultPath);
-      global.project.path = defaultPath;
-      global.project.adc  = adc;
+    explorer.load(defaultPath, function (err, files) {
+        var adc = new ADC(defaultPath);
+        global.project.path = defaultPath;
+        global.project.adc = adc;
 
-      adc.load(function(err) {
-        var name = (!err) ? adc.configurator.info.name() : path.basename(defaultPath);
-        explorerView.send('explorer-expand-folder', err, defaultPath, files, true, name);
-      });
+        adc.load(function (err) {
+            var name = (!err) ? adc.configurator.info.name() : path.basename(defaultPath);
+            explorerView.send('explorer-expand-folder', err, defaultPath, files, true, name);
+            explorer.watch(defaultPath);
+        });
     });
 
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event
@@ -143,8 +143,8 @@ ipc.on('explorer-ready', function(event) {
     explorer.on('change', onChange); // Add it back
 });
 
-ipc.on('explorer-load-folder', function(event, folderpath) {
-  explorer.load(folderpath, function(err, files) {
-    event.sender.send('explorer-expand-folder', err, folderpath, files);
-  });
+ipc.on('explorer-load-folder', function (event, folderpath) {
+    explorer.load(folderpath, function (err, files) {
+        event.sender.send('explorer-expand-folder', err, folderpath, files);
+    });
 });

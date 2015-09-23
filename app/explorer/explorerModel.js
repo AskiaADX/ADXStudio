@@ -1,5 +1,6 @@
 var fs = require('fs');
 var fsExtra = require('fs.extra');
+var chokidar = require('chokidar');
 var path = require("path");
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
@@ -95,6 +96,44 @@ Explorer.prototype.load = function (dir, callback) {
     });
 };
 
+/**
+ * Watch a directory
+ * @param {String} dir Directory path to watch
+ */
+Explorer.prototype.watch = function watch(dir) {
+    if (!dir || typeof dir !== 'string') {
+        throw new Error('Invalid argument');
+    }
+    // Close the previous watcher first
+    if (this.watcher) {
+        this.watcher.close();
+    }
+
+    this.watcher = chokidar.watch(dir, {
+        ignoreInitial : true,
+        usePolling: true
+    });
+
+    /**
+     * Event trigger when the structure of the directory has been changed
+     * @param pathChanged
+     */
+    function onStructureChange(pathChanged) {
+        //Part to reload parent folder when path have bben changed.
+        var parentDir = path.join(pathChanged, '..');
+        module.exports.load(parentDir, function(err, files) {
+            if (err) {
+                return;
+            }
+            module.exports.emit('change', parentDir, files);
+        });
+    }
+
+    this.watcher.on('add', onStructureChange);
+    this.watcher.on('addDir', onStructureChange);
+    this.watcher.on('unlink', onStructureChange);
+    this.watcher.on('unlinkDir', onStructureChange);
+};
 
 /**
  * Rename the file or directory.
@@ -153,66 +192,33 @@ Explorer.prototype.rename = function (oldPath, newPath, callback) {
  */
 Explorer.prototype.remove = function(pathToRemove, callback) {
 
-  var parentDir = path.join(pathToRemove, '..');
-
     if (!pathToRemove && !callback) {
-      throw new Error('Invalid argument');
+        throw new Error('Invalid argument');
     }
+
+    var parentDir = path.join(pathToRemove, '..');
 
     callback = callback || function () {};
 
-    fs.stat(pathToRemove, function(err, stats) {
+    fsExtra.rmrf(pathToRemove, function(err) {
 
-      // if the item is a file.
-      if (!stats.isDirectory()) {
-
-        fs.unlink(pathToRemove, function(err) {
-
-          if (err) {
+        if (err) {
             callback(err);
             return;
-          }
+        }
 
-          callback(null);
+        callback(null);
 
-          //Part to reload parent folder when path have bben changed.
+        //Part to reload parent folder when path have bben changed.
 
-          module.exports.load(parentDir, function(err, files) {
+        module.exports.load(parentDir, function(err, files) {
             if (err) {
                 return;
             }
             module.exports.emit('change', parentDir, files);
-          });
-
         });
-      }
-      //If the item selected is a folder
-      if (stats.isDirectory()) {
-
-
-        fsExtra.rmrf(pathToRemove, function(err) {
-
-          if (err) {
-            callback(err);
-            return;
-          }
-
-          callback(null);
-
-          //Part to reload parent folder when path have bben changed.
-
-          module.exports.load(parentDir, function(err, files) {
-            if (err) {
-                return;
-            }
-            module.exports.emit('change', parentDir, files);
-          });
-        });
-      }
     });
-
-
-
 };
 
 module.exports = new Explorer();
+

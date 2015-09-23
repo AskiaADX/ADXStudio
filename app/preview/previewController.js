@@ -1,30 +1,106 @@
 var app     = require('app');
 var fs      = require('fs');
 var http    = require("http");
+var ws      = require("nodejs-websocket");
 var url     = require("url");
 var path    = require('path');
 var shell   = require('shell');
 var mime    = require('mime-types');
-var server;
-var isStart = false;
-var lastPort = 0;
+
+var servers = {
+    // Web server
+    web : new Server({
+        factory : http,
+        port    : 3500,
+        reply   : reply
+    }),
+
+    // Web socket server
+    webSocket : new Server({
+        factory : ws,
+        port    : 3501,
+        reply   : wsReply
+    })
+
+};
 
 
 /**
- * Create the server
+ * Create a new server
+ * @param {Object} options Options to create the server
+ * @param {Object} options.factory Factory to create the server (http or ws object)
+ * @param {Function} options.reply Reply function to pass to the factory
+ * @param {Number} [options.port=0] Port to listen (0 to search a free one)
+ * @constructor
  */
-function createServer() {
-    if (server) {
+function Server(options) {
+    var factory  = options.factory;
+    var reply    = options.reply;
+    this.options = options;
+    this.port    = this.options.port || 0;
+
+    this.innerServer = factory.createServer(reply);
+    this.isStart     = false;
+}
+
+/**
+ * Listen
+ * @param {Function} callback Callback when the listening has started
+ * @param {Number} callback.port Port when the server is listening into
+ */
+Server.prototype.listen = function listen(callback) {
+    var self        = this,
+        innerServer = self.innerServer;
+
+    // Already started
+    if (self.isStart) {
+        if (typeof callback === 'function') {
+            callback(self.port);
+        }
         return;
     }
 
-    server = http.createServer(reply);
+    if (!self.port) {
+        self.port = 3500; // TODO::Make stuff to search a free port
+    }
 
-    server.on('close', function () {
-        isStart = false;
-        console.log('close the server connection');
+    // Listen the port
+    innerServer.listen(self.port, function () {
+        self.isStart = true;
+        console.log("Server is listening on port " + self.port);
+        if (typeof  callback === 'function') {
+            callback(self.port);
+        }
     });
-}
+
+    // Listen close event
+    innerServer.on('close', function () {
+        self.isStart = false;
+        console.log('Close the server connection');
+    });
+};
+
+/**
+ * Close the connection
+ * @param {Function} callback Callback when the listening has started
+ */
+Server.prototype.close = function close(callback) {
+    var self = this;
+    if (self.innerServer) {
+        self.innerServer.close(function () {
+            self.isStart = false;
+            console.log("Server was stopped");
+            if (typeof  callback === 'function') {
+                callback();
+            }
+        });
+        return;
+    }
+    if (typeof  callback === 'function') {
+        callback();
+    }
+};
+
 
 /**
  * Throw an HTTP error
@@ -138,7 +214,6 @@ function serveADCOutput(err, request, response, fixtures) {
     });
 }
 
-
 /**
  * Serve the ADC configuration
  *
@@ -229,68 +304,78 @@ function reply(request, response) {
 }
 
 /**
- * Start the HTTP server
- * @param {Number} [port=3500] Port to listen
- * @param {Function} [callback]
- * @param {Number} [callback.port] Port listen
+ * Function that reply on the web socket
+ * @param connection
  */
-function startServer(port, callback) {
-    // Swap arguments
-    if (typeof  port === 'function') {
-        callback = port;
-        port = null;
+function wsReply(connection) {
+
+
+    /**
+     * Throw an ws error
+     * @param {Error} err Error
+     * @param {Object} connection WS connection
+     */
+    function throwWSError(err, connection) {
+        var str = '500 Internal server error\n';
+        if (err) {
+            str +=  err.message + '\n';
+        }
+        connection.sendText(JSON.stringify({
+            error : 1,
+            message : str
+        }));
     }
 
-    // Already started
-    if (isStart) {
-        if (typeof  callback === 'function') {
-            callback(lastPort);
+    /**
+     * Serve the adc config
+     * @param connection
+     */
+    function serveADCConfig(err, connection, fixtures) {
+        if (err) {
+            throwWSError(err, connection);
+            return;
         }
-        return;
+
+        var adc = global.project.adc;
+        connection.sendText(JSON.stringify({
+            error : 0,
+            action : 'getConfig',
+            message : {
+                config    : adc.configurator.get(),
+                fixtures  : fixtures
+            }
+        }));
     }
 
-    // Initialize the port
-    lastPort = port || 3500;
-
-    // Create teh server
-    createServer();
-
-    // Listen the port
-    server.listen(lastPort, function () {
-        isStart = true;
-        console.log("Server is listening on port " + lastPort);
-        if (typeof  callback === 'function') {
-            callback(lastPort);
-        }
+    connection.on("text", function onReceiveMessage(message) {
+        // Always reload to obtain the up-to-date info
+        var adc = global.project.adc;
+        var query = JSON.parse(message);
+        adc.load(function (err) {
+            if (query.action === 'getConfig') {
+                getFixtures(function (fixtures) {
+                    serveADCConfig(err, connection, fixtures);
+                });
+            }
+        });
+    });
+    connection.on("close", function () {
+        var ws = servers.webSocket.innerServer;
+        console.log('the connection was closed, remaining connections: ' + ws.connections.length);
     });
 }
 
 /**
- * Stop the HTTP server
- * @param {Function} [callback]
+ * Broadcast message
+ * @param {String} message Message to broadcast
  */
-function stopServer(callback) {
-    if (server) {
-        server.close(function () {
-            isStart = false;
-            console.log("Server was stopped");
-            if (typeof  callback === 'function') {
-                callback();
-            }
-        });
-        return;
-    }
-    if (typeof  callback === 'function') {
-        callback();
-    }
+function broadcast(message) {
+    var ws = servers.webSocket.innerServer;
+    ws.connections.forEach(function (connection) {
+        connection.sendText(message)
+    });
 }
 
-app.on('menu-preview', function () {
-    startServer(function (port) {
-        // TODO::Don't open it externally for the moment
-        // shell.openExternal('http://localhost:' + port + '/output/');
-    });
-});
 
-exports.startServer = startServer;
-exports.stopServer = stopServer;
+
+exports.servers = servers;
