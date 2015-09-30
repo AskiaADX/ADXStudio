@@ -442,4 +442,14 @@ describe("Tab", function () {
         });
     });
 
+    describe('#close', function () {
+        it('should be a function', function () {
+            var tab = new Tab({
+                path : 'file/to/load'
+            });
+
+            expect(typeof tab.close).toBe('function');
+        });
+    });
+
 });

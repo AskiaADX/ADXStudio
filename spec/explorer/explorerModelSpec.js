@@ -1,5 +1,5 @@
 describe('explorer', function () {
-    var explorer, Gaze, fs, fsExtra,  spies, fakeStats;
+    var explorer, watcher, fs, fsExtra,  spies, fakeStats;
     var util        = require("util");
     var EventEmitter = require("events").EventEmitter;
     var pathHelper = require('path');
@@ -9,6 +9,8 @@ describe('explorer', function () {
     }
 
     util.inherits(FakeWatcher, EventEmitter);
+    FakeWatcher.prototype.add = function () {};
+    FakeWatcher.prototype.remove = function () {};
     FakeWatcher.prototype.close = function () {};
 
     beforeEach(function () {
@@ -16,10 +18,11 @@ describe('explorer', function () {
         delete require.cache[explorerCacheKey];
 
         explorer = require("../../app/explorer/explorerModel.js");
+        watcher = require('../../app/watcher/watcher.js');
 
         fs = require('fs');
         fsExtra = require('fs.extra');
-        Gaze = require('gaze').Gaze;
+
         spies = {
             fs: {
                 stat: spyOn(fs, 'stat'),
@@ -31,8 +34,8 @@ describe('explorer', function () {
             fsExtra: {
                 rmrf: spyOn(fsExtra, 'rmrf')
             },
-            Gaze : {
-                add : spyOn(Gaze.prototype, 'add')
+            watcher : {
+                create : spyOn(watcher, 'create')
             }
         };
 
@@ -60,13 +63,10 @@ describe('explorer', function () {
             };
         });
 
-    });
+        spies.watcher.create.andCallFake(function (pattern) {
+            return new FakeWatcher(pattern);
+        });
 
-    afterEach(function () {
-        if (explorer._watcher) {
-            explorer._watcher.close();
-            delete explorer._watcher;
-        }
     });
 
     function runSync(fn) {
@@ -80,6 +80,7 @@ describe('explorer', function () {
             return wasCalled;
         });
     }
+
 
     describe('#getRootPath', function () {
         it("Should be a function", function () {
@@ -108,7 +109,7 @@ describe('explorer', function () {
 
         it("Should create a new instance of watcher", function () {
             explorer.setRootPath('path/to/root');
-            expect(spies.Gaze.add).toHaveBeenCalled();
+            expect(spies.watcher.create).toHaveBeenCalled();
         });
 
     });
@@ -122,7 +123,7 @@ describe('explorer', function () {
             var before = explorer._watcher;
             expect(before).toBe(undefined);
             explorer.initWatcher();
-            expect(explorer._watcher instanceof  Gaze).toBe(true);
+            expect(explorer._watcher instanceof  FakeWatcher).toBe(true);
         });
 
         it("Should close the previous instance of the watcher", function () {
@@ -227,17 +228,11 @@ describe('explorer', function () {
         });
 
         it("should add directory on watcher", function () {
-            var patterns = [];
-            spies.Gaze.add.andCallFake(function (pattern) {
-                patterns.push(pattern);
-            });
             runSync(function (done) {
-                explorer.load('root', true, function (err, files) {
-                    explorer.load('root/subfolder', function (err, files) {
-                        expect(patterns).toEqual([
-                            pathHelper.resolve('root') + '\\',
-                            pathHelper.resolve('root/subfolder') + '\\'
-                        ]);
+                explorer.load('root', true, function () {
+                    var spy = spyOn(explorer._watcher, 'add');
+                    explorer.load('root/subfolder', function () {
+                        expect(spy).toHaveBeenCalledWith(pathHelper.resolve('root/subfolder') + '\\');
                         done();
                     });
                 });
@@ -311,6 +306,26 @@ describe('explorer', function () {
             expect(typeof explorer.addListener).toBe('function');
             expect(typeof explorer.removeListener).toBe('function');
             expect(typeof explorer.emit).toBe('function');
+        });
+
+        it('Should trigger the `change` event when the watcher notify.', function () {
+            runSync(function (done) {
+                function onchange(dir, files) {
+                    expect(dir).toBe('path');
+                    var arr = [];
+                    files.forEach(function (f) {
+                        arr.push(f.name);
+                    });
+                    expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
+                    done();
+                }
+
+                explorer.on('change', onchange);
+                explorer.load('path', true, function () {
+                   explorer._watcher.emit('all', null, 'path');
+                });
+            });
+
         });
 
     });

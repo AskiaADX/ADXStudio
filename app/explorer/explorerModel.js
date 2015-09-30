@@ -1,6 +1,6 @@
 var fs = require('fs');
 var fsExtra = require('fs.extra');
-var Gaze = require('gaze').Gaze;
+var watcher = require('../watcher/watcher.js');
 var path = require("path");
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
@@ -60,7 +60,7 @@ Explorer.prototype.initWatcher = function initWatcher() {
         this._watcher.close();
     }
 
-    this._watcher = new Gaze(this._root + '\\'); // <- The trailing forward slash are needed at the end!!!
+    this._watcher = watcher.create(this._root + '\\'); // <- The trailing forward slash are needed at the end!!!
 
     var self = this;
     /**
