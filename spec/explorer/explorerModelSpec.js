@@ -1,5 +1,5 @@
 describe('explorer', function () {
-    var explorer, fs, fsExtra, chokidar, spies, fakeStats;
+    var explorer, Gaze, fs, fsExtra,  spies, fakeStats;
     var util        = require("util");
     var EventEmitter = require("events").EventEmitter;
     var pathHelper = require('path');
@@ -19,7 +19,7 @@ describe('explorer', function () {
 
         fs = require('fs');
         fsExtra = require('fs.extra');
-        chokidar = require('chokidar');
+        Gaze = require('gaze').Gaze;
         spies = {
             fs: {
                 stat: spyOn(fs, 'stat'),
@@ -31,8 +31,8 @@ describe('explorer', function () {
             fsExtra: {
                 rmrf: spyOn(fsExtra, 'rmrf')
             },
-            chokidar: {
-                watch: spyOn(chokidar, 'watch')
+            Gaze : {
+                add : spyOn(Gaze.prototype, 'add')
             }
         };
 
@@ -62,6 +62,13 @@ describe('explorer', function () {
 
     });
 
+    afterEach(function () {
+        if (explorer._watcher) {
+            explorer._watcher.close();
+            delete explorer._watcher;
+        }
+    });
+
     function runSync(fn) {
         var wasCalled = false;
         runs(function () {
@@ -74,8 +81,59 @@ describe('explorer', function () {
         });
     }
 
-    describe('#load', function () {
+    describe('#getRootPath', function () {
+        it("Should be a function", function () {
+            expect(typeof explorer.getRootPath).toBe('function');
+        });
 
+        it("Should return the path of the root directory", function () {
+            explorer.load('/root/path/', true, function () {});
+            var root = explorer.getRootPath();
+            expect(root).toEqual(pathHelper.resolve('/root/path/'));
+        });
+    });
+
+    describe('#setRootPath', function () {
+        it("Should be a function", function () {
+            expect(typeof explorer.setRootPath).toBe('function');
+        });
+
+        it("Should set the path of the root directory", function () {
+            explorer.load('/root/path/', true, function () {});
+            explorer.setRootPath('another/root');
+            var root = explorer.getRootPath();
+            expect(root).toEqual(pathHelper.resolve('another/root'));
+
+        });
+
+        it("Should create a new instance of watcher", function () {
+            explorer.setRootPath('path/to/root');
+            expect(spies.Gaze.add).toHaveBeenCalled();
+        });
+
+    });
+
+    describe('#initWatcher', function () {
+        it("Should be a function", function () {
+            expect(typeof explorer.initWatcher).toBe('function');
+        });
+
+        it("Should create a new instance of watcher", function () {
+            var before = explorer._watcher;
+            expect(before).toBe(undefined);
+            explorer.initWatcher();
+            expect(explorer._watcher instanceof  Gaze).toBe(true);
+        });
+
+        it("Should close the previous instance of the watcher", function () {
+            explorer.initWatcher();
+            var spy = spyOn(explorer._watcher, 'close');
+            explorer.initWatcher();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('#load', function () {
 
         it("Should be a function", function () {
             expect(typeof explorer.load).toBe('function');
@@ -117,6 +175,15 @@ describe('explorer', function () {
             });
         });
 
+        it("should call `setRootPath` when the second argument is a boolean value set to true", function () {
+            runSync(function (done) {
+                var spy = spyOn(explorer, 'setRootPath');
+                explorer.load('/root/path/', true, function () {});
+                expect(spy).toHaveBeenCalled();
+                done();
+            });
+        });
+
         it("should return an array", function () {
             runSync(function (done) {
                 explorer.load('C:\\', function (err, files) {
@@ -126,7 +193,6 @@ describe('explorer', function () {
             });
         });
 
-
         it("should return an array of objects.", function () {
             runSync(function (done) {
                 explorer.load('C:\\', function (err, files) {
@@ -135,7 +201,6 @@ describe('explorer', function () {
                 });
             });
         });
-
 
         it("should return an array of objects with property name, type and path.", function () {
             runSync(function (done) {
@@ -160,51 +225,24 @@ describe('explorer', function () {
                 });
             });
         });
-    });
 
-    describe('#watch', function () {
-        it("Should be a function", function () {
-            expect(typeof explorer.watch).toBe('function');
-        });
-
-        it("Should throw an exception when no argument", function () {
-            expect(function () {
-                explorer.watch();
-            }).toThrow(new Error('Invalid argument'));
-        });
-
-        it("Should watch the `path` specified in args", function () {
+        it("should add directory on watcher", function () {
+            var patterns = [];
+            spies.Gaze.add.andCallFake(function (pattern) {
+                patterns.push(pattern);
+            });
             runSync(function (done) {
-                spies.chokidar.watch.andCallFake(function (path) {
-                    var watcher = new FakeWatcher();
-                    expect(path).toBe('path/to/watch');
-                    done();
-                    return watcher;
+                explorer.load('root', true, function (err, files) {
+                    explorer.load('root/subfolder', function (err, files) {
+                        expect(patterns).toEqual([
+                            pathHelper.resolve('root') + '\\',
+                            pathHelper.resolve('root/subfolder') + '\\'
+                        ]);
+                        done();
+                    });
                 });
-                explorer.watch('path/to/watch');
             });
         });
-
-        it("Should close the previous watcher", function () {
-            runSync(function (done) {
-                var oldWatcher;
-                spies.chokidar.watch.andCallFake(function (path) {
-                    var watcher = new FakeWatcher(path);
-                    if (path === 'path/to/unwatch') {
-                        oldWatcher = watcher;
-                        oldWatcher.close = function () {
-                            expect(true).toBe(true);
-                            done();
-                        };
-                    }
-                    return watcher;
-                });
-
-                explorer.watch('path/to/unwatch');
-                explorer.watch('path/to/watch');
-            });
-        });
-
     });
 
     describe('#rename', function () {
@@ -275,93 +313,5 @@ describe('explorer', function () {
             expect(typeof explorer.emit).toBe('function');
         });
 
-
-        ['add', 'addDir', 'unlink', 'unlinkDir'].forEach(function (eventName) {
-            it('Should trigger the `change` event when the watcher raise `' + eventName + '`', function () {
-                var watcher;
-                spies.chokidar.watch.andCallFake(function (path) {
-                    watcher = new FakeWatcher(path);
-                    return watcher;
-                });
-                runSync(function (done) {
-                    function onchange(dir, files) {
-                        expect(dir).toBe(pathHelper.normalize('path/that/has'));
-                        var arr = [];
-                        files.forEach(function (f) {
-                            arr.push(f.name);
-                        });
-                        expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
-                        done();
-                    }
-
-                    explorer.on('change', onchange);
-                    explorer.watch('path');
-                    watcher.emit(eventName, 'path/that/has/changed');
-                });
-            });
-        });
-
-        /**
-         * watcher
-         .on('add', function(path) { log('File', path, 'has been added'); })
-         .on('change', function(path) { log('File', path, 'has been changed'); })
-         .on('unlink', function(path) { log('File', path, 'has been removed'); })
-         // More events.
-         .on('addDir', function(path) { log('Directory', path, 'has been added'); })
-         .on('unlinkDir', function(path) { log('Directory', path, 'has been removed'); })
-         .on('error', function(error) { log('Error happened', error); })
-         .on('ready', function() { log('Initial scan complete. Ready for changes.'); })
-         .on('raw', function(event, path, details) { log('Raw event info:', event, path, details); })
-
-         // 'add', 'addDir' and 'change' events also receive stat() results as second
-         // argument when available: http://nodejs.org/api/fs.html#fs_class_fs_stats
-         watcher.on('change', function(path, stats) {
-  if (stats) console.log('File', path, 'changed size to', stats.size);
-});
-         */
-
-        it('Should trigger the `change`event after rename.', function () {
-
-            spies.fs.rename.andCallFake(function (oldPath, newPath, callback) {
-                callback(null);
-            });
-
-            runSync(function (done) {
-                function onchange(dir, files) {
-                    expect(dir).toBe('path');
-                    var arr = [];
-                    files.forEach(function (f) {
-                        arr.push(f.name);
-                    });
-                    expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
-                    done();
-                }
-
-                explorer.on('change', onchange);
-                explorer.rename('path/old', 'path/new');
-            });
-
-        });
-
-        it('Should trigger the `change`event after remove.', function () {
-            spies.fsExtra.rmrf.andCallFake(function (path, callback) {
-                callback(null);
-
-                runSync(function (done) {
-                    function onchange(dir, files) {
-                        expect(dir).toBe('path');
-                        var arr = [];
-                        files.forEach(function (f) {
-                            arr.push(f.name);
-                        });
-                        expect(arr).toEqual(['afolder', 'bfolder', 'folder1', 'folder2', 'folder3', 'afile', 'file1', 'file2', 'file3']);
-                        done();
-                    }
-
-                    explorer.on('change', onchange);
-                    explorer.remove('path');
-                });
-            });
-        });
     });
 });

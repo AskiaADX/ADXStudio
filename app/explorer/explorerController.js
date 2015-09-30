@@ -33,21 +33,30 @@ function newProject(event, options) {
 }
 
 /**
+ * Open the root folder
+ * @param err
+ * @param {String} dir Path of the root directory
+ * @param {String[]} files Array of path
+ */
+function openRootFolder(err, dir, files) {
+    var adc = new ADC(dir);
+    global.project.path = dir;
+    global.project.adc = adc;
+
+    adc.load(function (err) {
+        var name = (!err) ? adc.configurator.info.name() : path.basename(dir);
+        explorerView.send('explorer-expand-folder', err, dir, files, true, name);
+    });
+}
+
+/**
  * Open a project in the explorer
  * @param {String} folderpath Path of the folder to load as root
  */
 function openProject(folderpath) {
 
-    explorer.load(folderpath, function (err, files) {
-        var adc = new ADC(folderpath);
-        global.project.path = folderpath;
-        global.project.adc = adc;
-
-        adc.load(function (err) {
-            var name = (!err) ? adc.configurator.info.name() : path.basename(folderpath);
-            explorerView.send('explorer-expand-folder', err, folderpath, files, true, name);
-            explorer.watch(folderpath);
-        });
+    explorer.load(folderpath, true, function (err, files) {
+        openRootFolder(err, folderpath, files);
     });
 }
 
@@ -100,7 +109,14 @@ function sendOpenProject(event) {
  * @param {Array} files Files or folders in the directory
  */
 function onChange(dir, files) {
-    explorerView.send('explorer-expand-folder', null, dir, files);
+    var rootPath = explorer.getRootPath(),
+        rg = new RegExp('^' + rootPath.replace(/\\/g, '\\\\') + '\\\\?$', 'i');
+
+    if (rg.test(dir)) {
+        openRootFolder(null, dir, files);
+    } else {
+        explorerView.send('explorer-expand-folder', null, dir, files);
+    }
 }
 
 ipc.on('explorer-ready', function (event) {
@@ -108,16 +124,8 @@ ipc.on('explorer-ready', function (event) {
 
     // Load the default path
     var defaultPath = path.join(__dirname, '../../');
-    explorer.load(defaultPath, function (err, files) {
-        var adc = new ADC(defaultPath);
-        global.project.path = defaultPath;
-        global.project.adc = adc;
-
-        adc.load(function (err) {
-            var name = (!err) ? adc.configurator.info.name() : path.basename(defaultPath);
-            explorerView.send('explorer-expand-folder', err, defaultPath, files, true, name);
-            explorer.watch(defaultPath);
-        });
+    explorer.load(defaultPath, true, function (err, files) {
+        openRootFolder(err, defaultPath, files);
     });
 
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event

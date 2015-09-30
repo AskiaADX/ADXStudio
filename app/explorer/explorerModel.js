@@ -1,6 +1,6 @@
 var fs = require('fs');
 var fsExtra = require('fs.extra');
-var chokidar = require('chokidar');
+var Gaze = require('gaze').Gaze;
 var path = require("path");
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
@@ -24,16 +24,76 @@ function sortFiles(a, b) {
  * Create a new instance of the explorer object
  */
 function Explorer() {
-  EventEmitter.call(this);
+    this._root  ='';
+    EventEmitter.call(this);
 }
 
 util.inherits(Explorer, EventEmitter);
 
 /**
+ * Return the path of the root folder
+ *
+ * @returns {string}
+ */
+Explorer.prototype.getRootPath = function getRootPath() {
+    return this._root;
+};
+
+/**
+ * Set the path of the root folder
+ *
+ * @param {string} rootPath
+ */
+Explorer.prototype.setRootPath = function setRootPath(rootPath) {
+    this._root =  path.resolve(rootPath);
+    this.rootPath = rootPath;
+    this.initWatcher();
+};
+
+
+/**
+ * Set the path of the root folder
+ */
+Explorer.prototype.initWatcher = function initWatcher() {
+    // Close the previous instance first
+    if (this._watcher && this._watcher.close) {
+        this._watcher.close();
+    }
+
+    this._watcher = new Gaze(this._root + '\\'); // <- The trailing forward slash are needed at the end!!!
+
+    var self = this;
+    /**
+     * Event trigger when the structure of the directory has been changed
+     * @param {String} event Name of event
+     * @param {String} pathChanged Path of file that has changed
+     */
+    function onRootChange(event, pathChanged) {
+        //Part to reload parent folder when path have bben changed.
+        //var parentDir = pathChanged === self._root ? pathChanged : path.join(pathChanged, '..');
+        module.exports.load(pathChanged, function(err, files) {
+            if (err) {
+                return;
+            }
+            module.exports.emit('change', pathChanged, files);
+        });
+    }
+
+    this._watcher.on('all', onRootChange);
+    /*this.watcher.on('added', onStructureChange);
+     this.watcher.on('changed', onStructureChange);
+     this.watcher.on('deleted', onStructureChange);
+     this.watcher.on('renamed', onStructureChange);*/
+};
+
+
+
+
+/**
  * load the specified directory and return all files and folders
  *
  *    var explorer=require('ADXStudio/src/explorer/explorer.js');
- *    explorer.load('C:/',function(err,files){
+ *    explorer.load('C:/', true, function(err,files){
 *       console.log(files); // [
 *                               {name:"documents and settings", type:"folder", path:"C:/Document and settings/"}
 *                               {name:"desktop.ini", type:"file", path:'C:/Desktop.ini/'}
@@ -41,11 +101,18 @@ util.inherits(Explorer, EventEmitter);
 *    });
  *
  * @param {String} dir The SpecifiedDirectory to load.
+ * @param {Boolean} [isRoot=false] Indicates if the directory to load is a root directory
  * @param {Function} callback
  * @param {Error} callback.err Error
  * @param {Array} callback.files return an array of files/folders
  */
-Explorer.prototype.load = function (dir, callback) {
+Explorer.prototype.load = function (dir, isRoot, callback) {
+    // Swap arguments
+    if (typeof isRoot === 'function') {
+        callback = isRoot;
+        isRoot = false;
+    }
+
     if (!callback) {
         throw new Error('Invalid argument, expected callback');
     }
@@ -53,6 +120,15 @@ Explorer.prototype.load = function (dir, callback) {
     if (typeof dir !== 'string') {
         callback(new Error('Invalid argument, expected dir to be string.'), null);
         return;
+    }
+
+    if (isRoot) {
+        this.setRootPath(dir);
+    } else {
+        if (this._watcher && this._watcher.add && this._watcher.remove) {
+            this._watcher.remove(path.resolve(dir)  + '\\'); // Remove it first to avoid crash
+            this._watcher.add(path.resolve(dir)  + '\\'); // <- The trailing forward slash are needed at the end!!!
+        }
     }
 
     fs.stat(dir, function (err, stats) {
@@ -97,45 +173,6 @@ Explorer.prototype.load = function (dir, callback) {
 };
 
 /**
- * Watch a directory
- * @param {String} dir Directory path to watch
- */
-Explorer.prototype.watch = function watch(dir) {
-    if (!dir || typeof dir !== 'string') {
-        throw new Error('Invalid argument');
-    }
-    // Close the previous watcher first
-    if (this.watcher) {
-        this.watcher.close();
-    }
-
-    this.watcher = chokidar.watch(dir, {
-        ignoreInitial : true,
-        usePolling: true
-    });
-
-    /**
-     * Event trigger when the structure of the directory has been changed
-     * @param pathChanged
-     */
-    function onStructureChange(pathChanged) {
-        //Part to reload parent folder when path have bben changed.
-        var parentDir = path.join(pathChanged, '..');
-        module.exports.load(parentDir, function(err, files) {
-            if (err) {
-                return;
-            }
-            module.exports.emit('change', parentDir, files);
-        });
-    }
-
-    this.watcher.on('add', onStructureChange);
-    this.watcher.on('addDir', onStructureChange);
-    this.watcher.on('unlink', onStructureChange);
-    this.watcher.on('unlinkDir', onStructureChange);
-};
-
-/**
  * Rename the file or directory.
  *
  *    var explorer=require('ADXStudio/src/explorer/explorer.js');
@@ -150,33 +187,22 @@ Explorer.prototype.watch = function watch(dir) {
  */
 Explorer.prototype.rename = function (oldPath, newPath, callback) {
 
-  if ((!oldPath || !newPath) && !callback) {
-    throw new Error('Invalid argument');
-  }
-
-  callback = callback || function () {};
-  fs.rename(oldPath, newPath, function(err) {
-
-    if (err) {
-      callback(err);
-      return;
+    if ((!oldPath || !newPath) && !callback) {
+        throw new Error('Invalid argument');
     }
 
-    callback(null);
+    callback = callback || function () {};
+    fs.rename(oldPath, newPath, function(err) {
 
-    //Part to reload parent folder when path have bben changed.
-    var parentDir = path.join(newPath, '..');
-    module.exports.load(parentDir, function(err, files) {
-      if (err) {
-          return;
-      }
-      module.exports.emit('change', parentDir, files);
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        callback(null);
     });
 
-  });
-
 };
-
 
 /**
  * Remove the file or folder.
@@ -208,15 +234,6 @@ Explorer.prototype.remove = function(pathToRemove, callback) {
         }
 
         callback(null);
-
-        //Part to reload parent folder when path have bben changed.
-
-        module.exports.load(parentDir, function(err, files) {
-            if (err) {
-                return;
-            }
-            module.exports.emit('change', parentDir, files);
-        });
     });
 };
 
