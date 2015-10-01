@@ -1,10 +1,41 @@
 describe("workspace", function () {
 
-    var workspace, Tab;
+    var workspace, Tab,
+        spies = {},
+        EventEmitter = require('events').EventEmitter,
+        nodePath = require('path'),
+        util = require('util'),
+        watcher,
+        fakeWatcherInstance;
+
+    function FakeWatcher(path) {
+        EventEmitter.call(this);
+        this.path = path;
+    }
+
+    util.inherits(FakeWatcher, EventEmitter);
+    FakeWatcher.prototype.add = function () {};
+    FakeWatcher.prototype.remove = function () {};
+    FakeWatcher.prototype.close = function () {};
 
     beforeEach(function () {
-        workspace = require("../../app/workspace/workspaceModel.js");
+        watcher = require('../../app/watcher/watcher.js');
+
+        spies.watcher = {};
+        spies.watcher.create = spyOn(watcher, 'create');
+        spies.watcher.create.andCallFake(function (pattern) {
+            fakeWatcherInstance = new FakeWatcher(pattern);
+            return fakeWatcherInstance;
+        });
+
+        var tabCacheKey = require.resolve("../../app/workspace/TabModel.js");
+        delete require.cache[tabCacheKey];
         Tab       = require("../../app/workspace/TabModel.js").Tab;
+
+        var workspaceCacheKey = require.resolve("../../app/workspace/workspaceModel.js");
+        delete require.cache[workspaceCacheKey];
+        workspace = require("../../app/workspace/workspaceModel.js");
+
     });
 
     function runSync(fn) {
@@ -18,6 +49,7 @@ describe("workspace", function () {
             return wasCalled;
         });
     }
+
 
     describe("#panes", function () {
 
@@ -66,7 +98,7 @@ describe("workspace", function () {
    });
 
     describe("#createTab", function () {
-       it("should be a function", function () {
+        it("should be a function", function () {
            expect(typeof  workspace.createTab).toBe("function");
        });
 
@@ -101,6 +133,34 @@ describe("workspace", function () {
             });
         });
 
+
+        it("should watch file path associated with the tab when the tab is `loaded` (event)", function () {
+            runSync(function (done) {
+                spyOn(fakeWatcherInstance, 'add').andCallFake(function (pattern) {
+                    expect(pattern).toBe(nodePath.resolve('path/of/file'));
+                    done();
+                });
+                workspace.createTab({
+                    path : 'path/of/file'
+                }, function(err, tab) {
+                    tab.emit('loaded');
+                });
+            });
+        });
+
+        it("should unwatch file while `saving` (event)", function () {
+            runSync(function (done) {
+                spyOn(fakeWatcherInstance, 'remove').andCallFake(function (pattern) {
+                    expect(pattern).toBe(nodePath.resolve('path/of/file'));
+                    done();
+                });
+                workspace.createTab({
+                    path : 'path/of/file'
+                }, function(err, tab) {
+                    tab.emit('saving');
+                });
+            });
+        });
     });
 
     describe("#where", function () {
@@ -209,18 +269,22 @@ describe("workspace", function () {
 
         it("should return the current used tab", function () {
             runSync(function (done) {
-                workspace.currentTab(function(err, tab) {
-                    expect(tab instanceof Tab).toBe(true);
-                    done();
+                workspace.createTab({}, function (err, tab) {
+                    workspace.currentTab(function (err, tab) {
+                        expect(tab instanceof Tab).toBe(true);
+                        done();
+                    });
                 });
             });
         });
 
         it("should return the pane of the current used tab in third arg", function () {
             runSync(function (done) {
-                workspace.currentTab(function(err, tab, pane) {
-                    expect(pane).toBe(workspace.where(tab));
-                    done();
+                workspace.createTab({}, function (err, tab) {
+                    workspace.currentTab(function (err, tab, pane) {
+                        expect(pane).toBe(workspace.where(tab));
+                        done();
+                    });
                 });
             });
         });
@@ -357,5 +421,104 @@ describe("workspace", function () {
                 });
             });
         });
+
+        it("should close the watcher and recreate a new instance", function () {
+            runSync(function (done) {
+                var spyClose = spyOn(fakeWatcherInstance, 'close');
+                workspace.init(function () {
+                    expect(spyClose).toHaveBeenCalled();
+                    expect(spies.watcher.create).toHaveBeenCalled();
+                    done();
+                });
+            });
+        })
+
+    });
+
+    describe('events', function () {
+
+        it('Should inherit of eventListener from nodeJS.', function () {
+            expect(typeof workspace.on).toBe('function');
+            expect(typeof workspace.addListener).toBe('function');
+            expect(typeof workspace.removeListener).toBe('function');
+            expect(typeof workspace.emit).toBe('function');
+        });
+
+        ['changed', 'renamed', 'deleted'].forEach(function (key) {
+            describe('@file-' + key, function () {
+
+                it('should be triggered when the watcher trigger `' + key + '`.', function () {
+                    runSync(function (done) {
+
+                        workspace.on('file-' + key, function () {
+                            expect(true).toBe(true);
+                            done();
+                        });
+
+                        workspace.createTab({
+                            path : 'path/of/file'
+                        }, function(err, tab) {
+                            tab.emit('loaded');
+                            var args = [key, nodePath.resolve('path/of/file')];
+                            if (key === 'renamed') {
+                                args.push(args[1]);
+                                args[1] = 'new/path';
+                            }
+                            fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                        });
+                    });
+                });
+
+                it('should be triggered with the tab as a first arg', function () {
+                    runSync(function (done) {
+                        var tabId;
+
+                        workspace.on('file-' + key, function (tab) {
+                            expect(tab.id).toBe(tabId);
+                            done();
+                        });
+
+                        workspace.createTab({
+                            path : 'path/of/file'
+                        }, function(err, tab) {
+                            tabId = tab.id;
+                            tab.emit('loaded');
+                            var args = [key, nodePath.resolve('path/of/file')];
+                            if (key === 'renamed') {
+                                args.push(args[1]);
+                                args[1] = 'new/path';
+                            }
+                            fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                        });
+                    });
+                });
+
+                it('should be triggered with the pane as a second arg', function () {
+                    runSync(function (done) {
+                        var currentPane;
+
+                        workspace.on('file-' + key, function (tab, pane) {
+                            expect(currentPane).toBe(pane);
+                            done();
+                        });
+
+                        workspace.createTab({
+                            path : 'path/of/file'
+                        }, function(err, tab, pane) {
+                            currentPane = pane;
+                            tab.emit('loaded');
+                            var args = [key, nodePath.resolve('path/of/file')];
+                            if (key === 'renamed') {
+                                args.push(args[1]);
+                                args[1] = 'new/path';
+                            }
+                            fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                        });
+                    });
+                });
+
+            });
+        });
+
     });
 });

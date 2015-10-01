@@ -80,10 +80,6 @@ Explorer.prototype.initWatcher = function initWatcher() {
     }
 
     this._watcher.on('all', onRootChange);
-    /*this.watcher.on('added', onStructureChange);
-     this.watcher.on('changed', onStructureChange);
-     this.watcher.on('deleted', onStructureChange);
-     this.watcher.on('renamed', onStructureChange);*/
 };
 
 

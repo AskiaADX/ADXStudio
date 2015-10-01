@@ -1,67 +1,132 @@
 var Tab = require('./TabModel.js').Tab;
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
+var nodePath = require('path');
+var watcher = require('../watcher/watcher.js');
+
 
 /**
- * Current pane
- * @type {string}
+ * Workspace model
+ * @constructor
  */
-var currentPane = 'main';
+function Workspace(){
+    EventEmitter.call(this);
 
-/**
- * Current tab
- * @type {Tab}
- */
-var currentTab = null;
-
-/**
- * List of available panes
- * @type {{main: {}, second: {}}}
- */
-var panes = {
+    var self = this;
 
     /**
-     * Orientation of panes
-     * @type {"vertical"|"horizontal"}
+     * Current pane
+     * @type {string}
      */
-    orientation : "",
+    this._currentPane = 'main';
 
     /**
-     * Map with tab id as key and panel name as value
+     * Current tab
+     * @type {Tab}
      */
-    mapByTabId : {},
+    this._currentTab = null;
 
     /**
-     * Main pane
+     * List of available panes
+     * @type {{main: {}, second: {}}}
      */
-    main : {
-        name : 'main'
-    },
+    this.panes = {
+
+        /**
+         * Orientation of panes
+         * @type {"vertical"|"horizontal"}
+         */
+        orientation : "",
+
+        /**
+         * Map with tab id as key and panel name as value
+         */
+        mapByTabId : {},
+
+        /**
+         * Main pane
+         */
+        main : {
+            name : 'main'
+        },
 
 
-    /**
-     * Secondary pane
-     */
-    second : {
-        name : 'second'
-    },
+        /**
+         * Secondary pane
+         */
+        second : {
+            name : 'second'
+        },
 
-    /**
-     * Get or set the current pane
-     * @param {String} name Name of the pane to set by default
-     */
-    current : function (name) {
-        if (name && panes[name]) {
-            currentPane = name;
+        /**
+         * Get or set the current pane
+         * @param {String} name Name of the pane to set by default
+         */
+        current : function (name) {
+            if (name && self.panes[name]) {
+                self._currentPane = name;
+            }
+            return self.panes[self._currentPane];
         }
-        return panes[currentPane];
+    };
+
+    /**
+     * Collection of tabs
+     * @type {Array}
+     */
+    this.tabs = [];
+
+    this._initWatcher();
+}
+
+/**
+ * Inherits event emitter
+ */
+util.inherits(Workspace, EventEmitter);
+
+/**
+ * Initialize the watcher
+ * @private
+ */
+Workspace.prototype._initWatcher = function _initWatcher() {
+    var self = this;
+
+    if (this._watcher) {
+        this._watcher.close();
     }
+
+    /***
+     * Instance of watcher
+     * @private
+     */
+    this._watcher = watcher.create();
+    this._watcher.on('changed', function (filePath) {
+        self._propagateWatcherEvents('file-changed', filePath);
+    });
+    this._watcher.on('deleted', function (filePath) {
+        self._propagateWatcherEvents('file-deleted', filePath);
+    });
+    this._watcher.on('renamed', function (newPath, oldPath) {
+        self._propagateWatcherEvents('file-renamed', oldPath, newPath);
+    });
 };
 
-
 /**
- * Collection of tabs
- * @type {Array}
+ * Propagate the watcher events
+ *
+ * @param {String|'file-changed'|'file-deleted'|'file-renamed'} eventName Name of the event
+ * @param {String} path Path of the file that has changed
+ * @param {String} [newPath] New path of the file (when renamed)
  */
-var tabs  = [];
+Workspace.prototype._propagateWatcherEvents = function _propagateWatcherEvents(eventName, path, newPath) {
+    var self = this;
+    this.find(path, function onFind(err, tab, pane) {
+        if (err || !tab) {
+            return;
+        }
+        self.emit(eventName, tab, pane);
+    });
+};
 
 /**
  * Initialize the workspace
@@ -70,23 +135,25 @@ var tabs  = [];
  * @param {Function} callback Callback
  * @param {Error} callback.err Error
  */
-function init(config, callback) {
+Workspace.prototype.init = function init(config, callback) {
     // Swap arguments
     if (typeof config === 'function') {
         callback = config;
         config   = null;
     }
 
+    this._initWatcher();
+
     // Clean up first
-    tabs = [];
-    panes.mapByTabId = {};
-    currentPane = 'main';
-    currentTab = null;
-    panes.orientation = '';
+    this.tabs = [];
+    this.panes.mapByTabId = {};
+    this._currentPane = 'main';
+    this._currentTab = null;
+    this.panes.orientation = '';
 
 
     callback(null);
-}
+};
 
 /**
  * Create a new instance of tab in the current pane
@@ -97,21 +164,32 @@ function init(config, callback) {
  * @param {Tab} callback.Tab
  * @param {String} callback.paneName Name of the pane where the tab is associated
  */
-function createTab(config, callback) {
-    var tab = new Tab(config);
+Workspace.prototype.createTab = function createTab(config, callback) {
+    var tab = new Tab(config),
+        self = this;
 
-    tabs.push(tab);
-    panes.mapByTabId[tab.id] = currentPane;
+    // Watch on load
+    tab.on('loaded', function onTabLoaded() {
+        self._watcher.remove(tab.path);
+        self._watcher.add(tab.path);
+    });
+
+    tab.on('saving', function onTabSaving() {
+        self._watcher.remove(tab.path);
+    });
+
+    this.tabs.push(tab);
+    this.panes.mapByTabId[tab.id] = this._currentPane;
 
     // Set the current tab if not defined
-    if (currentTab === null) {
-        currentTab = tab;
+    if (this._currentTab === null) {
+        this._currentTab = tab;
     }
 
     if (typeof callback === 'function') {
-        callback(null, tab,  panes.mapByTabId[tab.id]);
+        callback(null, tab,  this.panes.mapByTabId[tab.id]);
     }
-}
+};
 
 /**
  * Remove a tab
@@ -121,49 +199,52 @@ function createTab(config, callback) {
  * @param {Tab} callback.tab Tab that has been removed
  * @param {string} callback.paneName Name of the pane where then tab were located
  */
-function removeTab(tab, callback) {
+Workspace.prototype.removeTab = function removeTab(tab, callback) {
 
     if (!tab) {
         if (typeof callback === 'function') {
             callback(new Error("Expected the first argument `tab` to be a Tab or the id of an existing tab "), null);
+            return;
         }
     }
 
-    find(tab, function (err, tab, pane) {
+    var self = this;
+    this.find(tab, function (err, tab, pane) {
         if (err) {
-           callback(err);
-           return;
+            callback(err);
+            return;
         }
         if (!tab) {
             callback(new Error("Could not find the tab specified."), null, null);
             return;
         }
 
-        var index = tabs.indexOf(tab);
+        self._watcher.remove(tab.path);
+
+        var index = self.tabs.indexOf(tab);
         if (index > -1) {
-            tabs.splice(index, 1);
+            self.tabs.splice(index, 1);
         }
-        delete panes.mapByTabId[tab.id];
+        delete self.panes.mapByTabId[tab.id];
 
         callback(null, tab, pane);
     });
-}
-
+};
 
 /**
  * Indicates in which pane the tab is located
  * @param {String|Tab} tab Tab or id of the tab to locate
  * @return {String} Name of the pane
  */
-function where(tab) {
+Workspace.prototype.where = function where(tab) {
     if (typeof tab === 'string') {
-        return panes.mapByTabId[tab] || "";
+        return this.panes.mapByTabId[tab] || "";
     } else if (tab instanceof Tab) {
-        return panes.mapByTabId[tab.id] || "";
+        return this.panes.mapByTabId[tab.id] || "";
     } else {
         return "";
     }
-}
+};
 
 /**
  * Try to find the tab using the specified criteria
@@ -204,7 +285,7 @@ function where(tab) {
  * @param {Tab} callback.tab Tab
  * @param {String} callback.pane Name of the pane
  */
-function find(criteria, callback) {
+Workspace.prototype.find = function find(criteria, callback) {
     var tab  = null,
         path = null,
         id   = null,
@@ -214,30 +295,29 @@ function find(criteria, callback) {
     if (criteria && criteria instanceof Tab) {
         id = criteria.id;
     } else if (criteria && typeof criteria === 'object' && typeof criteria.path === 'string') {
-            path = criteria.path;
+        path = nodePath.resolve(criteria.path);
     } else if (criteria && typeof criteria === 'string') {
         id   = criteria;
-        path = criteria;
+        path = nodePath.resolve(criteria);
     }
 
     if (id || path) {
-        for (i = 0, l = tabs.length; i < l; i += 1) {
-            if ((id && tabs[i].id === id) || (path && tabs[i].path === path)) {
-                tab = tabs[i];
+        for (i = 0, l = this.tabs.length; i < l; i += 1) {
+            if ((id && this.tabs[i].id === id) || (path && this.tabs[i].path === path)) {
+                tab = this.tabs[i];
                 break;
             }
         }
     }
 
     if (tab) {
-        pane = panes.mapByTabId[tab.id];
+        pane = this.panes.mapByTabId[tab.id];
     }
 
     if (typeof callback === 'function') {
         callback(null, tab, pane);
     }
-}
-
+};
 
 /**
  * Get or set the current tab
@@ -247,30 +327,25 @@ function find(criteria, callback) {
  * @param {Tab} callback.tab Current tab
  * @param {String} callback.pane Pane of the tab
  */
-function getSetCurrentTab(tab, callback) {
+Workspace.prototype.currentTab = function getSetCurrentTab(tab, callback) {
     var cb = (typeof tab === 'function' && !callback) ? tab : callback,
         pane;
 
     if (tab instanceof Tab) {
-        currentTab = tab;
-        if (currentTab.fileType !== 'preview') {
-            panes.current(panes.mapByTabId[currentTab.id]);
+        this._currentTab = tab;
+        if (this._currentTab.fileType !== 'preview') {
+            this.panes.current(this.panes.mapByTabId[this._currentTab.id]);
         }
     }
 
-    if (currentTab) {
-        pane = panes.mapByTabId[currentTab.id];
+    if (this._currentTab) {
+        pane = this.panes.mapByTabId[this._currentTab.id];
     }
 
     if (typeof  cb === 'function') {
-        cb (null, currentTab, pane);
+        cb (null, this._currentTab, pane);
     }
-}
+};
 
-exports.init = init;
-exports.createTab = createTab;
-exports.removeTab = removeTab;
-exports.where = where;
-exports.find  = find;
-exports.panes = panes;
-exports.currentTab = getSetCurrentTab;
+
+module.exports = new Workspace();

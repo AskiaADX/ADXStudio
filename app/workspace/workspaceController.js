@@ -134,7 +134,7 @@ function startPreview() {
  * @param event
  * @param {String} tabId Id of the tab
  */
-function setCurrentTab(event, tabId) {
+function onSetCurrentTab(event, tabId) {
     workspace.find(tabId, function (err, tab) {
         if (err) {
             return;
@@ -148,9 +148,37 @@ function setCurrentTab(event, tabId) {
  * @param event
  * @param {String} tabId Id of the tab to close
  */
-function closeTab(event, tabId) {
+function onCloseTab(event, tabId) {
     workspace.removeTab(tabId, function (err, tab, pane) {
         workspaceView.send('workspace-remove-tab', err, tab, pane);
+    });
+}
+
+/**
+ * On edit content
+ * @param event
+ * @param {String} tabId Id of the tab
+ */
+function onEditContent(event, tabId) {
+    workspace.find(tabId, function (err, tab) {
+        if (err) {
+            return;
+        }
+        tab.edited = true;
+    });
+}
+
+/**
+ * On restore content
+ * @param event
+ * @param {String} tabId Id of the tab
+ */
+function onRestoreContent(event, tabId) {
+    workspace.find(tabId, function (err, tab) {
+        if (err) {
+            return;
+        }
+        tab.edited = false;
     });
 }
 
@@ -160,7 +188,7 @@ function closeTab(event, tabId) {
  * @param {String} tabId Id of the tab
  * @param {String} content Content to save
  */
-function saveContent(event, tabId, content) {
+function onSaveContent(event, tabId, content) {
     workspace.find(tabId, function (err, tab, pane) {
         if (err) {
             workspaceView.send('workspace-update-tab', err, null, null);
@@ -172,6 +200,51 @@ function saveContent(event, tabId, content) {
     });
 }
 
+/**
+ * Confirm reload tab
+ */
+function onConfirmReload(event, tab, answer) {
+    if (answer === 'yes') {
+        workspace.find(tab, function (err, tab, pane) {
+            if (!tab) {
+                return;
+            }
+            tab.loadFile(function (err) {
+                workspaceView.send('workspace-reload-tab', err, tab, pane);
+            });
+        });
+    }
+}
+
+/**
+ * When the file has changed
+ */
+function onFileChanged(tab, pane) {
+    if (!tab.edited) {
+        tab.loadFile(function (err) {
+            workspaceView.send('workspace-reload-tab', err, tab, pane);
+        });
+    } else {
+        app.emit('show-modal-dialog', {
+            message  : "The file `" + tab.path + "` has been changed, do you want to reload it? ",
+            type     : 'yesNo'
+        }, 'workspace-reload-or-not-reload', tab);
+    }
+}
+
+/**
+ * When the file has been deleted
+ */
+function onFileRenamed(tab, pane) {
+    console.log('TODO::Manage renamed', tab);
+}
+
+/**
+ * When the file has been deleted
+ */
+function onFileDeleted(tab, pane) {
+    console.log('TODO::Manage deleted', tab);
+}
 
 
 ipc.on('workspace-ready', function (event) {
@@ -182,15 +255,20 @@ ipc.on('workspace-ready', function (event) {
         ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
         ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
 
-        ipc.removeListener('workspace-set-current-tab', setCurrentTab);
-        ipc.on('workspace-set-current-tab', setCurrentTab);
+        ipc.removeListener('workspace-set-current-tab', onSetCurrentTab);
+        ipc.on('workspace-set-current-tab', onSetCurrentTab);
 
-        ipc.removeListener('workspace-close-tab', closeTab);
-        ipc.on('workspace-close-tab', closeTab);
+        ipc.removeListener('workspace-close-tab', onCloseTab);
+        ipc.on('workspace-close-tab', onCloseTab);
 
-        ipc.removeListener('workspace-save-content', saveContent);
-        ipc.on('workspace-save-content', saveContent);
+        ipc.removeListener('workspace-save-content', onSaveContent);
+        ipc.on('workspace-save-content', onSaveContent);
 
+        ipc.removeListener('workspace-edit-content', onEditContent);
+        ipc.on('workspace-edit-content', onEditContent);
+
+        ipc.removeListener('workspace-restore-content', onRestoreContent);
+        ipc.on('workspace-restore-content', onRestoreContent);
 
         app.removeListener('menu-new-file', openFile);
         app.on('menu-new-file', openFile);
@@ -201,9 +279,20 @@ ipc.on('workspace-ready', function (event) {
         app.removeListener('menu-show-project-settings', openProjectSettings);
         app.on('menu-show-project-settings', openProjectSettings);
 
-
         app.removeListener('menu-preview', startPreview);
         app.on('menu-preview', startPreview);
+
+        workspace.removeListener('file-changed', onFileChanged);
+        workspace.on('file-changed', onFileChanged);
+
+        workspace.removeListener('file-renamed', onFileRenamed);
+        workspace.on('file-renamed', onFileRenamed);
+
+        workspace.removeListener('file-deleted', onFileDeleted);
+        workspace.on('file-deleted', onFileDeleted);
+
+        ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
+        ipc.on('workspace-reload-or-not-reload', onConfirmReload);
 
     });
 

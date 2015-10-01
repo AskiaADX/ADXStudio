@@ -322,7 +322,7 @@ describe('explorer', function () {
 
                 explorer.on('change', onchange);
                 explorer.load('path', true, function () {
-                   explorer._watcher.emit('all', null, 'path');
+                    explorer._watcher.emit('all', null, 'path');
                 });
             });
 

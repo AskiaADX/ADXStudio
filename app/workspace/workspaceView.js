@@ -269,21 +269,11 @@ document.addEventListener('DOMContentLoaded', function () {
          contentEl.setAttribute('id', 'content-' + tab.id);
 
          var div = document.createElement('div');
-         var viewerSubFolderName = 'editor';
-         if (tab.adcConfig) {
-             viewerSubFolderName = 'adcconf';
-         } else if (tab.fileType === 'image') {
-             viewerSubFolderName = 'image';
-         } else if (tab.fileType === 'preview') {
-             viewerSubFolderName = 'preview';
-         }
-
-
          var viewer = document.createElement('iframe');
          viewer.setAttribute('frameborder', 'no');
          viewer.setAttribute('scrolling', 'no');
          tabs.addTab(tab);
-         viewer.src = '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
+         viewer.src = getViewerUrl(tab);
          div.appendChild(viewer);
          // While waiting the iframe load, hide the content to avoid the white flash
          div.style.visibility = "hidden";
@@ -298,6 +288,23 @@ document.addEventListener('DOMContentLoaded', function () {
          if (isActive) {
              setActiveTab(tab, pane);
          }
+    }
+
+    /**
+     * Get the viewer's URL for the specicied tab
+     *
+     * @param {Tab} tab
+     */
+    function getViewerUrl(tab) {
+        var viewerSubFolderName = 'editor';
+        if (tab.adcConfig) {
+            viewerSubFolderName = 'adcconf';
+        } else if (tab.fileType === 'image') {
+            viewerSubFolderName = 'image';
+        } else if (tab.fileType === 'preview') {
+            viewerSubFolderName = 'preview';
+        }
+        return '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
     }
 
     /**
@@ -337,6 +344,22 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateTab(tab, pane) {
         tabs.updateTab(tab);
     }
+
+
+    /**
+     * Reload the tab and update the information of the tab
+     *
+     * @param {Tab} tab Tab to update
+     * @param {String} pane Name of the pane
+     */
+    function reloadTab(tab, pane) {
+        var contentEl = document.getElementById('content-' + tab.id),
+            viewerEl  = contentEl.querySelector('iframe');
+
+        viewerEl.src = getViewerUrl(tab);
+        tabs.updateTab(tab, pane);
+    }
+
 
     /**
      * Remove a tab
@@ -436,6 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resizer.stop();
         }
     }
+
 
     (function initTabEvents() {
         var i, l,
@@ -608,13 +632,14 @@ document.addEventListener('DOMContentLoaded', function () {
         function onTabContentChange(event) {
             var tab         = event.detail.tab,
                 isModified  = event.detail.isModified,
-                tabEl       = document.getElementById('tab-' + tab.id),
-                tabTextEl   = tabEl.querySelector('.tab-text');
+                tabEl       = document.getElementById('tab-' + tab.id);
             if (tabEl.classList.contains('edit') !== isModified) {
                 if (isModified) {
                     tabEl.classList.add('edit');
+                    ipc.send('workspace-edit-content', tab.id);
                 } else {
                     tabEl.classList.remove('edit');
+                    ipc.send('workspace-restore-content', tab.id);
                 }
             }
         }
@@ -659,7 +684,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-create-tab', function (err, tab, pane) {
         if (err) {
-            alert(err.message);
+            console.warn(err);
             return;
         }
         addTab(tab, pane);
@@ -667,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-focus-tab', function (err, tab, pane) {
         if (err) {
-            alert(err.message);
+            console.warn(err);
             return;
         }
 
@@ -681,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-create-and-focus-tab', function (err, tab, pane) {
         if (err) {
-           alert(err.message);
+            console.warn(err);
            return;
         }
         addTab(tab, pane, true);
@@ -689,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-remove-tab', function (err, tab, pane) {
         if (err) {
-            alert(err.message);
+            console.warn(err);
             return;
         }
        removeTab(tab, pane);
@@ -697,11 +722,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-update-tab', function (err, tab, pane) {
         if (err) {
-            console.log(err);
-            alert(err.message);
+            console.warn(err);
             return;
         }
         updateTab(tab, pane);
+    });
+
+    ipc.on('workspace-reload-tab', function (err, tab, pane) {
+        if (err) {
+            console.warn(err);
+            return;
+        }
+        reloadTab(tab, pane);
     });
 
     ipc.send('workspace-ready');

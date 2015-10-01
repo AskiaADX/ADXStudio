@@ -6,6 +6,8 @@ var url     = require("url");
 var path    = require('path');
 var shell   = require('shell');
 var mime    = require('mime-types');
+var watcher = require('../watcher/watcher.js');
+
 
 var servers = {
     // Web server
@@ -20,8 +22,9 @@ var servers = {
         factory : ws,
         port    : 3501,
         reply   : wsReply
-    })
+    }),
 
+    watcher : null
 };
 
 
@@ -304,48 +307,103 @@ function reply(request, response) {
 }
 
 /**
+ * When the resources folder or the config.xml has changed
+ */
+function onADCResourcesChanged(eventName, filepath) {
+    var adc = global.project.adc;
+
+    // For the Config xml: reload the config
+    if (filepath.toLowerCase() === path.join(adc.path, 'config.xml').toLowerCase()) {
+        adc.load(function (err) {
+            getFixtures(function (fixtures) {
+                var message = createWSMessage('reloadConfig', fixtures);
+                broadcast(message);
+            });
+        });
+    }
+    // For all other files only reload the preview
+    else {
+        var message = createWSMessage('reload');
+        broadcast(message);
+    }
+}
+
+/**
+ * Watch the ADC
+ */
+function watchADC() {
+    var adc = global.project.adc;
+    if (servers.watched === adc.path) {
+        return;
+    }
+    if (servers.watcher) {
+        servers.watcher.close();
+    }
+    servers.watched = adc.path;
+    servers.watcher = watcher.create(path.join(adc.path, 'Resources/**/*'));
+    servers.watcher.add(path.join(adc.path, 'tests/**/*'));
+    servers.watcher.add(path.join(adc.path, 'config.xml'));
+    servers.watcher.on('all', onADCResourcesChanged);
+}
+
+
+/**
+ * Throw an ws error
+ * @param {Error} err Error
+ * @param {Object} connection WS connection
+ */
+function throwWSError(err, connection) {
+    var str = '500 Internal server error\n';
+    if (err) {
+        str +=  err.message + '\n';
+    }
+    connection.sendText(JSON.stringify({
+        error : 1,
+        message : str
+    }));
+}
+
+/**
+ * Return the config message to send to the websocket
+ * @param {String} action Message
+ * @param {Object} [fixtures]
+ */
+function createWSMessage(action, fixtures) {
+    var adc = global.project.adc;
+    var obj = {
+        error : 0,
+        action : action || 'getConfig',
+        message : {
+            config: adc.configurator.get()
+        }
+    };
+    if (fixtures) {
+        obj.message.fixtures = fixtures;
+    }
+    return JSON.stringify(obj);
+}
+
+
+/**
+ * Serve the adc config
+ * @param connection
+ */
+function serveWSADCConfig(err, connection, fixtures) {
+    if (err) {
+        throwWSError(err, connection);
+        return;
+    }
+
+    var message = createWSMessage('getConfig', fixtures);
+    connection.sendText(message);
+    watchADC();
+}
+
+/**
  * Function that reply on the web socket
  * @param connection
  */
 function wsReply(connection) {
-
-
-    /**
-     * Throw an ws error
-     * @param {Error} err Error
-     * @param {Object} connection WS connection
-     */
-    function throwWSError(err, connection) {
-        var str = '500 Internal server error\n';
-        if (err) {
-            str +=  err.message + '\n';
-        }
-        connection.sendText(JSON.stringify({
-            error : 1,
-            message : str
-        }));
-    }
-
-    /**
-     * Serve the adc config
-     * @param connection
-     */
-    function serveADCConfig(err, connection, fixtures) {
-        if (err) {
-            throwWSError(err, connection);
-            return;
-        }
-
-        var adc = global.project.adc;
-        connection.sendText(JSON.stringify({
-            error : 0,
-            action : 'getConfig',
-            message : {
-                config    : adc.configurator.get(),
-                fixtures  : fixtures
-            }
-        }));
-    }
 
     connection.on("text", function onReceiveMessage(message) {
         // Always reload to obtain the up-to-date info
@@ -354,7 +412,7 @@ function wsReply(connection) {
         adc.load(function (err) {
             if (query.action === 'getConfig') {
                 getFixtures(function (fixtures) {
-                    serveADCConfig(err, connection, fixtures);
+                    serveWSADCConfig(err, connection, fixtures);
                 });
             }
         });

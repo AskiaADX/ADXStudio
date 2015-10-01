@@ -21,8 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         // Update the form
-        if (data.action === 'getConfig') {
+        if (data.action === 'getConfig' || data.action === 'reloadConfig') {
             FormBuilder.getInstance().update(data.message);
+        } else if (data.action === 'reload') {
+            FormBuilder.getInstance().reloadPreview();
         }
     };
 
@@ -239,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        url += output+ "/" + fixture + '?' + params.join('&')
+        url += output+ "/" + fixture + '?' + params.join('&');
         this.iframe.src = url ;
 
         return this;

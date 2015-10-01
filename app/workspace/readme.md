@@ -41,6 +41,25 @@ It's fire with the following arguments:
 * **event** Event object
 * **tabId** Id of the tab to close
 
+### workspace-edit-content
+
+The `workspace-edit-content` event is fire only one time when the content start changing
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab that hold the content
+
+### workspace-restore-content
+
+The `workspace-restore-content` event is fire only one time when the changed content has been restored (back to the original content)
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab that hold the content
+
+
 ### workspace-save-content
 
 The `workspace-save-content` event is fire when the user try to save the content of a given file.
@@ -88,6 +107,26 @@ It's fire with the following arguments
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab should be created
  
+### workspace-update-tab
+
+The `workspace-update-tab` event is fire when the tab has been saved.
+
+It's fire with the following arguments
+
+ * **err** Possible error that could occurred, null when everything is ok.
+ * **tab** Tab object, with id/name/content/path etc...
+ * **pane** Name of the pane where the tab should be created
+ 
+### workspace-reload-tab
+
+The `workspace-reload-tab` event is fire when the tab has changed externally(renamed or modified).
+
+It's fire with the following arguments
+
+ * **err** Possible error that could occurred, null when everything is ok.
+ * **tab** Tab object, with id/name/content/path etc...
+ * **pane** Name of the pane where the tab should be created
+
 ### workspace-remove-tab
  
 The `workspace-remove-tab` event is fire when a tab could be remove safely.

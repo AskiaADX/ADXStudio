@@ -1,9 +1,9 @@
 describe("Tab", function () {
-   var Tab,
-       uuid = require('node-uuid'),
-       fs   = require('fs'),
-       nodePath = require('path'),
-       spies = {};
+    var Tab,
+        uuid = require('node-uuid'),
+        fs   = require('fs'),
+        nodePath = require('path'),
+        spies = {};
 
 
     beforeEach(function () {
@@ -33,7 +33,7 @@ describe("Tab", function () {
 
         spies.fs.readFile = spyOn(fs, 'readFile');
         spies.fs.readFile.andCallFake(function (path, cb) {
-           cb(null, "Hello world!");
+            cb(null, "Hello world!");
         });
 
         spies.fs.writeFile = spyOn(fs, 'writeFile');
@@ -70,14 +70,14 @@ describe("Tab", function () {
             });
             expect(tab.name).toBe('file1');
             expect(tab.type).toBe('file');
-            expect(tab.path).toBe('path/of/file1');
+            expect(tab.path).toBe(nodePath.resolve('path/of/file1'));
         });
 
         it("should set #type, #name, #path when the argument is a string", function () {
             spies.basename.andReturn("file1.txt");
             var tab = new Tab('path/of/file1.txt');
             expect(tab.name).toBe('file1.txt');
-            expect(tab.path).toBe('path/of/file1.txt');
+            expect(tab.path).toBe(nodePath.resolve('path/of/file1.txt'));
         });
 
         it("should set the name of the tab using the path when it's defined", function () {
@@ -87,6 +87,14 @@ describe("Tab", function () {
                 path : 'path/of/file1.txt'
             });
             expect(tab.name).toBe('file1.txt');
+        });
+
+        it("should have a property #edited to false", function () {
+            var tab = new Tab({
+                type : 'file',
+                path : 'path/of/file1.txt'
+            });
+            expect(tab.edited).toBe(false);
         });
     });
 
@@ -125,14 +133,14 @@ describe("Tab", function () {
                 'path/to/test.bmp', 'path/to/test.pdf', 'path/to/test.ico',
                 'path/to/test.cur'
             ].forEach(function (p) {
-                var tab = new Tab({
-                    path : p
-                });
+                    var tab = new Tab({
+                        path : p
+                    });
 
-                tab.loadFile(function () {
-                    expect(tab.fileType).toBe('image');
+                    tab.loadFile(function () {
+                        expect(tab.fileType).toBe('image');
+                    });
                 });
-            });
         });
 
         it("should not read the file, if the file is `image`", function () {
@@ -304,8 +312,8 @@ describe("Tab", function () {
                 tab.saveFile({
                     path : 'new/file/path'
                 }, function () {
-                    expect(oldPath).toBe('file/to/load');
-                    expect(newPath).toBe('new/file/path');
+                    expect(oldPath).toBe(nodePath.resolve('file/to/load'));
+                    expect(newPath).toBe(nodePath.resolve('new/file/path'));
                     done();
                 });
             });
@@ -326,7 +334,7 @@ describe("Tab", function () {
                     path    : '/the/path',
                     content : 'Hello'
                 }, function () {
-                    expect(path).toBe('/the/path');
+                    expect(path).toBe(nodePath.resolve('/the/path'));
                     expect(content).toBe('Hello');
                     done();
                 });
@@ -345,7 +353,7 @@ describe("Tab", function () {
                     path : '/the/path/'
                 });
                 tab.saveFile("Content to save", function () {
-                    expect(path).toBe('/the/path/');
+                    expect(path).toBe(nodePath.resolve('/the/path/'));
                     expect(content).toBe('Content to save');
                     done();
                 });
@@ -430,7 +438,7 @@ describe("Tab", function () {
                         path : "/the/path/newName.txt",
                         content : "Yes"
                     }, function () {
-                        expect(tab.path).toBe('/the/path/newName.txt');
+                        expect(tab.path).toBe(nodePath.resolve('/the/path/newName.txt'));
                         expect(tab.name).toBe('newName.txt');
                         expect(tab.content).toBe('Yes');
                         expect(tab.statTimes.modified).toEqual(nmtime);
@@ -440,16 +448,94 @@ describe("Tab", function () {
                 });
             });
         });
+
+        it("should reset #edited to false", function () {
+            var path, content;
+            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+                path = p;
+                content = c;
+                cb(null);
+            });
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+                tab.edited = true;
+                tab.saveFile("Content to save", function () {
+                    expect( tab.edited).toBe(false);
+                    done();
+                });
+            });
+        });
     });
 
-    describe('#close', function () {
-        it('should be a function', function () {
+    describe('events', function () {
+
+        it('Should inherit of eventListener from nodeJS.', function () {
+            expect(typeof Tab.prototype.on).toBe('function');
+            expect(typeof Tab.prototype.addListener).toBe('function');
+            expect(typeof Tab.prototype.removeListener).toBe('function');
+            expect(typeof Tab.prototype.emit).toBe('function');
+        });
+
+        it('Should trigger the `loaded` event when loading the file.', function () {
             var tab = new Tab({
                 path : 'file/to/load'
             });
 
-            expect(typeof tab.close).toBe('function');
-        });
-    });
+            runSync(function (done) {
+                tab.on('loaded', function () {
+                    expect(true).toBe(true);
+                    done();
+                });
 
+                tab.loadFile();
+            });
+
+        });
+
+        it('Should trigger the `saving` event before saving the file.', function () {
+            var path, content;
+            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+                path = p;
+                content = c;
+                cb(null);
+            });
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+
+                tab.on('saving', function () {
+                    expect(true).toBe(true);
+                    done();
+                });
+
+                tab.saveFile("Content to save");
+            });
+        });
+
+
+        it('Should trigger the `saved` event after saving the file.', function () {
+            var path, content;
+            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+                path = p;
+                content = c;
+                cb(null);
+            });
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+
+                tab.on('saved', function () {
+                    expect(true).toBe(true);
+                    done();
+                });
+
+                tab.saveFile("Content to save");
+            });
+        });
+
+    });
 });

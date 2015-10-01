@@ -2,6 +2,8 @@ var uuid = require('node-uuid');
 var detector = require('charset-detector');
 var fs = require('fs');
 var nodePath = require('path');
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
 
 /**
  * Tab in pane
@@ -13,6 +15,7 @@ var nodePath = require('path');
  * @param {String} [config.path] Path of the file associated with the tab
  */
 function Tab(config) {
+    EventEmitter.call(this);
     if (typeof  config === 'string') {
         config = {
             path : config
@@ -21,12 +24,18 @@ function Tab(config) {
     this.id = uuid.v4();
     this.config = config || {};
     this.type = this.config.type || '';
-    this.path = this.config.path || '';
+    this.path = typeof this.config.path === 'string' ? nodePath.resolve(this.config.path) : '';
     this.name = this.config.name || (this.path && nodePath.basename(this.path)) || '';
     this.fileType = '';
     this.statTimes = {};
     this.content  = null;
+    this.edited   = false;
 }
+
+/**
+ * Inherits the event emitter
+ */
+util.inherits(Tab, EventEmitter);
 
 /**
  * Load the file and initialize additional properties in the tab object
@@ -46,15 +55,18 @@ Tab.prototype.loadFile = function loadFile(callback) {
         // Look at known extension first
         if (/\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i.test(self.path)) {
             self.fileType = 'image';
+            self.edited   = false;
             if (typeof callback === 'function') {
                 callback();
             }
+            self.emit('loaded');
             return;
         }
 
         // Try to look at the nature of the file itself
         Tab.isTextOrBinaryFile(self.path, function (err, type) {
             self.fileType = type;
+            self.edited   = false;
             if (type === 'text') {
                 fs.readFile(self.path, function (err, data) {
                     self.content = data.toString();
@@ -67,6 +79,7 @@ Tab.prototype.loadFile = function loadFile(callback) {
                     callback();
                 }
             }
+            self.emit('loaded');
         });
     });
 };
@@ -87,29 +100,38 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
         self    = this,
         finalPath;
 
+    this.emit('saving');
+
+    function cb(){
+        if (typeof callback === 'function') {
+            callback.apply(null, arguments);
+        }
+        self.emit('saved');
+    }
+
     if (file === undefined || file === null || (typeof file !== 'object' && typeof file !== 'string')) {
-        callback(new Error("invalid `file` argument. Expect an object with the `content` and/or the `path` keys"));
+        cb(new Error("invalid `file` argument. Expect an object with the `content` and/or the `path` keys"));
         return;
     }
 
     if (typeof file === 'object') {
         if (!file.path && !file.content){
-            callback(new Error("invalid `file` argument. Expect an object with the `content` and/or the `path` keys"));
+            cb(new Error("invalid `file` argument. Expect an object with the `content` and/or the `path` keys"));
             return;
         }
         content = file.content || null;
-        path    = file.path || '';
+        path    = typeof file.path === 'string' ? nodePath.resolve(file.path) : '';
     } else {
         content = file;
     }
 
     if (this.fileType === 'binary' && content !== null) {
-        callback(new Error("Could not save the content of a binary file"));
+        cb(new Error("Could not save the content of a binary file"));
         return;
     }
 
     if (!path && !this.path) {
-        callback(new Error("No path defined"));
+        cb(new Error("No path defined"));
         return;
     }
 
@@ -118,25 +140,26 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
     function trySaveContent() {
         function saveContent(err) {
             if (err) {
-                callback(err);
+                cb(err);
                 return;
             }
 
             if (content === null) {
-                callback(null);
+                cb(null);
                 return;
             }
 
 
             fs.writeFile(finalPath, content, function (err) {
                 if (err) {
-                    callback(err);
+                    cb(err);
                     return;
                 }
 
                 self.name = nodePath.basename(finalPath);
                 self.path = finalPath;
                 self.loadFile(callback);
+                self.emit('saved');
             });
         }
 
@@ -152,19 +175,20 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
     }
 
 
+    /* ALWAYS SAVE
     if (this.path && this.statTimes.modified) {
         fs.stat(this.path, function (err, stats) {
             if (err) {
-                callback(err);
+                cb(err);
             }
             if (self.statTimes.modified < stats.mtime) {
-                callback(new Error("The file seems has been already modified"));
+                cb(new Error("The file seems has been already modified"));
             } else {
                 trySaveContent();
             }
         });
         return;
-    }
+    }*/
 
     trySaveContent();
 };
