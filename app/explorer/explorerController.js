@@ -2,6 +2,7 @@ var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
 var dialog = require('dialog');
 var explorer = require('./explorerModel.js');
+var appSettings = require('../appSettings/appSettingsModel.js');
 var path = require('path');
 var ADC = require('adcutil').ADC;
 var explorerView;
@@ -54,7 +55,9 @@ function openRootFolder(err, dir, files) {
  * @param {String} folderpath Path of the folder to load as root
  */
 function openProject(folderpath) {
-
+    appSettings.addMostRecentlyUsed({
+        path : folderpath
+    });
     explorer.load(folderpath, true, function (err, files) {
         openRootFolder(err, folderpath, files);
     });
@@ -94,7 +97,6 @@ function renameFile(event, file, newName) {
     });
 }
 
-
 /**
  * Send a message to the view to Open new project.
  *
@@ -123,22 +125,23 @@ ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
     // Load the default path
-    var defaultPath = path.join(__dirname, '../../');
-    explorer.load(defaultPath, true, function (err, files) {
-        openRootFolder(err, defaultPath, files);
+    appSettings.getInitialProject(function onInitialProject(projectPath) {
+        if (projectPath) {
+            explorer.load(projectPath, true, function (err, files) {
+                openRootFolder(err, projectPath, files);
+            });
+        }
     });
 
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event
     app.on('menu-open-project', openProject); // Add it back again
 
-    // Message from 'index.js' the view.
-    // Here we receive the object sent from index.js.
-    ipc.removeListener('explorer-rename', renameFile); // Remove it first
-    ipc.on('explorer-rename', renameFile); // Add it back again
+    ipc.removeListener('explorer-rename', renameFile);
+    ipc.on('explorer-rename', renameFile);
 
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
-
+  
     ipc.removeListener('explorer-new-project', newProject);
     ipc.on('explorer-new-project', newProject);
 

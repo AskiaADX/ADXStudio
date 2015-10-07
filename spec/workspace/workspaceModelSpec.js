@@ -19,7 +19,7 @@ describe("workspace", function () {
     FakeWatcher.prototype.close = function () {};
 
     beforeEach(function () {
-        watcher = require('../../app/watcher/watcher.js');
+        watcher = require('../../app/modules/watcher/watcher.js');
 
         spies.watcher = {};
         spies.watcher.create = spyOn(watcher, 'create');

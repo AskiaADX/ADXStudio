@@ -23,7 +23,14 @@
     <link rel="stylesheet" href="../../lib/codemirror/addon/sense/sense.css" />
   	<script src="../../lib/codemirror/addon/selection/active-line.js"></script>
     <script src="../../lib/codemirror/addon/sense/sense.js"></script>
-    <link rel="stylesheet" href="../../themes/default/askia.css">
+    <link rel="stylesheet" href="../../lib/codemirror/addon/fold/foldgutter.css" />
+	<script src="../../lib/codemirror/addon/fold/foldcode.js"></script>
+  	<script src="../../lib/codemirror/addon/fold/foldgutter.js"></script>
+  	<script src="../../lib/codemirror/addon/fold/brace-fold.js"></script>
+  	<script src="../../lib/codemirror/addon/fold/xml-fold.js"></script>
+  	<script src="../../lib/codemirror/addon/fold/markdown-fold.js"></script>
+  	<script src="../../lib/codemirror/addon/fold/comment-fold.js"></script>
+	<link rel="stylesheet" href="../../themes/default/askia.css">
     <script src="../viewer.js"></script>
     <style>
         html, body
@@ -67,10 +74,17 @@
 
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
                 lineNumbers     : true,
-                gutters         : ["cms-gutter-errors", "CodeMirror-linenumbers"],
+                gutters         : ["cms-gutter-errors", "CodeMirror-foldgutter", "CodeMirror-linenumbers"],
                 mode            : contentType,
                 theme           : 'askia',
-                styleActiveLine: true,
+                styleActiveLine	: true,
+              	extraKeys		: {
+					"Ctrl--"	: CodeMirror.commands.fold,
+                  	"Ctrl-="	: CodeMirror.commands.unfold,
+                  	"Shift-Ctrl--"	: CodeMirror.commands.foldAll,
+                  	"Shift-Ctrl-="	: CodeMirror.commands.unfoldAll
+                },
+          		foldGutter		: true,
                 questions       : []
             }).suggest();
 

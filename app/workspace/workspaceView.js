@@ -288,6 +288,16 @@ document.addEventListener('DOMContentLoaded', function () {
          if (isActive) {
              setActiveTab(tab, pane);
          }
+
+         // Close the empty pane but never close both pane
+         var paneState       = getPanesState();
+         if (paneState.main && paneState.second) {
+             if (!isPaneHasTab('main')) {
+                 closePane('main');
+             } else if (!isPaneHasTab('second')) {
+                 closePane('second');
+             }
+         }
     }
 
     /**
@@ -298,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function getViewerUrl(tab) {
         var viewerSubFolderName = 'editor';
         if (tab.adcConfig) {
-            viewerSubFolderName = 'adcconf';
+            viewerSubFolderName = 'projectSettings';
         } else if (tab.fileType === 'image') {
             viewerSubFolderName = 'image';
         } else if (tab.fileType === 'preview') {
@@ -345,7 +355,6 @@ document.addEventListener('DOMContentLoaded', function () {
         tabs.updateTab(tab);
     }
 
-
     /**
      * Reload the tab and update the information of the tab
      *
@@ -359,7 +368,6 @@ document.addEventListener('DOMContentLoaded', function () {
         viewerEl.src = getViewerUrl(tab);
         tabs.updateTab(tab, pane);
     }
-
 
     /**
      * Remove a tab
@@ -678,7 +686,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     } ());
-
 
     /* --- LISTEN EVENTS EMIT FROM THE SERVER SIDE CONTROLLER  --- */
 

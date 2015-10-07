@@ -1,10 +1,9 @@
 // the object map is created to give unique id to each item
-var remote = require('remote');
-var menu = remote.require('menu');
-var menuItem = remote.require('menu-item');
-var ipc = require('ipc');
-var ADC = require('adcutil').ADC;
-
+var remote 		= require('remote');
+var Menu 		= remote.require('menu');
+var MenuItem 	= remote.require('menu-item');
+var ipc 		= require('ipc');
+var shell   	= require('shell');
 
 function selectItem() {
     var divGlobal = document.querySelector('.selected');
@@ -24,16 +23,25 @@ function itemRightClick(e) {
     var file = el.file;
     selectItem.call(this);
 
-    var contextualMenu = new menu();
-    contextualMenu.append(new menuItem({
+    var contextualMenu = new Menu();
+  
+    /* Open file in the OS manner */
+   	if (/\.html?$/i.test(file.name)) {
+  		contextualMenu.append(new MenuItem({
+         	label: 'Open in browser', 
+          	click: function onClickOpen() {
+              shell.openItem(file.path)
+          	}
+        }));
+                              
+		contextualMenu.append(new MenuItem({type : 'separator'}));
+	}
+  
+  
+  	/* Rename file */
+    contextualMenu.append(new MenuItem({
         label: 'Rename',
-        click: function () {
-
-            // send a messqge to the explorer host (To the View) --> index.js
-            //first argument is the channel: 'show-Modal-Dialog'
-            //second argument is an object which contains caracteristics of the first argument of the API.
-            //third argument is a message 'rename-file'
-            //fourth argument is the element selected
+        click: function onClickRename() {
             ipc.sendToHost('show-modal-dialog', {
                 type: 'prompt',
                 message : 'Rename:',
@@ -41,11 +49,15 @@ function itemRightClick(e) {
             }, 'explorer-rename', file);
 
         }
-
     }));
+  
+  	contextualMenu.append(new MenuItem({type : 'separator'}));
 
-    contextualMenu.append(new menuItem({
-        label: 'Remove', click: function () {
+  
+	/* Remove file */
+    contextualMenu.append(new MenuItem({
+        label: 'Remove', 
+      	click: function onClickRemove() {
 
             ipc.sendToHost('show-modal-dialog', {
                 type: 'yesNo',
@@ -70,7 +82,6 @@ function itemclick() {
 
     var itemInfo = this;
     var item = itemInfo.parentNode;
-    var parentItem = item.parentNode;
     var file = item.file;
     var child = item.querySelector('.child');
     var toggle;
@@ -125,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             root.parentNode.querySelector('.item-info').onclick = itemclick;
             root.parentNode.querySelector('.name').innerHTML = rootName;
+            root.parentNode.style.display = 'block';
         }
 
 

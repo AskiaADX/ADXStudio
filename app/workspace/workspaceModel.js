@@ -2,7 +2,7 @@ var Tab = require('./TabModel.js').Tab;
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var nodePath = require('path');
-var watcher = require('../watcher/watcher.js');
+var watcher = require('../modules/watcher/watcher.js');
 
 
 /**
@@ -76,6 +76,7 @@ function Workspace(){
      */
     this.tabs = [];
 
+
     this._initWatcher();
 }
 
@@ -101,6 +102,7 @@ Workspace.prototype._initWatcher = function _initWatcher() {
      */
     this._watcher = watcher.create();
     this._watcher.on('changed', function (filePath) {
+        console.log('CHANGED ON WORKSPACE, ' + filePath);
         self._propagateWatcherEvents('file-changed', filePath);
     });
     this._watcher.on('deleted', function (filePath) {
@@ -109,6 +111,11 @@ Workspace.prototype._initWatcher = function _initWatcher() {
     this._watcher.on('renamed', function (newPath, oldPath) {
         self._propagateWatcherEvents('file-renamed', oldPath, newPath);
     });
+
+    /**
+     * Temporary information that indicates if the tab is currently saving
+     */
+    this._saving = {};
 };
 
 /**
@@ -152,6 +159,7 @@ Workspace.prototype.init = function init(config, callback) {
     this.panes.orientation = '';
 
 
+
     callback(null);
 };
 
@@ -168,14 +176,30 @@ Workspace.prototype.createTab = function createTab(config, callback) {
     var tab = new Tab(config),
         self = this;
 
-    // Watch on load
-    tab.on('loaded', function onTabLoaded() {
+    /**
+     * When the tab is fully loaded, watch it
+     */
+    function onTabLoaded() {
+        if (self._saving[tab.id]) {
+            return;
+        }
         self._watcher.remove(tab.path);
         self._watcher.add(tab.path);
+    }
+
+    // Watch on load
+    tab.on('loaded', onTabLoaded);
+
+    // Unwatch it during the save
+    tab.on('saving', function onTabSaving() {
+        self._saving[tab.id] = true; // Prevent earlier listening
+        self._watcher.remove(tab.path);
     });
 
-    tab.on('saving', function onTabSaving() {
-        self._watcher.remove(tab.path);
+    // Re-watch it after the save
+    tab.on('saved', function onTabSaved() {
+        delete self._saving[tab.id];
+        onTabLoaded();
     });
 
     this.tabs.push(tab);

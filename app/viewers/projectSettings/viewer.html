@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Image viewer</title>
-    <link rel="stylesheet" href="adcconf.css"/>
+    <link rel="stylesheet" href="projectSettings.css"/>
     <link rel="stylesheet" href="../../themes/default/default.css"/>
     <script src="../viewer.js"></script>
 </head>
@@ -38,9 +38,8 @@
 
         <p>
             <label for="categories">Categories:</label>
-            <select id="categories" name="categories" multiple="multiple" size="5"></select>
+            <input type="text" id="categories" name="categories" placeholder="General, Sliders, Maps"/>
         </p>
-
         <p>
             <label for="style_width">Size (width x height):</label>
             <input type="number" id="style_width" name="style[width]"/> x <input
@@ -52,6 +51,7 @@
             <input type="url" id="helpURL" name="helpURL" placeholder="http://url/of/the/adc/help/file"/>
         </p>
     </fieldset>
+
     <fieldset>
         <legend>About</legend>
         <p>
@@ -166,13 +166,9 @@
             }
         }
 
-        // Set the categories in the selectbox
+        // Set the categories in the textbox
         if (Array.isArray(info.categories)) {
-            str = [];
-            for (i = 0, l = info.categories.length; i < l; i++) {
-                str.push('<option value="' + info.categories[i].trim() + '">' + info.categories[i].trim() + '</option>');
-            }
-            document.getElementById('categories').innerHTML = str.join('');
+            document.getElementById('categories').value = info.categories.join(', ');
         }
 
         // Set the constraints information

@@ -64,10 +64,40 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     /**
+     * Backup the current selection before to re-init the form
+     */
+    FormBuilder.prototype.backup = function backup() {
+        this._backup = {};
+
+        if (!this.form) {
+            return;
+        }
+
+        this._backup.output  = this.form.output;
+        this._backup.fixture = this.form.fixture;
+        this._backup.props   = {};
+
+        var properties = this.form.properties,
+            property,
+            i, l;
+
+        for (i = 0, l = properties.length; i < l; i += 1) {
+            property = properties[i];
+            if (property.value !== property.defaultValue) {
+                this._backup.props[property.id] = property.value;
+            }
+        }
+    };
+
+    /**
      * Initialize the form builder with the ADC information
      * #chainable
      */
     FormBuilder.prototype.init = function init(adcInfo) {
+        var i, l, isFound = false;
+
+        this.backup();
+
         this.config        = adcInfo.config;
         this.fixtures      = adcInfo.fixtures;
         this.categories    = this.config.properties.categories;
@@ -79,6 +109,35 @@ document.addEventListener('DOMContentLoaded', function () {
             properties : [],
             propertyById  : {}
         };
+
+
+        // Verify the backup against the current info
+        if (this._backup && this._backup.output) {
+            for (i = 0, l = this.outputs.outputs.length, isFound = false; i < l; i += 1) {
+                if (this.outputs.outputs[i].id === this._backup.output) {
+                    isFound = true;
+                    break;
+                }
+            }
+            // Use it for the current form
+            if (isFound) {
+                this.form.output = this._backup.output;
+            }
+        }
+
+        // Verify the backup against the current info
+        if (this._backup && this._backup.fixture) {
+            for (i = 0, l = this.fixtures.list.length, isFound = false; i < l; i += 1) {
+                if (this.fixtures.list[i].replace(/\.xml$/i, '') === this._backup.fixture) {
+                    isFound = true;
+                    break;
+                }
+            }
+            // Use it for the current form
+            if (isFound) {
+                this.form.fixture = this._backup.fixture;
+            }
+        }
 
         return this;
     };
@@ -109,8 +168,10 @@ document.addEventListener('DOMContentLoaded', function () {
             selected,
             html = [],
             outputs = this.outputs.outputs,
-            defaultOutput = this.outputs.defaultOutput,
-            fixtures = this.fixtures;
+            defaultOutput = this.form.output,
+            fixtures = this.fixtures,
+            defaultFixture = this.form.fixture.replace(/\.xml$/i, ''),
+            fixture;
 
         html.push('<h2>ADC Properties</h2>');
         html.push('<table>');
@@ -124,8 +185,9 @@ document.addEventListener('DOMContentLoaded', function () {
         html.push('<tr><td><label for="fixture">Fixture:</label></td>');
         html.push('<td><select id="fixture">');
         for (i = 0, l = fixtures.list.length; i < l; i++) {
-            selected = fixtures.list[i] === fixtures.defaultFixture ? ' selected="selected"' : '';
-            html.push('<option id="' + fixtures.list[i] + '"' + selected + '>' + fixtures.list[i].replace(/\.xml$/, '') + '</option>');
+            fixture = fixtures.list[i].replace(/\.xml$/i, '');
+            selected = fixture === defaultFixture ? ' selected="selected"' : '';
+            html.push('<option id="' + fixture + '"' + selected + '>' + fixture + '</option>');
         }
         html.push('</select></td></tr>');
         html.push('</table>');
@@ -156,7 +218,12 @@ document.addEventListener('DOMContentLoaded', function () {
     FormBuilder.prototype.propertyToHtml =  function propertyToHtml(property) {
         var html = [],
             type = property.type,
+            value = property.value.toString(),
             attrs = [];
+
+        if (this._backup && this._backup.props && (property.id in this._backup.props)) {
+            value = this._backup.props[property.id];
+        }
 
         html.push('<tr>');
         html.push('<td><label for="property_' + property.id  + '">' + property.name + '</label></td>');
@@ -165,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.form.properties.push({
             id           : property.id,
             defaultValue : property.value.toString(),
-            value        : property.value.toString()
+            value        : value
         });
         // Pointer to the item in the array
         this.form.propertyById[property.id] = this.form.properties[this.form.properties.length - 1];
@@ -189,12 +256,12 @@ document.addEventListener('DOMContentLoaded', function () {
             var opts = property.options || [{value : 0, text : "False"}, {value : 1, text : "True"}];
             html.push('<select id="property_' + property.id + '">');
             opts.forEach(function (opt) {
-                var selected = opt.value === property.value ? ' selected="selected"' : '';
+                var selected = opt.value.toString() === value ? ' selected="selected"' : '';
                 html.push('<option value="' + opt.value + '"' + selected + '>' + opt.text + '</option>');
             });
             html.push('</select>');
         } else {
-            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + property.value + '" ' + attrs.join(' ') + '/>');
+            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + value + '" ' + attrs.join(' ') + '/>');
         }
         html.push('</td>');
         html.push('</tr>');
@@ -230,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
             property,
             params  = [],
             output  = this.form.output,
-            fixture = this.form.fixture.replace(/\.xml$/i, ''),
+            fixture = this.form.fixture,
             url     = "http://localhost:" + tab.ports.http + "/output/",
             i, l;
 

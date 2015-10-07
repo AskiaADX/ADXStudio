@@ -2,7 +2,7 @@ var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
 var workspace = require('./workspaceModel.js');
-var preview   = require('../preview/previewController.js');
+var servers   = require('../modules/servers/adxServers.js');
 var workspaceView;
 
 /**
@@ -116,17 +116,7 @@ function startPreview() {
         return;
     }
 
-    preview.servers.web.listen(function onHttpListening(httpPort) {
-        // TODO::Don't open it externally for the moment
-        // shell.openExternal('http://localhost:' + port + '/output/');
-
-        preview.servers.webSocket.listen(function onWSListening(wsPort) {
-            openPreview({
-                httpPort : httpPort,
-                wsPort   : wsPort
-            });
-        });
-    });
+    servers.listen(openPreview);
 }
 
 /**

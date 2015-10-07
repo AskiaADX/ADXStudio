@@ -18,41 +18,32 @@ The Explorer view trigger the following events:
 
 The 'explorer-ready' event is fire when the DOM of the explorer is fully loaded and the view component is ready to be used.
 
-        var ipc = require('ipc');
-        ipc.send('explorer-ready')
-
-
-**In fact, the event 'explorer-ready' load a default folder (see 'explorer-load-file' event) that we will be able to change.**
-
 ### explorer-load-file
 
-This event gives to the explorer the file we want to load. More precisely, the file selected.
-
-**In Explorer**
-
-        var ipc =  require('ipc');
-        ipc.send('explorer-load-file', file);
-
+This event is fire when the user click on file.
 
 ### explorer-load-folder
 
-This event gives to the explorer the folder, and its content.
-
-**In Explorer**
-
-        var ipc =  require('ipc');
-        ipc.send('explorer-load-folder', file.path, item.id);
-        //In order to send the path of the file selected and the id of the item.
+This event is fire when the user click on folder.
 
 ### explorer-rename
 
-This event give us the possibility to rename a file or a folder selected in the explorer.
+This event is fire when the user try renaming a file or folder.
 
 It's fire with the following arguments:
 
 * **event** Event object
-* **file** object that contains old item definition (name, path, type).
-* **newName** new name of the item.
+* **file** Object that contains old item definition (name, path, type).
+* **newName** New name of the item.
+
+### explorer-remove
+
+This event is fire when the user try to remove a file or folder.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **file** Object that contains the item definition (name, path, type).
 
 ## Events from Controller
 

@@ -158,8 +158,7 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
 
                 self.name = nodePath.basename(finalPath);
                 self.path = finalPath;
-                self.loadFile(callback);
-                self.emit('saved');
+                self.loadFile(cb);
             });
         }
 
