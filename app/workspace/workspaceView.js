@@ -116,8 +116,8 @@ window.tabs  = {
         document.getElementById('content-' + tab.id).childNodes[0].style.visibility = '';
 
         // Focus on the code-mirror editor
-        if (tab.id === this.currentTabId && tab.editor) {
-            tab.editor.focus && tab.editor.focus();
+        if (tab.id === this.currentTabId && tab.editor && tab.editor.focus) {
+            tab.editor.focus();
         }
     },
 
@@ -215,8 +215,8 @@ window.tabs  = {
         this.currentTabId = tabId;
 
         currentEditor = currentTab && currentTab.editor;
-        if (currentEditor) {
-            currentEditor.focus && currentEditor.focus();
+        if (currentEditor && currentEditor.focus) {
+			currentEditor.focus();
         }
     }
 };
@@ -230,6 +230,27 @@ document.addEventListener('DOMContentLoaded', function () {
         resizer = new askia.Resizer({
             element : document.getElementById('main_pane')
         });
+
+    /**
+     * Indicates if the element has horizontal scroll
+     * @param {HTMLElement} el
+     * @returns {boolean}
+     * @ignore
+     */
+    function hasHorizontalScroll(el) {
+        return el.clientWidth !== el.scrollWidth;
+    }
+
+    /**
+     * Fix scroll elements on tabs
+     * @param {String} pane Name of the pane
+     */
+    function fixTabsScroll(pane) {
+        var paneEl = document.getElementById(pane + '_pane'),
+            wrapperEl = paneEl.querySelector('.tabs-wrapper'),
+            scrollEl  = paneEl.querySelector('.tabs-scroll');
+        scrollEl.style.visibility = hasHorizontalScroll(wrapperEl) ? 'visible' : '';
+    }
 
      /**
       * Add a tab
@@ -298,6 +319,8 @@ document.addEventListener('DOMContentLoaded', function () {
                  closePane('second');
              }
          }
+
+         fixTabsScroll(pane);
     }
 
     /**
@@ -340,6 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
             oldContent.classList.remove('active');
         }
         el.classList.add('active');
+        el.scrollIntoView();
         content.classList.add('active');
 
         tabs.setCurrentTab(tab.id);
@@ -406,6 +430,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if ((paneState.main && paneState.second) && !isPaneHasTab(pane)) {
             closePane(pane);
         }
+
+        fixTabsScroll(pane);
     }
 
     /**
@@ -440,16 +466,19 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(pane + '_pane').classList.add('open');
         var state = getPanesState();
         if (state.main && state.second) {
-          	var panesEl = document.getElementById('panes');
+			var panesEl = document.getElementById('panes');
             panesEl.classList.remove('full');
             panesEl.classList.add('split');
-          	// Enforce the size of the main pane
-          	// Ensure that tabs sizes will not resize the second pane
-          	if (!resizer.element.style.width) {
+			// Enforce the size of the main pane
+			// Ensure that tabs sizes will not resize the second pane
+			if (!resizer.element.style.width) {
               resizer.element.style.width = (panesEl.offsetWidth / 2)+ 'px';
             }
             resizer.start();
         }
+
+        fixTabsScroll('main');
+        fixTabsScroll('second');
     }
 
     /**
@@ -473,12 +502,17 @@ document.addEventListener('DOMContentLoaded', function () {
             panesEl.classList.add('full');
             resizer.stop();
         }
+        fixTabsScroll('main');
+        fixTabsScroll('second');
     }
 
 
     (function initTabEvents() {
         var i, l,
-            els = document.querySelectorAll('.tabs');
+            els = document.querySelectorAll('.tabs'),
+            elsTabScrolls = document.querySelectorAll('.tabs-scroll'),
+            scrollTimeout,
+            resizeTimeout;
 
         /**
          * Event when clicking on tabs
@@ -639,6 +673,41 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         /**
+         * Scrolling on tabs
+         * @param event
+         */
+        function onTabsScroll(event) {
+            var el = event.srcElement,
+                isScrollLeft = el.classList.contains('scroll-left'),
+                isScrollRight = el.classList.contains('scroll-right'),
+                direction = (isScrollLeft) ? 'left' : (isScrollRight) ? 'right' : false,
+                tabsWrapper = el.parentNode.parentNode.querySelector('.tabs-wrapper');
+
+            // No explicit direction
+            if (!direction) {
+                return;
+            }
+
+            function doScroll() {
+                tabsWrapper.scrollLeft += (direction === 'right') ? 75 : -75;
+            }
+
+            function clearTimer() {
+                clearInterval(scrollTimeout);
+                document.body.removeEventListener('mouseup', clearTimer);
+            }
+
+            document.body.addEventListener('mouseup', clearTimer);
+
+            doScroll();
+            scrollTimeout = setInterval(doScroll, 150);
+        }
+
+        for (i = 0, l = els.length; i < l; i += 1) {
+            elsTabScrolls[i].addEventListener('mousedown', onTabsScroll);
+        }
+
+        /**
          * Event when the content of a tab has changed
          *
          * @param {CustomEvent} event
@@ -690,6 +759,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.body.addEventListener('tabfocused', onTabFocused);
 
+        /**
+         * Resizing the window
+         */
+        function onResize(){
+            fixTabsScroll('main');
+            fixTabsScroll('second');
+        }
+
+        document.body.addEventListener('resize', function () {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(onResize, 100);
+        });
 
     } ());
 

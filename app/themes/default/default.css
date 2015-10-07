@@ -202,7 +202,15 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    WorkSpace Part
    ======================================== */
 
-.tab {
+.tabs-wrapper {
+    max-width : calc(100% - 50px);
+}
+
+.tabs-scroll {
+    width: 50px;
+}
+
+.tab, .tabs-scroll div {
     background      : #21252B;
     border-right    : 1px solid #111;
     border-bottom   : 1px solid #111;
@@ -216,8 +224,14 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     transition      : color ease-in .3s;
 }
 
+.tabs-scroll div    {
+    margin	: 0;
+    padding : 2px;
+    vertical-align: middle;
+}
 
-.tab:hover {
+
+.tab:hover, .tabs-scroll div:hover {
     color: #DDDDDD;
 }
 
@@ -243,7 +257,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     background: #111;
 }
 
-.tab-end {
+.tabs-scroll, .tab-end {
     background      : #21252B;
     border-bottom   : 1px solid #111;
 }

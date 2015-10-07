@@ -58,8 +58,8 @@
 .cm-s-askia span.cm-number { color: #F77669; }
 .cm-s-askia span.cm-def { color: rgba(233, 237, 237, 1); }
 .cm-s-askia span.cm-error {
-  color: rgba(255, 255, 255, 1.0);
-  background-color: #EC5F67;
+  color: #FFF !important;
+  background: #EC5F67;
 }
 .cm-s-askia span.cm-string { color: #C3E88D; }
 .cm-s-askia span.cm-string-2 { color: #80CBC4; }
