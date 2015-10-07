@@ -440,8 +440,14 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(pane + '_pane').classList.add('open');
         var state = getPanesState();
         if (state.main && state.second) {
-            document.getElementById('panes').classList.remove('full');
-            document.getElementById('panes').classList.add('split');
+          	var panesEl = document.getElementById('panes');
+            panesEl.classList.remove('full');
+            panesEl.classList.add('split');
+          	// Enforce the size of the main pane
+          	// Ensure that tabs sizes will not resize the second pane
+          	if (!resizer.element.style.width) {
+              resizer.element.style.width = (panesEl.offsetWidth / 2)+ 'px';
+            }
             resizer.start();
         }
     }
@@ -462,8 +468,9 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(pane + '_pane').classList.remove('open');
         var state = getPanesState();
         if (!state.main || !state.second) {
-            document.getElementById('panes').classList.remove('split');
-            document.getElementById('panes').classList.add('full');
+            var panesEl = document.getElementById('panes');
+            panesEl.classList.remove('split');
+            panesEl.classList.add('full');
             resizer.stop();
         }
     }
@@ -612,7 +619,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         /**
          * Stop drag event
-         * @param event
          */
         function onTabStopDrag() {
             this.removeEventListener('mousemove', onTabDrag);
