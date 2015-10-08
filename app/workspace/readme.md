@@ -32,6 +32,16 @@ It's fire with the following arguments:
 * **event** Event object
 * **tabId** Id of the current active and focused tab     
 
+### 'workspace-move-tab
+
+The `'workspace-move-tab` event is fire when the current tab should be move to another pane
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab to move
+* **targetPane** Name of the target pane
+
 ### workspace-close-tab
 
 The `workspace-close-tab` event is fire when the user try to close a tab.
@@ -136,3 +146,15 @@ It's fire with following arguments:
  * **err** Possible error that could occurred, null when everything is ok.
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab is located 
+ 
+ ### workspace-change-tab-location
+ 
+The `workspace-send-tab` event is fire when a tab could be move to another tab.
+ 
+It's fire with following arguments:
+ 
+ * **err** Possible error that could occurred, null when everything is ok.
+ * **tab** Tab object, with id/name/content/path etc...
+ * **pane** Name of the pane where the tab is located 
+ 
+ 

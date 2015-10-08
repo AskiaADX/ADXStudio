@@ -402,6 +402,87 @@ describe("workspace", function () {
         });
 
     });
+    
+	describe("#moveTab", function () {
+        it("should be a function", function () {
+           expect(typeof  workspace.moveTab).toBe("function");
+		});
+
+		it("should return an error when the first arg is a falsy", function () {
+             runSync(function (done) {
+                workspace.moveTab(null, null, function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+             });
+        });
+        
+        it("should return an error when the second arg is a different to 'main' or 'second'", function () {
+             runSync(function (done) {
+                workspace.moveTab(null, 'another unknown pane', function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+             });
+        });
+
+        it("should return an error when the tab is not found", function () {
+            runSync(function (done) {
+                workspace.moveTab("undefined-tab", 'main', function (err) {
+                    expect(err instanceof Error).toBe(true);
+                    done();
+                });
+            });
+        });
+        
+        it("should return moved tab via his callback", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err, tab) {
+                    workspace.moveTab(tab, 'main', function (err, movedTab) {
+                        expect(tab).toBe(movedTab);
+						done();
+                    });
+                });
+            });
+        });
+
+        it("should return the name of the pane where the tab is now located via his callback in third arg", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err, tab) {
+                    workspace.moveTab(tab, 'second', function (err, movedTab, pane) {
+						expect(pane).toBe('second');
+						done();
+                    });
+                });
+            });
+        });
+
+        it("should move the tab in to the specified pane", function () {
+            runSync(function (done) {
+				workspace.panes.current("main");
+                workspace.createTab(null, function(err, tab) {
+                    workspace.moveTab(tab, 'second', function () {
+                        expect(workspace.where(tab)).toEqual('second');
+                        done();
+                    });
+                });
+            });
+        });
+
+    });
+  
+	describe('#toJSON', function () {
+		it("should be a function", function () {
+           expect(typeof workspace.toJSON).toBe("function");
+        });
+      
+		it("should return an object", function () {
+          var json = workspace.toJSON();
+          expect(typeof json).toBe('object');
+        });
+    });
 
     describe("#init", function () {
         it("should clean up the collection when called without `config` argument", function () {

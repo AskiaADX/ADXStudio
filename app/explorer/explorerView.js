@@ -10,7 +10,7 @@ function selectItem() {
     var itemInfo = this;
 
     if (divGlobal) {
-        divGlobal.classList.remove('selected')
+        divGlobal.classList.remove('selected');
     }
 
     itemInfo.classList.add('selected');
@@ -30,7 +30,7 @@ function itemRightClick(e) {
   		contextualMenu.append(new MenuItem({
          	label: 'Open in browser', 
           	click: function onClickOpen() {
-              shell.openItem(file.path)
+              shell.openItem(file.path);
           	}
         }));
                               

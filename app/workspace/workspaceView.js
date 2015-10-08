@@ -112,6 +112,7 @@ window.tabs  = {
      * @param {CodeMirror} tab.editor Code mirror instance on the tab
      */
     onEditorLoaded : function onEditorLoaded(tab) {
+        console.log('on editor loaded', tab.name);
         // Make the tab visible
         document.getElementById('content-' + tab.id).childNodes[0].style.visibility = '';
 
@@ -218,6 +219,34 @@ window.tabs  = {
         if (currentEditor && currentEditor.focus) {
 			currentEditor.focus();
         }
+    },
+    
+    /**
+     * Search the previous tab to select on the specified pane
+     * Mainly used to make a tab content visible when moving a tab to another pane
+     * or when removing a tab
+     *
+     * @param {Object} tab Indicates the tab from where the search should start
+     * @param {String} pane Name of the pane where the tab is / was located
+     */
+    searchPreviousSelectionOnPane : function searchPreviousSelectionOnPane(tab, pane) {
+        var prevTab = tab.previousSelection || tab.nextSelection ||
+            tab.previous || tab.next || null;
+        var prevTabPane = (prevTab && this.getPaneElementByTabId(prevTab.id)) || null;
+        while(prevTab && prevTabPane && prevTabPane !== pane) {
+            prevTab = prevTab.previousSelection || prevTab.nextSelection ||
+					prevTab.previous || prevTab.next || null;
+			prevTabPane = (prevTab && this.getPaneElementByTabId(prevTab.id)) || null;
+            
+            // Break here to avoid infinite loop
+            if (prevTab.id === tab.id) {
+				return null;
+			}
+        }
+        if ((prevTab && prevTabPane !== pane) || (prevTab && prevTab.id === tab.id)) {
+            return null;
+        }
+        return prevTab;
     }
 };
 
@@ -225,6 +254,9 @@ window.tabs  = {
 document.addEventListener('DOMContentLoaded', function () {
 
     var ipc  = require('ipc'),
+		remote	= require('remote'),
+		Menu	= remote.require('menu'),
+		MenuItem = remote.require('menu-item'),
         tabs = window.tabs,
         askia =  window.askia,
         resizer = new askia.Resizer({
@@ -392,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
         viewerEl.src = getViewerUrl(tab);
         tabs.updateTab(tab, pane);
     }
-
+    
     /**
      * Remove a tab
      *
@@ -432,6 +464,69 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         fixTabsScroll(pane);
+    }
+    
+    /**
+     * Move the tab to another pane
+     * @param {Object} tab Tab to move
+     * @param {String} targetPane Name of the target pane
+     */
+    function moveTab(tab, targetPane) {
+		var el              = document.getElementById('tab-' + tab.id),
+            contentEl       = document.getElementById('content-' + tab.id),
+            currentTab      = tabs[tab.id],
+            paneState,
+            targetPaneEl	= document.getElementById(targetPane + '_pane'),
+            sourcePaneEl	= tabs.getPaneElementByTabId(tab.id),
+            sourcePane		= sourcePaneEl.id.replace(/(_pane)$/, ''),
+            prevTab			= null,
+            sourceTabLength;
+        
+        if (sourcePane === targetPane) {
+			return;
+        }
+        
+        openPane(targetPane);
+        
+        console.log(sourcePaneEl.querySelectorAll('.tabs > li.tab'));
+        console.log(sourcePaneEl.querySelectorAll('.tabs > li.tab').length);
+        sourceTabLength = sourcePaneEl.querySelectorAll('.tabs > li.tab').length - 1;
+        
+        // If the tab was visible, then make another tab (in the source pane) visible
+        if (el.classList.contains('active')) {
+            prevTab = tabs.searchPreviousSelectionOnPane(currentTab, sourcePane);
+            if (prevTab) {
+				var prevEl = document.getElementById('tab-' + prevTab.id);
+                var prevContentEl = document.getElementById('content-' + prevTab.id);
+                prevEl.classList.add('active');
+                prevEl.scrollIntoView();
+                prevContentEl.classList.add('active');
+            }
+        }
+
+        // Move the tab
+		targetPaneEl.querySelector('.tabs').insertBefore(el, targetPaneEl.querySelector('.tab-end'));
+        targetPaneEl.querySelector('.tabs-content').appendChild(contentEl);
+        
+		// Activate the pane
+		setActiveTab(tab, targetPane);
+
+        // Close the empty pane but never close both pane
+        paneState = getPanesState();
+        if (paneState.main && paneState.second) {   
+            // MS:Use the sourceTabLength instead of the isPaneHasTab
+            // because the DOM seems to be slow and finished updated after this line
+            // resulting that the information is wrong at this level
+            // To fix that, we calculate the number of tabs in the source pane, before to move the tab
+            console.log(sourceTabLength);
+            console.log(sourcePane);
+            if (!sourceTabLength) {
+				closePane(sourcePane);
+            }
+        }
+
+        fixTabsScroll('main');
+		fixTabsScroll('second');
     }
 
     /**
@@ -550,6 +645,96 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+		/**
+         * On context menu (right-click)
+         * @param {Event} event
+         */
+		function onTabsRightClick(event) {
+			var el = event.srcElement,
+                paneEl,
+                tabId,
+                tab,
+                pane;
+
+            // Click on child nodes
+            if (el.parentNode.classList.contains('tab')) {
+                el = el.parentNode;
+            }
+
+            if (!el.classList.contains('tab')) {
+				return;
+            }
+          
+            tabId = el.id.replace(/^(tab-)/, '');
+            paneEl = tabs.getPaneElementByTabId(tabId);
+            if (!paneEl) {
+				return;
+            }
+            pane   = paneEl.id.replace(/(_pane)$/, '');
+            tab = tabs[tabId];
+			showContextualMenu(tab, pane);
+        }
+      
+		/**
+         * Display the contextual menu on tab
+         */
+        function showContextualMenu(tab, pane) {
+            var contextualMenu = new Menu();
+
+            /* Close */
+            contextualMenu.append(new MenuItem({
+                label: 'Close',
+                click: function onClickClose() {
+                   ipc.send('workspace-close-tab', tab.id);
+                }
+            }));
+            /* Close others */
+            contextualMenu.append(new MenuItem({
+                label: 'Close others',
+                click: function onClickCloseOthers() {
+                  console.warn('TODO::Close others');
+                }
+            }));
+            /* Close all */
+            contextualMenu.append(new MenuItem({
+                label: 'Close all',
+                click: function onClickCloseAll() {
+                  console.warn('TODO::Close all');
+                }
+            }));
+            /* Close unmodified */
+            contextualMenu.append(new MenuItem({
+                label: 'Close unmodified',
+                click: function onClickCloseUnmodified() {
+                  console.warn('TODO::Close unmodified');
+                }
+            }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+
+             /* Move to other pane */
+            contextualMenu.append(new MenuItem({
+                label: 'Move to other pane',
+                click: function onClickCloseMoveToOtherPane() {
+                  ipc.send('workspace-move-tab', tab.id, (pane === 'main') ? 'second' : 'main');
+                }
+            }));
+
+            /* Open file in the OS manner */
+            if (/\.html?$/i.test(tab.path)) {
+                contextualMenu.append(new MenuItem({type : 'separator'}));
+                
+                contextualMenu.append(new MenuItem({
+                    label: 'Open in browser', 
+                    click: function onClickOpen() {
+                      shell.openItem(tab.path);
+                    }
+                }));
+            }
+
+            contextualMenu.popup(remote.getCurrentWindow());
+        }
+      
         /**
          * Event when mousedown on tabs
          *
@@ -594,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 paneEl.addEventListener('mouseup', onTabStopDrag);
             }
         }
-
+      
         /**
          * Drag a tab
          * @param event
@@ -669,6 +854,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (i = 0, l = els.length; i < l; i += 1) {
             els[i].addEventListener('click', onTabsClick);
+			els[i].addEventListener('contextmenu', onTabsRightClick, false);
             els[i].addEventListener('mousedown', onTabsMousedown);
         }
 
@@ -812,6 +998,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
        removeTab(tab, pane);
+    });
+    
+    ipc.on('workspace-change-tab-location', function (err, tab, pane) {
+		if (err) {
+            console.warn(err);
+            return;
+        }
+        moveTab(tab, pane);
     });
 
     ipc.on('workspace-update-tab', function (err, tab, pane) {

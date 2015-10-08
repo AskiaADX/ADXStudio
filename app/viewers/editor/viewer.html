@@ -70,6 +70,7 @@
 <body>
     <textarea id="code" name="code"></textarea>
     <script>
+        console.log('code mirror editor is reloading');
         (function () {
             var contentTypeByFileExt = {
                 html : 'askiascript/html',
@@ -96,6 +97,7 @@
 
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
                 lineNumbers     : true,
+              	indentUnit		: 4,
                 gutters         : ["CodeMirror-lint-markers", "CodeMirror-foldgutter", "CodeMirror-linenumbers"],
                 mode            : contentType,
                 theme           : 'askia',

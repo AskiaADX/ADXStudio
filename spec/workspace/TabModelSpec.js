@@ -360,7 +360,7 @@ describe("Tab", function () {
             });
         });
 
-        it("should return an error when trying to save a file that has already been changed", function () {
+        /*it("should return an error when trying to save a file that has already been changed", function () {
             spies.isTextOrBinary.andCallFake(function (path, cb) {
                 cb(null, 'text');
             });
@@ -392,7 +392,7 @@ describe("Tab", function () {
                     });
                 });
             });
-        });
+        });*/
 
         it("should reload the file information after save", function () {
 

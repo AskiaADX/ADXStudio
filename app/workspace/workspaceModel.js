@@ -102,7 +102,6 @@ Workspace.prototype._initWatcher = function _initWatcher() {
      */
     this._watcher = watcher.create();
     this._watcher.on('changed', function (filePath) {
-        console.log('CHANGED ON WORKSPACE, ' + filePath);
         self._propagateWatcherEvents('file-changed', filePath);
     });
     this._watcher.on('deleted', function (filePath) {
@@ -161,6 +160,16 @@ Workspace.prototype.init = function init(config, callback) {
 
 
     callback(null);
+};
+
+/**
+ * Serialize the state of the workspace to a JSON representation
+ * 
+ * @return {Object} Return the JSON representation of the workspace
+ */
+Workspace.prototype.toJSON = function toJSON() {
+	var obj = {};
+	return obj;
 };
 
 /**
@@ -228,8 +237,8 @@ Workspace.prototype.removeTab = function removeTab(tab, callback) {
     if (!tab) {
         if (typeof callback === 'function') {
             callback(new Error("Expected the first argument `tab` to be a Tab or the id of an existing tab "), null);
-            return;
         }
+		return;
     }
 
     var self = this;
@@ -252,6 +261,51 @@ Workspace.prototype.removeTab = function removeTab(tab, callback) {
         delete self.panes.mapByTabId[tab.id];
 
         callback(null, tab, pane);
+    });
+};
+
+/**
+ * Move an existing tab into another pane
+ * @param {Tab|Object|String} tab Tab, Id or path of the tab to move
+ * @param {'main'|'second'} targetPane Name of the pane to target
+ * @param {Function} callback Callback
+ * @param {Error} callback.err Error
+ * @param {Tab} callback.tab Tab that has been moved
+ * @param {string} callback.paneName NAme of the pane where the tab is located
+ */
+Workspace.prototype.moveTab = function moveTab(tab, targetPane, callback) {
+    if (!tab) {
+        if (typeof callback === 'function') {
+            callback(new Error("Expected the first argument `tab` to be a Tab or the id of an existing tab "), null, null);
+        }
+		return;
+    }
+    if (targetPane !== 'main' && targetPane !== 'second') {
+        if (typeof callback === 'function') {
+            callback(new Error("Expected the second argument `targetPane` to be the name of an existing pane ('main or 'second')"), null, null);
+        }
+		return;
+    }
+    var self = this;
+    this.find(tab, function (err, tab, pane) {
+        if (err) {
+            if (typeof callback === 'function') {
+				callback(err, null, null);
+            }
+            return;
+        }
+        if (!tab) {
+            if (typeof callback === 'function') {
+				callback(new Error("Could not find the tab specified."), null, null);
+            }
+            return;
+        }
+        
+		self.panes.mapByTabId[tab.id] = targetPane;
+        
+        if (typeof callback === 'function') {
+			callback(null, tab, targetPane);
+		}
     });
 };
 

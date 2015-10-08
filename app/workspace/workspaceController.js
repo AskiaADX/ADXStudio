@@ -145,6 +145,20 @@ function onCloseTab(event, tabId) {
 }
 
 /**
+ * Move a tab into another pane
+ * @param {Event} event
+ * @param {String} tabId Id of the tab to move
+ * @param {String} targetPane Pane to target
+ */
+function onMoveTab(event, tabId, targetPane) {
+    console.log('Move tab', tabId,  targetPane);
+    workspace.moveTab(tabId, targetPane, function (err, tab, pane) {
+        console.log(err);
+		workspaceView.send('workspace-change-tab-location', err, tab, pane);
+    });
+}
+
+/**
  * On edit content
  * @param event
  * @param {String} tabId Id of the tab
@@ -259,6 +273,9 @@ ipc.on('workspace-ready', function (event) {
 
         ipc.removeListener('workspace-restore-content', onRestoreContent);
         ipc.on('workspace-restore-content', onRestoreContent);
+        
+        ipc.removeListener('workspace-move-tab', onMoveTab);
+        ipc.on('workspace-move-tab', onMoveTab);
 
         app.removeListener('menu-new-file', openFile);
         app.on('menu-new-file', openFile);
