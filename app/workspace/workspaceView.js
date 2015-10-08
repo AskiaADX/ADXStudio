@@ -112,7 +112,6 @@ window.tabs  = {
      * @param {CodeMirror} tab.editor Code mirror instance on the tab
      */
     onEditorLoaded : function onEditorLoaded(tab) {
-        console.log('on editor loaded', tab.name);
         // Make the tab visible
         document.getElementById('content-' + tab.id).childNodes[0].style.visibility = '';
 
@@ -161,6 +160,19 @@ window.tabs  = {
             paneEl = paneEl.parentNode;
         }
         return (paneEl.classList.contains('pane')) ? paneEl : null;
+    },
+
+    /**
+     * Return the name of pane of the tab
+     * @param {String} tabId Id of the tab
+     * @return {String} paneMame
+     */
+    getPaneName : function getPaneName(tabId) {
+        var paneEl = this.getPaneElementByTabId(tabId);
+        if (!paneEl) {
+            return null;
+        }
+        return paneEl.id.replace(/(_pane)$/, '');
     },
 
     /**
@@ -226,24 +238,24 @@ window.tabs  = {
      * Mainly used to make a tab content visible when moving a tab to another pane
      * or when removing a tab
      *
-     * @param {Object} tab Indicates the tab from where the search should start
+     * @param {String} tabId Indicates the id of the tab from where the search should start
      * @param {String} pane Name of the pane where the tab is / was located
      */
-    searchPreviousSelectionOnPane : function searchPreviousSelectionOnPane(tab, pane) {
-        var prevTab = tab.previousSelection || tab.nextSelection ||
-            tab.previous || tab.next || null;
-        var prevTabPane = (prevTab && this.getPaneElementByTabId(prevTab.id)) || null;
+    searchPreviousSelectionOnPane : function searchPreviousSelectionOnPane(tabId, pane) {
+        var currentTab = this[tabId],
+            prevTab = currentTab.previousSelection || currentTab.nextSelection || currentTab.previous || currentTab.next || null,
+            prevTabPane = (prevTab && this.getPaneName(prevTab.id)) || null;
+
         while(prevTab && prevTabPane && prevTabPane !== pane) {
-            prevTab = prevTab.previousSelection || prevTab.nextSelection ||
-					prevTab.previous || prevTab.next || null;
-			prevTabPane = (prevTab && this.getPaneElementByTabId(prevTab.id)) || null;
+            prevTab = prevTab.previousSelection || prevTab.nextSelection || prevTab.previous || prevTab.next || null;
+			prevTabPane = (prevTab && this.getPaneName(prevTab.id)) || null;
             
             // Break here to avoid infinite loop
-            if (prevTab.id === tab.id) {
+            if (prevTab.id === tabId) {
 				return null;
 			}
         }
-        if ((prevTab && prevTabPane !== pane) || (prevTab && prevTab.id === tab.id)) {
+        if ((prevTab && prevTabPane !== pane) || (prevTab && prevTab.id === tabId)) {
             return null;
         }
         return prevTab;
@@ -260,8 +272,15 @@ document.addEventListener('DOMContentLoaded', function () {
         tabs = window.tabs,
         askia =  window.askia,
         resizer = new askia.Resizer({
-            element : document.getElementById('main_pane')
-        });
+            element : document.getElementById('main_pane'),
+            onResize : fixRendering
+        }),
+        iFramesContainer = document.getElementById('iframes'),
+        // Container of tab content
+        contentReference = {
+			main : document.getElementById('main_pane').querySelector('.tabs-content'),
+            second : document.getElementById('second_pane').querySelector('.tabs-content')
+        };
 
     /**
      * Indicates if the element has horizontal scroll
@@ -282,6 +301,41 @@ document.addEventListener('DOMContentLoaded', function () {
             wrapperEl = paneEl.querySelector('.tabs-wrapper'),
             scrollEl  = paneEl.querySelector('.tabs-scroll');
         scrollEl.style.visibility = hasHorizontalScroll(wrapperEl) ? 'visible' : '';
+    }
+    
+    /**
+     * Set the position of the tab content
+     */
+    function setTabContentPosition(contentEl, pane) {
+		var contentRefEl = contentReference[pane];                                           
+        contentEl.style.top = contentRefEl.offsetTop + 'px';
+        contentEl.style.left = contentRefEl.offsetParent.offsetLeft + 'px';
+        contentEl.style.height = contentRefEl.offsetHeight + 'px';
+        contentEl.style.width = contentRefEl.offsetWidth + 'px';
+    }
+
+    /**
+     * Fix the positions of all visible tabs content
+     */
+    function fixTabContentPositions() {
+        var i, l, els = iFramesContainer.querySelectorAll('.active'),
+            paneName;
+        if (!els) {
+            return;
+        }
+        for (i = 0,  l = els.length; i < l; i += 1) {
+            paneName = els[i].classList.contains('second') ? 'second' : 'main';
+            setTabContentPosition(els[i], paneName);
+        }
+    }
+
+    /**
+     * Fix the entire rendering
+     */
+    function fixRendering() {
+        fixTabsScroll('main');
+        fixTabsScroll('second');
+        fixTabContentPositions();
     }
 
      /**
@@ -319,6 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
          // Create the content of the tab
          var contentEl = document.createElement('div');
          contentEl.classList.add('content');
+         contentEl.classList.add(pane);
          contentEl.setAttribute('id', 'content-' + tab.id);
 
          var div = document.createElement('div');
@@ -336,7 +391,9 @@ document.addEventListener('DOMContentLoaded', function () {
          var paneEl = document.getElementById(pane + '_pane');
 
          paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
-         paneEl.querySelector('.tabs-content').appendChild(contentEl);
+         
+         iFramesContainer.appendChild(contentEl);
+         setTabContentPosition(contentEl, pane);
 
          if (isActive) {
              setActiveTab(tab, pane);
@@ -352,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function () {
              }
          }
 
-         fixTabsScroll(pane);
+         fixRendering();
     }
 
     /**
@@ -385,7 +442,10 @@ document.addEventListener('DOMContentLoaded', function () {
             oldContent      = oldActiveTab && document.getElementById(oldActiveTab.id.replace(/^tab-/, "content-"));
 
         setActivePane(pane);
-
+        content.classList.remove(pane === 'main' ? 'second' : 'main');
+        content.classList.add(pane);
+        setTabContentPosition(content, pane);
+        
         if (el === oldActiveTab) {
             return;
         }
@@ -397,7 +457,6 @@ document.addEventListener('DOMContentLoaded', function () {
         el.classList.add('active');
         el.scrollIntoView();
         content.classList.add('active');
-
         tabs.setCurrentTab(tab.id);
     }
 
@@ -463,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function () {
             closePane(pane);
         }
 
-        fixTabsScroll(pane);
+        fixRendering();
     }
     
     /**
@@ -473,7 +532,6 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function moveTab(tab, targetPane) {
 		var el              = document.getElementById('tab-' + tab.id),
-            contentEl       = document.getElementById('content-' + tab.id),
             currentTab      = tabs[tab.id],
             paneState,
             targetPaneEl	= document.getElementById(targetPane + '_pane'),
@@ -487,26 +545,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         openPane(targetPane);
-        
-        console.log(sourcePaneEl.querySelectorAll('.tabs > li.tab'));
-        console.log(sourcePaneEl.querySelectorAll('.tabs > li.tab').length);
         sourceTabLength = sourcePaneEl.querySelectorAll('.tabs > li.tab').length - 1;
         
         // If the tab was visible, then make another tab (in the source pane) visible
         if (el.classList.contains('active')) {
-            prevTab = tabs.searchPreviousSelectionOnPane(currentTab, sourcePane);
+            prevTab = tabs.searchPreviousSelectionOnPane(currentTab.id, sourcePane);
             if (prevTab) {
 				var prevEl = document.getElementById('tab-' + prevTab.id);
                 var prevContentEl = document.getElementById('content-' + prevTab.id);
                 prevEl.classList.add('active');
                 prevEl.scrollIntoView();
                 prevContentEl.classList.add('active');
+                setTabContentPosition(prevContentEl, sourcePane);
             }
         }
 
         // Move the tab
 		targetPaneEl.querySelector('.tabs').insertBefore(el, targetPaneEl.querySelector('.tab-end'));
-        targetPaneEl.querySelector('.tabs-content').appendChild(contentEl);
+        el.scrollIntoView();
         
 		// Activate the pane
 		setActiveTab(tab, targetPane);
@@ -518,15 +574,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // because the DOM seems to be slow and finished updated after this line
             // resulting that the information is wrong at this level
             // To fix that, we calculate the number of tabs in the source pane, before to move the tab
-            console.log(sourceTabLength);
-            console.log(sourcePane);
             if (!sourceTabLength) {
 				closePane(sourcePane);
             }
         }
-
-        fixTabsScroll('main');
-		fixTabsScroll('second');
+        fixRendering();
     }
 
     /**
@@ -572,8 +624,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resizer.start();
         }
 
-        fixTabsScroll('main');
-        fixTabsScroll('second');
+        fixRendering();
     }
 
     /**
@@ -597,9 +648,9 @@ document.addEventListener('DOMContentLoaded', function () {
             panesEl.classList.add('full');
             resizer.stop();
         }
-        fixTabsScroll('main');
-        fixTabsScroll('second');
+        fixRendering();
     }
+    
 
 
     (function initTabEvents() {
@@ -949,11 +1000,10 @@ document.addEventListener('DOMContentLoaded', function () {
          * Resizing the window
          */
         function onResize(){
-            fixTabsScroll('main');
-            fixTabsScroll('second');
+            fixRendering();
         }
 
-        document.body.addEventListener('resize', function () {
+        window.addEventListener('resize', function () {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(onResize, 100);
         });

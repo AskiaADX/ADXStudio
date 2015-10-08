@@ -4,7 +4,7 @@
 window.askia = window.askia || {};
 
 
-window.askia.Resizer = (function() {
+window.askia.Resizer = (function () {
 
 
     /**
@@ -27,61 +27,70 @@ window.askia.Resizer = (function() {
      * @param {Object} options Options
      * @param {HTMLElement}  options.element HTML element to resize
      * @param {String|"vertical"|"horizontal"} options.direction Direction of the splitter
+     * @param {Function} options.onResize Callback to call when the resizer has been resized
      */
     function Resizer(options) {
-      this.options = options || {};
-      this.element = this.options.element;
-      this.direction = this.options.direction || 'horizontal';
+        this.options = options || {};
+        this.element = this.options.element;
+        this.direction = this.options.direction || 'horizontal';
 
-      this.config = {
-        delta: null,
-        pageCoord: (this.direction == 'horizontal') ? 'pageX' : 'pageY',
-        offsetPos: (this.direction == 'horizontal') ? 'offsetLeft' : 'offsetTop',
-        pos: (this.direction == 'horizontal') ? 'left' : 'top',
-        offsetSize: (this.direction == 'horizontal') ? 'offsetWidth' : 'offsetHeight',
-        size: (this.direction == 'horizontal') ? 'width' : 'height'
-      };
+        this.config = {
+            delta: null,
+            pageCoord: (this.direction == 'horizontal') ? 'pageX' : 'pageY',
+            offsetPos: (this.direction == 'horizontal') ? 'offsetLeft' : 'offsetTop',
+            pos: (this.direction == 'horizontal') ? 'left' : 'top',
+            offsetSize: (this.direction == 'horizontal') ? 'offsetWidth' : 'offsetHeight',
+            size: (this.direction == 'horizontal') ? 'width' : 'height'
+        };
+        
+        if (this.options.onResize && typeof this.options.onResize === 'function') {
+            this.config.onResize = options.onResize;
+        }
 
-       if (!this.element) {
-          throw new Error('Require Element object.');
-       }
 
-       this.resizeEl = document.createElement('div');
-       this.resizeEl.adxEl = this.element;
-       this.resizeEl.adxResizer = this;
-       this.resizeEl.className = 'askia-resizer-' + this.direction + ' askia-resizer-hide'; // Make it hidden by default
+        if (!this.element) {
+            throw new Error('Require Element object.');
+        }
 
-      this.refreshPosition();
-      this.element.parentNode.appendChild(this.resizeEl);
+        this.resizeEl = document.createElement('div');
+        this.resizeEl.adxEl = this.element;
+        this.resizeEl.adxResizer = this;
+        this.resizeEl.className = 'askia-resizer-' + this.direction + ' askia-resizer-hide'; // Make it hidden by default
+
+        this.refreshPosition();
+        this.element.parentNode.appendChild(this.resizeEl);
     }
 
     function down(event) {
-      var currentEl = this;
-      var direction = currentEl.adxResizer.direction;
-      var config = currentEl.adxResizer.config;
-      var modal = document.createElement('div');
-      modal.className = 'askia-resizer-modal';
-      modal.classList.add(direction);
-      document.body.appendChild(modal);
-      config.delta = event[config.pageCoord] - this[config.offsetPos];
-      currentEl.classList.add('askia-resizer-' + direction + '-drag');
-      document.body.classList.add('askia-resizer-' + direction + '-drag');
-      document.body.addEventListener('mouseup', up);
-      document.body.addEventListener('mousemove', move);
+        var currentEl = this;
+        var direction = currentEl.adxResizer.direction;
+        var config = currentEl.adxResizer.config;
+        var modal = document.createElement('div');
+        modal.className = 'askia-resizer-modal';
+        modal.classList.add(direction);
+        document.body.appendChild(modal);
+        config.delta = event[config.pageCoord] - this[config.offsetPos];
+        currentEl.classList.add('askia-resizer-' + direction + '-drag');
+        document.body.classList.add('askia-resizer-' + direction + '-drag');
+        document.body.addEventListener('mouseup', up);
+        document.body.addEventListener('mousemove', move);
 
-      function move(event) {
-        currentEl.style[config.pos] = (event[config.pageCoord] - config.delta) + 'px';
-      }
+        function move(event) {
+            currentEl.style[config.pos] = (event[config.pageCoord] - config.delta) + 'px';
+        }
 
-      function up() {
-       	document.body.removeChild(modal);
-        currentEl.classList.remove('askia-resizer-'+ direction +'-drag');
-        document.body.classList.remove('askia-resizer-'+ direction +'-drag');
-        document.body.removeEventListener('mouseup', up);
-        document.body.removeEventListener('mousemove', move);
-        currentEl.adxEl.style[config.size] = currentEl[config.offsetPos] + 'px';
-        currentEl.adxResizer.refreshPosition();
-      }
+        function up() {
+            document.body.removeChild(modal);
+            currentEl.classList.remove('askia-resizer-' + direction + '-drag');
+            document.body.classList.remove('askia-resizer-' + direction + '-drag');
+            document.body.removeEventListener('mouseup', up);
+            document.body.removeEventListener('mousemove', move);
+            currentEl.adxEl.style[config.size] = currentEl[config.offsetPos] + 'px';
+            currentEl.adxResizer.refreshPosition();
+            if (config.onResize) {
+                config.onResize();
+            }
+        }
     }
 
     /**
@@ -89,28 +98,28 @@ window.askia.Resizer = (function() {
      */
     Resizer.prototype.refreshPosition = function () {
         var self = this,
-            config  = self.config,
+            config = self.config,
             resizeEl = self.resizeEl,
             sizeElement = self.element[config.offsetSize];
 
         resizeEl.style[config.pos] = sizeElement + 'px';
     };
 
-    Resizer.prototype.start = function() {
+    Resizer.prototype.start = function () {
 
-      var self = this;
-      self.refreshPosition();
-      var elementToMove = self.resizeEl;
-      elementToMove.classList.remove('askia-resizer-hide');
-      elementToMove.addEventListener('mousedown',  down);
+        var self = this;
+        self.refreshPosition();
+        var elementToMove = self.resizeEl;
+        elementToMove.classList.remove('askia-resizer-hide');
+        elementToMove.addEventListener('mousedown', down);
     };
 
-    Resizer.prototype.stop = function() {
-      var self = this;
-      var elementToMove = self.resizeEl;
-      elementToMove.removeEventListener('mousedown', down);
-      elementToMove.removeEventListener('mousedown', down);
-      elementToMove.classList.add('askia-resizer-hide');
+    Resizer.prototype.stop = function () {
+        var self = this;
+        var elementToMove = self.resizeEl;
+        elementToMove.removeEventListener('mousedown', down);
+        elementToMove.removeEventListener('mousedown', down);
+        elementToMove.classList.add('askia-resizer-hide');
     };
 
     return Resizer;

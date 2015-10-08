@@ -5,7 +5,18 @@ html, body {
     margin  :0;
 }
 
+#iframes {
+    z-index:1;
+    width:0;
+    height:0;
+	padding:0;
+    margin:0;
+    position:relative;
+}
+
+
 #panes  {
+    z-index: 0;
     display: flex;
     flex-direction: row;
 }
@@ -16,6 +27,7 @@ html, body {
 
 #panes.split #second_pane {
     flex: 1;
+    margin-left : 6px; /* Size of splitter */
 }
 
 .pane.open {
@@ -114,10 +126,6 @@ html, body {
     display : none;
     /* Fit  the tabs-content */
     position: absolute;
-    top     : 0;
-    right   : 0;
-    bottom  : 0;
-    left    : 0;
 }
 
 .content div {

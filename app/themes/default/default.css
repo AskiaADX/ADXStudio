@@ -295,6 +295,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     color       : #2E333A;
 }
 
-.pane .content {
+.pane .content,
+#iframes .content {
     background-color: #21252B;
 }
