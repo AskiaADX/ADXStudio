@@ -1,10 +1,13 @@
+/* global describe, it, beforeEach, afterEach, spyOn, expect, runs, waitsFor */
 describe("workspace", function () {
-
+    "use strict";
+    
     var workspace, Tab,
         spies = {},
         EventEmitter = require('events').EventEmitter,
         nodePath = require('path'),
         util = require('util'),
+        uuid = require('node-uuid'),
         watcher,
         fakeWatcherInstance;
 
@@ -53,54 +56,54 @@ describe("workspace", function () {
 
     describe("#panes", function () {
 
-       it("should be an object", function () {
-           expect(typeof workspace.panes).toBe("object");
-       });
+        it("should be an object", function () {
+            expect(typeof workspace.panes).toBe("object");
+        });
 
-       describe("#orientation", function () {
-           it("should be a string", function () {
-               expect(typeof workspace.panes.orientation).toBe("string");
-           });
+        describe("#orientation", function () {
+            it("should be a string", function () {
+                expect(typeof workspace.panes.orientation).toBe("string");
+            });
 
-           it("should be empty ('') by default", function () {
-               expect(workspace.panes.orientation).toBe("");
-           });
-       });
+            it("should be empty ('') by default", function () {
+                expect(workspace.panes.orientation).toBe("");
+            });
+        });
 
-       describe("#current", function () {
-           it("should be a function", function () {
+        describe("#current", function () {
+            it("should be a function", function () {
                 expect(typeof workspace.panes.current).toBe("function");
-           });
-           it("should return the current pane", function () {
-               expect(workspace.panes.current()).toBe(workspace.panes.main);
-           });
-           it("should set the current pane when arg is defined", function () {
-               workspace.panes.current("second");
-               expect(workspace.panes.current()).toBe(workspace.panes.second);
-           })
-       });
+            });
+            it("should return the current pane", function () {
+                expect(workspace.panes.current()).toBe(workspace.panes.main);
+            });
+            it("should set the current pane when arg is defined", function () {
+                workspace.panes.current("second");
+                expect(workspace.panes.current()).toBe(workspace.panes.second);
+            });
+        });
 
         describe("#mapByTabId", function () {
             it("should be an object", function () {
                 expect(typeof  workspace.panes.mapByTabId).toBe('object');
-            })
+            });
         });
 
 
-       ['main', 'second'].forEach(function (name) {
+        ['main', 'second'].forEach(function (name) {
 
-           describe("#" + name, function () {
-               it ("should be an object", function () {
-                   expect(typeof workspace.panes[name]).toBe("object");
-               });
-           });
-       });
-   });
+            describe("#" + name, function () {
+                it("should be an object", function () {
+                    expect(typeof workspace.panes[name]).toBe("object");
+                });
+            });
+        });
+    });
 
     describe("#createTab", function () {
         it("should be a function", function () {
-           expect(typeof  workspace.createTab).toBe("function");
-       });
+            expect(typeof  workspace.createTab).toBe("function");
+        });
 
         it("should return a new instance of Tab via his callback", function () {
             runSync(function (done) {
@@ -121,6 +124,18 @@ describe("workspace", function () {
             });
         });
 
+        it("should use the second argument as the name of pane if it's a string", function () {
+
+            workspace.panes.current('main');
+
+            runSync(function (done) {
+                workspace.createTab(null, 'second', function(err, tab) {
+                    expect(workspace.panes.mapByTabId[tab.id]).toBe('second');
+                    done();
+                });
+            });
+        });
+        
         it("should add the new tab in the mapByTabId and associate it with the current tab", function () {
 
             workspace.panes.current('second');
@@ -132,8 +147,7 @@ describe("workspace", function () {
                 });
             });
         });
-
-
+        
         it("should watch file path associated with the tab when the tab is `loaded` (event)", function () {
             runSync(function (done) {
                 spyOn(fakeWatcherInstance, 'add').andCallFake(function (pattern) {
@@ -161,19 +175,20 @@ describe("workspace", function () {
                 });
             });
         });
+        
     });
 
     describe("#where", function () {
         it("should be a function", function () {
-           expect(typeof  workspace.where).toBe('function');
+            expect(typeof  workspace.where).toBe('function');
         });
         it("should return the name of the pane where the tab is located, using the instance of tab in arg", function () {
-           runSync(function (done) {
-               workspace.createTab(null, function (err, tab, paneName) {
-                   expect(workspace.where(tab)).toBe(paneName);
-               });
-               done();
-           });
+            runSync(function (done) {
+                workspace.createTab(null, function (err, tab, paneName) {
+                    expect(workspace.where(tab)).toBe(paneName);
+                });
+                done();
+            });
         });
         it("should return the name of the pane where the tab is located, using the id of tab in arg", function () {
             runSync(function (done) {
@@ -186,12 +201,12 @@ describe("workspace", function () {
     });
 
     describe("#find", function () {
-       it("should be a function", function () {
+        it("should be a function", function () {
             expect(typeof workspace.find).toBe('function');
-       });
+        });
 
         it("should return null in callback when the criteria argument is null", function () {
-           runSync(function (done) {
+            runSync(function (done) {
                 workspace.find(null, function (err, data) {
                     expect(data).toBe(null);
                     done();
@@ -203,10 +218,10 @@ describe("workspace", function () {
             runSync(function (done) {
                 workspace.createTab({
                     path : 'my/file/path'
-                }, function (err, tab) {
+                }, function (err1, tab) {
                     workspace.find({
                         path : "my/file/path"
-                    }, function (err, resultTab)  {
+                    }, function (err2, resultTab)  {
                         expect(resultTab).toBe(tab);
                         done();
                     });
@@ -216,8 +231,8 @@ describe("workspace", function () {
 
         it("should find the tab using an instance of Tab in arg", function () {
             runSync(function (done) {
-                workspace.createTab({}, function (err, tab) {
-                    workspace.find(tab, function (err, resultTab)  {
+                workspace.createTab({}, function (err1, tab) {
+                    workspace.find(tab, function (err2, resultTab)  {
                         expect(resultTab).toBe(tab);
                         done();
                     });
@@ -229,8 +244,8 @@ describe("workspace", function () {
             runSync(function (done) {
                 workspace.createTab({
                     path : 'my/file/path/2'
-                }, function (err, tab) {
-                    workspace.find("my/file/path/2", function (err, resultTab)  {
+                }, function (err1, tab) {
+                    workspace.find("my/file/path/2", function (err2, resultTab)  {
                         expect(resultTab).toBe(tab);
                         done();
                     });
@@ -241,7 +256,7 @@ describe("workspace", function () {
         it("should find the tab using the id of tha tab in arg", function () {
             runSync(function (done) {
                 workspace.createTab({}, function (err, tab) {
-                    workspace.find(tab.id, function (err, resultTab)  {
+                    workspace.find(tab.id, function (e, resultTab)  {
                         expect(resultTab).toBe(tab);
                         done();
                     });
@@ -253,7 +268,7 @@ describe("workspace", function () {
             runSync(function (done) {
                 workspace.panes.current("main");
                 workspace.createTab({}, function (err, tab) {
-                    workspace.find(tab.id, function (err, tab, pane)  {
+                    workspace.find(tab.id, function (e, t, pane)  {
                         expect(pane).toBe('main');
                         done();
                     });
@@ -266,10 +281,26 @@ describe("workspace", function () {
         it("should be a function", function () {
             expect(typeof workspace.currentTab).toBe("function");
         });
+        
+        it("should return the current used tab of the specified pane", function () {
+         	runSync(function (done) {
+                workspace.createTab({}, 'main', function (err1, tab1) {
+                    workspace.createTab({}, 'second', function (err2, tab2) {
+                    	workspace.currentTab('main', function (err3, theTab1) {
+                        	expect(theTab1).toBe(tab1);
+                            workspace.currentTab('second', function (err4, theTab2) {
+                            	expect(theTab2).toBe(tab2);
+                                done();
+                            });
+                        });
+                    });
+                });
+            });
+        });
 
         it("should return the current used tab", function () {
             runSync(function (done) {
-                workspace.createTab({}, function (err, tab) {
+                workspace.createTab({}, function () {
                     workspace.currentTab(function (err, tab) {
                         expect(tab instanceof Tab).toBe(true);
                         done();
@@ -280,7 +311,7 @@ describe("workspace", function () {
 
         it("should return the pane of the current used tab in third arg", function () {
             runSync(function (done) {
-                workspace.createTab({}, function (err, tab) {
+                workspace.createTab({}, function () {
                     workspace.currentTab(function (err, tab, pane) {
                         expect(pane).toBe(workspace.where(tab));
                         done();
@@ -299,7 +330,6 @@ describe("workspace", function () {
                 });
             });
         });
-
 
         it("should set the pane of the current tab used", function () {
             runSync(function (done) {
@@ -323,17 +353,11 @@ describe("workspace", function () {
             });
         });
 
-        it("should not set the pane of the current tab is the fileType is `preview`", function () {
+        it("should not set the pane of the current tab if his the type is `preview`", function () {
             runSync(function (done) {
-                // Set the second pane
-                workspace.panes.current('second');
-
                 // Create the tab (on the second pane)
-                workspace.createTab('::preview', function (err, tab) {
-
-                    tab.name = 'Preview';
-                    tab.fileType  = 'preview';
-
+                workspace.createTab({path : '::preview', type : 'preview'}, 'second', function (err, tab) {
+                    
                     // Switch to the main pane
                     workspace.panes.current('main');
 
@@ -351,16 +375,16 @@ describe("workspace", function () {
 
     describe("#removeTab", function () {
         it("should be a function", function () {
-           expect(typeof workspace.removeTab).toBe("function");
+            expect(typeof workspace.removeTab).toBe("function");
         });
 
         it("should return an error when the first arg is a falsy", function () {
-             runSync(function (done) {
+            runSync(function (done) {
                 workspace.removeTab(null, function (err) {
                     expect(err instanceof Error).toBe(true);
                     done();
                 });
-             });
+            });
         });
 
         it("should return an error when the tab is not found", function () {
@@ -377,7 +401,7 @@ describe("workspace", function () {
                 workspace.panes.current("main");
                 workspace.createTab(null, function(err, tab) {
                     workspace.removeTab(tab, function () {
-                        workspace.find(tab.id, function (err, findTab) {
+                        workspace.find(tab.id, function (er, findTab) {
                             expect(findTab).toBe(null);
                             expect(workspace.where(tab.id)).toEqual("");
                             done();
@@ -392,9 +416,9 @@ describe("workspace", function () {
                 workspace.panes.current("main");
                 workspace.createTab(null, function(err, tab) {
                     var tabId = tab.id;
-                    workspace.removeTab(tabId, function (err, tab) {
-                        expect(tab instanceof  Tab).toBe(true);
-                        expect(tab.id).toEqual(tabId);
+                    workspace.removeTab(tabId, function (er, removedTab) {
+                        expect(removedTab instanceof  Tab).toBe(true);
+                        expect(removedTab.id).toEqual(tabId);
                         done();
                     });
                 });
@@ -402,28 +426,28 @@ describe("workspace", function () {
         });
 
     });
-    
-	describe("#moveTab", function () {
-        it("should be a function", function () {
-           expect(typeof  workspace.moveTab).toBe("function");
-		});
 
-		it("should return an error when the first arg is a falsy", function () {
-             runSync(function (done) {
+    describe("#moveTab", function () {
+        it("should be a function", function () {
+            expect(typeof  workspace.moveTab).toBe("function");
+        });
+
+        it("should return an error when the first arg is a falsy", function () {
+            runSync(function (done) {
                 workspace.moveTab(null, null, function (err) {
                     expect(err instanceof Error).toBe(true);
                     done();
                 });
-             });
+            });
         });
-        
+
         it("should return an error when the second arg is a different to 'main' or 'second'", function () {
-             runSync(function (done) {
+            runSync(function (done) {
                 workspace.moveTab(null, 'another unknown pane', function (err) {
                     expect(err instanceof Error).toBe(true);
                     done();
                 });
-             });
+            });
         });
 
         it("should return an error when the tab is not found", function () {
@@ -434,14 +458,14 @@ describe("workspace", function () {
                 });
             });
         });
-        
+
         it("should return moved tab via his callback", function () {
             runSync(function (done) {
                 workspace.panes.current("main");
                 workspace.createTab(null, function(err, tab) {
                     workspace.moveTab(tab, 'main', function (err, movedTab) {
                         expect(tab).toBe(movedTab);
-						done();
+                        done();
                     });
                 });
             });
@@ -452,8 +476,8 @@ describe("workspace", function () {
                 workspace.panes.current("main");
                 workspace.createTab(null, function(err, tab) {
                     workspace.moveTab(tab, 'second', function (err, movedTab, pane) {
-						expect(pane).toBe('second');
-						done();
+                        expect(pane).toBe('second');
+                        done();
                     });
                 });
             });
@@ -461,7 +485,7 @@ describe("workspace", function () {
 
         it("should move the tab in to the specified pane", function () {
             runSync(function (done) {
-				workspace.panes.current("main");
+                workspace.panes.current("main");
                 workspace.createTab(null, function(err, tab) {
                     workspace.moveTab(tab, 'second', function () {
                         expect(workspace.where(tab)).toEqual('second');
@@ -472,15 +496,77 @@ describe("workspace", function () {
         });
 
     });
-  
-	describe('#toJSON', function () {
-		it("should be a function", function () {
-           expect(typeof workspace.toJSON).toBe("function");
+
+    describe('#toJSON', function () {
+        it("should be a function", function () {
+            expect(typeof workspace.toJSON).toBe("function");
         });
-      
-		it("should return an object", function () {
-          var json = workspace.toJSON();
-          expect(typeof json).toBe('object');
+
+        it("should return an object", function () {
+            var json = workspace.toJSON();
+            expect(typeof json).toBe('object');
+        });
+        
+        it("should return an object with a `tabs` as array", function () {
+            var json = workspace.toJSON();
+            expect(Array.isArray(json.tabs)).toBe(true);
+        });
+
+        it("should return an object with an array of all tabs (id, pane, current, config)", function () {
+            var fakeGuid = spyOn(uuid, 'v4');
+            workspace.panes.current('main');
+            fakeGuid.andReturn('aaaaaa-aaaaaa-aaaaaa-aaaaaa');
+            workspace.createTab({ name : 'first', path : 'path/of/first/file', type : 'file'});
+            fakeGuid.andReturn('bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb');
+            workspace.createTab({ name : 'second', path : 'path/of/second/file', type : 'file'});
+            workspace.panes.current('second');
+            fakeGuid.andReturn('cccccc-cccccc-cccccc-cccccc');
+            workspace.createTab({ name : 'third', path : 'path/of/third/file', type : 'file'});
+            fakeGuid.andReturn('dddddd-dddddd-dddddd-dddddd');
+            workspace.createTab({ name : 'fourth', path : 'path/of/fourth/file', type : 'file'});
+            
+            var json = workspace.toJSON();
+            
+            expect(json.tabs).toEqual([
+                {
+                    id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
+                    pane : 'main',
+                    current : true,
+                    config : {
+                        name : 'first',
+                        path : 'path/of/first/file',
+                        type : 'file'
+                    }
+                },
+                {
+                    id : 'bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb',
+                    pane : 'main',
+                    config : {
+                        name : 'second',
+                        path : 'path/of/second/file',
+                        type : 'file'
+                    }
+                },
+                {
+                    id : 'cccccc-cccccc-cccccc-cccccc',
+                    pane : 'second',
+                    current : true,
+                    config : {
+                        name : 'third',
+                        path : 'path/of/third/file',
+                        type : 'file'
+                    }
+                },
+                {
+                    id : 'dddddd-dddddd-dddddd-dddddd',
+                    pane : 'second',
+                    config : {
+                        name : 'fourth',
+                        path : 'path/of/fourth/file',
+                        type : 'file'
+                    }
+                }
+            ]);
         });
     });
 
@@ -502,7 +588,7 @@ describe("workspace", function () {
                 });
             });
         });
-
+        
         it("should close the watcher and recreate a new instance", function () {
             runSync(function (done) {
                 var spyClose = spyOn(fakeWatcherInstance, 'close');
@@ -513,6 +599,156 @@ describe("workspace", function () {
                 });
             });
         })
+        
+        it("should initialize the workspace with the `config` in argument", function () {
+            var conf = {
+                    tabs : [
+                        {
+                            id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
+                            pane : 'main',
+                            current : true,
+                            config : {
+                                name : 'first',
+                                path : 'path/of/first/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            id : 'bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb',
+                            pane : 'main',
+                            config : {
+                                name : 'second',
+                                path : 'path/of/second/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            id : 'cccccc-cccccc-cccccc-cccccc',
+                            pane : 'second',
+                            current : true,
+                            config : {
+                                name : 'third',
+                                path : 'path/of/third/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            id : 'dddddd-dddddd-dddddd-dddddd',
+                            pane : 'second',
+                            config : {
+                                name : 'fourth',
+                                path : 'path/of/fourth/file',
+                                type : 'file'
+                            }
+                        }
+                    ]
+                }, 
+                output = [];
+            
+            spyOn(workspace, 'createTab').andCallFake(function (config, pane) {
+                output.push({
+                    pane : pane,
+                    config : config
+                });
+            });
+            
+            runSync(function (done) {
+                workspace.init(conf, function () {
+                    expect(output).toEqual([
+                        {
+                            pane : 'main',
+                            config : {
+                                name : 'first',
+                                path : 'path/of/first/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            pane : 'main',
+                            config : {
+                                name : 'second',
+                                path : 'path/of/second/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            pane : 'second',
+                            config : {
+                                name : 'third',
+                                path : 'path/of/third/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            pane : 'second',
+                            config : {
+                                name : 'fourth',
+                                path : 'path/of/fourth/file',
+                                type : 'file'
+                            }
+                        }
+                    ]);
+                    done();
+                });
+            });
+        });
+        
+        it("should initialize the currentTabs using the `config` in argument", function () {
+            var conf = {
+                    tabs : [
+                        {
+                            id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
+                            pane : 'main',
+                            current : true,
+                            config : {
+                                name : 'first',
+                                path : 'path/of/first/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            id : 'bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb',
+                            pane : 'main',
+                            config : {
+                                name : 'second',
+                                path : 'path/of/second/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            id : 'cccccc-cccccc-cccccc-cccccc',
+                            pane : 'second',
+                            current : true,
+                            config : {
+                                name : 'third',
+                                path : 'path/of/third/file',
+                                type : 'file'
+                            }
+                        },
+                        {
+                            id : 'dddddd-dddddd-dddddd-dddddd',
+                            pane : 'second',
+                            config : {
+                                name : 'fourth',
+                                path : 'path/of/fourth/file',
+                                type : 'file'
+                            }
+                        }
+                    ]
+                };
+            
+            runSync(function (done) {
+                workspace.init(conf, function () {
+                    workspace.currentTab('main', function (err, mainPaneTab) {
+                    	expect(mainPaneTab.name).toEqual('first');
+                        workspace.currentTab('second', function (err, secondPaneTab) {
+                            expect(secondPaneTab.name).toEqual('third');
+                            done();
+                        });
+                    });
+                });
+            });
+        });
 
     });
 

@@ -1,4 +1,7 @@
+/* global describe, it, beforeEach, afterEach, spyOn, expect, runs, waitsFor */
 describe('explorer', function () {
+    "use strict";
+    
     var explorer, watcher, fs, fsExtra,  spies, fakeStats;
     var util        = require("util");
     var EventEmitter = require("events").EventEmitter;
@@ -18,7 +21,7 @@ describe('explorer', function () {
         delete require.cache[explorerCacheKey];
 
         explorer = require("../../app/explorer/explorerModel.js");
-        watcher = require('../../app/watcher/watcher.js');
+        watcher = require('../../app/modules/watcher/watcher.js');
 
         fs = require('fs');
         fsExtra = require('fs.extra');

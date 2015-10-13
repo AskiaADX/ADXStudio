@@ -11,7 +11,7 @@ var util = require('util');
  * @constructor
  * @param {Object|String} [config] Configuration or path of the file
  * @param {String} [config.name] Name of tab or file
- * @param {String|'file'} [config.type] Type of tab
+ * @param {String|'file'|'preview'|'projectSettings'} [config.type] Type of tab
  * @param {String} [config.path] Path of the file associated with the tab
  */
 function Tab(config) {
@@ -23,7 +23,7 @@ function Tab(config) {
     }
     this.id = uuid.v4();
     this.config = config || {};
-    this.type = this.config.type || '';
+    this.type = this.config.type || 'file';
     this.path = typeof this.config.path === 'string' ? nodePath.resolve(this.config.path) : '';
     this.name = this.config.name || (this.path && nodePath.basename(this.path)) || '';
     this.fileType = '';
@@ -41,11 +41,16 @@ util.inherits(Tab, EventEmitter);
  * Load the file and initialize additional properties in the tab object
  *
  * @param callback
+ * @param {Error} callback.err
  */
 Tab.prototype.loadFile = function loadFile(callback) {
     var self = this;
 
     fs.stat(this.path, function (err, stats) {
+        if (err) {
+            callback(err);
+            return;
+        }
         if (!err) {
             self.statTimes = {
                 modified : stats.mtime,

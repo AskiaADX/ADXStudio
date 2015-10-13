@@ -4,7 +4,6 @@ var util = require('util');
 var nodePath = require('path');
 var watcher = require('../modules/watcher/watcher.js');
 
-
 /**
  * Workspace model
  * @constructor
@@ -19,12 +18,6 @@ function Workspace(){
      * @type {string}
      */
     this._currentPane = 'main';
-
-    /**
-     * Current tab
-     * @type {Tab}
-     */
-    this._currentTab = null;
 
     /**
      * List of available panes
@@ -47,7 +40,8 @@ function Workspace(){
          * Main pane
          */
         main : {
-            name : 'main'
+            name : 'main',
+            currentTabId : null
         },
 
 
@@ -55,7 +49,8 @@ function Workspace(){
          * Secondary pane
          */
         second : {
-            name : 'second'
+            name : 'second',
+            currentTabId : null
         },
 
         /**
@@ -96,7 +91,7 @@ Workspace.prototype._initWatcher = function _initWatcher() {
         this._watcher.close();
     }
 
-    /***
+    /**
      * Instance of watcher
      * @private
      */
@@ -154,37 +149,108 @@ Workspace.prototype.init = function init(config, callback) {
     this.tabs = [];
     this.panes.mapByTabId = {};
     this._currentPane = 'main';
-    this._currentTab = null;
+    this.panes.main.currentTabId = null;
+    this.panes.second.currentTabId = null;
     this.panes.orientation = '';
+    
+    // Loads the config
+    var self = this;
+    if (config) {
+        if (Array.isArray(config.tabs)) {
+            config.tabs.forEach(function (tab) {
+                if (tab.config && tab.id && tab.pane) {
+                    self.createTab(tab.config, tab.pane, function (err, tabCreated) {
+                        if (tab.current) {
+                            self.panes[tab.pane].currentTabId = tabCreated.id;
+                        }
+                    });
+                }
+            });
+        }
+    }
 
-
-
-    callback(null);
+    if (typeof callback === 'function') { 
+        callback(null);
+    }
 };
 
 /**
  * Serialize the state of the workspace to a JSON representation
  * 
+ *     {
+ *       "tabs" : [
+ *          {
+ *            "id" : "xxxxxx-xxxxxx-xxxxxx",
+ *            "pane" : "main"
+ *            "config" : {
+ *               "name" : "file_name"
+ *               "path" : "path/to/the/file",
+ *               "type" : "file"
+ *            }
+ *          }
+ *       ]
+ *     }
+ *
  * @return {Object} Return the JSON representation of the workspace
  */
 Workspace.prototype.toJSON = function toJSON() {
-	var obj = {};
-	return obj;
+    var obj = {}, i, l, tab, jsonTab, 
+        self = this;
+    
+    obj.tabs = [];
+    for (i = 0, l = this.tabs.length; i < l; i += 1) {
+        tab = this.tabs[i];
+        jsonTab = {
+            id : tab.id,
+            pane : self.panes.mapByTabId[tab.id]
+        };
+        
+        if (tab.id === this.panes[jsonTab.pane].currentTabId) {
+            jsonTab.current = true;
+        }
+        
+        jsonTab.config = {};
+        if (tab.config) {
+            if ('name' in tab.config)  {
+                jsonTab.config.name = tab.config.name;
+            }
+            if ('path' in tab.config)  {
+                jsonTab.config.path = tab.config.path;
+            }
+            if ('type' in tab.config)  {
+                jsonTab.config.type = tab.config.type;
+            }
+        }
+        obj.tabs.push(jsonTab);
+    }
+
+    return obj;
 };
 
 /**
  * Create a new instance of tab in the current pane
  *
  * @param {Object} config Configuration of tab
- * @param {Function} callback Callback function
+ * @param {String} [pane] Name of the pane in which to create the tabs
+ * @param {Function} [callback] Callback function
  * @param {Error}  callback.error Error
  * @param {Tab} callback.Tab
  * @param {String} callback.paneName Name of the pane where the tab is associated
  */
-Workspace.prototype.createTab = function createTab(config, callback) {
+Workspace.prototype.createTab = function createTab(config, pane, callback) {
     var tab = new Tab(config),
         self = this;
 
+    // Swap arguments
+    if (typeof pane === 'function') {
+        callback = pane;
+        pane = null;
+    }
+    
+    if (!pane) {
+        pane = this._currentPane;
+    }
+    
     /**
      * When the tab is fully loaded, watch it
      */
@@ -212,11 +278,11 @@ Workspace.prototype.createTab = function createTab(config, callback) {
     });
 
     this.tabs.push(tab);
-    this.panes.mapByTabId[tab.id] = this._currentPane;
+    this.panes.mapByTabId[tab.id] = pane;
 
     // Set the current tab if not defined
-    if (this._currentTab === null) {
-        this._currentTab = tab;
+    if (this.panes[pane].currentTabId === null) {
+        this.panes[pane].currentTabId = tab.id;
     }
 
     if (typeof callback === 'function') {
@@ -238,7 +304,7 @@ Workspace.prototype.removeTab = function removeTab(tab, callback) {
         if (typeof callback === 'function') {
             callback(new Error("Expected the first argument `tab` to be a Tab or the id of an existing tab "), null);
         }
-		return;
+        return;
     }
 
     var self = this;
@@ -399,30 +465,33 @@ Workspace.prototype.find = function find(criteria, callback) {
 
 /**
  * Get or set the current tab
- * @param {Tab} [tab] Tab to set
+ * @param {Tab|String} [tabOrPane] Tab to set or Name of the pane from where to extract the current tab
  * @param {Function} callback Callback function
  * @param {Error} callback.err Error
  * @param {Tab} callback.tab Current tab
  * @param {String} callback.pane Pane of the tab
  */
-Workspace.prototype.currentTab = function getSetCurrentTab(tab, callback) {
-    var cb = (typeof tab === 'function' && !callback) ? tab : callback,
-        pane;
+Workspace.prototype.currentTab = function getSetCurrentTab(tabOrPane, callback) {
+    // Swap arguments
+    var tab =  (tabOrPane instanceof Tab) ? tabOrPane : null;
+    var pane = (typeof tabOrPane === 'string') ? tabOrPane : null;
+    var cb = (typeof tabOrPane === 'function' && !callback) ? tabOrPane : callback;
 
-    if (tab instanceof Tab) {
-        this._currentTab = tab;
-        if (this._currentTab.fileType !== 'preview') {
-            this.panes.current(this.panes.mapByTabId[this._currentTab.id]);
+    // Setter
+    if (tab) {
+        pane = this.panes.mapByTabId[tab.id];
+        this.panes[pane].currentTabId = tab.id;
+        if (tab.type !== 'preview') {
+            this.panes.current(pane);
         }
     }
-
-    if (this._currentTab) {
-        pane = this.panes.mapByTabId[this._currentTab.id];
+	
+    // Getter
+    if (!pane) {
+        pane = this.panes.current().name;
     }
-
-    if (typeof  cb === 'function') {
-        cb (null, this._currentTab, pane);
-    }
+        
+    this.find(this.panes[pane].currentTabId, cb);    
 };
 
 

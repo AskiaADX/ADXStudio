@@ -1,4 +1,6 @@
+/* global describe, it, beforeEach, afterEach, spyOn, expect, runs, waitsFor */
 describe("Tab", function () {
+    "use strict";
     var Tab,
         uuid = require('node-uuid'),
         fs   = require('fs'),

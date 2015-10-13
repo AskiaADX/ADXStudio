@@ -1,3 +1,4 @@
+/* global describe, it, beforeEach, afterEach, spyOn, expect, runs, waitsFor, process */
 describe('appSettings', function () {
     var appSettings,  fs = require('fs'),  spies, fakeStats;
     var pathHelper = require('path');
@@ -95,8 +96,8 @@ describe('appSettings', function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(new Error("Error"));
             });
-            appSettings.getMostRecentlyUsed(function (err,data) {
-                result =data;
+            appSettings.getMostRecentlyUsed(function (err, data) {
+                result = data;
             });
             expect(result).toEqual([]);
         });
@@ -106,7 +107,7 @@ describe('appSettings', function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '[{"path" : "A"}, {"path" : "B"}]');
             });
-            appSettings.getMostRecentlyUsed(function (err,data) {
+            appSettings.getMostRecentlyUsed(function (err, data) {
                 result = data;
             });
             expect(result).toEqual([{path : 'A'}, {path : 'B'}]);

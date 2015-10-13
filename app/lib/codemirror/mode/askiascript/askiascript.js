@@ -251,7 +251,9 @@
             insertResponsesRange : "Insert range",
             caption : "Caption",
             minValue : "Minimum:",
-            maxValue : "Maximum:"
+            maxValue : "Maximum:",
+            previous : "<< Previous",
+            parentLoop : "Parent loop:"
         },
         core    : {
             'versions' : {

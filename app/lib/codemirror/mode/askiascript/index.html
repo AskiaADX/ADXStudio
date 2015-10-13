@@ -75,11 +75,47 @@ Return message
         // Return the question information
         (function () {
             var questionInfo = {
+                'l1'      : {
+                    shortcut : 'l1',
+                    type : 'loop',
+                    caption : "First loop",
+                    responses : [
+                        {
+                            index : 1,
+                            entryCode : "1",
+                            caption : "Iteration 1"
+                        },
+                        {
+                            index : 2,
+                            entryCode : "2",
+                            caption : "Iteration 2"
+                        }
+                    ]
+                },
+                'l2'      : {
+                    shortcut : 'l2',
+                    type : 'loop',
+                    caption : "Second loop",
+                    parentLoop : 'l1',
+                    responses : [
+                        {
+                            index : 1,
+                            entryCode : "1",
+                            caption : "Sub-Iteration 1"
+                        },
+                        {
+                            index : 2,
+                            entryCode : "2",
+                            caption : "Sub-Iteration 2"
+                        }
+                    ]
+                },
                 'gender' : {
                     shortcut : 'gender',
                     type    : 'single',
                     caption : 'You are:',
                     allowDk : false,
+                    parentLoop  : 'l1',
                     responses : [
                         {
                             index : 1,
@@ -98,6 +134,7 @@ Return message
                     type : 'numeric',
                     allowDk : true,
                     caption : "What's your age?",
+                    parentLoop  : 'l2',
                     min : 18,
                     max : 99
                 },

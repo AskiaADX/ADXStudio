@@ -318,6 +318,8 @@
         // Cache of questions
         this.questionsCache = {};
         this.currentDisplayQuestion = null;
+        // Question navigation History
+        this.questionNavHistory = [];
 
         // Editor
         this.elEditor       = instance.getWrapperElement();
@@ -377,6 +379,7 @@
         // Latest selected token/line/text
         this.lastTokenInfo = null;
 
+
         // Listen events
         this.listen();
 
@@ -408,6 +411,12 @@
     Description.prototype.createQuestionDescElements = function createQuestionDescElements() {
         var self = this;
 
+        // Go to previous
+        this.elGoToPrevious     = document.createElement('a');
+        this.elGoToPrevious.href = '#';
+        this.elGoToPrevious.setAttribute('data-linkTo', '__previous_question__');
+        this.elGoToPrevious.appendChild(document.createTextNode(translate('description.previous')));
+
         // Shortcut of the question
         this.elQuestionName = document.createElement('h1');
 
@@ -435,6 +444,12 @@
         this.elResponses.setAttribute('multiple', 'multiple');
         this.elResponses.setAttribute('size', 9);
 
+        // Parent loop
+        this.elParentLoopCaptionTitle = document.createElement('h2');
+        this.elParentLoopCaptionTitle.appendChild(document.createTextNode(translate('description.parentLoop')));
+        this.elParentLoopCaption = document.createElement('a');
+        this.elParentLoopCaption.setAttribute('href', '#');
+
         // Caption
         this.elQuestionCaptionTitle = document.createElement('h2');
         this.elQuestionCaptionTitle.appendChild(document.createTextNode(translate('description.caption')));
@@ -458,9 +473,12 @@
 
         // Final build
         this.elQuestionDescItem = document.createElement('div');
-        this.elQuestionDescItem.appendChild(this.elQuestionName)
+        this.elQuestionDescItem.appendChild(this.elGoToPrevious);
+        this.elQuestionDescItem.appendChild(this.elQuestionName);
         this.elQuestionDescItem.appendChild(this.elResponsesCommand);
         this.elQuestionDescItem.appendChild(this.elResponses);
+        this.elQuestionDescItem.appendChild(this.elParentLoopCaptionTitle);
+        this.elQuestionDescItem.appendChild(this.elParentLoopCaption);
         this.elQuestionDescItem.appendChild(this.elQuestionCaptionTitle);
         this.elQuestionDescItem.appendChild(this.elQuestionCaption);
         this.elQuestionDescItem.appendChild(this.elQuestionTypeTitle);
@@ -504,6 +522,21 @@
                 map = (linkTo.indexOf('versions.') !== 0) ?  linkTo.split('.') : ['versions', linkTo.replace('versions.', '')];
                 keyword = map.length > 1 ? map[1] : map[0];
                 member = map.length > 1 ? map[0] : null;
+                if (keyword === '__previous_question__') {
+                    if (self.questionNavHistory.length) {
+                        self.displayQuestion(self.questionNavHistory.pop());
+                    }
+                    return;
+                }
+                if (member === '__question__') {
+                      self.saveQuestionToHistory();
+                      searchAndDisplayDescription((instance.options &&
+                                                    instance.options.dictionary &&
+                                                            instance.options.dictionary.questions), {
+                          string  : keyword
+                      });
+                    return;
+                }
                 item = askiaScript.find(keyword, member);
                 if (item) {
                     self.display(item);
@@ -707,6 +740,8 @@
             return (token.type && token.type !== classNames.COMMENT && token.type !== classNames.STRING);
         }
 
+
+
         // Search (in collection) and display the right description
         function searchAndDisplayDescription(collection, tokenInfo) {
             collection = collection || [];
@@ -783,7 +818,7 @@
      * Filter the toc
      * @param {String} value Value to search
      */
-    Description.prototype.filter = function filterToc(value) {
+    Description.prototype.filter = function filter(value) {
         var self = this;
 
         if (!value) {
@@ -937,21 +972,22 @@
      * Fix the position of splitters
      * @chainable
      */
-    Description.prototype.fixSplitters = function resizeDescription() {
+    Description.prototype.fixSplitters = function fixSplitters() {
         if (!this.elHSplit || !this.elVSplit) {
             return this;
         }
 
         var editorWidth  = this.elEditor.offsetWidth,
             editorHeight = this.elEditor.offsetHeight,
+            editorTop    = this.elEditor.offsetTop,
             tocWidth     = this.elToc.offsetWidth,
             descHeight   = this.elDesc.offsetHeight;
 
         this.elHSplit.style.width = editorWidth + 'px';
-        this.elHSplit.style.top   = editorHeight + 'px';
+        this.elHSplit.style.top   = (editorHeight + editorTop) + 'px';
         this.elHSplit.style.left  = this.elEditor.offsetLeft + 'px';
 
-        this.elVSplit.style.top  = editorHeight + 'px';
+        this.elVSplit.style.top  = (editorHeight + editorTop) + 'px';
         this.elVSplit.style.left = tocWidth + 'px';
         this.elVSplit.style.height = descHeight + 'px';
         return this;
@@ -980,7 +1016,8 @@
     Description.prototype.resize = function resizeDescription() {
         var descHeight   = this.elDesc.offsetHeight,
             parentHeight = this.elEditor.parentNode.offsetHeight,
-            remainHeight = parentHeight - descHeight;
+            editorTop    = this.elEditor.offsetTop,
+            remainHeight = parentHeight - (descHeight + editorTop);
 
         if (this.elDebug) {
             remainHeight -= this.elDebug.offsetHeight;
@@ -991,6 +1028,27 @@
         this.fixContent();
         this.fixSplitters();
 
+        return this;
+    };
+
+    /**
+     * Save the the current display question to the history
+     */
+    Description.prototype.saveQuestionToHistory = function saveQuestionToHistory() {
+        var l = this.questionNavHistory.length;
+        if (l && this.questionNavHistory[l - 1] === this.currentDisplayQuestion) {
+            return;
+        }
+        this.questionNavHistory.push(this.currentDisplayQuestion);
+    };
+
+    /**
+     * Reset the current display question
+     * @chainable
+     */
+    Description.prototype.resetCurrentDisplayQuestion = function resetCurrentDisplayQuestion() {
+        this.currentDisplayQuestion = null;
+        this.questionNavHistory = [];
         return this;
     };
 
@@ -1035,7 +1093,6 @@
         // Reset the latest token info
         this.lastTokenInfo = null;
 
-
         // Use only one desc element for all questions
         // Update the desc element using the question information
         if (item.base === bases.QUESTION) {
@@ -1055,6 +1112,8 @@
             } else {
                 this.instance.sendMessage('selectquestion_' + item.name);
             }
+        } else {
+            this.resetCurrentDisplayQuestion();
         }
 
         // Clear the content
@@ -1080,7 +1139,20 @@
         }
 
         var i, l, str = [],
-            responses = question && question.responses;
+            shortcut  = question && question.shortcut,
+            questionName = shortcut || '',
+            responses = question && question.responses,
+            parentLoop = question && (question.parentLoop || question.parentloop);
+
+        this.elGoToPrevious.style.display =  this.questionNavHistory.length ? 'block' : 'none';
+        if (question) {
+            if (shortcut && this.currentQuestion === shortcut) {
+                questionName += " (CurrentQuestion)";
+            }
+            questionName += " (" + translate('types.' + question.type) + ")";
+        }
+        this.elQuestionName.innerHTML = questionName;
+
         this.elResponses.innerHTML = '';
         if (responses) {
             for (i = 0, l = responses.length; i < l; i++) {
@@ -1095,6 +1167,13 @@
         this.elResponses.style.display = (responses) ? 'block' : 'none';
         this.elResponsesCommand.style.display = (responses) ? 'block' : 'none';
 
+        // Parent loop
+        this.elParentLoopCaptionTitle.style.display = (parentLoop) ? 'block' : 'none';
+        this.elParentLoopCaption.style.display = (parentLoop) ? 'block' : 'none';
+        this.elParentLoopCaption.innerHTML = parentLoop || '';
+        if (parentLoop) {
+            this.elParentLoopCaption.setAttribute('data-linkto', '__question__.' + parentLoop.toLowerCase());
+        }
         // Caption
         this.elQuestionCaptionTitle.style.display = (question && question.caption) ? 'block' : 'none';
         this.elQuestionCaption.innerHTML = question && question.caption || '';
@@ -1274,7 +1353,8 @@
         var instance = this;
          // Only call it for the local exe
         if (instance.options.localExe) {
-            window.navigate("admsg_" + message);
+            var encodedMessage = encodeURIComponent(message);
+            window.navigate("admsg_" + encodedMessage);
         }
     };
 
@@ -2182,7 +2262,20 @@
             close();
         });
 
+        // Override the close suggestion
+        instance.closeSuggestion = close;
+
         return this;
+    };
+
+    /**
+     * Method to close the suggestion
+     */
+    CodeMirror.prototype.closeSuggestion = function closeSuggestion() {
+        /*
+            It's implemented in the instance of the suggest
+            See in CodeMirror.prototype.suggest
+         */
     };
 
     /**
@@ -2219,7 +2312,6 @@
         return this.suggest().enableDescription();
     };
 
-
     /**
      * Destroy the code mirror instance
      * This method save the text into the textarea and remove the editor
@@ -2236,6 +2328,7 @@
             }
         }
         (this.description && this.description.destroy());
+        (this.finder && this.finder.destroy());
         return this.toTextArea();
     };
 

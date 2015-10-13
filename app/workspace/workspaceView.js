@@ -1,274 +1,282 @@
-window.tabs  = {
-    /**
-     * Id of the current active tab
-     */
-    currentTabId : null,
+(function () {
+    "use strict";
 
-    /**
-     * Latest added tab
-     */
-    lastTabId    : null,
+    window.tabs  = {
+        /**
+         * Id of the current active tab
+         */
+        currentTabId : null,
 
-    /**
-     * Add a tab in the collection
-     *
-     * @param {Tab} tab Tab to add
-     */
-    addTab       : function addTab(tab) {
-        this[tab.id] = tab;
+        /**
+         * Latest added tab
+         */
+        lastTabId    : null,
 
-        var lastTab;
+        /**
+         * Add a tab in the collection
+         *
+         * @param {Tab} tab Tab to add
+         */
+        addTab       : function addTab(tab) {
+            this[tab.id] = tab;
 
-        // Register the previous tab
-        if (!this.lastTabId) {
-            tab.previous = null;
-            tab.next     = null;
-        } else {
-            lastTab = this[this.lastTabId];
-            lastTab.next = tab;
-            tab.previous = lastTab;
-            tab.next = null;
-        }
+            var lastTab;
 
-        this.lastTabId = tab.id;
-    },
-
-    /**
-     * Update the tab with the version coming from the main process
-     *
-     * @param {Tab} tab Tab coming from the main process
-     */
-    updateTab       : function updateTab(tab) {
-        var viewTab = this[tab.id]; // Tab in the view
-
-        tab.previousSelection = viewTab.previousSelection;
-        if (tab.previousSelection) {
-            tab.previousSelection.nextSelection  = tab;
-        }
-        tab.previous = viewTab.previous;
-        if (tab.previous) {
-            tab.previous.next = tab;
-        }
-        tab.nextSelection = viewTab.nextSelection;
-        if (tab.nextSelection) {
-            tab.nextSelection.previousSelection = tab;
-        }
-        tab.next = viewTab.next;
-        if (tab.next) {
-            tab.next.previous = tab;
-        }
-
-        this[tab.id] = tab;
-        this.dispatchEvent('tabcontentchange', tab.id, tab.content);
-    },
-
-    /**
-     * Remove the tab in the collection
-     *
-     * @param {Tab} tab Tab to remove
-     */
-    removeTab       : function removeTab(tab) {
-        var previousSelection, previous, nextSelection, next;
-
-        // Reset the last tab id
-        if (this.lastTabId === tab.id) {
-            if (tab.next) {
-                this.lastTabId = tab.next.id;
-            } else if (tab.previous) {
-                this.lastTabId = tab.previous.id;
+            // Register the previous tab
+            if (!this.lastTabId) {
+                tab.previous = null;
+                tab.next     = null;
             } else {
-                this.lastTabId = null;
+                lastTab = this[this.lastTabId];
+                lastTab.next = tab;
+                tab.previous = lastTab;
+                tab.next = null;
             }
-        }
 
+            this.lastTabId = tab.id;
+        },
 
-        // Reset the previous / next
-        previousSelection   = tab.previousSelection;
-        nextSelection       = tab.nextSelection;
-        previous            = tab.previous;
-        next                = tab.next;
+        /**
+         * Update the tab with the version coming from the main process
+         *
+         * @param {Tab} tab Tab coming from the main process
+         */
+        updateTab       : function updateTab(tab) {
+            var viewTab = this[tab.id]; // Tab in the view
 
-        if (previousSelection) {
-            previousSelection.nextSelection = nextSelection;
-        }
-        if (nextSelection) {
-            nextSelection.previousSelection = previousSelection;
-        }
-        if (previous) {
-            previous.next = next;
-        }
-        if (next) {
-            next.previous = previous;
-        }
-
-        // Remove the reference
-        delete this[tab.id];
-    },
-
-    /**
-     * Event fire when the editor is full loaded
-     * @param {Tab} tab Tab currently in used
-     * @param {Window} tab.window Window that contains the content of the the tab
-     * @param {CodeMirror} tab.editor Code mirror instance on the tab
-     */
-    onEditorLoaded : function onEditorLoaded(tab) {
-        // Make the tab visible
-        document.getElementById('content-' + tab.id).childNodes[0].style.visibility = '';
-
-        // Focus on the code-mirror editor
-        if (tab.id === this.currentTabId && tab.editor && tab.editor.focus) {
-            tab.editor.focus();
-        }
-    },
-
-    /**
-     * Helper function to dispatch event
-     *
-     * @param {String} eventName Name of the event
-     * @param {String} tabId Id of the tab taht initiate the event
-     * @param {String} content Content of the tab
-     */
-    dispatchEvent  : function dispatchEvent(eventName, tabId, content) {
-        var tab = this[tabId];
-        if (!tab) {
-            return;
-        }
-
-        var event = new CustomEvent(eventName, {
-            'detail': {
-                'tab'     : tab,
-                'content' : content,
-                'isModified' : (content !== undefined && tab.content !== content)
+            tab.previousSelection = viewTab.previousSelection;
+            if (tab.previousSelection) {
+                tab.previousSelection.nextSelection  = tab;
             }
-        });
-        document.body.dispatchEvent(event);
-    },
-
-    /**
-     * Return the pane HTMLElement that host the specified tab
-     * @param {String} tabId Id of the tab
-     * @return {HTMLElement} Panel
-     */
-    getPaneElementByTabId : function getPaneElementByTabId(tabId) {
-        var el      = document.getElementById('tab-' + tabId),
-            paneEl  = el && el.parentNode;
-        if (!el) {
-            return null;
-        }
-
-        while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
-            paneEl = paneEl.parentNode;
-        }
-        return (paneEl.classList.contains('pane')) ? paneEl : null;
-    },
-
-    /**
-     * Return the name of pane of the tab
-     * @param {String} tabId Id of the tab
-     * @return {String} paneMame
-     */
-    getPaneName : function getPaneName(tabId) {
-        var paneEl = this.getPaneElementByTabId(tabId);
-        if (!paneEl) {
-            return null;
-        }
-        return paneEl.id.replace(/(_pane)$/, '');
-    },
-
-    /**
-     * Event fire when a tab is focused
-     * @param {String} tabId Id of the focused tab
-     */
-    onFocus : function onFocus(tabId) {
-        this.dispatchEvent('tabfocused', tabId);
-    },
-
-    /**
-     * Event fire when the content of the editor has changed
-     *
-     * @param {String} tabId Id of the tab
-     * @param {String} content Current content in the editor
-     */
-    onContentChange : function onContentChange(tabId, content) {
-        this.dispatchEvent('tabcontentchange', tabId, content);
-    },
-
-    /**
-     * Event fire when the editor request a save
-     *
-     * @param {String} tabId Id of the tab
-     * @param {String} content Current content in the editor
-     */
-    onSave       : function onSave(tabId, content) {
-        this.dispatchEvent('tabcontentsave', tabId, content);
-    },
-
-    /**
-     * Set the current tab and focus the editor
-     * @param {String} tabId Id of the current tab
-     */
-    setCurrentTab : function setCurrentTab(tabId) {
-        var currentTab    = this[tabId],
-            currentEditor, previousTab;
-
-        // Register the previous selected tab
-        if (!this.currentTabId) {
-            currentTab.previousSelection = null;
-            currentTab.nextSelection = null;
-        } else {
-            previousTab = this[this.currentTabId];
-            if (previousTab) {
-                previousTab.nextSelection = currentTab;
+            tab.previous = viewTab.previous;
+            if (tab.previous) {
+                tab.previous.next = tab;
             }
-            currentTab.previousSelection = previousTab;
-            currentTab.nextSelection = null;
-        }
+            tab.nextSelection = viewTab.nextSelection;
+            if (tab.nextSelection) {
+                tab.nextSelection.previousSelection = tab;
+            }
+            tab.next = viewTab.next;
+            if (tab.next) {
+                tab.next.previous = tab;
+            }
 
-        // Set the current tab
-        this.currentTabId = tabId;
+            this[tab.id] = tab;
+            this.dispatchEvent('tabcontentchange', tab.id, tab.content);
+        },
 
-        currentEditor = currentTab && currentTab.editor;
-        if (currentEditor && currentEditor.focus) {
-			currentEditor.focus();
-        }
-    },
-    
-    /**
-     * Search the previous tab to select on the specified pane
-     * Mainly used to make a tab content visible when moving a tab to another pane
-     * or when removing a tab
-     *
-     * @param {String} tabId Indicates the id of the tab from where the search should start
-     * @param {String} pane Name of the pane where the tab is / was located
-     */
-    searchPreviousSelectionOnPane : function searchPreviousSelectionOnPane(tabId, pane) {
-        var currentTab = this[tabId],
-            prevTab = currentTab.previousSelection || currentTab.nextSelection || currentTab.previous || currentTab.next || null,
-            prevTabPane = (prevTab && this.getPaneName(prevTab.id)) || null;
+        /**
+         * Remove the tab in the collection
+         *
+         * @param {Tab} tab Tab to remove
+         */
+        removeTab       : function removeTab(tab) {
+            var previousSelection, previous, nextSelection, next;
 
-        while(prevTab && prevTabPane && prevTabPane !== pane) {
-            prevTab = prevTab.previousSelection || prevTab.nextSelection || prevTab.previous || prevTab.next || null;
-			prevTabPane = (prevTab && this.getPaneName(prevTab.id)) || null;
-            
-            // Break here to avoid infinite loop
-            if (prevTab.id === tabId) {
-				return null;
-			}
+            // Reset the last tab id
+            if (this.lastTabId === tab.id) {
+                if (tab.next) {
+                    this.lastTabId = tab.next.id;
+                } else if (tab.previous) {
+                    this.lastTabId = tab.previous.id;
+                } else {
+                    this.lastTabId = null;
+                }
+            }
+
+
+            // Reset the previous / next
+            previousSelection   = tab.previousSelection;
+            nextSelection       = tab.nextSelection;
+            previous            = tab.previous;
+            next                = tab.next;
+
+            if (previousSelection) {
+                previousSelection.nextSelection = nextSelection;
+            }
+            if (nextSelection) {
+                nextSelection.previousSelection = previousSelection;
+            }
+            if (previous) {
+                previous.next = next;
+            }
+            if (next) {
+                next.previous = previous;
+            }
+
+            // Remove the reference
+            delete this[tab.id];
+        },
+
+        /**
+         * Event fire when the editor is full loaded
+         * @param {Tab} tab Tab currently in used
+         * @param {Window} tab.window Window that contains the content of the the tab
+         * @param {CodeMirror} tab.editor Code mirror instance on the tab
+         */
+        onEditorLoaded : function onEditorLoaded(tab) {
+            // Make the tab visible
+            document.getElementById('content-' + tab.id).childNodes[0].style.visibility = '';
+
+            // Focus on the code-mirror editor
+            if (tab.id === this.currentTabId && tab.editor && tab.editor.focus) {
+                tab.editor.focus();
+            }
+        },
+
+        /**
+         * Helper function to dispatch event
+         *
+         * @param {String} eventName Name of the event
+         * @param {String} tabId Id of the tab taht initiate the event
+         * @param {String} content Content of the tab
+         */
+        dispatchEvent  : function dispatchEvent(eventName, tabId, content) {
+            var tab = this[tabId];
+            if (!tab) {
+                return;
+            }
+
+            var event = new CustomEvent(eventName, {
+                'detail': {
+                    'tab'     : tab,
+                    'content' : content,
+                    'isModified' : (content !== undefined && tab.content !== content)
+                }
+            });
+            document.body.dispatchEvent(event);
+        },
+
+        /**
+         * Return the pane HTMLElement that host the specified tab
+         * @param {String} tabId Id of the tab
+         * @return {HTMLElement} Panel
+         */
+        getPaneElementByTabId : function getPaneElementByTabId(tabId) {
+            var el      = document.getElementById('tab-' + tabId),
+                paneEl  = el && el.parentNode;
+            if (!el) {
+                return null;
+            }
+
+            while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
+                paneEl = paneEl.parentNode;
+            }
+            return (paneEl.classList.contains('pane')) ? paneEl : null;
+        },
+
+        /**
+         * Return the name of pane of the tab
+         * @param {String} tabId Id of the tab
+         * @return {String} paneMame
+         */
+        getPaneName : function getPaneName(tabId) {
+            var paneEl = this.getPaneElementByTabId(tabId);
+            if (!paneEl) {
+                return null;
+            }
+            return paneEl.id.replace(/(_pane)$/, '');
+        },
+
+        /**
+         * Event fire when a tab is focused
+         * @param {String} tabId Id of the focused tab
+         */
+        onFocus : function onFocus(tabId) {
+            this.dispatchEvent('tabfocused', tabId);
+        },
+
+        /**
+         * Event fire when the content of the editor has changed
+         *
+         * @param {String} tabId Id of the tab
+         * @param {String} content Current content in the editor
+         */
+        onContentChange : function onContentChange(tabId, content) {
+            this.dispatchEvent('tabcontentchange', tabId, content);
+        },
+
+        /**
+         * Event fire when the editor request a save
+         *
+         * @param {String} tabId Id of the tab
+         * @param {String} content Current content in the editor
+         */
+        onSave       : function onSave(tabId, content) {
+            this.dispatchEvent('tabcontentsave', tabId, content);
+        },
+
+        /**
+         * Set the current tab and focus the editor
+         * @param {String} tabId Id of the current tab
+         */
+        setCurrentTab : function setCurrentTab(tabId) {
+            var currentTab    = this[tabId],
+                currentEditor, previousTab;
+
+            // Register the previous selected tab
+            if (!this.currentTabId) {
+                currentTab.previousSelection = null;
+                currentTab.nextSelection = null;
+            } else {
+                previousTab = this[this.currentTabId];
+                if (previousTab) {
+                    previousTab.nextSelection = currentTab;
+                }
+                currentTab.previousSelection = previousTab;
+                currentTab.nextSelection = null;
+            }
+
+            // Set the current tab
+            this.currentTabId = tabId;
+
+            currentEditor = currentTab && currentTab.editor;
+            if (currentEditor && currentEditor.focus) {
+                currentEditor.focus();
+            }
+        },
+
+        /**
+         * Search the previous tab to select on the specified pane
+         * Mainly used to make a tab content visible when moving a tab to another pane
+         * or when removing a tab
+         *
+         * @param {String} tabId Indicates the id of the tab from where the search should start
+         * @param {String} pane Name of the pane where the tab is / was located
+         */
+        searchPreviousSelectionOnPane : function searchPreviousSelectionOnPane(tabId, pane) {
+            var currentTab = this[tabId],
+                prevTab = currentTab.previousSelection || currentTab.nextSelection || currentTab.previous || currentTab.next || null,
+                prevTabPane = (prevTab && this.getPaneName(prevTab.id)) || null;
+
+            while (prevTab && prevTabPane && prevTabPane !== pane) {
+                prevTab = prevTab.previousSelection || prevTab.nextSelection || prevTab.previous || prevTab.next || null;
+                prevTabPane = (prevTab && this.getPaneName(prevTab.id)) || null;
+
+                // Break here to avoid infinite loop
+                if (prevTab.id === tabId) {
+                    return null;
+                }
+            }
+            if ((prevTab && prevTabPane !== pane) || (prevTab && prevTab.id === tabId)) {
+                return null;
+            }
+            return prevTab;
         }
-        if ((prevTab && prevTabPane !== pane) || (prevTab && prevTab.id === tabId)) {
-            return null;
-        }
-        return prevTab;
-    }
-};
+    };
+}());
+
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    "use strict";
 
     var ipc  = require('ipc'),
-		remote	= require('remote'),
-		Menu	= remote.require('menu'),
-		MenuItem = remote.require('menu-item'),
+        remote	= require('remote'),
+        Menu	= remote.require('menu'),
+        MenuItem = remote.require('menu-item'),
+        shell	= remote.require('shell'),
+        linter   = remote.require('eslint').linter,
         tabs = window.tabs,
         askia =  window.askia,
         resizer = new askia.Resizer({
@@ -278,9 +286,16 @@ document.addEventListener('DOMContentLoaded', function () {
         iFramesContainer = document.getElementById('iframes'),
         // Container of tab content
         contentReference = {
-			main : document.getElementById('main_pane').querySelector('.tabs-content'),
+            main : document.getElementById('main_pane').querySelector('.tabs-content'),
             second : document.getElementById('second_pane').querySelector('.tabs-content')
         };
+
+    // Expose the reference to the ESLint
+    window.eslint = {
+        verify : function (code, config) {
+            return linter.verify(code, config);
+        }
+    };
 
     /**
      * Indicates if the element has horizontal scroll
@@ -307,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Set the position of the tab content
      */
     function setTabContentPosition(contentEl, pane) {
-		var contentRefEl = contentReference[pane];                                           
+        var contentRefEl = contentReference[pane];                                           
         contentEl.style.top = contentRefEl.offsetTop + 'px';
         contentEl.style.left = contentRefEl.offsetParent.offsetLeft + 'px';
         contentEl.style.height = contentRefEl.offsetHeight + 'px';
@@ -346,70 +361,70 @@ document.addEventListener('DOMContentLoaded', function () {
       * @param {Boolean} [isActive=false] Activate the tab after his creation
       */
     function addTab(tab, pane, isActive) {
-         // Open the pane
-         openPane(pane);
+        // Open the pane
+        openPane(pane);
 
-         // Create the tab
-         var tabEl = document.createElement('li');
-         tabEl.setAttribute('title', tab.path);
-         tabEl.classList.add('tab');
-         tabEl.setAttribute('id', 'tab-' + tab.id);
+        // Create the tab
+        var tabEl = document.createElement('li');
+        tabEl.setAttribute('title', tab.path);
+        tabEl.classList.add('tab');
+        tabEl.setAttribute('id', 'tab-' + tab.id);
 
-         var tabIcon = document.createElement('span');
-         tabIcon.classList.add('tab-icon');
-         tabEl.appendChild(tabIcon);
+        var tabIcon = document.createElement('span');
+        tabIcon.classList.add('tab-icon');
+        tabEl.appendChild(tabIcon);
 
-         var tabText = document.createElement('span');
-         tabText.classList.add('tab-text');
-         tabText.innerHTML = tab.name || 'File';
-         tabEl.appendChild(tabText);
+        var tabText = document.createElement('span');
+        tabText.classList.add('tab-text');
+        tabText.innerHTML = tab.name || 'File';
+        tabEl.appendChild(tabText);
 
 
-         var tabClose = document.createElement('a');
-         tabClose.setAttribute('href', '#');
-         tabClose.classList.add('tab-close');
-         tabEl.appendChild(tabClose);
+        var tabClose = document.createElement('a');
+        tabClose.setAttribute('href', '#');
+        tabClose.classList.add('tab-close');
+        tabEl.appendChild(tabClose);
 
-         // Create the content of the tab
-         var contentEl = document.createElement('div');
-         contentEl.classList.add('content');
-         contentEl.classList.add(pane);
-         contentEl.setAttribute('id', 'content-' + tab.id);
+        // Create the content of the tab
+        var contentEl = document.createElement('div');
+        contentEl.classList.add('content');
+        contentEl.classList.add(pane);
+        contentEl.setAttribute('id', 'content-' + tab.id);
 
-         var div = document.createElement('div');
-         var viewer = document.createElement('iframe');
-         viewer.setAttribute('frameborder', 'no');
-         viewer.setAttribute('scrolling', 'no');
-         tabs.addTab(tab);
-         viewer.src = getViewerUrl(tab);
-         div.appendChild(viewer);
-         // While waiting the iframe load, hide the content to avoid the white flash
-         div.style.visibility = "hidden";
+        var div = document.createElement('div');
+        var viewer = document.createElement('iframe');
+        viewer.setAttribute('frameborder', 'no');
+        viewer.setAttribute('scrolling', 'no');
+        tabs.addTab(tab);
+        viewer.src = getViewerUrl(tab);
+        div.appendChild(viewer);
+        // While waiting the iframe load, hide the content to avoid the white flash
+        div.style.visibility = "hidden";
 
-         contentEl.appendChild(div);
+        contentEl.appendChild(div);
 
-         var paneEl = document.getElementById(pane + '_pane');
+        var paneEl = document.getElementById(pane + '_pane');
 
-         paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
-         
-         iFramesContainer.appendChild(contentEl);
-         setTabContentPosition(contentEl, pane);
+        paneEl.querySelector('.tabs').insertBefore(tabEl, paneEl.querySelector('.tab-end'));
 
-         if (isActive) {
-             setActiveTab(tab, pane);
-         }
+        iFramesContainer.appendChild(contentEl);
+        setTabContentPosition(contentEl, pane);
 
-         // Close the empty pane but never close both pane
-         var paneState       = getPanesState();
-         if (paneState.main && paneState.second) {
-             if (!isPaneHasTab('main')) {
-                 closePane('main');
-             } else if (!isPaneHasTab('second')) {
-                 closePane('second');
-             }
-         }
+        if (isActive) {
+            setActiveTab(tab, pane);
+        }
 
-         fixRendering();
+        // Close the empty pane but never close both pane
+        var paneState       = getPanesState();
+        if (paneState.main && paneState.second) {
+            if (!isPaneHasTab('main')) {
+                closePane('main');
+            } else if (!isPaneHasTab('second')) {
+                closePane('second');
+            }
+        }
+
+        fixRendering();
     }
 
     /**
@@ -419,12 +434,18 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function getViewerUrl(tab) {
         var viewerSubFolderName = 'editor';
-        if (tab.adcConfig) {
-            viewerSubFolderName = 'projectSettings';
-        } else if (tab.fileType === 'image') {
-            viewerSubFolderName = 'image';
-        } else if (tab.fileType === 'preview') {
-            viewerSubFolderName = 'preview';
+        switch(tab.type) {
+            case 'projectSettings':
+                viewerSubFolderName = 'projectSettings';
+                break;
+            case 'preview':
+                viewerSubFolderName = 'preview';
+                break;
+            case 'file':
+                if (tab.fileType === 'image') {
+                    viewerSubFolderName = 'image';
+                }
+                break;
         }
         return '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
     }
@@ -500,9 +521,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         // First look if the tab to close is the current active one
-       if (tabs.currentTabId === currentTab.id) {
+        if (tabs.currentTabId === currentTab.id) {
             tabToSelect = currentTab.previousSelection || currentTab.nextSelection ||
-                            currentTab.previous || currentTab.next;
+                currentTab.previous || currentTab.next;
         }
 
         // Remove the tab reference
@@ -531,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {String} targetPane Name of the target pane
      */
     function moveTab(tab, targetPane) {
-		var el              = document.getElementById('tab-' + tab.id),
+        var el              = document.getElementById('tab-' + tab.id),
             currentTab      = tabs[tab.id],
             paneState,
             targetPaneEl	= document.getElementById(targetPane + '_pane'),
@@ -541,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
             sourceTabLength;
         
         if (sourcePane === targetPane) {
-			return;
+            return;
         }
         
         openPane(targetPane);
@@ -551,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (el.classList.contains('active')) {
             prevTab = tabs.searchPreviousSelectionOnPane(currentTab.id, sourcePane);
             if (prevTab) {
-				var prevEl = document.getElementById('tab-' + prevTab.id);
+                var prevEl = document.getElementById('tab-' + prevTab.id);
                 var prevContentEl = document.getElementById('content-' + prevTab.id);
                 prevEl.classList.add('active');
                 prevEl.scrollIntoView();
@@ -561,11 +582,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Move the tab
-		targetPaneEl.querySelector('.tabs').insertBefore(el, targetPaneEl.querySelector('.tab-end'));
+        targetPaneEl.querySelector('.tabs').insertBefore(el, targetPaneEl.querySelector('.tab-end'));
         el.scrollIntoView();
         
 		// Activate the pane
-		setActiveTab(tab, targetPane);
+        setActiveTab(tab, targetPane);
 
         // Close the empty pane but never close both pane
         paneState = getPanesState();
@@ -575,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // resulting that the information is wrong at this level
             // To fix that, we calculate the number of tabs in the source pane, before to move the tab
             if (!sourceTabLength) {
-				closePane(sourcePane);
+                closePane(sourcePane);
             }
         }
         fixRendering();
@@ -613,13 +634,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(pane + '_pane').classList.add('open');
         var state = getPanesState();
         if (state.main && state.second) {
-			var panesEl = document.getElementById('panes');
+            var panesEl = document.getElementById('panes');
             panesEl.classList.remove('full');
             panesEl.classList.add('split');
 			// Enforce the size of the main pane
 			// Ensure that tabs sizes will not resize the second pane
-			if (!resizer.element.style.width) {
-              resizer.element.style.width = (panesEl.offsetWidth / 2)+ 'px';
+            if (!resizer.element.style.width) {
+                resizer.element.style.width = (panesEl.offsetWidth / 2) + 'px';
             }
             resizer.start();
         }
@@ -700,8 +721,8 @@ document.addEventListener('DOMContentLoaded', function () {
          * On context menu (right-click)
          * @param {Event} event
          */
-		function onTabsRightClick(event) {
-			var el = event.srcElement,
+        function onTabsRightClick(event) {
+            var el = event.srcElement,
                 paneEl,
                 tabId,
                 tab,
@@ -713,17 +734,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (!el.classList.contains('tab')) {
-				return;
+                return;
             }
-          
+
             tabId = el.id.replace(/^(tab-)/, '');
             paneEl = tabs.getPaneElementByTabId(tabId);
             if (!paneEl) {
-				return;
+                return;
             }
             pane   = paneEl.id.replace(/(_pane)$/, '');
             tab = tabs[tabId];
-			showContextualMenu(tab, pane);
+            showContextualMenu(tab, pane);
         }
       
 		/**
@@ -736,28 +757,28 @@ document.addEventListener('DOMContentLoaded', function () {
             contextualMenu.append(new MenuItem({
                 label: 'Close',
                 click: function onClickClose() {
-                   ipc.send('workspace-close-tab', tab.id);
+                    ipc.send('workspace-close-tab', tab.id);
                 }
             }));
             /* Close others */
             contextualMenu.append(new MenuItem({
                 label: 'Close others',
                 click: function onClickCloseOthers() {
-                  console.warn('TODO::Close others');
+                    console.warn('TODO::Close others');
                 }
             }));
             /* Close all */
             contextualMenu.append(new MenuItem({
                 label: 'Close all',
                 click: function onClickCloseAll() {
-                  console.warn('TODO::Close all');
+                    console.warn('TODO::Close all');
                 }
             }));
             /* Close unmodified */
             contextualMenu.append(new MenuItem({
                 label: 'Close unmodified',
                 click: function onClickCloseUnmodified() {
-                  console.warn('TODO::Close unmodified');
+                    console.warn('TODO::Close unmodified');
                 }
             }));
 
@@ -767,7 +788,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contextualMenu.append(new MenuItem({
                 label: 'Move to other pane',
                 click: function onClickCloseMoveToOtherPane() {
-                  ipc.send('workspace-move-tab', tab.id, (pane === 'main') ? 'second' : 'main');
+                    ipc.send('workspace-move-tab', tab.id, (pane === 'main') ? 'second' : 'main');
                 }
             }));
 
@@ -778,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 contextualMenu.append(new MenuItem({
                     label: 'Open in browser', 
                     click: function onClickOpen() {
-                      shell.openItem(tab.path);
+                        shell.openItem(tab.path);
                     }
                 }));
             }
@@ -965,7 +986,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         document.body.addEventListener('tabcontentchange', onTabContentChange);
-
+        
         /**
          * Event when the editor request the save
          *
@@ -999,7 +1020,7 @@ document.addEventListener('DOMContentLoaded', function () {
         /**
          * Resizing the window
          */
-        function onResize(){
+        function onResize() {
             fixRendering();
         }
 
@@ -1008,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resizeTimeout = setTimeout(onResize, 100);
         });
 
-    } ());
+    }());
 
     /* --- LISTEN EVENTS EMIT FROM THE SERVER SIDE CONTROLLER  --- */
 
@@ -1037,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ipc.on('workspace-create-and-focus-tab', function (err, tab, pane) {
         if (err) {
             console.warn(err);
-           return;
+            return;
         }
         addTab(tab, pane, true);
     });
@@ -1047,11 +1068,11 @@ document.addEventListener('DOMContentLoaded', function () {
             console.warn(err);
             return;
         }
-       removeTab(tab, pane);
+        removeTab(tab, pane);
     });
     
     ipc.on('workspace-change-tab-location', function (err, tab, pane) {
-		if (err) {
+        if (err) {
             console.warn(err);
             return;
         }

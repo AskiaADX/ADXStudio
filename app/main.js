@@ -1,6 +1,8 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var ipc = require('ipc');
+var appSettings = require('./appSettings/appSettingsModel.js');
+var ADC = require('adcutil').ADC;
 
 require('./workspace/workspaceController.js');
 require('./explorer/explorerController.js');
@@ -20,9 +22,9 @@ var mainView;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
 
@@ -31,27 +33,35 @@ app.on('window-all-closed', function() {
 app.on('ready', function loadMainWindow() {
     // Initialize the global.project
     global.project = {};
+    
+    // Load the default project path earlier in the application lifetime
+    appSettings.getInitialProject(function onInitialProject(projectPath) {
+        if (projectPath) {
+            global.project.path = projectPath;
+            global.project.adc = new ADC(projectPath);
+        }
+        
+        // Create the browser window, but don't show
+        mainWindow = new BrowserWindow({width: 800, height: 600, show : false});
 
-    // Create the browser window, but don't show
-    mainWindow = new BrowserWindow({width: 800, height: 600, show : false});
+        // Maximize it first
+        mainWindow.maximize();
 
-    // Maximize it first
-    mainWindow.maximize();
+        // and load the index.html of the app.
+        mainWindow.loadUrl('file://' + __dirname + '/main/index.html');
 
-    // and load the index.html of the app.
-    mainWindow.loadUrl('file://' + __dirname + '/main/index.html');
+        // Now show it
+        mainWindow.show();
 
-    // Now show it
-    mainWindow.show();
+        // Emitted when the window is closed.
+        mainWindow.on('closed', function onMainWindowClose() {
 
-    // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
-
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+            // Dereference the window object, usually you would store windows
+            // in an array if your app supports multi windows, this is the time
+            // when you should delete the corresponding element.
+            mainWindow = null;
+        });
+    });
 });
 
 /**
@@ -70,8 +80,6 @@ function showModalDialog(options, callbackEventName) {
  * Fire when the main window is ready
  */
 ipc.on('main-ready', function (event) {
-    var ADC = require('adcutil').ADC;
-
     mainView = event.sender;
 
     ADC.getTemplateList(function (err, templates) {

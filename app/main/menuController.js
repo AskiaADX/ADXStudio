@@ -4,6 +4,7 @@ var menu = require('menu');
 var dialog = require('dialog');
 var shell = require('shell');
 var fs = require('fs');
+var ADC = require('adcutil').ADC;
 
 // Default Menu of the app.
 app.once('ready', function createAppMenu() {
@@ -46,7 +47,6 @@ app.once('ready', function createAppMenu() {
                         accelerator : 'Ctrl+Shift+N',
                         click: function() {
                           app.emit('menu-new-project');
-                            
                         }
                     },
                     {
@@ -67,31 +67,14 @@ app.once('ready', function createAppMenu() {
                         click: function() {
                             dialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
                                 if (folderpath && folderpath.length) {
+                                    global.project.path = folderpath[0];
+                                    global.project.adc = new ADC(folderpath[0]);
+                                    
                                     app.emit("menu-open-project", folderpath[0]);
                                 }
                             });
 
                             //Function to define in order to open folder/project already created.
-                        }
-                    },
-                    {
-                        type: 'separator'
-                    },
-                      {
-                        label: '&Rename',
-                        accelerator: 'Ctrl+Q',
-                        click: function() {
-
-                            //Function to define in order to save current file changed.
-                        }
-                    },
-                  	{
-                        label: '&Remove',
-                        accelerator:'Ctrl+Delete',
-                        click: function() {
-                          //app.emit('menu-rename');
-
-                            //Function to define in order to save current file changed.
                         }
                     },
                    {
@@ -102,7 +85,7 @@ app.once('ready', function createAppMenu() {
                         accelerator: 'Ctrl+S',
                         click: function() {
                             console.log("Save from main.js");
-                            //Function to define in order to save current file changed.
+                            // Function to define in order to save current file changed.
                         }
                     },
                     {
@@ -110,7 +93,7 @@ app.once('ready', function createAppMenu() {
                         accelerator: 'Ctrl+Shift+S',
                         click: function() {
                             dialog.showSaveDialog({title:'file'});
-                            //Function to define in order to save new files.
+                            // Function to define in order to save new files.
                         }
                     },
                     {
@@ -128,7 +111,6 @@ app.once('ready', function createAppMenu() {
                             app.emit("menu-show-project-settings");
                         }
                     }
-
                 ]
             },
             {
@@ -184,32 +166,22 @@ app.once('ready', function createAppMenu() {
                 ]
             },
             {
-                label: 'About',
-                submenu: [
-                    {
-                        label: '&Askia',
-                        click: function() { shell.openExternal('http://www.askia.com/') }
-                    },
-                    {
-                        label: '&About Askia Design',
-                        click: function() { shell.openExternal('http://www.askia.com/design') }
-                    },
-                    {
-                        label: '&The team',
-                        click: function() { shell.openExternal('http://www.askia.com/about') }
-                    },
-                    {
-                        label: '&Ask us anything',
-                        click: function() { shellopenExternal('http://www.askia.com/contact') }
-                    }
-                ]
-            },
-            {
                 label: 'Help',
                 submenu: [
                     {
                         label: 'AskiaScript 2.0',
                         click: function() { shell.openExternal('https://support.askia.com/hc/en-us/articles/200003251-AskiaScript-2-0-specification') }
+                    },
+ 					{
+                        type: 'separator'
+                    },
+					{
+                        label: '&About Askia',
+                        click: function() { shell.openExternal('http://www.askia.com/') }
+                    },
+                    {
+                        label: '&About Askia Design',
+                        click: function() { shell.openExternal('http://www.askia.com/design') }
                     }
                 ]
             }

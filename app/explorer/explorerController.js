@@ -1,6 +1,5 @@
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
-var dialog = require('dialog');
 var explorer = require('./explorerModel.js');
 var appSettings = require('../appSettings/appSettingsModel.js');
 var path = require('path');
@@ -40,14 +39,13 @@ function newProject(event, options) {
  * @param {String[]} files Array of path
  */
 function openRootFolder(err, dir, files) {
-    var adc = new ADC(dir);
-    global.project.path = dir;
-    global.project.adc = adc;
-
-    adc.load(function (err) {
-        var name = (!err) ? adc.configurator.info.name() : path.basename(dir);
-        explorerView.send('explorer-expand-folder', err, dir, files, true, name);
-    });
+    var adc = global.project.adc;
+    if (adc) {
+        adc.load(function (err) {
+            var name = (!err) ? adc.configurator.info.name() : path.basename(dir);
+            explorerView.send('explorer-expand-folder', err, dir, files, true, name);
+        });
+    }
 }
 
 /**
@@ -125,13 +123,12 @@ ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
     // Load the default path
-    appSettings.getInitialProject(function onInitialProject(projectPath) {
-        if (projectPath) {
-            explorer.load(projectPath, true, function (err, files) {
-                openRootFolder(err, projectPath, files);
-            });
-        }
-    });
+    if (global.project.path) {
+        explorer.load(global.project.path, true, function (err, files) {
+            openRootFolder(err, global.project.path, files);
+        });
+    }
+    
 
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event
     app.on('menu-open-project', openProject); // Add it back again
@@ -145,7 +142,7 @@ ipc.on('explorer-ready', function (event) {
     ipc.removeListener('explorer-new-project', newProject);
     ipc.on('explorer-new-project', newProject);
 
-    //Send a message to the view, to open a new Project.
+    // Send a message to the view, to open a new Project.
     app.removeListener('menu-new-project', sendOpenProject);
     app.on('menu-new-project', sendOpenProject);
 

@@ -6,6 +6,10 @@ tmp/
 .DS_Store
 .docstates
 
+# ADX Studio GIT IGNORE
+######################
+
+.adxstudio/
 
 # NODE JS GIT IGNORE
 ######################

@@ -28,6 +28,10 @@
     <script src="../../lib/codemirror/mode/askiascriptjs/askiascriptjs.js"></script>
     <script src="../../lib/codemirror/mode/askiascriptcss/askiascriptcss.js"></script>
      	
+    <!-- Find and replace -->
+    <link rel="stylesheet" href="../../lib/codemirror/addon/find/find.css" />
+    <script src="../../lib/codemirror/addon/find/find.js"></script>
+    
     <!-- Code folding -->
     <link rel="stylesheet" href="../../lib/codemirror/addon/fold/foldgutter.css" />
 	<script src="../../lib/codemirror/addon/fold/foldcode.js"></script>
@@ -69,6 +73,9 @@
     <textarea id="code" name="code"></textarea>
     <script>
         (function () {
+            // Add the reference to the linter
+            window.eslint = window.parent.eslint;
+
             var contentTypeByFileExt = {
                 html : 'askiascript/html',
                 htm  : 'askiascript/html',

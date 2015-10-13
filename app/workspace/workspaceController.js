@@ -1,9 +1,24 @@
 var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
+var fs = require('fs');
 var workspace = require('./workspaceModel.js');
 var servers   = require('../modules/servers/adxServers.js');
 var workspaceView;
+
+/**
+ * Save the status of the workspace
+ */
+function saveWorkspaceStatus() {
+    var adc = global.project.adc;
+    if (!adc || !adc.path) {
+        return;
+    }
+
+    fs.mkdir(path.join(adc.path, '.adxstudio'), function () {
+        fs.writeFile(path.join(adc.path, '.adxstudio', 'workspace.json'),  JSON.stringify(workspace.toJSON()), {encoding: 'utf8'});
+    });
+}
 
 /**
  * Open a file in new tab. If the file is already open, focus the tab.
@@ -26,6 +41,7 @@ function openFile(file) {
             if (err) throw err;
             tab.loadFile(function (err) {
                 workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+                saveWorkspaceStatus();
             });
         });
     });
@@ -59,11 +75,14 @@ function openProjectSettings() {
         }
 
         // When the tab doesn't exist, create it
-        workspace.createTab(adc.path, function (err, tab, pane) {
+        workspace.createTab({
+            path : adc.path,
+            type : 'projectSettings'
+        }, function (err, tab, pane) {
             // TODO::Don't throw the error but send it to the view
             if (err) throw err;
             adc.load(function (err) {
-                tab.adcConfig = (!err)  ? adc.configurator.get(): {};
+                tab.adcConfig = (!err)  ? adc.configurator.get() : {};
                 workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
             });
         });
@@ -92,13 +111,14 @@ function openPreview(options) {
 
         // When the tab doesn't exist, create it
         // and enforce his creation on the second panel by default
-        var previousPane = workspace.panes.current();
-        workspace.panes.current('second');
-        workspace.createTab('::preview', function (err, tab, pane) {
-            if (err) throw err;
-            workspace.panes.current(previousPane.name); // Restore the previous active pane
-            tab.name = 'Preview';
-            tab.fileType  = 'preview';
+        workspace.createTab({
+            name : 'Preview',
+            path : '::preview', 
+            type : 'preview'
+        }, 'second',  function (err, tab, pane) {
+            if (err) {
+                throw err
+            }
             tab.ports     = {
                 http : options.httpPort,
                 ws   : options.wsPort
@@ -118,6 +138,8 @@ function startPreview() {
 
     servers.listen(openPreview);
 }
+
+
 
 /**
  * Set the current tab
@@ -141,6 +163,7 @@ function onSetCurrentTab(event, tabId) {
 function onCloseTab(event, tabId) {
     workspace.removeTab(tabId, function (err, tab, pane) {
         workspaceView.send('workspace-remove-tab', err, tab, pane);
+        saveWorkspaceStatus();
     });
 }
 
@@ -151,11 +174,10 @@ function onCloseTab(event, tabId) {
  * @param {String} targetPane Pane to target
  */
 function onMoveTab(event, tabId, targetPane) {
-    console.log('Move tab', tabId,  targetPane);
     workspace.moveTab(tabId, targetPane, function (err, tab, pane) {
-        console.log(err);
 		workspaceView.send('workspace-change-tab-location', err, tab, pane);
-    });
+        saveWorkspaceStatus();
+    });    
 }
 
 /**
@@ -237,71 +259,122 @@ function onFileChanged(tab, pane) {
 }
 
 /**
- * When the file has been deleted
+ * Open project in the workspace
  */
-function onFileRenamed(tab, pane) {
-    console.log('TODO::Manage renamed', tab);
+function openProject() {
+	// Load the default path
+    fs.readFile(path.join(global.project.path || '', '.adxstudio', 'workspace.json'), function (err, data) {
+        var json = err ? {} : JSON.parse(data.toString());
+        workspace.init(json, function () {
+			// Reload the workspace as it where
+            var adc = global.project.adc,
+                currentTabIds = {
+                    main   : workspace.panes.main.currentTabId,
+                    second : workspace.panes.second.currentTabId
+                };
+
+            workspace.tabs.forEach(function loadTab(tab) {
+                var pane = workspace.where(tab);
+                var action = tab.id === currentTabIds[pane] ? 'workspace-create-and-focus-tab' : 'workspace-create-tab';
+                
+                switch (tab.type) {
+					// Open the preview
+                    case 'preview':
+                        if (adc) {
+                            servers.listen(function (options) {
+                                tab.name = 'Preview';
+                                tab.ports     = {
+                                    http : options.httpPort,
+                                    ws   : options.wsPort
+                                };
+                                workspaceView.send(action, err, tab, workspace.where(tab));
+                            });
+                        }
+                        break;
+                                       
+					// Open the project settings
+                    case 'projectSettings':
+                        if (adc) {
+                            adc.load(function (er) {
+                                console.log('project settings was loaded');
+                                
+                                tab.adcConfig = (!er)  ? adc.configurator.get() : {};
+                                workspaceView.send(action, er, tab, pane);
+                            });
+                        }
+                        break;
+                                       
+					// Open file by default
+                    case 'file':
+                    default:
+                        tab.loadFile(function (er) {
+                            if (!er) {
+                                workspaceView.send(action, er, tab, workspace.where(tab));
+                            }
+                        });
+                        break;
+                }
+            });
+        });    
+    });
 }
 
 /**
- * When the file has been deleted
+ * Reload the workspace
  */
-function onFileDeleted(tab, pane) {
-    console.log('TODO::Manage deleted', tab);
+function reloadWorkspace() {
+    workspaceView.reload();
 }
 
-
 ipc.on('workspace-ready', function (event) {
+    
     // Keep the connection with the view
     workspaceView = event.sender;
+    
+    // Initialize the workspace
+    openProject();
+    
+    ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
+    ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
 
-    workspace.init(function () {
-        ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
-        ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
+    ipc.removeListener('workspace-set-current-tab', onSetCurrentTab);
+    ipc.on('workspace-set-current-tab', onSetCurrentTab);
 
-        ipc.removeListener('workspace-set-current-tab', onSetCurrentTab);
-        ipc.on('workspace-set-current-tab', onSetCurrentTab);
+    ipc.removeListener('workspace-close-tab', onCloseTab);
+    ipc.on('workspace-close-tab', onCloseTab);
 
-        ipc.removeListener('workspace-close-tab', onCloseTab);
-        ipc.on('workspace-close-tab', onCloseTab);
+    ipc.removeListener('workspace-save-content', onSaveContent);
+    ipc.on('workspace-save-content', onSaveContent);
 
-        ipc.removeListener('workspace-save-content', onSaveContent);
-        ipc.on('workspace-save-content', onSaveContent);
+    ipc.removeListener('workspace-edit-content', onEditContent);
+    ipc.on('workspace-edit-content', onEditContent);
 
-        ipc.removeListener('workspace-edit-content', onEditContent);
-        ipc.on('workspace-edit-content', onEditContent);
+    ipc.removeListener('workspace-restore-content', onRestoreContent);
+    ipc.on('workspace-restore-content', onRestoreContent);
 
-        ipc.removeListener('workspace-restore-content', onRestoreContent);
-        ipc.on('workspace-restore-content', onRestoreContent);
-        
-        ipc.removeListener('workspace-move-tab', onMoveTab);
-        ipc.on('workspace-move-tab', onMoveTab);
+    ipc.removeListener('workspace-move-tab', onMoveTab);
+    ipc.on('workspace-move-tab', onMoveTab);
 
-        app.removeListener('menu-new-file', openFile);
-        app.on('menu-new-file', openFile);
+    app.removeListener('menu-open-project', reloadWorkspace); 
+    app.on('menu-open-project', reloadWorkspace);
+    
+    app.removeListener('menu-new-file', openFile);
+    app.on('menu-new-file', openFile);
 
-        app.removeListener('menu-open-file', openFile);
-        app.on('menu-open-file', openFile);
+    app.removeListener('menu-open-file', openFile);
+    app.on('menu-open-file', openFile);
 
-        app.removeListener('menu-show-project-settings', openProjectSettings);
-        app.on('menu-show-project-settings', openProjectSettings);
+    app.removeListener('menu-show-project-settings', openProjectSettings);
+    app.on('menu-show-project-settings', openProjectSettings);
 
-        app.removeListener('menu-preview', startPreview);
-        app.on('menu-preview', startPreview);
+    app.removeListener('menu-preview', startPreview);
+    app.on('menu-preview', startPreview);
 
-        workspace.removeListener('file-changed', onFileChanged);
-        workspace.on('file-changed', onFileChanged);
+    workspace.removeListener('file-changed', onFileChanged);
+    workspace.on('file-changed', onFileChanged);
 
-        workspace.removeListener('file-renamed', onFileRenamed);
-        workspace.on('file-renamed', onFileRenamed);
-
-        workspace.removeListener('file-deleted', onFileDeleted);
-        workspace.on('file-deleted', onFileDeleted);
-
-        ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
-        ipc.on('workspace-reload-or-not-reload', onConfirmReload);
-
-    });
+    ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
+    ipc.on('workspace-reload-or-not-reload', onConfirmReload);
 
 });
 
