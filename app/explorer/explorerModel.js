@@ -69,7 +69,7 @@ Explorer.prototype.initWatcher = function initWatcher() {
      * @param {String} pathChanged Path of file that has changed
      */
     function onRootChange(event, pathChanged) {
-        //Part to reload parent folder when path have bben changed.
+        //Part to reload parent folder when path has been changed.
         //var parentDir = pathChanged === self._root ? pathChanged : path.join(pathChanged, '..');
         module.exports.load(pathChanged, function(err, files) {
             if (err) {

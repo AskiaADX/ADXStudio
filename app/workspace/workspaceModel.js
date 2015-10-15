@@ -285,6 +285,7 @@ Workspace.prototype.createTab = function createTab(config, pane, callback) {
         this.panes[pane].currentTabId = tab.id;
     }
 
+    self.emit('change');
     if (typeof callback === 'function') {
         callback(null, tab,  this.panes.mapByTabId[tab.id]);
     }
@@ -325,7 +326,8 @@ Workspace.prototype.removeTab = function removeTab(tab, callback) {
             self.tabs.splice(index, 1);
         }
         delete self.panes.mapByTabId[tab.id];
-
+        
+		self.emit('change');
         callback(null, tab, pane);
     });
 };
@@ -368,6 +370,7 @@ Workspace.prototype.moveTab = function moveTab(tab, targetPane, callback) {
         }
         
 		self.panes.mapByTabId[tab.id] = targetPane;
+        self.emit('change');
         
         if (typeof callback === 'function') {
 			callback(null, tab, targetPane);
@@ -484,6 +487,7 @@ Workspace.prototype.currentTab = function getSetCurrentTab(tabOrPane, callback) 
         if (tab.type !== 'preview') {
             this.panes.current(pane);
         }
+        this.emit('change');
     }
 	
     // Getter

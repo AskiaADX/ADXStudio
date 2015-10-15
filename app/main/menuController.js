@@ -21,7 +21,7 @@ app.once('ready', function createAppMenu() {
 
                     app.emit("menu-open-project", mruItem.path);
                 }
-            }
+            };
         }
 
         if (process.platforn !== 'darwin') {

@@ -38,10 +38,11 @@ function openFile(file) {
 
         // When the tab doesn't exist, create it
         workspace.createTab(file, function (err, tab, pane) {
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
             tab.loadFile(function (err) {
                 workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
-                saveWorkspaceStatus();
             });
         });
     });
@@ -80,7 +81,9 @@ function openProjectSettings() {
             type : 'projectSettings'
         }, function (err, tab, pane) {
             // TODO::Don't throw the error but send it to the view
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
             adc.load(function (err) {
                 tab.adcConfig = (!err)  ? adc.configurator.get() : {};
                 workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
@@ -136,7 +139,9 @@ function startPreview() {
         return;
     }
 
-    servers.listen(openPreview);
+    global.project.adc.checkFixtures(function () {
+        servers.listen(openPreview);
+    });
 }
 
 
@@ -163,7 +168,6 @@ function onSetCurrentTab(event, tabId) {
 function onCloseTab(event, tabId) {
     workspace.removeTab(tabId, function (err, tab, pane) {
         workspaceView.send('workspace-remove-tab', err, tab, pane);
-        saveWorkspaceStatus();
     });
 }
 
@@ -175,8 +179,7 @@ function onCloseTab(event, tabId) {
  */
 function onMoveTab(event, tabId, targetPane) {
     workspace.moveTab(tabId, targetPane, function (err, tab, pane) {
-		workspaceView.send('workspace-change-tab-location', err, tab, pane);
-        saveWorkspaceStatus();
+        workspaceView.send('workspace-change-tab-location', err, tab, pane);
     });    
 }
 
@@ -262,18 +265,23 @@ function onFileChanged(tab, pane) {
  * Open project in the workspace
  */
 function openProject() {
-	// Load the default path
+    workspace.removeListener('change', saveWorkspaceStatus);
+	
+    // Load the default path
     fs.readFile(path.join(global.project.path || '', '.adxstudio', 'workspace.json'), function (err, data) {
         var json = err ? {} : JSON.parse(data.toString());
         workspace.init(json, function () {
-			// Reload the workspace as it where
+			// Reload the workspace as it where before leaving the application
             var adc = global.project.adc,
                 currentTabIds = {
                     main   : workspace.panes.main.currentTabId,
                     second : workspace.panes.second.currentTabId
                 };
-
-            workspace.tabs.forEach(function loadTab(tab) {
+            
+            // Copy the tabs before to iterate through it
+            // the tabs could be modified by another async event 
+            // .slice() ensure we are working on a static copy
+            workspace.tabs.slice().forEach(function loadTab(tab) {
                 var pane = workspace.where(tab);
                 var action = tab.id === currentTabIds[pane] ? 'workspace-create-and-focus-tab' : 'workspace-create-tab';
                 
@@ -296,8 +304,6 @@ function openProject() {
                     case 'projectSettings':
                         if (adc) {
                             adc.load(function (er) {
-                                console.log('project settings was loaded');
-                                
                                 tab.adcConfig = (!er)  ? adc.configurator.get() : {};
                                 workspaceView.send(action, er, tab, pane);
                             });
@@ -315,6 +321,9 @@ function openProject() {
                         break;
                 }
             });
+            
+            // Listen change now
+            workspace.on('change', saveWorkspaceStatus);
         });    
     });
 }
@@ -330,10 +339,10 @@ ipc.on('workspace-ready', function (event) {
     
     // Keep the connection with the view
     workspaceView = event.sender;
-    
+        
     // Initialize the workspace
     openProject();
-    
+
     ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
     ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
 
@@ -355,9 +364,9 @@ ipc.on('workspace-ready', function (event) {
     ipc.removeListener('workspace-move-tab', onMoveTab);
     ipc.on('workspace-move-tab', onMoveTab);
 
-    app.removeListener('menu-open-project', reloadWorkspace); 
+    app.removeListener('menu-open-project', reloadWorkspace);
     app.on('menu-open-project', reloadWorkspace);
-    
+
     app.removeListener('menu-new-file', openFile);
     app.on('menu-new-file', openFile);
 
@@ -375,6 +384,7 @@ ipc.on('workspace-ready', function (event) {
 
     ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
     ipc.on('workspace-reload-or-not-reload', onConfirmReload);
+
 
 });
 

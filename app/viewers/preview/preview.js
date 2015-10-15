@@ -308,7 +308,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        url += output+ "/" + fixture + '?' + params.join('&');
+        url += output+ "/" + fixture;
+        if (params.length) {
+            url += '?' + params.join('&')
+        }
+        console.log('Set iframe src: ' + url);
         this.iframe.src = url ;
 
         return this;

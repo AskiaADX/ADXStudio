@@ -5,10 +5,6 @@
       askia = window.askia,
       countDownReadyWebView = 2; // 2 web-views must be loaded
 
-    function catchConsoleLog(event) {
-      console.log(event.message);
-    }
-
     /**
      * Look how many web-views are loaded and fire the ready event when all are ready
      */
@@ -26,13 +22,10 @@
       }
     }
 
-    exp.addEventListener('console-message', catchConsoleLog);
-    wks.addEventListener('console-message', catchConsoleLog);
-
     // Dev tools of the webview
     exp.addEventListener("dom-ready", function(){
       onWebViewLoaded();
-      exp.openDevTools();
+      // exp.openDevTools();
     });
     wks.addEventListener("dom-ready", function(){
       onWebViewLoaded();

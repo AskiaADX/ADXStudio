@@ -7,6 +7,7 @@ var fs = require('fs');
  */
 function AppDataSettings(){
     this.rootPath = path.join(process.env.APPDATA, 'ADXStudio');
+    this._cache  = {};
 }
 
 /**
@@ -27,7 +28,12 @@ AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed(cal
     if (typeof callback !== 'function') {
         return;
     }
+    if (this._cache.mru) {
+        callback(null, this._cache.mru);
+        return;
+    }
     var filePath = path.join(this.rootPath, 'MRU.json');
+    var self = this;
     fs.readFile(filePath, function onReadMRU(err, data) {
         if (err) {
            callback(err, []);
@@ -35,8 +41,16 @@ AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed(cal
         }
 
         var mru = data ? JSON.parse(data) : [];
-        callback(null, mru || []);
+        self._cache.mru = mru || [];
+        callback(null, self._cache.mru.slice());
     });
+};
+
+/**
+ * Clear the cache
+ */
+AppDataSettings.prototype.clearCache = function clearCache() {
+    this._cache = {};
 };
 
 /**
@@ -62,6 +76,7 @@ AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(ite
             mru.splice(indexFound, 1);
         }
         mru.unshift(item);
+        self._cache.mru = mru;
         fs.writeFile(path.join(self.rootPath, 'MRU.json'),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
             if (typeof callback === 'function') {
                 callback(err);

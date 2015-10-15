@@ -8,6 +8,7 @@ describe('appSettings', function () {
         var cacheKey = require.resolve("../../app/appSettings/appSettingsModel.js");
         delete require.cache[cacheKey];
 
+        process.env.APPDATA = '/username.domain/AppData/Roaming';
         appSettings = require("../../app/appSettings/appSettingsModel.js");
 
         spies = {
@@ -38,8 +39,6 @@ describe('appSettings', function () {
                 }
             };
         });
-
-        process.env.APPDATA = '/username.domain/AppData/Roaming';
     });
 
     function runSync(fn) {
@@ -80,6 +79,22 @@ describe('appSettings', function () {
             expect(readPath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'MRU.json'));
         });
 
+        it('should not read the MRU.json file if it was already read (in cache)', function () {
+            var callCount = 0;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                callCount++;
+                cb(null, '[{"path" : "A"}, {"path" : "B"}]');
+            });
+            runSync(function (done) {
+                appSettings.getMostRecentlyUsed(function () {
+                    appSettings.getMostRecentlyUsed(function () {
+                        expect(callCount).toEqual(1);
+                        done();
+                    });
+                });
+            });
+        });
+
         it('should return an error when the MRU.json could not be accessible', function () {
             var sendError = new Error("ENOFILE"), returnError;
             spies.fs.readFile.andCallFake(function (filePath, cb) {
@@ -111,6 +126,29 @@ describe('appSettings', function () {
                 result = data;
             });
             expect(result).toEqual([{path : 'A'}, {path : 'B'}]);
+        });
+    });
+
+    describe('#clearCache', function () {
+        it('should be a function', function () {
+            expect(typeof appSettings.clearCache).toEqual('function');
+        });
+
+        it('should clear the cache of the MRU', function () {
+            var callCount = 0;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                callCount++;
+                cb(null, '[{"path" : "A"}, {"path" : "B"}]');
+            });
+            runSync(function (done) {
+                appSettings.getMostRecentlyUsed(function () {
+                    appSettings.clearCache();
+                    appSettings.getMostRecentlyUsed(function () {
+                        expect(callCount).toEqual(2);
+                        done();
+                    });
+                });
+            });
         });
     });
 
@@ -168,7 +206,31 @@ describe('appSettings', function () {
             });
         });
 
-        it('should return an error when cannot write into the fiel', function () {
+        it('should update the MRU cache', function () {
+            var callCount = 0;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                callCount++;
+                cb(null, '[{"path" : "A"}, {"path" : "B"}]');
+            });
+            spies.fs.writeFile.andCallFake(function (filePath, data, options, cb) {
+                cb(null);
+            });
+            runSync(function (done) {
+                appSettings.addMostRecentlyUsed({ path : 'C'}, function () {
+                    appSettings.getMostRecentlyUsed(function (err, mru) {
+                        expect(callCount).toEqual(1);
+                        expect(mru).toEqual([
+                            {path : 'C'},
+                            {path : 'A'},
+                            {path : 'B'}
+                        ]);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it('should return an error when cannot write into the file', function () {
             spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });

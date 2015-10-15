@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Set the position of the tab content
      */
     function setTabContentPosition(contentEl, pane) {
-        var contentRefEl = contentReference[pane];                                           
+        var contentRefEl = contentReference[pane];
         contentEl.style.top = contentRefEl.offsetTop + 'px';
         contentEl.style.left = contentRefEl.offsetParent.offsetLeft + 'px';
         contentEl.style.height = contentRefEl.offsetHeight + 'px';
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
         content.classList.remove(pane === 'main' ? 'second' : 'main');
         content.classList.add(pane);
         setTabContentPosition(content, pane);
-        
+
         if (el === oldActiveTab) {
             return;
         }
@@ -518,8 +518,6 @@ document.addEventListener('DOMContentLoaded', function () {
             currentTab      = tabs[tab.id],
             paneState       = getPanesState();
 
-
-
         // First look if the tab to close is the current active one
         if (tabs.currentTabId === currentTab.id) {
             tabToSelect = currentTab.previousSelection || currentTab.nextSelection ||
@@ -535,7 +533,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Set the new active tab
         if (tabToSelect) {
-            setActiveTab(tabToSelect, pane);
+            setActiveTab(tabToSelect, tabs.getPaneName(tabToSelect.id));
         }
 
         // Close the empty pane but never close both pane

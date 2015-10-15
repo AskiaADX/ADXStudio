@@ -38,7 +38,7 @@ describe("workspace", function () {
         var workspaceCacheKey = require.resolve("../../app/workspace/workspaceModel.js");
         delete require.cache[workspaceCacheKey];
         workspace = require("../../app/workspace/workspaceModel.js");
-
+        
     });
 
     function runSync(fn) {
@@ -835,6 +835,61 @@ describe("workspace", function () {
                 });
 
             });
+        });
+        
+        describe('@change', function () {
+            it('should be triggered when a tab was created', function () {
+                runSync(function (done) {
+                    workspace.panes.current("main");
+                    workspace.on('change', function () {
+                        expect(true).toBe(true);
+                        done();
+                    });
+                    workspace.createTab(null, function() {});
+                });
+            });
+            
+            it('should be triggered when a tab was moved', function () {
+                runSync(function (done) {
+                    workspace.panes.current("main");
+                    workspace.createTab(null, function(err, tab) {
+                        workspace.on('change', function () {
+                            expect(true).toBe(true);
+                            done();
+                        });
+                        
+                        workspace.moveTab(tab, 'second', function () {});
+                    });
+                });
+            });
+            
+            it('should be triggered when a tab was removed', function () {
+                runSync(function (done) {
+                    workspace.panes.current("main");
+                    workspace.createTab(null, function(err, tab) {
+                        workspace.on('change', function () {
+                            expect(true).toBe(true);
+                            done();
+                        });
+                        
+                        workspace.removeTab(tab, function () {});
+                    });
+                });
+            });
+            
+            it('should be triggered when change the current tab', function () {
+                runSync(function (done) {
+                    workspace.createTab({}, function (err, tab) {
+                        workspace.on('change', function () {
+                            expect(true).toBe(true);
+                            done();
+                        });
+
+                        workspace.currentTab(tab, function() {});
+                    });
+                });
+            });
+                        
         });
 
     });

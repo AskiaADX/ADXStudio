@@ -25,18 +25,17 @@
   },
   "homepage": "https://github.com/AskiaADX/ADXStudio",
   "dependencies": {
-    "adcutil": "^1.1.0-beta.19",
+    "adcutil": "^1.1.0-beta.27",
     "charset-detector": "0.0.2",
     "eslint": "^1.6.0",
     "fs.extra": "^1.3.2",
-    "gaze": "^0.5.1",
-    "mime-types": "^2.1.3",
+    "gaze": "^0.5.2",
+    "mime-types": "^2.1.7",
     "node-uuid": "^1.4.3",
     "nodejs-websocket": "^1.4.0"
   },
   "devDependencies": {
-    "electron-packager": "^5.0.2",
-    "electron-prebuilt": "^0.28.3",
+    "electron-prebuilt": "^0.33.8",
     "jasmine-node": "^1.14.5"
   }
 }

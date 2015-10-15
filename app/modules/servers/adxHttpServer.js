@@ -13,6 +13,8 @@ var Server      = serverUtil.Server;
  * @param {Object} response HTTP Response
  */
 function throwError(err, response) {
+    console.log('500 Internal server error');
+    console.log(err);
     response.writeHead(500, {'Content-Type': 'text/plain'});
     response.write('500 Internal server error\n');
     if (err) {
@@ -46,7 +48,9 @@ function serveADCOutput(err, request, response, fixtures) {
     var outputName = adc.configurator.outputs.defaultOutput();
     var fixtureName = fixtures.defaultFixture;
     var properties = uriParse.query || '';
-    var arg = {};
+    var arg = {
+        silent : true
+    };
 
     var match = /\/output\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
     if (match) {
@@ -57,21 +61,29 @@ function serveADCOutput(err, request, response, fixtures) {
     }
 
     // Add .xml extension on the fixture name
-    if (!/\.xml$/i.test(fixtureName)) {
+    if (fixtureName && !/\.xml$/i.test(fixtureName)) {
         fixtureName += '.xml';
     }
-    arg.output = outputName;
-    arg.fixture = fixtureName;
+    if (outputName) {
+        arg.output = outputName;
+    }
+    if (fixtureName) {
+        arg.fixture = fixtureName;
+    }
     arg.masterPage = 'node_modules/adcutil/templates/master_page/default.html';
     if (properties) {
         arg.properties = properties;
     }
+
     adc.show(arg, function (err, output) {
         if (err) {
             throwError(err, response);
         } else {
+            // Fix paths inside output:
+            var rg = new RegExp("File:\\\\\\\\\\\\" + global.project.path.replace(/\\/g, "/"), "g");
+            var html = output.replace(rg, "../Resources/Survey/");
             response.writeHead(200, {"Content-Type": "text/html"});
-            response.write(output);
+            response.write(html);
             response.end();
         }
     });
@@ -130,6 +142,7 @@ function reply(request, response) {
         if (match && match.length === 2) {
             uriRewrite = match[1];
         }
+
         var filename = path.join(adc.path, uriRewrite);
         var stats;
 
