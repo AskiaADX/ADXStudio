@@ -70,14 +70,6 @@ function itemRightClick(e) {
     contextualMenu.popup(remote.getCurrentWindow());
 }
 
-
-ipc.on('menu-new-project', function () {
-    ipc.sendToHost('show-modal-dialog', {
-        type: 'newADCProject'
-    }, 'explorer-new-project');
-});
-
-
 function itemclick() {
 
     var itemInfo = this;
@@ -114,7 +106,6 @@ function itemclick() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-
     /*
      *
      * @param {String} path Path of Directory.
@@ -122,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {Boolean} isRoot indicate if e are on root.
      */
     ipc.on('explorer-expand-folder', function (err, path, files, isRoot, rootName) {
+        elLoader.style.display = 'none';
         var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
             document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
         var deep = parseInt(root.getAttribute('data-deep'), 10);
@@ -182,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
             root.appendChild(item);
         }
     });
+
 
     ipc.send('explorer-ready');
 });

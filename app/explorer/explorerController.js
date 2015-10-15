@@ -7,32 +7,6 @@ var ADC = require('adcutil').ADC;
 var explorerView;
 
 /**
- * Open a project in the explorer
- * @param {Object} event Event arg
- * @param {Object} options Project options
- */
-function newProject(event, options) {
-    var project = {
-        output: options.path,
-        template: options.template,
-        description: options.description
-    };
-    project.author = {
-        name: 'Maxime',
-        email: 'nanana@gmail.com',
-        company: 'askia',
-        website: 'http://askia.com'
-    };
-    ADC.generate(options.name, project, function (err, adc) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        openProject(adc.path);
-    });
-}
-
-/**
  * Open the root folder
  * @param err
  * @param {String} dir Path of the root directory
@@ -95,13 +69,6 @@ function renameFile(event, file, newName) {
     });
 }
 
-/**
- * Send a message to the view to Open new project.
- *
- */
-function sendOpenProject(event) {
-    explorerView.send('menu-new-project');
-}
 
 /**
  * When a directory change reload it
@@ -128,7 +95,6 @@ ipc.on('explorer-ready', function (event) {
             openRootFolder(err, global.project.path, files);
         });
     }
-    
 
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event
     app.on('menu-open-project', openProject); // Add it back again
@@ -138,13 +104,6 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
-  
-    ipc.removeListener('explorer-new-project', newProject);
-    ipc.on('explorer-new-project', newProject);
-
-    // Send a message to the view, to open a new Project.
-    app.removeListener('menu-new-project', sendOpenProject);
-    app.on('menu-new-project', sendOpenProject);
 
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first

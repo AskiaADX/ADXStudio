@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fixture xmlns="http://www.askia.com/ADCUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCUnitTestSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd">
+  <arrange>
+      <Survey Name="TimeSurvey" CurrentQuestion="time_only" Version="1.0" Full="1" MaxQuestionID="2" MaxResponseID="52">
+      <Languages>
+      <Language ID="2057" Abbr="ENG" Name="English (United Kingdom)" Default="1"/>
+      </Languages>
+	<Questions>
+	<Question ID="2" Shortcut="loop" Order="1" ElementType="loop" QuestionType="table" Translated="0">
+	<LongCaption>loop</LongCaption>
+	<Modalities>
+	<Modality ID="50">
+	<ShortCaption>Iteration 1</ShortCaption>
+	</Modality>
+	<Modality ID="51">
+	<ShortCaption>Iteration 2</ShortCaption>
+	</Modality>
+	<Modality ID="52">
+	<ShortCaption>Iteration 3</ShortCaption>
+	</Modality>
+	</Modalities>
+	<Questions>
+      <Question ID="1" Shortcut="time_only" Order="1" ElementType="question" AllowDK="1" QuestionType="date" DateType="2" Translated="0">
+      <LongCaption>time_only</LongCaption>
+      	</Question>
+	</Questions>
+	</Question>
+	</Questions>
+    </Survey>
+  </arrange>
+</fixture>

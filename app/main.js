@@ -75,6 +75,64 @@ function showModalDialog(options, callbackEventName) {
     mainView.send.apply(mainView, args);
 }
 
+/**
+ * Display the main loader
+ *
+ * @param {String} message Message to display
+ */
+function showLoader(message) {
+    // TODO::IMPLEMENTS HERE
+}
+
+/**
+ * Hide the main loader
+ */
+function hideLoader() {
+    // TODO::IMPLEMENTS HERE
+}
+
+/**
+ * Show the modal dialog to create a new project
+ */
+function newProject() {
+    showModalDialog({
+        type : 'newADCProject'
+    }, 'main-create-new-project');
+}
+
+/**
+ * Create a new project
+ * @param {Object} event Event arg
+ * @param {String} button Button clicked
+ * @param {Object} options Project options
+ */
+function createNewProject(event, button, options) {
+    if (button !== 'ok' && button !== 'yes') {
+        return;
+    }
+    var project = {
+        output: options.path,
+        template: options.template,
+        description: options.description
+    };
+    project.author = {
+        name: 'Maxime',
+        email: 'nanana@gmail.com',
+        company: 'askia',
+        website: 'http://askia.com'
+    };
+    ADC.generate(options.name, project, function (err, adc) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        global.project.path = adc.path;
+        global.project.adc = adc;
+
+        // Open the newest project
+        app.emit('menu-open-project', adc.path);
+    });
+}
 
 /**
  * Fire when the main window is ready
@@ -93,4 +151,9 @@ ipc.on('main-ready', function (event) {
     app.removeListener('show-modal-dialog', showModalDialog);
     app.on('show-modal-dialog', showModalDialog);
 
+    app.removeListener('menu-new-project', newProject);
+    app.on('menu-new-project', newProject);
+
+    ipc.removeListener('main-create-new-project', createNewProject);
+    ipc.on('main-create-new-project', createNewProject);
 });

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<fixture xmlns="http://www.askia.com/ADCUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCUnitTestSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd">
+  <arrange>
+    <Survey Name="ChapterSurvey" CurrentQuestion="chapter" Version="1.0" Full="1" MaxQuestionID="1" MaxResponseID="0">
+      <Languages>
+        <Language ID="2057" Abbr="ENG" Name="English (United Kingdom)" Default="1"/>
+      </Languages>
+      <Questions>
+        <Question ID="1" Shortcut="chapter" Order="1" ElementType="chapter" Translated="0">
+          <LongCaption>chapter</LongCaption>
+        </Question>
+      </Questions>
+      <ErrorMessages/>
+      <ScreenGroups/>
+      <Resources/>
+      <InternetOptions>
+        <Buttons/>
+        <Page Layout="0"/>
+        <Errors/>
+        <Table/>
+        <JavaScript>
+          <LivePath>../Scripts/</LivePath>
+        </JavaScript>
+        <Exit/>
+      </InternetOptions>
+    </Survey>
+  </arrange>
+</fixture>
