@@ -6,7 +6,8 @@
     width    : 100vw;
     height   : 100vh;
     justify-content  : center;
-    background-color : rgba(33, 37, 43, 0.9);
+    background-color : #666;
+    opacity: .8;
 }
 .askia-modal-dialog {
     font-family: "Lucida Grande", Helvetica, Arial, sans-serif;

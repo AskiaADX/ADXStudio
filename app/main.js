@@ -76,19 +76,22 @@ function showModalDialog(options, callbackEventName) {
 }
 
 /**
+ * Close the modal dialog
+ */
+function closeModalDialog() {
+    mainView.send('close-modal-dialog');
+}
+
+/**
  * Display the main loader
  *
  * @param {String} message Message to display
  */
 function showLoader(message) {
-    // TODO::IMPLEMENTS HERE
-}
-
-/**
- * Hide the main loader
- */
-function hideLoader() {
-    // TODO::IMPLEMENTS HERE
+    showModalDialog({
+        type : 'loader',
+        message : message
+    });
 }
 
 /**
@@ -110,6 +113,15 @@ function createNewProject(event, button, options) {
     if (button !== 'ok' && button !== 'yes') {
         return;
     }
+
+    if (!options.name) {
+        console.log('TODO::Manage error');
+        console.log('Require a valid name');
+        return;
+    }
+
+    showLoader("Create `" + options.name + "` ADC project");
+
     var project = {
         output: options.path,
         template: options.template,
@@ -122,7 +134,9 @@ function createNewProject(event, button, options) {
         website: 'http://askia.com'
     };
     ADC.generate(options.name, project, function (err, adc) {
+        closeModalDialog();
         if (err) {
+            console.log('TODO::Manage error');
             console.log(err);
             return;
         }

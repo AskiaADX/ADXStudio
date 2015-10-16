@@ -360,6 +360,14 @@ window.askia.modalDialog = (function () {
          */
          show : function showModalDialog(options, callback) {
             return new ModalDialog(options, callback);
+         },
+        /**
+         * Close the current modal dialog
+         */
+         close : function closeModalDialog() {
+            if (currentInstance) {
+                currentInstance.close();
+            }
          }
     };
 }());

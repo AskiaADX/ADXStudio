@@ -25,11 +25,11 @@
     // Dev tools of the webview
     exp.addEventListener("dom-ready", function(){
       onWebViewLoaded();
-      // exp.openDevTools();
+      exp.openDevTools();
     });
     wks.addEventListener("dom-ready", function(){
       onWebViewLoaded();
-      wks.openDevTools();
+      // wks.openDevTools();
     });
 
 
@@ -70,5 +70,12 @@
             }
             ipc.send.apply(ipc, args);
         });
+    });
+
+    /**
+     * Close the modal dialog from the controller
+     */
+    ipc.on('close-modal-dialog', function () {
+       askia.modalDialog.close();
     });
 }());

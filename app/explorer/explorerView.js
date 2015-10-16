@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {Boolean} isRoot indicate if e are on root.
      */
     ipc.on('explorer-expand-folder', function (err, path, files, isRoot, rootName) {
-        elLoader.style.display = 'none';
         var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
             document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
         var deep = parseInt(root.getAttribute('data-deep'), 10);
