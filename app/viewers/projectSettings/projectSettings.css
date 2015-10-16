@@ -24,10 +24,6 @@ input, textarea, select {
     padding: 10px;
 }
 
-#categories {
-    width: 421px;
-}
-
 #style_width, #style_height {
     width: 181px;
 }

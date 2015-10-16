@@ -114,24 +114,11 @@ function createNewProject(event, button, options) {
         return;
     }
 
-    if (!options.name) {
-        console.log('TODO::Manage error');
-        console.log('Require a valid name');
-        return;
-    }
-
-    showLoader("Create `" + options.name + "` ADC project");
-
+    showLoader("Creating `" + options.name + "` ADC project ...");
     var project = {
         output: options.path,
         template: options.template,
         description: options.description
-    };
-    project.author = {
-        name: 'Maxime',
-        email: 'nanana@gmail.com',
-        company: 'askia',
-        website: 'http://askia.com'
     };
     ADC.generate(options.name, project, function (err, adc) {
         closeModalDialog();

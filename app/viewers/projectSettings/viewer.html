@@ -146,8 +146,7 @@
     (function () {
         var tab = viewer.currentTab;
         var info = tab.adcConfig.info;
-        var i, l, str, key, constraints;
-        var infCons = info.constraints;
+        var i, l, key, constraints;
         var responses = document.getElementById('responses');
 
         // Set the textual-information
@@ -187,19 +186,6 @@
             }
         }
 
-        /*
-         responses.addEventListener('click', function (event) {
-
-         var min = document.getElementById('min');
-         var max = document.getElementById('max');
-
-         if (parseInt(min.value) > parseInt(max.value)) {
-         responses.classList.add('error');
-         } else {
-         responses.classList.remove('error');
-         }
-         });
-         */
 
         viewer.fireReady();
     }());

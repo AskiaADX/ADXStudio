@@ -29,6 +29,13 @@ app.once('ready', function createAppMenu() {
                 {
                     label: '&File',
                     submenu: [
+                         {
+                            label: '&New Project',
+                            accelerator : 'Ctrl+Shift+N',
+                            click: function() {
+                                app.emit('menu-new-project');
+                            }
+                        },
                         {
                             label: '&New File',
                             accelerator: 'Ctrl+N',
@@ -58,25 +65,6 @@ app.once('ready', function createAppMenu() {
                             }
                         },
                         {
-                            label: '&New Project',
-                            accelerator : 'Ctrl+Shift+N',
-                            click: function() {
-                                app.emit('menu-new-project');
-                            }
-                        },
-                        {
-                            label: '&Open File',
-                            accelerator : 'Ctrl+O',
-                            click: function() {
-                                dialog.showOpenDialog({ properties: [ 'openFile']}, function(filepath) {
-                                    if (filepath && filepath.length) {
-                                        app.emit("menu-open-file", filepath[0]);
-                                    }
-                                });
-                                //Function to define in order to open file already been create.
-                            }
-                        },
-                        {
                             label: '&Open Project',
                             accelerator: 'Ctrl+Shift+O',
                             click: function() {
@@ -88,6 +76,18 @@ app.once('ready', function createAppMenu() {
                                         app.emit("menu-open-project", folderpath[0]);
                                     }
                                 });
+                            }
+                        },
+                        {
+                            label: '&Open File',
+                            accelerator : 'Ctrl+O',
+                            click: function() {
+                                dialog.showOpenDialog({ properties: [ 'openFile']}, function(filepath) {
+                                    if (filepath && filepath.length) {
+                                        app.emit("menu-open-file", filepath[0]);
+                                    }
+                                });
+                                // Function to define in order to open file already been create.
                             }
                         },
                         {
