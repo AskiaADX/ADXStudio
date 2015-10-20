@@ -89,12 +89,20 @@ ul {
     min-width : 120px;
     width : 120px;
 }
+#properties_table tr,
 #contents tbody tr {
     height : 55px;
 }
 #contents span {
     padding: 10px;
 }
+
+#properties_table th,
+#properties_table td {
+    padding : 5px;
+    min-width : 120px;
+}
+
 
 .output-content {
     cursor : pointer;

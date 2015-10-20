@@ -327,6 +327,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     background-color: #666;
 }
 
+.viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
+.viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
     background-color : #444;
 }
