@@ -58,6 +58,59 @@ function openFileFromExplorer(event, file) {
 }
 
 /**
+ * Return the structure of the resources directory of the current ADC
+ * @param {Function} callback
+ * @param {Object} callback.structure
+ * @param {String[]} callback.structure.dynamic List of files in dynamic directory
+ * @param {String[]} callback.structure.statics List of files in static directory
+ * @param {String[]} callback.structure.share List of files in share directory
+ */
+function getResourcesDirectoryStructure(callback) {
+    if (typeof callback !== 'function') {
+        return;
+    }
+
+    var adc = global.project.adc;
+    function buildFiles(dir, files) {
+        var stats;
+        var finalFiles = [];
+        var i, l = files.length;
+
+        for (i = 0; i < l; i++) {
+            try {
+                stats = fs.statSync(path.join(dir, files[i]));
+            }
+            catch (err2) {
+                continue;
+            }
+
+            if (stats.isFile()) {
+                finalFiles.push(files[i]);
+            }
+        }
+
+        return finalFiles;
+    }
+
+    var structure = {};
+    var sharePath = path.join(adc.path, 'resources/share');
+    fs.readdir(sharePath, function onReadShareDirectory(errShare, shareFiles) {
+        structure.share = (!errShare) ? (buildFiles(sharePath, shareFiles) || []) : [];
+
+        var staticPath = path.join(adc.path, 'resources/static');
+        fs.readdir(staticPath, function onReadStaticDirectory(errStatic, staticFiles) {
+            structure.statics = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
+
+            var dynamicPath = path.join(adc.path, 'resources/dynamic');
+            fs.readdir(dynamicPath, function onReadDynamicDirectory(errDynamic, dynamicFiles) {
+                structure.dynamic = (!errDynamic) ? (buildFiles(dynamicPath, dynamicFiles) || []) : [];
+                callback(structure);
+            });
+        });
+    });
+}
+
+/**
  * Open project settings
  */
 function openProjectSettings() {
@@ -84,9 +137,13 @@ function openProjectSettings() {
             if (err) {
                 throw err;
             }
-            adc.load(function (err) {
-                tab.adcConfig = (!err)  ? adc.configurator.get() : {};
-                workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+            getResourcesDirectoryStructure(function (structure) {
+                adc.load(function (err) {
+                    tab.adcConfig = (!err)  ? adc.configurator.get() : {};
+                    tab.adcStructure = structure;
+
+                    workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+                });
             });
         });
     });
@@ -223,9 +280,28 @@ function onSaveContent(event, tabId, content) {
             workspaceView.send('workspace-update-tab', err, null, null);
             return;
         }
-        tab.saveFile(content, function (err) {
-            workspaceView.send('workspace-update-tab', err, tab, pane);
-        });
+        if (tab.type === 'projectSettings') {
+            var adc = global.project.adc;
+            if (!adc || !adc.path) {
+                return;
+            }
+
+            adc.configurator.set(content);
+            adc.configurator.save(function () {
+
+                getResourcesDirectoryStructure(function (structure) {
+                    tab.adcConfig = adc.configurator.get();
+                    tab.adcStructure = structure;
+                    workspaceView.send('workspace-update-tab', err, tab, pane);
+                });
+
+            });
+        }
+        else {
+            tab.saveFile(content, function (err) {
+                workspaceView.send('workspace-update-tab', err, tab, pane);
+            });
+        }
     });
 }
 
@@ -303,9 +379,12 @@ function openProject() {
 					// Open the project settings
                     case 'projectSettings':
                         if (adc) {
-                            adc.load(function (er) {
-                                tab.adcConfig = (!er)  ? adc.configurator.get() : {};
-                                workspaceView.send(action, er, tab, pane);
+                            getResourcesDirectoryStructure(function (structure) {
+                                adc.load(function (er) {
+                                    tab.adcConfig = (!er)  ? adc.configurator.get() : {};
+                                    tab.adcStructure = structure;
+                                    workspaceView.send(action, er, tab, pane);
+                                });
                             });
                         }
                         break;

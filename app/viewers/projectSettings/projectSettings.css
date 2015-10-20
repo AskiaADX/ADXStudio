@@ -1,20 +1,52 @@
 html, body {
   margin: 0;
   padding:0;
-  height :100%;
+  height :100vh;
 }
-
+body {
+    display: flex;
+    flex-direction: row;
+}
+nav, ul {
+    margin:0;
+    padding:0;
+}
+nav {
+    width : 200px;
+    height : 100vh;
+}
+nav li {
+    margin-bottom : 20px;
+}
+nav a {
+    display : block;
+    padding : 10px;
+    width   : 180px;
+}
 form {
   padding:0;
   margin:0;
   overflow: auto;
-  width:100vw;
-  max-height:100vh;
+  flex : 1;
+  height:100vh;
 }
+
+section {
+    display : none;
+}
+section.active {
+    display : block;
+}
+
+section > div {
+    margin-left:10px;
+}
+
 
 label {
   width     : 170px;
   display   : inline-block;
+  vertical-align: top;
 }
 
 input[type="text"], input[type="url"], textarea, select {
@@ -42,4 +74,28 @@ ul {
 
 .error {
   background: red;
+}
+
+.form-controls {
+    margin: 30px;
+}
+#contents select {
+    width:100%;
+    padding: 10px;
+}
+#contents th,
+#contents td {
+    padding : 5px;
+    min-width : 120px;
+    width : 120px;
+}
+#contents tbody tr {
+    height : 55px;
+}
+#contents span {
+    padding: 10px;
+}
+
+.output-content {
+    cursor : pointer;
 }

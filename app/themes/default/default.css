@@ -29,6 +29,10 @@ body.form-viewer {
     font-size: 14px;
 }
 
+body.form-viewer a {
+    color: #BBB;
+}
+
 h3 {
     font-size: 14px;
     font-weight: bold;
@@ -299,3 +303,31 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 #iframes .content {
     background-color: #21252B;
 }
+
+
+/* ========================================
+   Viewer Part - Project Settings
+   ======================================== */
+.viewer-project-settings nav {
+    background-color : #222;
+}
+.viewer-project-settings nav a {
+    color: #BBB;
+    background-color: #333;
+    text-decoration: none;
+    cursor : pointer;
+}
+
+.viewer-project-settings nav a.active {
+    color: #fff;
+    background-color: #555;
+}
+
+.viewer-project-settings nav a:hover {
+    background-color: #666;
+}
+
+.viewer-project-settings #contents tbody tr:nth-child(odd) {
+    background-color : #444;
+}
+

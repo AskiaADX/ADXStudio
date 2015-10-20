@@ -62,7 +62,7 @@
             }
 
             this[tab.id] = tab;
-            this.dispatchEvent('tabcontentchange', tab.id, tab.content);
+            this.dispatchEvent('tabcontentchange', tab.id, (tab.type !== 'projectSettings') ? tab.content : null);
         },
 
         /**
@@ -129,7 +129,7 @@
          *
          * @param {String} eventName Name of the event
          * @param {String} tabId Id of the tab taht initiate the event
-         * @param {String} content Content of the tab
+         * @param {String|Object|Boolean} content Content of the tab or has changed
          */
         dispatchEvent  : function dispatchEvent(eventName, tabId, content) {
             var tab = this[tabId];
@@ -137,11 +137,18 @@
                 return;
             }
 
+            var wasModified = false;
+            if (typeof content === 'boolean') {
+                wasModified =  content;
+            } else {
+                wasModified = (content !== undefined && tab.content !== content);
+            }
+
             var event = new CustomEvent(eventName, {
                 'detail': {
                     'tab'     : tab,
                     'content' : content,
-                    'isModified' : (content !== undefined && tab.content !== content)
+                    'isModified' : wasModified
                 }
             });
             document.body.dispatchEvent(event);
@@ -190,7 +197,7 @@
          * Event fire when the content of the editor has changed
          *
          * @param {String} tabId Id of the tab
-         * @param {String} content Current content in the editor
+         * @param {String|Boolean} content Current content in the editor or indicates if has changed
          */
         onContentChange : function onContentChange(tabId, content) {
             this.dispatchEvent('tabcontentchange', tabId, content);
@@ -200,7 +207,7 @@
          * Event fire when the editor request a save
          *
          * @param {String} tabId Id of the tab
-         * @param {String} content Current content in the editor
+         * @param {String|Object} content Current content in the editor
          */
         onSave       : function onSave(tabId, content) {
             this.dispatchEvent('tabcontentsave', tabId, content);

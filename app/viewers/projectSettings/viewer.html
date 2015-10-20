@@ -5,190 +5,231 @@
     <title>Image viewer</title>
     <link rel="stylesheet" href="projectSettings.css"/>
     <link rel="stylesheet" href="../../themes/default/default.css"/>
-    <script src="../viewer.js"></script>
+    <link rel="stylesheet" href="../../lib/askia/ModalDialog.css"/>
+    <script src="../../lib/askia/ModalDialog.js"></script>
 </head>
-<body class="form-viewer">
-<form>
-    <fieldset>
-        <legend>General</legend>
-        <p>
-            <label for="guid">GUID:</label>
-            <input type="text" id="guid" name="guid" readonly="readonly"/>
-        </p>
+<body class="form-viewer viewer-project-settings">
 
-        <p>
-            <label for="date">Created at:</label>
-            <input type="text" id="date" name="date" readonly="readonly"/>
-        </p>
+<nav>
+    <ul>
+        <li><a href="#info" class="active">Information</a></li>
+        <li><a href="#outputs">Outputs</a></li>
+        <li><a href="#properties">Properties</a></li>
+    </ul>
+</nav>
 
-        <p>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" placeholder="Name of the ADC"/>
-        </p>
+<form id="formProjectSettings" action="#">
 
-        <p>
-            <label for="version">Version:</label>
-            <input type="text" id="version" name="version" placeholder="1.0.0, 1.0.0.alpha1, 1.0.0.beta1"/>
-        </p>
+    <section id="info" class="active">
 
-        <p>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" placeholder="Description of the ADC"></textarea>
-        </p>
+        <fieldset>
+            <legend>General</legend>
+            <p>
+                <label for="guid">GUID:</label>
+                <input type="text" id="guid" name="guid" readonly="readonly"/>
+            </p>
 
-        <p>
-            <label for="categories">Categories:</label>
-            <input type="text" id="categories" name="categories" placeholder="General, Sliders, Maps"/>
-        </p>
-        <p>
-            <label for="style_width">Size (width x height):</label>
-            <input type="number" id="style_width" name="style[width]"/> x <input
-                type="number" id="style_height" name="style[height]"/>
-        </p>
+            <p>
+                <label for="date">Created at:</label>
+                <input type="text" id="date" name="date" readonly="readonly"/>
+            </p>
 
-        <p>
-            <label for="helpURL">Help URL:</label>
-            <input type="url" id="helpURL" name="helpURL" placeholder="http://url/of/the/adc/help/file"/>
-        </p>
-    </fieldset>
+            <p>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"/>
+            </p>
 
-    <fieldset>
-        <legend>About</legend>
-        <p>
-            <label for="author">Author(s):</label>
-            <input type="text" id="author" name="author"
-                   placeholder="John Doe &lt;john.doe@domain.com&gt;, Foo Bar &lt;foo@bar.com&gt;"/>
-        </p>
+            <p>
+                <label for="version">Version:</label>
+                <input type="text" id="version" name="version" placeholder="1.0.0, 1.0.0.alpha1 or 1.0.0.beta1"/>
+            </p>
 
-        <p>
-            <label for="company">Company:</label>
-            <input type="text" id="company" name="company" placeholder="Awesome company"/>
-        </p>
+            <p>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea>
+            </p>
 
-        <p>
-            <label for="site">Company website:</label>
-            <input type="url" id="site" name="site" placeholder="http://my.website.com"/>
-        </p>
-    </fieldset>
+            <p>
+                <label for="categories">Categories:</label>
+                <input type="text" id="categories" name="categories"/>
+            </p>
 
-    <fieldset>
-        <legend>Available for</legend>
-        <h3>Questions</h3>
-        <ul>
-            <li>
-                <input type="checkbox" id="questions_chapter" name="questions[chapter]"/>
-                <label for="questions_chapter" class="checkbox-label">Chapter</label>
-            </li>
-            <li>
-                <input type="checkbox" id="questions_single" name="questions[single]"/>
-                <label for="questions_single" class="checkbox-label">Single closed</label>
-            </li>
-            <li>
-                <input type="checkbox" id="questions_multiple" name="questions[multiple]"/>
-                <label for="questions_multiple" class="checkbox-label">Multi-coded</label>
-            </li>
-            <li>
-                <input type="checkbox" id="questions_numeric" name="questions[numeric]"/>
-                <label for="questions_numeric" class="checkbox-label">Numeric</label>
-            </li>
-            <li>
-                <input type="checkbox" id="questions_open" name="questions[open]"/>
-                <label for="questions_open" class="checkbox-label">Open</label>
-            </li>
-            <li>
-                <input type="checkbox" id="questions_date" name="questions[date]"/>
-                <label for="questions_date" class="checkbox-label">Date</label>
-            </li>
-            <li>
-                <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
-                <label for="questions_requireParentLoop" class="checkbox-label">Require parent loop</label>
-            </li>
-        </ul>
-        <h3>Responses</h3>
-            <p id="responses-min">
+            <p>
+                <label for="style_width">Size (width x height):</label>
+                <input type="number" id="style_width" name="style[width]"/> x
+                <input type="number" id="style_height" name="style[height]"/>
+            </p>
+
+            <p>
+                <label for="helpURL">Help URL:</label>
+                <input type="url" id="helpURL" name="helpURL"/>
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <legend>About</legend>
+            <p>
+                <label for="author">Author(s):</label>
+                <input type="text" id="author" name="author" />
+            </p>
+
+            <p>
+                <label for="company">Company:</label>
+                <input type="text" id="company" name="company"/>
+            </p>
+
+            <p>
+                <label for="site">Company website:</label>
+                <input type="url" id="site" name="site"/>
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <legend>Available for</legend>
+            <h3>Questions</h3>
+            <ul>
+                <li>
+                    <input type="checkbox" id="questions_chapter" name="questions[chapter]"/>
+                    <label for="questions_chapter" class="checkbox-label">Chapter</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="questions_single" name="questions[single]"/>
+                    <label for="questions_single" class="checkbox-label">Single closed</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="questions_multiple" name="questions[multiple]"/>
+                    <label for="questions_multiple" class="checkbox-label">Multi-coded</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="questions_numeric" name="questions[numeric]"/>
+                    <label for="questions_numeric" class="checkbox-label">Numeric</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="questions_open" name="questions[open]"/>
+                    <label for="questions_open" class="checkbox-label">Open</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="questions_date" name="questions[date]"/>
+                    <label for="questions_date" class="checkbox-label">Date</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
+                    <label for="questions_requireParentLoop" class="checkbox-label">Require parent loop</label>
+                </li>
+            </ul>
+
+            <h3>Responses</h3>
+            <p>
                 <label for="responses_min">Minimum:</label>
                 <input type="number" id="responses_min" name="responses[min]" min="0"/>
             </p>
+
             <p>
                 <label for="responses_max">Maximum:</label>
                 <input type="number" id="responses_max" name="responses[max]" min="0"/>
             </p>
-        <h3>Controls</h3>
-        <ul>
-            <li>
-                <input type="checkbox" id="controls_responseblock" name="controls[responseblock]"/>
-                <label for="controls_responseblock" class="checkbox-label">Response block</label>
-            </li>
-            <li>
-                <input type="checkbox" id="controls_label" name="controls[label]"/>
-                <label for="controls_label" class="checkbox-label">Label</label>
-            </li>
-            <li>
-                <input type="checkbox" id="controls_textbox" name="controls[textbox]"/>
-                <label for="controls_textbox" class="checkbox-label">Text box</label>
-            </li>
-            <li>
-                <input type="checkbox" id="controls_listbox" name="controls[listbox]"/>
-                <label for="controls_listbox" class="checkbox-label">List box</label>
-            </li>
-            <li>
-                <input type="checkbox" id="controls_checkbox" name="controls[checkbox]"/>
-                <label for="controls_checkbox" class="checkbox-label">Check box</label>
-            </li>
-            <li>
-                <input type="checkbox" id="controls_radiobutton" name="controls[radiobutton]"/>
-                <label for="controls_radiobutton" class="checkbox-label">Radio button</label>
-            </li>
-        </ul>
-    </fieldset>
+
+            <h3>Controls</h3>
+            <ul>
+                <li>
+                    <input type="checkbox" id="controls_responseblock" name="controls[responseblock]"/>
+                    <label for="controls_responseblock" class="checkbox-label">Response block</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="controls_label" name="controls[label]"/>
+                    <label for="controls_label" class="checkbox-label">Label</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="controls_textbox" name="controls[textbox]"/>
+                    <label for="controls_textbox" class="checkbox-label">Text box</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="controls_listbox" name="controls[listbox]"/>
+                    <label for="controls_listbox" class="checkbox-label">List box</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="controls_checkbox" name="controls[checkbox]"/>
+                    <label for="controls_checkbox" class="checkbox-label">Check box</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="controls_radiobutton" name="controls[radiobutton]"/>
+                    <label for="controls_radiobutton" class="checkbox-label">Radio button</label>
+                </li>
+            </ul>
+        </fieldset>
+    </section>
+
+    <section id="outputs">
+
+        <div>
+            <select id="outputs_list"></select>
+            <button type="button" id="new_output">New</button>
+            <button type="button" id="delete_output">Delete</button>
+        </div>
+
+        <fieldset id="output_meta">
+            <legend>Output</legend>
+            <p>
+                <label for="output_id">Id:</label>
+                <input type="text" id="output_id" name="output[id]" />
+            </p>
+
+            <p>
+                <label for="output_condition">Condition:</label>
+                <textarea id="output_condition" name="output[condition]"></textarea>
+            </p>
+
+            <p>
+                <label for="output_description">Description:</label>
+                <textarea id="output_description" name="output[description]"></textarea>
+            </p>
+
+            <p>
+                <input type="checkbox" id="output_default" name="output[defaultOutput]" />
+                <label for="output_default">Set as default</label>
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <legend>Contents</legend>
+
+            <table id="contents">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Position</th>
+                        <th>Type</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="output-content content-file"><span>Dynamic/MyFileName.js</span></td>
+                        <td class="output-content content-position"><span>Head</span></td>
+                        <td class="output-content content-type"><span>Javascript</span></td>
+                        <td><a href="#" class="del">DEL</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" id="add_content">Add content</button>
+        </fieldset>
+
+    </section>
+
+    <section id="properties">
+
+        TODO::Complete here
+
+    </section>
+
+    <div class="form-controls">
+        <button type="submit" id="apply">Apply</button>
+    </div>
 </form>
-<script>
-    (function () {
-        var tab = viewer.currentTab;
-        var info = tab.adcConfig.info;
-        var i, l, key, constraints;
-        var responses = document.getElementById('responses');
-
-        // Set the textual-information
-        var infoText = ['name', 'guid', 'date', 'version', 'description', 'helpURL', 'author', 'company', 'site'];
-        for (i = 0, l = infoText.length; i < l; i++) {
-            document.getElementById(infoText[i]).value = (info[infoText[i]] || '').trim();
-        }
-
-        // Special case for the style which uses 2 data (width and height)
-        if (info.style) {
-            if (typeof info.style.width === 'number') {
-                document.getElementById("style_width").value = info.style.width;
-            }
-            if (typeof info.style.height === 'number') {
-                document.getElementById("style_height").value = info.style.height;
-            }
-        }
-
-        // Set the categories in the textbox
-        if (Array.isArray(info.categories)) {
-            document.getElementById('categories').value = info.categories.join(', ');
-        }
-
-        // Set the constraints information
-        var infoConstraints = {
-            questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop'],
-            responses: ['min', 'max'],
-            controls: ['responseblock', 'label', 'textbox', 'listbox', 'checkbox', 'radiobutton']
-        };
-
-        for (key in infoConstraints) {
-            if (infoConstraints.hasOwnProperty(key)) {
-                constraints = infoConstraints[key];
-                for (i = 0, l = constraints.length; i < l; i++) {
-                    document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;
-                }
-            }
-        }
-
-
-        viewer.fireReady();
-    }());
-</script>
+<script src="../viewer.js"></script>
+<script src="projectSettings.info.js"></script>
+<script src="projectSettings.outputs.js"></script>
+<script src="projectSettings.js"></script>
 </body>
 </html>

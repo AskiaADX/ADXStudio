@@ -25,11 +25,11 @@
     // Dev tools of the webview
     exp.addEventListener("dom-ready", function(){
       onWebViewLoaded();
-      exp.openDevTools();
+      // exp.openDevTools();
     });
     wks.addEventListener("dom-ready", function(){
       onWebViewLoaded();
-      // wks.openDevTools();
+      wks.openDevTools();
     });
 
 
