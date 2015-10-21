@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function getCurrentConfig() {
         return {
             info     : window.projectSettings.getCurrentInfo(),
-            outputs  : window.projectSettings.getCurrentOutputs()
+            outputs  : window.projectSettings.getCurrentOutputs(),
+            properties : window.projectSettings.getCurrentProperties()
         };
     }
 
@@ -53,7 +54,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Changes
     window.projectSettings.onchange = function onformchange() {
-        var hasChanged = window.projectSettings.hasInfoChanged() || window.projectSettings.hasOutputsChanged();
+        var hasChanged = window.projectSettings.hasInfoChanged() ||
+                            window.projectSettings.hasOutputsChanged() ||
+                            window.projectSettings.hasPropertiesChanged();
+
         tabs.onContentChange(tab.id, hasChanged);
     };
 

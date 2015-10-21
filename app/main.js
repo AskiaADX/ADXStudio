@@ -3,6 +3,9 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 var ipc = require('ipc');
 var appSettings = require('./appSettings/appSettingsModel.js');
 var ADC = require('adcutil').ADC;
+var fs = require("fs");
+var path = require("path");
+var uuid = require('node-uuid');
 
 require('./workspace/workspaceController.js');
 require('./explorer/explorerController.js');
@@ -130,8 +133,30 @@ function createNewProject(event, button, options) {
         global.project.path = adc.path;
         global.project.adc = adc;
 
-        // Open the newest project
-        app.emit('menu-open-project', adc.path);
+        // Open the project with the 'Project settings' tab open
+        var adc = global.project.adc;
+        if (!adc || !adc.path) {
+            return;
+        }
+
+        fs.mkdir(path.join(adc.path, '.adxstudio'), function () {
+            fs.writeFile(path.join(adc.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
+                tabs: [
+                    {
+                        id: uuid.v4(),
+                        pane: "main",
+                        current: true,
+                        config: {
+                            path: adc.path,
+                            type: "projectSettings"
+                        }
+                    }
+                ]
+            }), {encoding: 'utf8'}, function () {
+                // Open the newest project
+                app.emit('menu-open-project', adc.path);
+            });
+        });
     });
 }
 

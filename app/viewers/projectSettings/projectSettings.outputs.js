@@ -352,8 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     contentsEl.addEventListener('click', function (event) {
         var el = event.srcElement,
-            select,span, html = [], i, l,
-            content, command ='edit';
+            command ='edit';
 
         if (el.tagName.toLowerCase() === 'select') {
             event.stopPropagation();

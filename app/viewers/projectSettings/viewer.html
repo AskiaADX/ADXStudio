@@ -214,10 +214,7 @@
 
 
             <div>
-                <select id="categories_list">
-                    <option value="general">General</option>
-                    <option value="numericQuestion">Numeric question</option>
-                </select>
+                <select id="categories_list"></select>
                 <button type="button" id="new_category">New</button>
                 <button type="button" id="delete_category">Delete</button>
             </div>
@@ -247,184 +244,127 @@
                         <th>&nbsp;</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td class="property-content property-id"><span>useList</span></td>
-                        <td class="property-content property-name"><span>Use a select box</span></td>
-                        <td class="property-content property-type"><span>boolean</span></td>
-                        <td>
-                            <a href="#" class="edit">Edit</a> |
-                            <a href="#" class="del">Delete</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <div class="inner-form">
-                                <p>
-                                    <label for="property_id">Id:</label>
-                                    <input type="text" id="property_id" />
-                                </p>
-                                <p>
-                                    <label for="property_name">Name:</label>
-                                    <input type="text" id="property_name"/>
-                                </p>
-                                <p>
-                                    <label for="property_description">Description:</label>
-                                    <textarea id="property_description"></textarea>
-                                </p>
-                                <p>
-                                    <label for="property_type">Type:</label>
-                                    <select id="property_type">
-                                        <option value="text">string</option>
-                                        <option value="number">number</option>
-                                        <option value="boolean">boolean</option>
-                                        <option value="color">color</option>
-                                        <option value="question">question</option>
-                                        <option value="file">file</option>
-                                    </select>
-                                </p>
-                                <p>
-                                    <label for="property_value">Value:</label>
-                                    <input type="text" id="property_value" />
-                                </p>
-                                <p>
-                                    <label for="property_mode">Mode:</label>
-                                    <select id="property_mode">
-                                        <option value="static">static</option>
-                                        <option value="dynamic">dynamic</option>
-                                    </select>
-                                </p>
-                                <p>
-                                    <input type="checkbox" id="property_require" />
-                                    <label for="property_require">Require</label>
-                                </p>
-                                <p>
-                                    <input type="checkbox" id="property_visible" />
-                                    <label for="property_visible">Visible</label>
-                                </p>
-                                <div class="property-type-string">
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                <div id="property_inner_form">
                                     <p>
-                                        <label for="property_pattern">Pattern:</label>
-                                        <input type="text" id="property_pattern" />
-                                    </p>
-                                </div>
-                                <div class="property-type-number">
-                                    <p>
-                                        <label for="property_min">Minimum:</label>
-                                        <input type="number" id="property_min" />
+                                        <label for="property_id">Id:</label>
+                                        <input type="text" id="property_id" />
                                     </p>
                                     <p>
-                                        <label for="property_min">Maximum:</label>
-                                        <input type="number" id="property_max" />
+                                        <label for="property_name">Name:</label>
+                                        <input type="text" id="property_name"/>
                                     </p>
                                     <p>
-                                        <label for="property_decimal">Decimal:</label>
-                                        <input type="number" id="property_decimal" />
+                                        <label for="property_description">Description:</label>
+                                        <textarea id="property_description"></textarea>
                                     </p>
-                                </div>
-                                <div class="property-type-color">
                                     <p>
-                                        <label for="property_colorFormat">Color format:</label>
-                                        <select id="property_colorFormat" >
-                                            <option value="hexa">Hexa</option>
-                                            <option value="rgb">RGB</option>
-                                            <option value="rgba">RGBA</option>
+                                        <label for="property_type">Type:</label>
+                                        <select id="property_type">
+                                            <option value="string">string</option>
+                                            <option value="number">number</option>
+                                            <option value="boolean">boolean</option>
+                                            <option value="color">color</option>
+                                            <option value="question">question</option>
+                                            <option value="file">file</option>
                                         </select>
                                     </p>
+                                    <p>
+                                        <label for="property_value">Value:</label>
+                                        <input type="text" id="property_value" />
+                                    </p>
+                                    <p>
+                                        <label>Options:</label>
+                                        <span class="property-options-list-container">
+                                            <span class="property-options-list"></span>
+                                            <a href="#" class="add-property-option">Add option</a> |
+                                            <a href="#" class="delete-property-options">Delete options</a>
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <label for="property_mode">Mode:</label>
+                                        <select id="property_mode">
+                                            <option value="static">static</option>
+                                            <option value="dynamic">dynamic</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input type="checkbox" id="property_require" />
+                                        <label for="property_require">Require</label>
+                                    </p>
+                                    <p>
+                                        <input type="checkbox" id="property_visible" />
+                                        <label for="property_visible">Visible</label>
+                                    </p>
+                                    <div class="property-type-string">
+                                        <p>
+                                            <label for="property_pattern">Pattern:</label>
+                                            <input type="text" id="property_pattern" />
+                                        </p>
+                                    </div>
+                                    <div class="property-type-number">
+                                        <p>
+                                            <label for="property_min">Minimum:</label>
+                                            <input type="number" id="property_min" />
+                                        </p>
+                                        <p>
+                                            <label for="property_max">Maximum:</label>
+                                            <input type="number" id="property_max" />
+                                        </p>
+                                        <p>
+                                            <label for="property_decimal">Decimal:</label>
+                                            <input type="number" id="property_decimal" />
+                                        </p>
+                                    </div>
+                                    <div class="property-type-color">
+                                        <p>
+                                            <label for="property_colorFormat">Color format:</label>
+                                            <select id="property_colorFormat" >
+                                                <option value="hexa">Hexa</option>
+                                                <option value="rgb">RGB</option>
+                                                <option value="rgba">RGBA</option>
+                                            </select>
+                                        </p>
+                                    </div>
+                                    <div class="property-type-file">
+                                        <p>
+                                            <label for="property_fileExtension">File extension:</label>
+                                            <input type="text" id="property_fileExtension" />
+                                        </p>
+                                    </div>
+                                    <div class="property-type-question">
+                                        <p>
+                                            <input type="checkbox" id="property_chapter" />
+                                            <label for="property_chapter">Chapter</label>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_single" />
+                                            <label for="property_single">Single question</label>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_multiple" />
+                                            <label for="property_multiple">Multi-coded question</label>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_numeric" />
+                                            <label for="property_numeric">Numeric question</label>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_open" />
+                                            <label for="property_open">Open question</label>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_date" />
+                                            <label for="property_date">Date/Time question</label>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="property-type-question">
-                                    <p>
-                                        <input type="checkbox" id="property_chapter" />
-                                        <label for="property_single">Chapter</label>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_single" />
-                                        <label for="property_single">Single question</label>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_multiple" />
-                                        <label for="property_multiple">Multi-coded question</label>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_numeric" />
-                                        <label for="property_numeric">Numeric question</label>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_open" />
-                                        <label for="property_open">Open question</label>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_date" />
-                                        <label for="property_date">Date/Time question</label>
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="property-content property-id"><span>unitStep</span></td>
-                        <td class="property-content property-name"><span>Numeric unit step</span></td>
-                        <td class="property-content property-type"><span>number</span></td>
-                        <td>
-                            <a href="#" class="edit">Edit</a> |
-                            <a href="#" class="del">Delete</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <div class="inner-form">
-                                Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="property-content property-id"><span>unitStep</span></td>
-                        <td class="property-content property-name"><span>Numeric unit step</span></td>
-                        <td class="property-content property-type"><span>number</span></td>
-                        <td>
-                            <a href="#" class="edit">Edit</a> |
-                            <a href="#" class="del">Delete</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <div class="inner-form">
-                                Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="property-content property-id"><span>unitStep</span></td>
-                        <td class="property-content property-name"><span>Numeric unit step</span></td>
-                        <td class="property-content property-type"><span>number</span></td>
-                        <td>
-                            <a href="#" class="edit">Edit</a> |
-                            <a href="#" class="del">Delete</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <div class="inner-form">
-                                Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor<br/>
-                                And Lorem Ipsum Dolor
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
 
                 <button type="button" id="add_property">Add property</button>
@@ -440,6 +380,7 @@
 <script src="../viewer.js"></script>
 <script src="projectSettings.info.js"></script>
 <script src="projectSettings.outputs.js"></script>
+<script src="projectSettings.properties.js"></script>
 <script src="projectSettings.js"></script>
 </body>
 </html>

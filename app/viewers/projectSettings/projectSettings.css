@@ -52,6 +52,18 @@ label {
 input[type="text"], input[type="url"], textarea, select {
     width: 400px;
 }
+
+.inner-form label {
+    width     : 120px;
+}
+
+.inner-form input[type="text"],
+.inner-form input[type="url"],
+.inner-form textarea,
+.inner-form select {
+    width: 300px;
+}
+
 input, textarea, select {
     padding: 10px;
 }
@@ -96,6 +108,11 @@ ul {
 #contents span {
     padding: 10px;
 }
+.cat-prop,
+.output-content {
+    cursor : pointer;
+}
+
 
 #properties_table th,
 #properties_table td {
@@ -104,6 +121,35 @@ ul {
 }
 
 
-.output-content {
-    cursor : pointer;
+#properties_table tfoot,
+#properties_table .inner-form {
+    display : none;
+}
+
+#properties_table .inner-form.editable {
+    display:table-row;
+}
+
+.property-options-list-container {
+    display : inline-block;
+}
+
+.property-options-list {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 160px;
+    width: 350px;
+}
+.property-options-list,
+.property-options-list-row {
+    display : block;
+}
+.property-options-list-row {
+    margin-bottom: 4px;
+}
+.inner-form .property-options-list-row input[type=text] {
+    width : 125px;
+}
+.property-option-value {
+    margin-right: 5px;
 }
