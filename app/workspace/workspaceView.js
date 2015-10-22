@@ -204,6 +204,16 @@
         },
 
         /**
+         * Event fire when the editor request a save as
+         *
+         * @param {String} tabId Id of the tab
+         * @param {String|Object} content Current content in the editor
+         */
+        onSaveAs     : function onSaveAs(tabId, content) {
+            this.dispatchEvent('tabcontentsaveas', tabId, content);
+        },
+
+        /**
          * Set the current tab and focus the editor
          * @param {String} tabId Id of the current tab
          */
@@ -666,7 +676,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         fixRendering();
     }
-    
+
+    /**
+     * Return the current active tab
+     * It uses the DOM to determine it more explicitly
+     *
+     * @return {Object} active tab
+     */
+    function getActiveTab() {
+        var activePane = document.querySelector('.pane.focused');
+        if (!activePane) {
+            return null;
+        }
+        var activeTab = activePane.querySelector('.tab.active');
+        if (!activeTab) {
+            return null;
+        }
+        var tabId = activeTab.id.replace(/^tab-/, '');
+        return tabs[tabId] || null;
+    }
+
+    /**
+     * Save the current tab
+     */
+    function save() {
+        var currentTab = getActiveTab();
+        if (!currentTab || !currentTab.viewer) {
+            return;
+        }
+        if (typeof currentTab.viewer.saveContent === 'function') {
+            currentTab.viewer.saveContent();
+        }
+    }
+
+    /**
+     * Save the current tab as
+     */
+    function saveAs() {
+        var currentTab = getActiveTab();
+        if (!currentTab || !currentTab.viewer) {
+            return;
+        }
+        if (typeof currentTab.viewer.saveContentAs === 'function') {
+            currentTab.viewer.saveContentAs();
+        }
+    }
 
 
     (function initTabEvents() {
@@ -997,6 +1051,20 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.addEventListener('tabcontentsave', onTabContentSave);
 
         /**
+         * Event when the editor request the save as
+         *
+         * @param {CustomEvent} event
+         */
+        function onTabContentSaveAs(event) {
+            var tab         = event.detail.tab,
+                content     = event.detail.content;
+
+            ipc.send('workspace-save-content-as', tab.id, content);
+        }
+
+        document.body.addEventListener('tabcontentsaveas', onTabContentSaveAs);
+
+        /**
          * Event when a tab is focused
          *
          * @param {CustomEvent} event
@@ -1058,21 +1126,9 @@ document.addEventListener('DOMContentLoaded', function () {
         addTab(tab, pane, true);
     });
 
-    ipc.on('workspace-save-active-file', function () {
-        var activePane = document.querySelector('.pane.focused');
-        if (!activePane) {
-            return;
-        }
-        var activeTab = activePane.querySelector('.tab.active');
-        if (!activeTab) {
-            return;
-        }
-        var tabId = activeTab.id.replace(/^tab-/, '');
-        var currentTab = tabs[tabId];
-        if (currentTab.viewer && typeof currentTab.viewer.saveContent === 'function') {
-            currentTab.viewer.saveContent();
-        }
-    });
+    ipc.on('workspace-save-active-file', save);
+
+    ipc.on('workspace-save-as-active-file', saveAs);
 
     ipc.on('workspace-remove-tab', function (err, tab, pane) {
         if (err) {

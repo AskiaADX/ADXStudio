@@ -34,7 +34,7 @@ It's fire with the following arguments:
 
 ### 'workspace-move-tab
 
-The `'workspace-move-tab` event is fire when the current tab should be move to another pane
+The `workspace-move-tab` event is fire when the current tab should be move to another pane
 
 It's fire with the following arguments:
 
@@ -69,7 +69,6 @@ It's fire with the following arguments:
 * **event** Event object
 * **tabId** Id of the tab that hold the content
 
-
 ### workspace-save-content
 
 The `workspace-save-content` event is fire when the user try to save the content of a given file.
@@ -80,6 +79,15 @@ It's fire with the following arguments:
 * **tabId** Id of the tab that hold the content
 * **content** The content to save
 
+### workspace-save-content-as
+
+The `workspace-save-content-as` event is fire when the user try to save the content to another file.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab that hold the content
+* **content** The content to save
      
 ## Events from Controller
 
@@ -123,6 +131,13 @@ The `workspace-save-active-file` event is fire when the user click on main `Save
  
 It's fire with no arguments. 
 The workspace view will trigger back relative events to save the current active content.
+
+### workspace-save-as-active-file
+
+The `workspace-save-as-active-file` event is fire when the user click on main `Save As` menu.
+ 
+It's fire with no arguments. 
+The workspace view will trigger back relative events to 'save as' the current active content.
 
  
 ### workspace-update-tab

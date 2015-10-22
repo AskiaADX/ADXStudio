@@ -2,6 +2,8 @@ var app = require('app');
 var ipc = require('ipc');
 var path = require('path');
 var fs = require('fs');
+var dialog = require('dialog');
+var ADCConfigurator = require('adcutil').Configurator;
 var workspace = require('./workspaceModel.js');
 var servers   = require('../modules/servers/adxServers.js');
 var workspaceView;
@@ -140,6 +142,13 @@ function openFileFromExplorer(event, file) {
  */
 function saveFile() {
     workspaceView.send('workspace-save-active-file');
+}
+
+/**
+ * Save as the current active file
+ */
+function saveFileAs(){
+    workspaceView.send('workspace-save-as-active-file');
 }
 
 /**
@@ -391,6 +400,70 @@ function onSaveContent(event, tabId, content) {
 }
 
 /**
+ * Save content as
+ * @param event
+ * @param {String} tabId Id of the tab
+ * @param {String} content Content to save
+ */
+function onSaveContentAs(event, tabId, content) {
+    workspace.find(tabId, function (err, tab, pane) {
+        if (err) {
+            return; // Do nothing
+        }
+
+        var fileExt,
+            fileNameWithoutExt,
+            parentDir;
+
+        function showSaveDialog(fileContent) {
+            var fileName = fileNameWithoutExt + ' - Copy' + fileExt;
+            var defaultPath = path.join(parentDir, fileName);
+
+            dialog.showSaveDialog({
+                title     : 'Save As',
+                properties: ['openFile'],
+                defaultPath : defaultPath
+            }, function onSaveDialog(filePath) {
+                if (!filePath) {
+                    return;
+                }
+
+                fs.writeFile(filePath, fileContent, { encoding : 'utf8'}, function (err) {
+                    if (err) {
+                        console.log("TODO::MANAGE ERROR");
+                        console.log(err);
+                        return;
+                    }
+                    openFile(filePath);
+                });
+            });
+        }
+
+        if (tab.type === 'projectSettings') {
+            fileExt = '.xml';
+            fileNameWithoutExt = 'Config';
+            parentDir = tab.path;
+            // Use a fresh instance of the configurator based on the same file
+            var configurator = new ADCConfigurator(tab.path);
+            configurator.load(function onLoadConfig(err) {
+                if (err) {
+                    return; // Do nothing
+                }
+                // Update the instance of the configurator with the new content
+                configurator.set(content);
+                // Save the xml
+                showSaveDialog(configurator.toXml());
+            });
+        } else {
+            fileExt = path.extname(tab.path);
+            fileNameWithoutExt = path.basename(tab.path, fileExt);
+            parentDir = path.join(tab.path, '..');
+            showSaveDialog(content);
+        }
+    });
+}
+
+/**
  * Confirm reload tab
  */
 function onConfirmReload(event, tab, answer) {
@@ -443,6 +516,9 @@ ipc.on('workspace-ready', function (event) {
     ipc.removeListener('workspace-save-content', onSaveContent);
     ipc.on('workspace-save-content', onSaveContent);
 
+    ipc.removeListener('workspace-save-content-as', onSaveContentAs);
+    ipc.on('workspace-save-content-as', onSaveContentAs);
+
     ipc.removeListener('workspace-edit-content', onEditContent);
     ipc.on('workspace-edit-content', onEditContent);
 
@@ -463,6 +539,9 @@ ipc.on('workspace-ready', function (event) {
 
     app.removeListener('menu-save-file', saveFile);
     app.on('menu-save-file', saveFile);
+
+    app.removeListener('menu-save-file-as', saveFileAs);
+    app.on('menu-save-file-as', saveFileAs);
 
     app.removeListener('menu-show-project-settings', openProjectSettings);
     app.on('menu-show-project-settings', openProjectSettings);

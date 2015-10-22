@@ -33,6 +33,11 @@ var viewer = (function () {
          */
         saveContent : function () {/* Function that should be implemented in the viewer */},
         /**
+         * Save content as
+         * Should be implemented by the viewer
+         */
+        saveContentAs : function () {/* Function that should be implemented in the viewer */},
+        /**
          * Fire loaded event
          */
         fireReady : function fireReady() {

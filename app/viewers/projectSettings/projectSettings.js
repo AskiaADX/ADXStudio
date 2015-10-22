@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
     viewer.saveContent = function saveContent() {
         tabs.onSave(tab.id, getCurrentConfig());
     };
+    // Save as
+    viewer.saveContentAs = function saveContentAs() {
+        tabs.onSaveAs(tab.id, getCurrentConfig());
+    };
     formProjectSettingsEl.addEventListener('submit', function onSubmit(event) {
         event.preventDefault();
         event.stopPropagation();

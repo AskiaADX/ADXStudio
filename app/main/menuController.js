@@ -92,6 +92,13 @@ app.once('ready', function createAppMenu() {
         }
 
         /**
+         * Save As
+         */
+        function saveAsClick() {
+            app.emit('menu-save-file-as');
+        }
+
+        /**
          * Project settings
          */
         function projectSettingsClick() {
@@ -145,10 +152,7 @@ app.once('ready', function createAppMenu() {
                         {
                             label: '&Save As...',
                             accelerator: 'Ctrl+Shift+S',
-                            click: function() {
-                                dialog.showSaveDialog({title:'file'});
-                                // Function to define in order to save new files.
-                            }
+                            click: saveAsClick
                         },
                         {
                             label: '&Save All',

@@ -99,6 +99,11 @@
                 tabs.onSave(tab.id, window.editor.getValue());
             };
 
+            // Save as
+            viewer.saveContentAs = function saveContentAs() {
+                tabs.onSaveAs(tab.id, window.editor.getValue());
+            };
+
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
                 lineNumbers     : true,
               	indentUnit		: 4,
