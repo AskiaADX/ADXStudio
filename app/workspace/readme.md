@@ -139,6 +139,13 @@ The `workspace-save-as-active-file` event is fire when the user click on main `S
 It's fire with no arguments. 
 The workspace view will trigger back relative events to 'save as' the current active content.
 
+### workspace-save-all-files
+
+The `workspace-save-all-files` event is fire when the user click on main `Save All` menu.
+ 
+It's fire with no arguments. 
+The workspace view will trigger back relative events to save all the files.
+
  
 ### workspace-update-tab
 

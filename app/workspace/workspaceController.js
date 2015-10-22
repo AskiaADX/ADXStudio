@@ -152,6 +152,13 @@ function saveFileAs(){
 }
 
 /**
+ * Save all files
+ */
+function saveAllFiles() {
+    workspaceView.send('workspace-save-all-files');
+}
+
+/**
  * Return the structure of the resources directory of the current ADC
  * @param {Function} callback
  * @param {Object} callback.structure
@@ -542,6 +549,9 @@ ipc.on('workspace-ready', function (event) {
 
     app.removeListener('menu-save-file-as', saveFileAs);
     app.on('menu-save-file-as', saveFileAs);
+
+    app.removeListener('menu-save-all-files', saveAllFiles);
+    app.on('menu-save-all-files', saveAllFiles);
 
     app.removeListener('menu-show-project-settings', openProjectSettings);
     app.on('menu-show-project-settings', openProjectSettings);

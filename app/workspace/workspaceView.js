@@ -722,6 +722,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    /**
+     * Save all tabs
+     */
+    function saveAll() {
+        // This is a guess manner, it's not 100% sure but it should work
+        // Looking into the DOM if the tab is mark as edited,
+        // If it is then save it
+        var editedTabs = document.querySelectorAll('.tab.edit'),
+            i, l,
+            ids = [],
+            tab;
+        if (!editedTabs) {
+            return;
+        }
+
+        // First of all build an array with all tab ids
+        // To have a static reference of the tab to save
+        for (i = 0, l = editedTabs.length; i < l; i += 1) {
+            ids.push(editedTabs[i].id.replace(/^tab-/, ''));
+        }
+
+        // Call save on each tabs
+        for (i = 0, l = ids.length; i < l; i += 1) {
+            tab = tabs[ids[i]];
+            if (!tab || !tab.viewer) {
+                continue;
+            }
+            if (typeof tab.viewer.saveContent === 'function') {
+                tab.viewer.saveContent();
+            }
+        }
+    }
+
 
     (function initTabEvents() {
         var i, l,
@@ -1129,6 +1162,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ipc.on('workspace-save-active-file', save);
 
     ipc.on('workspace-save-as-active-file', saveAs);
+
+    ipc.on('workspace-save-all-files', saveAll);
 
     ipc.on('workspace-remove-tab', function (err, tab, pane) {
         if (err) {

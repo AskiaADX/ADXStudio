@@ -99,6 +99,13 @@ app.once('ready', function createAppMenu() {
         }
 
         /**
+         * Save all
+         */
+        function saveAllClick() {
+            app.emit('menu-save-all-files');
+        }
+
+        /**
          * Project settings
          */
         function projectSettingsClick() {
@@ -156,9 +163,7 @@ app.once('ready', function createAppMenu() {
                         },
                         {
                             label: '&Save All',
-                            click: function() {
-                                // Function to define in order to save all files open and changed.
-                            }
+                            click: saveAllClick
                         },
                         {
                             type: 'separator'
