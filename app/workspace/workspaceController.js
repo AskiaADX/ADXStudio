@@ -330,6 +330,18 @@ function onCloseTab(event, tabId) {
 }
 
 /**
+ * Close all tabs
+ * @param event
+ * @param {Object} [options]
+ * @param {String} [options.except] Id of the tab to not closed
+ */
+function onCloseAllTabs(event, options) {
+    workspace.removeAllTabs(options, function (err, removedTabs) {
+        workspaceView.send('workspace-remove-tabs', err, removedTabs);
+    });
+}
+
+/**
  * Move a tab into another pane
  * @param {Event} event
  * @param {String} tabId Id of the tab to move
@@ -519,6 +531,9 @@ ipc.on('workspace-ready', function (event) {
 
     ipc.removeListener('workspace-close-tab', onCloseTab);
     ipc.on('workspace-close-tab', onCloseTab);
+
+    ipc.removeListener('workspace-close-all-tabs', onCloseAllTabs);
+    ipc.on('workspace-close-all-tabs', onCloseAllTabs);
 
     ipc.removeListener('workspace-save-content', onSaveContent);
     ipc.on('workspace-save-content', onSaveContent);

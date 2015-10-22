@@ -333,6 +333,61 @@ Workspace.prototype.removeTab = function removeTab(tab, callback) {
 };
 
 /**
+ * Remove all tabs
+ *
+ * @param {Object} [options] Options
+ * @param {String} [options.except] Close all except the specified one
+ * @param {Function} [callback] Callback
+ * @param {Error} callback.err Error
+ * @param {Array} callback.removedTabs Array of tabs that has been removed
+ * @param {Tab} callback.removedTabs[].tab Tab that has been removed
+ * @param {String} callback.removedTabs[].pane Pane where the tab was
+ */
+Workspace.prototype.removeAllTabs = function removeAllTabs(options, callback) {
+    // Swap arguments
+    if (typeof options === 'function') {
+        callback = options;
+        options = null;
+    }
+
+    var self = this;
+    var result = [];
+    // Collect the tab to remove
+    self.tabs.forEach(function (tab) {
+        // Keep the `except` tab open
+        if (options && options.except && tab.id === options.except) {
+            return;
+        }
+        // Keep the tabs mark as edited
+        if (tab.edited) {
+            return;
+        }
+        var info = {
+            tab : tab,
+            pane : self.panes.mapByTabId[tab.id]
+        };
+        result.push(info);
+    });
+
+    // Remove only now to avoid the iteration
+    // and modification of the same array
+    result.forEach(function (info) {
+        self._watcher.remove(info.tab.path);
+
+        var index = self.tabs.indexOf(info.tab);
+        if (index > -1) {
+            self.tabs.splice(index, 1);
+        }
+        delete self.panes.mapByTabId[info.tab.id];
+    });
+
+    self.emit('change');
+    if (typeof  callback ==='function') {
+        callback(null, result);
+    }
+};
+
+/**
  * Move an existing tab into another pane
  * @param {Tab|Object|String} tab Tab, Id or path of the tab to move
  * @param {'main'|'second'} targetPane Name of the pane to target

@@ -51,6 +51,15 @@ It's fire with the following arguments:
 * **event** Event object
 * **tabId** Id of the tab to close
 
+### workspace-close-all-tabs
+
+The `workspace-close-all-tabs` event is fire when the user try to close all tabs.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **options** Object with the optional keys: `except` (with the id of the tab to not close)
+
 ### workspace-edit-content
 
 The `workspace-edit-content` event is fire only one time when the content start changing
@@ -176,7 +185,19 @@ It's fire with following arguments:
  * **err** Possible error that could occurred, null when everything is ok.
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab is located 
+
+### workspace-remove-tabs
+
+The `workspace-remove-tabs` event is fire when tabs could be remove safely.
  
+It's fire with following arguments:
+ 
+ * **err** Possible error that could occurred, null when everything is ok.
+ * **removedTabs** An array of object with the following keys: 
+   - `tab` that Tab object, with id/name/content/path etc...
+   - `pane` the name of the pane where the tab was
+
+
 ### workspace-change-tab-location
  
 The `workspace-change-tab-location` event is fire when a tab could be move to another tab.

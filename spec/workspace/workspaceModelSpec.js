@@ -427,6 +427,85 @@ describe("workspace", function () {
 
     });
 
+    describe("#removeAllTabs", function () {
+        it("should be a function", function () {
+            expect(typeof workspace.removeAllTabs).toBe("function");
+        });
+
+        it("should return the array of tab that has been removed", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err1, tab1) {
+                    workspace.createTab(null, function(err2, tab2) {
+                        workspace.createTab(null, 'second', function(err3, tab3) {
+                            workspace.removeAllTabs(function (err, removedTabs) {
+                                expect(removedTabs).toEqual([
+                                    {pane : 'main', tab : tab1},
+                                    {pane : 'main', tab : tab2},
+                                    {pane : 'second', tab : tab3}
+                                ]);
+                                expect(workspace.where(tab1.id)).toEqual('');
+                                expect(workspace.where(tab2.id)).toEqual('');
+                                expect(workspace.where(tab3.id)).toEqual('');
+                                done();
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        it("should remove all except the one specified by the first `option` argument", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err1, tab1) {
+                    workspace.createTab(null, function(err2, tab2) {
+                        workspace.createTab(null, 'second', function(err3, tab3) {
+                            workspace.removeAllTabs({ except : tab2.id }, function (err, removedTabs) {
+                                expect(removedTabs).toEqual([
+                                    {pane : 'main', tab : tab1},
+                                    {pane : 'second', tab : tab3}
+                                ]);
+                                expect(workspace.where(tab1.id)).toEqual('');
+                                expect(workspace.where(tab2.id)).toEqual('main');
+                                expect(workspace.where(tab3.id)).toEqual('');
+                                done();
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        it("should remove all except the ones mark as `edited`", function () {
+            runSync(function (done) {
+                workspace.panes.current("main");
+                workspace.createTab(null, function(err1, tab1) {
+                    workspace.createTab(null, function(err2, tab2) {
+                        workspace.createTab(null, 'second', function(err3, tab3) {
+                            workspace.createTab(null, 'second', function (err4, tab4) {
+                                tab2.edited = true;
+                                tab4.edited = true;
+                                workspace.removeAllTabs(function (err, removedTabs) {
+                                    expect(removedTabs).toEqual([
+                                        {pane: 'main', tab: tab1},
+                                        {pane: 'second', tab: tab3}
+                                    ]);
+                                    expect(workspace.where(tab1.id)).toEqual('');
+                                    expect(workspace.where(tab2.id)).toEqual('main');
+                                    expect(workspace.where(tab3.id)).toEqual('');
+                                    expect(workspace.where(tab4.id)).toEqual('second');
+                                    done();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+    });
+
     describe("#moveTab", function () {
         it("should be a function", function () {
             expect(typeof  workspace.moveTab).toBe("function");
@@ -873,6 +952,24 @@ describe("workspace", function () {
                         });
                         
                         workspace.removeTab(tab, function () {});
+                    });
+                });
+            });
+
+            it("should be triggered whan all tabs were removed", function () {
+                runSync(function (done) {
+                    workspace.panes.current("main");
+                    workspace.createTab(null, function(err1, tab1) {
+                        workspace.createTab(null, function(err2, tab2) {
+                            workspace.createTab(null, 'second', function(err3, tab3) {
+                                workspace.on('change', function () {
+                                    expect(true).toBe(true);
+                                    done();
+                                });
+
+                                workspace.removeAllTabs();
+                            });
+                        });
                     });
                 });
             });

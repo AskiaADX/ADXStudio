@@ -846,21 +846,16 @@ document.addEventListener('DOMContentLoaded', function () {
             contextualMenu.append(new MenuItem({
                 label: 'Close others',
                 click: function onClickCloseOthers() {
-                    console.warn('TODO::Close others');
+                    ipc.send('workspace-close-all-tabs', {
+                        except : tab.id
+                    });
                 }
             }));
             /* Close all */
             contextualMenu.append(new MenuItem({
                 label: 'Close all',
                 click: function onClickCloseAll() {
-                    console.warn('TODO::Close all');
-                }
-            }));
-            /* Close unmodified */
-            contextualMenu.append(new MenuItem({
-                label: 'Close unmodified',
-                click: function onClickCloseUnmodified() {
-                    console.warn('TODO::Close unmodified');
+                    ipc.send('workspace-close-all-tabs');
                 }
             }));
 
@@ -1171,6 +1166,18 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         removeTab(tab, pane);
+    });
+
+    ipc.on('workspace-remove-tabs', function (err, removedTabs) {
+        if (err) {
+            console.warn(err);
+            return;
+        }
+        var i, l, tabInfo;
+        for (i = 0, l = removedTabs.length; i < l; i += 1) {
+            tabInfo = removedTabs[i];
+            removeTab(tabInfo.tab, tabInfo.pane);
+        }
     });
     
     ipc.on('workspace-change-tab-location', function (err, tab, pane) {
