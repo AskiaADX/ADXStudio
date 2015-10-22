@@ -17,10 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Form Submit
+    viewer.saveContent = function saveContent() {
+        tabs.onSave(tab.id, getCurrentConfig());
+    };
     formProjectSettingsEl.addEventListener('submit', function onSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
-        tabs.onSave(tab.id, getCurrentConfig());
+        viewer.saveContent();
         return false;
     });
 

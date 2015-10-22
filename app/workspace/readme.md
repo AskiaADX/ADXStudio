@@ -117,6 +117,14 @@ It's fire with the following arguments
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab should be created
  
+### workspace-save-active-file
+
+The `workspace-save-active-file` event is fire when the user click on main `Save` menu.
+ 
+It's fire with no arguments. 
+The workspace view will trigger back relative events to save the current active content.
+
+ 
 ### workspace-update-tab
 
 The `workspace-update-tab` event is fire when the tab has been saved.
@@ -147,9 +155,9 @@ It's fire with following arguments:
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab is located 
  
- ### workspace-change-tab-location
+### workspace-change-tab-location
  
-The `workspace-send-tab` event is fire when a tab could be move to another tab.
+The `workspace-change-tab-location` event is fire when a tab could be move to another tab.
  
 It's fire with following arguments:
  

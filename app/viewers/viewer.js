@@ -13,7 +13,8 @@ var viewer = (function () {
     window.addEventListener('focus', function () {
         tabs.onFocus(tab.id);
     });
-    return {
+
+    tab.viewer = {
         /**
          * Parent window
          */
@@ -27,10 +28,17 @@ var viewer = (function () {
          */
         currentTab  : tab,
         /**
+         * Save content
+         * Should be implemented by the viewer
+         */
+        saveContent : function () {/* Function that should be implemented in the viewer */},
+        /**
          * Fire loaded event
          */
         fireReady : function fireReady() {
             tabs.onEditorLoaded(tab);
         }
     };
+
+    return tab.viewer;
 }());

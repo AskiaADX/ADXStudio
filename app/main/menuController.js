@@ -10,8 +10,13 @@ var appSettings = require('../appSettings/appSettingsModel.js');
 
 // Default Menu of the app.
 app.once('ready', function createAppMenu() {
+
+
     appSettings.getMostRecentlyUsed(function (err, mru){
-        var template, menuFileIndex = 0, menuOpenRecentIndex = 4;
+        var template,
+            menuFileIndex = 0,
+            menuOpenRecentIndex = 4;
+
         function createOpenRecentMenu(mruItem) {
             return {
                 label : path.basename(mruItem.path),
@@ -24,6 +29,82 @@ app.once('ready', function createAppMenu() {
             };
         }
 
+        /**
+         * New project
+         */
+        function newProjectClick() {
+            app.emit('menu-new-project');
+        }
+
+        /**
+         * New file
+         */
+        function newFileClick() {
+            dialog.showSaveDialog({
+                properties: ['openFile'],
+                defaultPath : (global.project && global.project.path) || ''
+            }, function (filepath) {
+                if (!filepath) {
+                    return;
+                }
+
+                fs.writeFile(filepath, '', { encoding : 'utf8'}, function (err) {
+                    if (err) {
+                        console.log("TODO::MANAGE ERROR");
+                        console.log(err);
+                        return;
+                    }
+                    app.emit('menu-new-file', filepath);
+                });
+            });
+        }
+
+        /**
+         * Open project
+         */
+        function openProjectClick() {
+            dialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
+                if (folderpath && folderpath.length) {
+                    global.project.path = folderpath[0];
+                    global.project.adc = new ADC(folderpath[0]);
+
+                    app.emit("menu-open-project", folderpath[0]);
+                }
+            });
+        }
+
+        /**
+         * Open file
+         */
+        function openFileClick() {
+            dialog.showOpenDialog({ properties: [ 'openFile']}, function(filepath) {
+                if (filepath && filepath.length) {
+                    app.emit("menu-open-file", filepath[0]);
+                }
+            });
+        }
+
+        /**
+         * Save
+         */
+        function saveClick() {
+            app.emit('menu-save-file');
+        }
+
+        /**
+         * Project settings
+         */
+        function projectSettingsClick() {
+            app.emit("menu-show-project-settings");
+        }
+
+        /**
+         * Preview
+         */
+        function previewClick() {
+            app.emit("menu-preview");
+        }
+
         if (process.platforn !== 'darwin') {
             template = [
                 {
@@ -32,63 +113,22 @@ app.once('ready', function createAppMenu() {
                          {
                             label: '&New Project',
                             accelerator : 'Ctrl+Shift+N',
-                            click: function() {
-                                app.emit('menu-new-project');
-                            }
+                            click : newProjectClick
                         },
                         {
                             label: '&New File',
                             accelerator: 'Ctrl+N',
-                            click: function() {
-
-                                var tab = {
-                                    name:'untitled'
-                                };
-
-                                dialog.showSaveDialog({properties: ['openFile']}, function(filepath) {
-                                    if (filepath) {
-                                        fs.writeFile(filepath, '// Made with love in Paris', function(err){
-                                            if (err) {
-                                                throw err;
-                                            }
-                                            /*
-                                        Send a message to other controllers in the main process in order to create a new File.
-                                        */
-                                            app.emit('menu-new-file', filepath);
-                                        });
-                                    }
-
-
-                                });
-
-                                // Function to define in order to open a new tab and new content.
-                            }
+                            click : newFileClick
                         },
                         {
                             label: '&Open Project',
                             accelerator: 'Ctrl+Shift+O',
-                            click: function() {
-                                dialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
-                                    if (folderpath && folderpath.length) {
-                                        global.project.path = folderpath[0];
-                                        global.project.adc = new ADC(folderpath[0]);
-
-                                        app.emit("menu-open-project", folderpath[0]);
-                                    }
-                                });
-                            }
+                            click: openProjectClick
                         },
                         {
                             label: '&Open File',
                             accelerator : 'Ctrl+O',
-                            click: function() {
-                                dialog.showOpenDialog({ properties: [ 'openFile']}, function(filepath) {
-                                    if (filepath && filepath.length) {
-                                        app.emit("menu-open-file", filepath[0]);
-                                    }
-                                });
-                                // Function to define in order to open file already been create.
-                            }
+                            click : openFileClick
                         },
                         {
                             label : '&Open Recent',
@@ -100,10 +140,7 @@ app.once('ready', function createAppMenu() {
                         {
                             label: '&Save',
                             accelerator: 'Ctrl+S',
-                            click: function() {
-                                console.log("Save from main.js");
-                                // Function to define in order to save current file changed.
-                            }
+                            click : saveClick
                         },
                         {
                             label: '&Save As...',
@@ -124,9 +161,7 @@ app.once('ready', function createAppMenu() {
                         },
                         {
                             label: '&Project settings',
-                            click : function clickProjectSettingsMenu() {
-                                app.emit("menu-show-project-settings");
-                            }
+                            click : projectSettingsClick
                         }
                     ]
                 },
@@ -143,10 +178,7 @@ app.once('ready', function createAppMenu() {
                         {
                             label: '&Preview',
                             accelerator: 'F5',
-                            click: function() {
-                                // Function to define in order to see the preview of the ADC Builded.
-                                app.emit("menu-preview");
-                            }
+                            click : previewClick
                         }
                     ]
                 },
@@ -160,16 +192,6 @@ app.once('ready', function createAppMenu() {
                                 var focusedWindow = BrowserWindow.getFocusedWindow();
                                 if (focusedWindow) {
                                     focusedWindow.reload();
-                                }
-                            }
-                        },
-                        {
-                            label: 'Toggle &Full Screen',
-                            accelerator: 'F11',
-                            click: function() {
-                                var focusedWindow = BrowserWindow.getFocusedWindow();
-                                if (focusedWindow) {
-                                    focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                                 }
                             }
                         },

@@ -94,9 +94,9 @@
 
             textarea.value = tab.content;
 
-            // Map save command
-            CodeMirror.commands.save = function (instance) {
-                tabs.onSave(tab.id, instance.getValue());
+            // Map save command (CTRL+S) and the main menu
+            viewer.saveContent = CodeMirror.commands.save = function () {
+                tabs.onSave(tab.id, window.editor.getValue());
             };
 
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
@@ -120,7 +120,6 @@
             window.editor.on('change', function onChange(instance) {
                 tabs.onContentChange(tab.id, instance.getValue());
             });
-
 
             viewer.fireReady();
         }());

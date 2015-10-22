@@ -20,6 +20,84 @@ function saveWorkspaceStatus() {
     });
 }
 
+
+/**
+ * Open project in the workspace
+ */
+function openProject() {
+    workspace.removeListener('change', saveWorkspaceStatus);
+
+    // Load the default path
+    fs.readFile(path.join(global.project.path || '', '.adxstudio', 'workspace.json'), function (err, data) {
+        var json = err ? {} : JSON.parse(data.toString());
+        workspace.init(json, function () {
+            // Reload the workspace as it where before leaving the application
+            var adc = global.project.adc,
+                currentTabIds = {
+                    main   : workspace.panes.main.currentTabId,
+                    second : workspace.panes.second.currentTabId
+                };
+
+            // Copy the tabs before to iterate through it
+            // the tabs could be modified by another async event
+            // .slice() ensure we are working on a static copy
+            workspace.tabs.slice().forEach(function loadTab(tab) {
+                var pane = workspace.where(tab);
+                var action = tab.id === currentTabIds[pane] ? 'workspace-create-and-focus-tab' : 'workspace-create-tab';
+
+                switch (tab.type) {
+                    // Open the preview
+                    case 'preview':
+                        if (adc) {
+                            servers.listen(function (options) {
+                                tab.name = 'Preview';
+                                tab.ports     = {
+                                    http : options.httpPort,
+                                    ws   : options.wsPort
+                                };
+                                workspaceView.send(action, err, tab, workspace.where(tab));
+                            });
+                        }
+                        break;
+
+                    // Open the project settings
+                    case 'projectSettings':
+                        if (adc) {
+                            getResourcesDirectoryStructure(function (structure) {
+                                adc.load(function (er) {
+                                    tab.adcConfig = (!er)  ? adc.configurator.get() : {};
+                                    tab.adcStructure = structure;
+                                    workspaceView.send(action, er, tab, pane);
+                                });
+                            });
+                        }
+                        break;
+
+                    // Open file by default
+                    case 'file':
+                    default:
+                        tab.loadFile(function (er) {
+                            if (!er) {
+                                workspaceView.send(action, er, tab, workspace.where(tab));
+                            }
+                        });
+                        break;
+                }
+            });
+
+            // Listen change now
+            workspace.on('change', saveWorkspaceStatus);
+        });
+    });
+}
+
+/**
+ * Reload the workspace
+ */
+function reloadWorkspace() {
+    workspaceView.reload();
+}
+
 /**
  * Open a file in new tab. If the file is already open, focus the tab.
  *
@@ -55,6 +133,13 @@ function openFile(file) {
  */
 function openFileFromExplorer(event, file) {
     openFile(file);
+}
+
+/**
+ * Save the current active file
+ */
+function saveFile() {
+    workspaceView.send('workspace-save-active-file');
 }
 
 /**
@@ -337,82 +422,6 @@ function onFileChanged(tab, pane) {
     }
 }
 
-/**
- * Open project in the workspace
- */
-function openProject() {
-    workspace.removeListener('change', saveWorkspaceStatus);
-	
-    // Load the default path
-    fs.readFile(path.join(global.project.path || '', '.adxstudio', 'workspace.json'), function (err, data) {
-        var json = err ? {} : JSON.parse(data.toString());
-        workspace.init(json, function () {
-			// Reload the workspace as it where before leaving the application
-            var adc = global.project.adc,
-                currentTabIds = {
-                    main   : workspace.panes.main.currentTabId,
-                    second : workspace.panes.second.currentTabId
-                };
-            
-            // Copy the tabs before to iterate through it
-            // the tabs could be modified by another async event 
-            // .slice() ensure we are working on a static copy
-            workspace.tabs.slice().forEach(function loadTab(tab) {
-                var pane = workspace.where(tab);
-                var action = tab.id === currentTabIds[pane] ? 'workspace-create-and-focus-tab' : 'workspace-create-tab';
-                
-                switch (tab.type) {
-					// Open the preview
-                    case 'preview':
-                        if (adc) {
-                            servers.listen(function (options) {
-                                tab.name = 'Preview';
-                                tab.ports     = {
-                                    http : options.httpPort,
-                                    ws   : options.wsPort
-                                };
-                                workspaceView.send(action, err, tab, workspace.where(tab));
-                            });
-                        }
-                        break;
-                                       
-					// Open the project settings
-                    case 'projectSettings':
-                        if (adc) {
-                            getResourcesDirectoryStructure(function (structure) {
-                                adc.load(function (er) {
-                                    tab.adcConfig = (!er)  ? adc.configurator.get() : {};
-                                    tab.adcStructure = structure;
-                                    workspaceView.send(action, er, tab, pane);
-                                });
-                            });
-                        }
-                        break;
-                                       
-					// Open file by default
-                    case 'file':
-                    default:
-                        tab.loadFile(function (er) {
-                            if (!er) {
-                                workspaceView.send(action, er, tab, workspace.where(tab));
-                            }
-                        });
-                        break;
-                }
-            });
-            
-            // Listen change now
-            workspace.on('change', saveWorkspaceStatus);
-        });    
-    });
-}
-
-/**
- * Reload the workspace
- */
-function reloadWorkspace() {
-    workspaceView.reload();
-}
 
 ipc.on('workspace-ready', function (event) {
     
@@ -451,6 +460,9 @@ ipc.on('workspace-ready', function (event) {
 
     app.removeListener('menu-open-file', openFile);
     app.on('menu-open-file', openFile);
+
+    app.removeListener('menu-save-file', saveFile);
+    app.on('menu-save-file', saveFile);
 
     app.removeListener('menu-show-project-settings', openProjectSettings);
     app.on('menu-show-project-settings', openProjectSettings);

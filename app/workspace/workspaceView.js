@@ -39,30 +39,20 @@
         /**
          * Update the tab with the version coming from the main process
          *
-         * @param {Tab} tab Tab coming from the main process
+         * @param {Tab} newTabInfo Tab coming from the main process
          */
-        updateTab       : function updateTab(tab) {
-            var viewTab = this[tab.id]; // Tab in the view
+        updateTab       : function updateTab(newTabInfo) {
+            var originalTab = this[newTabInfo.id]; // Tab in the view
 
-            tab.previousSelection = viewTab.previousSelection;
-            if (tab.previousSelection) {
-                tab.previousSelection.nextSelection  = tab;
-            }
-            tab.previous = viewTab.previous;
-            if (tab.previous) {
-                tab.previous.next = tab;
-            }
-            tab.nextSelection = viewTab.nextSelection;
-            if (tab.nextSelection) {
-                tab.nextSelection.previousSelection = tab;
-            }
-            tab.next = viewTab.next;
-            if (tab.next) {
-                tab.next.previous = tab;
+            // Copy from the new tab info to the original tab
+            var key;
+            for (key in newTabInfo) {
+                if (newTabInfo.hasOwnProperty(key)) {
+                    originalTab[key] = newTabInfo[key];
+                }
             }
 
-            this[tab.id] = tab;
-            this.dispatchEvent('tabcontentchange', tab.id, (tab.type !== 'projectSettings') ? tab.content : null);
+            this.dispatchEvent('tabcontentchange', originalTab.id, (originalTab.type !== 'projectSettings') ? originalTab.content : null);
         },
 
         /**
@@ -508,8 +498,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var contentEl = document.getElementById('content-' + tab.id),
             viewerEl  = contentEl.querySelector('iframe');
 
-        viewerEl.src = getViewerUrl(tab);
         tabs.updateTab(tab, pane);
+        viewerEl.src = getViewerUrl(tab);
     }
     
     /**
@@ -1066,6 +1056,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         addTab(tab, pane, true);
+    });
+
+    ipc.on('workspace-save-active-file', function () {
+        var activePane = document.querySelector('.pane.focused');
+        if (!activePane) {
+            return;
+        }
+        var activeTab = activePane.querySelector('.tab.active');
+        if (!activeTab) {
+            return;
+        }
+        var tabId = activeTab.id.replace(/^tab-/, '');
+        var currentTab = tabs[tabId];
+        if (currentTab.viewer && typeof currentTab.viewer.saveContent === 'function') {
+            currentTab.viewer.saveContent();
+        }
     });
 
     ipc.on('workspace-remove-tab', function (err, tab, pane) {
