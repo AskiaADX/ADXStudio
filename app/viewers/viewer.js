@@ -38,6 +38,11 @@ var viewer = (function () {
          */
         saveContentAs : function () {/* Function that should be implemented in the viewer */},
         /**
+         * Save content and close the tab
+         * Should be implemented by the viewer
+         */
+        saveContentAndClose : function () {/* Function that should be implemented in the viewer */},
+        /**
          * Fire loaded event
          */
         fireReady : function fireReady() {

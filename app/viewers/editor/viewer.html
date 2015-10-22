@@ -104,6 +104,11 @@
                 tabs.onSaveAs(tab.id, window.editor.getValue());
             };
 
+            // Save & Close
+            viewer.saveContentAndClose = function saveContentAndClose() {
+                tabs.onSaveAndClose(tab.id, window.editor.getValue());
+            };
+
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
                 lineNumbers     : true,
               	indentUnit		: 4,

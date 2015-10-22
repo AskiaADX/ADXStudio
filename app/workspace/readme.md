@@ -97,6 +97,17 @@ It's fire with the following arguments:
 * **event** Event object
 * **tabId** Id of the tab that hold the content
 * **content** The content to save
+
+
+### workspace-save-content-and-close
+
+The `workspace-save-content-and-close` event is fire when the user try to close the tab but want to save the content before
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **tabId** Id of the tab that hold the content
+* **content** The content to save
      
 ## Events from Controller
 

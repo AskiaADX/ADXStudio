@@ -214,6 +214,16 @@
         },
 
         /**
+         * Event fire when the editor request a save & close
+         *
+         * @param {String} tabId Id of the tab
+         * @param {String|Object} content Current content in the editor
+         */
+        onSaveAndClose : function onSaveAndClose(tabId, content) {
+            this.dispatchEvent('tabcontentsaveandclose', tabId, content);
+        },
+
+        /**
          * Set the current tab and focus the editor
          * @param {String} tabId Id of the current tab
          */
@@ -295,7 +305,9 @@ document.addEventListener('DOMContentLoaded', function () {
         contentReference = {
             main : document.getElementById('main_pane').querySelector('.tabs-content'),
             second : document.getElementById('second_pane').querySelector('.tabs-content')
-        };
+        },
+        modalDialog = window.askia.modalDialog;
+
 
     // Expose the reference to the ESLint
     window.eslint = {
@@ -764,6 +776,53 @@ document.addEventListener('DOMContentLoaded', function () {
             resizeTimeout;
 
         /**
+         * Will trigger the close event
+         * Or ask to save before close
+         * @param {String|Tab} Id or tab
+         */
+        function triggerClose(tab) {
+            if (!tab) {
+                return;
+            }
+            if (typeof tab === 'string') {
+                tab = tabs[tab]; // It's the ID
+            }
+            if (!tab) {
+                return; // Double check
+            }
+
+            // Look in the DOM if the tab is mark as edited
+            var tabEl = document.getElementById('tab-' + tab.id);
+            if (!tabEl) {
+                return;
+            }
+
+            // Not edit send the message now
+            if (!tabEl.classList.contains('edit')) {
+                ipc.send('workspace-close-tab', tab.id);
+                return;
+            }
+
+            modalDialog.show({
+                type : 'yesNoCancel',
+                message : 'Do you want to save it before?'
+            }, function (retVal) {
+                switch(retVal.button) {
+                    case 'yes':
+                        tab.viewer.saveContentAndClose();
+                        break;
+                    case 'no':
+                        // Close it
+                        ipc.send('workspace-close-tab', tab.id);
+                        break;
+                    case 'cancel':
+                        // Abandon
+                        break;
+                }
+            });
+        }
+
+        /**
          * Event when clicking on tabs
          *
          * @param {Event} event
@@ -784,7 +843,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (el.classList.contains('tab')) {
                 // Has click on the element to close the tab?
                 if (shouldClose) {
-                    ipc.send('workspace-close-tab', el.id.replace(/^(tab-)/, ''));
+                    triggerClose(el.id.replace(/^(tab-)/, ''));
                     return;
                 }
 
@@ -839,7 +898,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contextualMenu.append(new MenuItem({
                 label: 'Close',
                 click: function onClickClose() {
-                    ipc.send('workspace-close-tab', tab.id);
+                    triggerClose(tab);
                 }
             }));
             /* Close others */
@@ -1091,6 +1150,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         document.body.addEventListener('tabcontentsaveas', onTabContentSaveAs);
+
+
+        /**
+         * Event when the editor request the save and close
+         *
+         * @param {CustomEvent} event
+         */
+        function onTabContentSaveAndClose(event) {
+            var tab         = event.detail.tab,
+                content     = event.detail.content;
+
+            ipc.send('workspace-save-content-and-close', tab.id, content);
+        }
+
+        document.body.addEventListener('tabcontentsaveandclose', onTabContentSaveAndClose);
+
 
         /**
          * Event when a tab is focused

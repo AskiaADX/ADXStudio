@@ -483,6 +483,36 @@ function onSaveContentAs(event, tabId, content) {
 }
 
 /**
+ * Save the content and close the tab
+ * @param event
+ * @param {String} tabId Id of the tab
+ * @param {String} content Content to save
+ */
+function onSaveContentAndClose(event, tabId, content) {
+    workspace.find(tabId, function (err, tab) {
+        if (err) {
+            return;
+        }
+        if (tab.type === 'projectSettings') {
+            var adc = global.project.adc;
+            if (!adc || !adc.path) {
+                return;
+            }
+
+            adc.configurator.set(content);
+            adc.configurator.save(function () {
+                onCloseTab(event, tab.id);
+            });
+        }
+        else {
+            tab.saveFile(content, function () {
+                onCloseTab(event, tab.id);
+            });
+        }
+    });
+}
+
+/**
  * Confirm reload tab
  */
 function onConfirmReload(event, tab, answer) {
@@ -540,6 +570,9 @@ ipc.on('workspace-ready', function (event) {
 
     ipc.removeListener('workspace-save-content-as', onSaveContentAs);
     ipc.on('workspace-save-content-as', onSaveContentAs);
+
+    ipc.removeListener('workspace-save-content-and-close', onSaveContentAndClose);
+    ipc.on('workspace-save-content-and-close', onSaveContentAndClose);
 
     ipc.removeListener('workspace-edit-content', onEditContent);
     ipc.on('workspace-edit-content', onEditContent);

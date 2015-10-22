@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
     viewer.saveContentAs = function saveContentAs() {
         tabs.onSaveAs(tab.id, getCurrentConfig());
     };
+    // Save and clsoe
+    viewer.saveContentAndClose = function saveContentAndClose() {
+        tabs.onSaveAndClose(tab.id, getCurrentConfig());
+    };
+
     formProjectSettingsEl.addEventListener('submit', function onSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
