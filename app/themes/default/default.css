@@ -309,22 +309,36 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    Viewer Part - Project Settings
    ======================================== */
 .viewer-project-settings nav {
-    background-color : #222;
+    background-color: #21252B;
+    border-right: 1px solid #111;
 }
 .viewer-project-settings nav a {
     color: #BBB;
-    background-color: #333;
+    background-color: #282C34;
     text-decoration: none;
     cursor : pointer;
+    border-bottom: 1px solid #151515;
+    box-shadow: 0 1px 0 rgba(255,255,255,.05) inset;
+    transition: background-color ease-in .2s, color ease-in .2s;
 }
 
-.viewer-project-settings nav a.active {
+.viewer-project-settings nav ul li:first-child a {
+    box-shadow: 0 1px 0 rgba(0,0,0,.5) inset;
+}
+
+.viewer-project-settings nav ul li:first-child a.active {
+    box-shadow: 0 1px 0 rgba(255,255,255,.2) inset;
+}
+
+.viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
     color: #fff;
-    background-color: #555;
+    background-color: #007DC5;
+    box-shadow: 0 1px 0 rgba(255,255,255,.2) inset;
 }
 
 .viewer-project-settings nav a:hover {
-    background-color: #666;
+    background-color: #30343E;
+    color: #DDD;
 }
 
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
@@ -332,4 +346,3 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
     background-color : #444;
 }
-

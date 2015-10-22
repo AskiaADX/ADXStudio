@@ -13,7 +13,7 @@ Install [NodeJS](https://nodejs.org/download/).
 Setup
 -----
 
-Open [Powershell](https://msdn.microsoft.com/en-us/dd742419) and browse to the local ADXStudio repository. There, run the following commands:
+Open [Powershell](https://msdn.microsoft.com/en-us/dd742419) as an `Administrator` and browse to the local ADXStudio repository. There, run the following commands:
 
 ```
 npm update

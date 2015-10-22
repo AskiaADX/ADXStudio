@@ -16,7 +16,7 @@ nav {
     height : 100vh;
 }
 nav li {
-    margin-bottom : 20px;
+    /*margin-bottom : 20px;*/
 }
 nav a {
     display : block;
