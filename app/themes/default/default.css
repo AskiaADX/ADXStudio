@@ -221,7 +221,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     cursor          : pointer;
     font-size       : 14px;
     color           : #B0B0B0;
-    padding         : 10px;
+    padding         : 10px 25px;
     position        : relative;
     height          : 24px;
     line-height     : 23px;
@@ -344,5 +344,5 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
-    background-color : #444;
+    background-color : #21252b;
 }

@@ -1,386 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Image viewer</title>
-    <link rel="stylesheet" href="projectSettings.css"/>
-    <link rel="stylesheet" href="../../themes/default/default.css"/>
-    <link rel="stylesheet" href="../../lib/askia/ModalDialog.css"/>
-    <script src="../../lib/askia/ModalDialog.js"></script>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>Image viewer</title>
+        <link rel="stylesheet" href="projectSettings.css"/>
+        <link rel="stylesheet" href="../../themes/default/default.css"/>
+        <link rel="stylesheet" href="../../lib/askia/ModalDialog.css"/>
+        <script src="../../lib/askia/ModalDialog.js"></script>
+    </head>
 <body class="form-viewer viewer-project-settings">
-
-<nav>
-    <ul>
-        <li><a href="#info" class="active">Information</a></li>
-        <li><a href="#outputs">Outputs</a></li>
-        <li><a href="#properties">Properties</a></li>
-    </ul>
-</nav>
-
-<form id="formProjectSettings" action="#">
-
-    <section id="info" class="active">
-
-        <fieldset>
-            <legend>General</legend>
-            <p>
-                <label for="guid">GUID:</label>
-                <input type="text" id="guid" name="guid" readonly="readonly"/>
-            </p>
-
-            <p>
-                <label for="date">Created at:</label>
-                <input type="text" id="date" name="date" readonly="readonly"/>
-            </p>
-
-            <p>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name"/>
-            </p>
-
-            <p>
-                <label for="version">Version:</label>
-                <input type="text" id="version" name="version" placeholder="1.0.0, 1.0.0.alpha1 or 1.0.0.beta1"/>
-            </p>
-
-            <p>
-                <label for="description">Description:</label>
-                <textarea id="description" name="description"></textarea>
-            </p>
-
-            <p>
-                <label for="categories">Categories:</label>
-                <input type="text" id="categories" name="categories"/>
-            </p>
-
-            <p>
-                <label for="style_width">Size (width x height):</label>
-                <input type="number" id="style_width" name="style[width]"/> x
-                <input type="number" id="style_height" name="style[height]"/>
-            </p>
-
-            <p>
-                <label for="helpURL">Help URL:</label>
-                <input type="url" id="helpURL" name="helpURL"/>
-            </p>
-        </fieldset>
-
-        <fieldset>
-            <legend>About</legend>
-            <p>
-                <label for="author">Author(s):</label>
-                <input type="text" id="author" name="author" />
-            </p>
-
-            <p>
-                <label for="company">Company:</label>
-                <input type="text" id="company" name="company"/>
-            </p>
-
-            <p>
-                <label for="site">Company website:</label>
-                <input type="url" id="site" name="site"/>
-            </p>
-        </fieldset>
-
-        <fieldset>
-            <legend>Available for</legend>
-            <h3>Questions</h3>
-            <ul>
-                <li>
-                    <input type="checkbox" id="questions_chapter" name="questions[chapter]"/>
-                    <label for="questions_chapter" class="checkbox-label">Chapter</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="questions_single" name="questions[single]"/>
-                    <label for="questions_single" class="checkbox-label">Single closed</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="questions_multiple" name="questions[multiple]"/>
-                    <label for="questions_multiple" class="checkbox-label">Multi-coded</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="questions_numeric" name="questions[numeric]"/>
-                    <label for="questions_numeric" class="checkbox-label">Numeric</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="questions_open" name="questions[open]"/>
-                    <label for="questions_open" class="checkbox-label">Open</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="questions_date" name="questions[date]"/>
-                    <label for="questions_date" class="checkbox-label">Date</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
-                    <label for="questions_requireParentLoop" class="checkbox-label">Require parent loop</label>
-                </li>
-            </ul>
-
-            <h3>Responses</h3>
-            <p>
-                <label for="responses_min">Minimum:</label>
-                <input type="number" id="responses_min" name="responses[min]" min="0"/>
-            </p>
-
-            <p>
-                <label for="responses_max">Maximum:</label>
-                <input type="number" id="responses_max" name="responses[max]" min="0"/>
-            </p>
-
-            <h3>Controls</h3>
-            <ul>
-                <li>
-                    <input type="checkbox" id="controls_responseblock" name="controls[responseblock]"/>
-                    <label for="controls_responseblock" class="checkbox-label">Response block</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="controls_label" name="controls[label]"/>
-                    <label for="controls_label" class="checkbox-label">Label</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="controls_textbox" name="controls[textbox]"/>
-                    <label for="controls_textbox" class="checkbox-label">Text box</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="controls_listbox" name="controls[listbox]"/>
-                    <label for="controls_listbox" class="checkbox-label">List box</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="controls_checkbox" name="controls[checkbox]"/>
-                    <label for="controls_checkbox" class="checkbox-label">Check box</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="controls_radiobutton" name="controls[radiobutton]"/>
-                    <label for="controls_radiobutton" class="checkbox-label">Radio button</label>
-                </li>
-            </ul>
-        </fieldset>
-    </section>
-
-    <section id="outputs">
-
-        <div>
-            <select id="outputs_list"></select>
-            <button type="button" id="new_output">New</button>
-            <button type="button" id="delete_output">Delete</button>
-        </div>
-
-        <fieldset id="output_meta">
-            <legend>Output</legend>
-            <p>
-                <label for="output_id">Id:</label>
-                <input type="text" id="output_id" name="output[id]" />
-            </p>
-
-            <p>
-                <label for="output_condition">Condition:</label>
-                <textarea id="output_condition" name="output[condition]"></textarea>
-            </p>
-
-            <p>
-                <label for="output_description">Description:</label>
-                <textarea id="output_description" name="output[description]"></textarea>
-            </p>
-
-            <p>
-                <input type="checkbox" id="output_default" name="output[defaultOutput]" />
-                <label for="output_default">Set as default</label>
-            </p>
-        </fieldset>
-
-        <fieldset>
-            <legend>Contents</legend>
-
-            <table id="contents">
-                <thead>
-                    <tr>
-                        <th>File</th>
-                        <th>Position</th>
-                        <th>Type</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-
-            <button type="button" id="add_content">Add content</button>
-        </fieldset>
-
-    </section>
-
-    <section id="properties">
-
-
-            <div>
-                <select id="categories_list"></select>
-                <button type="button" id="new_category">New</button>
-                <button type="button" id="delete_category">Delete</button>
-            </div>
-
-            <fieldset id="category_meta">
-                <legend>Categories</legend>
+    <nav>
+        <ul>
+            <li><a href="#info" class="active">Information</a></li>
+            <li><a href="#outputs">Outputs</a></li>
+            <li><a href="#properties">Properties</a></li>
+        </ul>
+    </nav>
+    <form id="formProjectSettings" action="#">
+        <section id="info" class="active">
+            <fieldset>
+                <legend>General</legend>
                 <p>
-                    <label for="category_id">Id:</label>
-                    <input type="text" id="category_id" name="category[id]" />
+                    <label for="guid">GUID:</label>
+                    <input type="text" id="guid" name="guid" readonly="readonly"/>
                 </p>
-
                 <p>
-                    <label for="category_name">Name:</label>
-                    <textarea id="category_name" name="category[name]"></textarea>
+                    <label for="date">Created at:</label>
+                    <input type="text" id="date" name="date" readonly="readonly"/>
+                </p>
+                <p>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name"/>
+                </p>
+                <p>
+                    <label for="version">Version:</label>
+                    <input type="text" id="version" name="version" placeholder="1.0.0, 1.0.0.alpha1 or 1.0.0.beta1"/>
+                </p>
+                <p>
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description"></textarea>
+                </p>
+                <p>
+                    <label for="categories">Categories:</label>
+                    <input type="text" id="categories" name="categories"/>
+                </p>
+                <p>
+                    <label for="style_width">Size (width x height):</label>
+                    <input type="number" id="style_width" name="style[width]"/> x
+                    <input type="number" id="style_height" name="style[height]"/>
+                </p>
+                <p>
+                    <label for="helpURL">Help URL:</label>
+                    <input type="url" id="helpURL" name="helpURL"/>
                 </p>
             </fieldset>
-
             <fieldset>
-                <legend>Properties</legend>
-
-                <table id="properties_table">
+                <legend>About</legend>
+                <p>
+                    <label for="author">Author(s):</label>
+                    <input type="text" id="author" name="author" />
+                </p>
+                <p>
+                    <label for="company">Company:</label>
+                    <input type="text" id="company" name="company"/>
+                </p>
+                <p>
+                    <label for="site">Company website:</label>
+                    <input type="url" id="site" name="site"/>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Available for</legend>
+                <h3>Questions</h3>
+                <ul>
+                    <li>
+                        <input type="checkbox" id="questions_chapter" name="questions[chapter]"/>
+                        <label for="questions_chapter" class="checkbox-label">Chapter</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="questions_single" name="questions[single]"/>
+                        <label for="questions_single" class="checkbox-label">Single closed</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="questions_multiple" name="questions[multiple]"/>
+                        <label for="questions_multiple" class="checkbox-label">Multi-coded</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="questions_numeric" name="questions[numeric]"/>
+                        <label for="questions_numeric" class="checkbox-label">Numeric</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="questions_open" name="questions[open]"/>
+                        <label for="questions_open" class="checkbox-label">Open</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="questions_date" name="questions[date]"/>
+                        <label for="questions_date" class="checkbox-label">Date</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
+                        <label for="questions_requireParentLoop" class="checkbox-label">Require parent loop</label>
+                    </li>
+                </ul>
+                <h3>Responses</h3>
+                <p>
+                    <label for="responses_min">Minimum:</label>
+                    <input type="number" id="responses_min" name="responses[min]" min="0"/>
+                </p>
+                <p>
+                    <label for="responses_max">Maximum:</label>
+                    <input type="number" id="responses_max" name="responses[max]" min="0"/>
+                </p>
+                <h3>Controls</h3>
+                <ul>
+                    <li>
+                        <input type="checkbox" id="controls_responseblock" name="controls[responseblock]"/>
+                        <label for="controls_responseblock" class="checkbox-label">Response block</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="controls_label" name="controls[label]"/>
+                        <label for="controls_label" class="checkbox-label">Label</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="controls_textbox" name="controls[textbox]"/>
+                        <label for="controls_textbox" class="checkbox-label">Text box</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="controls_listbox" name="controls[listbox]"/>
+                        <label for="controls_listbox" class="checkbox-label">List box</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="controls_checkbox" name="controls[checkbox]"/>
+                        <label for="controls_checkbox" class="checkbox-label">Check box</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="controls_radiobutton" name="controls[radiobutton]"/>
+                        <label for="controls_radiobutton" class="checkbox-label">Radio button</label>
+                    </li>
+                </ul>
+            </fieldset>
+        </section>
+        <section id="outputs">
+            <fieldset id="output_list_fieldset">
+                <legend>Outputs</legend>
+                <div>
+                    <select id="outputs_list"></select>
+                    <button type="button" id="new_output">New</button>
+                    <button type="button" id="delete_output">Delete</button>
+                </div>
+            </fieldset>
+            <fieldset id="output_meta">
+                <legend>General</legend>
+                <p>
+                    <label for="output_id">Id:</label>
+                    <input type="text" id="output_id" name="output[id]" />
+                </p>
+                <p>
+                    <label for="output_condition">Condition:</label>
+                    <textarea id="output_condition" name="output[condition]"></textarea>
+                </p>
+                <p>
+                    <label for="output_description">Description:</label>
+                    <textarea id="output_description" name="output[description]"></textarea>
+                </p>
+                <p>
+                    <input type="checkbox" id="output_default" name="output[defaultOutput]" />
+                    <label for="output_default">Set as default</label>
+                </p>
+            </fieldset>
+            <fieldset id="contents_fieldset">
+                <legend>Contents</legend>
+                <table id="contents">
                     <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>&nbsp;</th>
-                    </tr>
+                        <tr>
+                            <th>File</th>
+                            <th>Position</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
-                    <tfoot>
+                </table>
+                <button type="button" id="add_content">Add content</button>
+            </fieldset>
+        </section>
+        <section id="properties">
+                <div>
+                    <select id="categories_list"></select>
+                    <button type="button" id="new_category">New</button>
+                    <button type="button" id="delete_category">Delete</button>
+                </div>
+                <fieldset id="category_meta">
+                    <legend>Categories</legend>
+                    <p>
+                        <label for="category_id">Id:</label>
+                        <input type="text" id="category_id" name="category[id]" />
+                    </p>
+                    <p>
+                        <label for="category_name">Name:</label>
+                        <textarea id="category_name" name="category[name]"></textarea>
+                    </p>
+                </fieldset>
+                <fieldset>
+                    <legend>Properties</legend>
+                    <table id="properties_table">
+                        <thead>
                         <tr>
-                            <td colspan="4">
-                                <div id="property_inner_form">
-                                    <p>
-                                        <label for="property_id">Id:</label>
-                                        <input type="text" id="property_id" />
-                                    </p>
-                                    <p>
-                                        <label for="property_name">Name:</label>
-                                        <input type="text" id="property_name"/>
-                                    </p>
-                                    <p>
-                                        <label for="property_description">Description:</label>
-                                        <textarea id="property_description"></textarea>
-                                    </p>
-                                    <p>
-                                        <label for="property_type">Type:</label>
-                                        <select id="property_type">
-                                            <option value="string">string</option>
-                                            <option value="number">number</option>
-                                            <option value="boolean">boolean</option>
-                                            <option value="color">color</option>
-                                            <option value="question">question</option>
-                                            <option value="file">file</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label for="property_value">Value:</label>
-                                        <input type="text" id="property_value" />
-                                    </p>
-                                    <p>
-                                        <label>Options:</label>
-                                        <span class="property-options-list-container">
-                                            <span class="property-options-list"></span>
-                                            <a href="#" class="add-property-option">Add option</a> |
-                                            <a href="#" class="delete-property-options">Delete options</a>
-                                        </span>
-                                    </p>
-                                    <p>
-                                        <label for="property_mode">Mode:</label>
-                                        <select id="property_mode">
-                                            <option value="static">static</option>
-                                            <option value="dynamic">dynamic</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_require" />
-                                        <label for="property_require">Require</label>
-                                    </p>
-                                    <p>
-                                        <input type="checkbox" id="property_visible" />
-                                        <label for="property_visible">Visible</label>
-                                    </p>
-                                    <div class="property-type-string">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="property_inner_form">
                                         <p>
-                                            <label for="property_pattern">Pattern:</label>
-                                            <input type="text" id="property_pattern" />
-                                        </p>
-                                    </div>
-                                    <div class="property-type-number">
-                                        <p>
-                                            <label for="property_min">Minimum:</label>
-                                            <input type="number" id="property_min" />
+                                            <label for="property_id">Id:</label>
+                                            <input type="text" id="property_id" />
                                         </p>
                                         <p>
-                                            <label for="property_max">Maximum:</label>
-                                            <input type="number" id="property_max" />
+                                            <label for="property_name">Name:</label>
+                                            <input type="text" id="property_name"/>
                                         </p>
                                         <p>
-                                            <label for="property_decimal">Decimal:</label>
-                                            <input type="number" id="property_decimal" />
+                                            <label for="property_description">Description:</label>
+                                            <textarea id="property_description"></textarea>
                                         </p>
-                                    </div>
-                                    <div class="property-type-color">
                                         <p>
-                                            <label for="property_colorFormat">Color format:</label>
-                                            <select id="property_colorFormat" >
-                                                <option value="hexa">Hexa</option>
-                                                <option value="rgb">RGB</option>
-                                                <option value="rgba">RGBA</option>
+                                            <label for="property_type">Type:</label>
+                                            <select id="property_type">
+                                                <option value="string">string</option>
+                                                <option value="number">number</option>
+                                                <option value="boolean">boolean</option>
+                                                <option value="color">color</option>
+                                                <option value="question">question</option>
+                                                <option value="file">file</option>
                                             </select>
                                         </p>
+                                        <p>
+                                            <label for="property_value">Value:</label>
+                                            <input type="text" id="property_value" />
+                                        </p>
+                                        <p>
+                                            <label>Options:</label>
+                                            <span class="property-options-list-container">
+                                                <span class="property-options-list"></span>
+                                                <a href="#" class="add-property-option">Add option</a> |
+                                                <a href="#" class="delete-property-options">Delete options</a>
+                                            </span>
+                                        </p>
+                                        <p>
+                                            <label for="property_mode">Mode:</label>
+                                            <select id="property_mode">
+                                                <option value="static">static</option>
+                                                <option value="dynamic">dynamic</option>
+                                            </select>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_require" />
+                                            <label for="property_require">Require</label>
+                                        </p>
+                                        <p>
+                                            <input type="checkbox" id="property_visible" />
+                                            <label for="property_visible">Visible</label>
+                                        </p>
+                                        <div class="property-type-string">
+                                            <p>
+                                                <label for="property_pattern">Pattern:</label>
+                                                <input type="text" id="property_pattern" />
+                                            </p>
+                                        </div>
+                                        <div class="property-type-number">
+                                            <p>
+                                                <label for="property_min">Minimum:</label>
+                                                <input type="number" id="property_min" />
+                                            </p>
+                                            <p>
+                                                <label for="property_max">Maximum:</label>
+                                                <input type="number" id="property_max" />
+                                            </p>
+                                            <p>
+                                                <label for="property_decimal">Decimal:</label>
+                                                <input type="number" id="property_decimal" />
+                                            </p>
+                                        </div>
+                                        <div class="property-type-color">
+                                            <p>
+                                                <label for="property_colorFormat">Color format:</label>
+                                                <select id="property_colorFormat" >
+                                                    <option value="hexa">Hexa</option>
+                                                    <option value="rgb">RGB</option>
+                                                    <option value="rgba">RGBA</option>
+                                                </select>
+                                            </p>
+                                        </div>
+                                        <div class="property-type-file">
+                                            <p>
+                                                <label for="property_fileExtension">File extension:</label>
+                                                <input type="text" id="property_fileExtension" />
+                                            </p>
+                                        </div>
+                                        <div class="property-type-question">
+                                            <p>
+                                                <input type="checkbox" id="property_chapter" />
+                                                <label for="property_chapter">Chapter</label>
+                                            </p>
+                                            <p>
+                                                <input type="checkbox" id="property_single" />
+                                                <label for="property_single">Single question</label>
+                                            </p>
+                                            <p>
+                                                <input type="checkbox" id="property_multiple" />
+                                                <label for="property_multiple">Multi-coded question</label>
+                                            </p>
+                                            <p>
+                                                <input type="checkbox" id="property_numeric" />
+                                                <label for="property_numeric">Numeric question</label>
+                                            </p>
+                                            <p>
+                                                <input type="checkbox" id="property_open" />
+                                                <label for="property_open">Open question</label>
+                                            </p>
+                                            <p>
+                                                <input type="checkbox" id="property_date" />
+                                                <label for="property_date">Date/Time question</label>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="property-type-file">
-                                        <p>
-                                            <label for="property_fileExtension">File extension:</label>
-                                            <input type="text" id="property_fileExtension" />
-                                        </p>
-                                    </div>
-                                    <div class="property-type-question">
-                                        <p>
-                                            <input type="checkbox" id="property_chapter" />
-                                            <label for="property_chapter">Chapter</label>
-                                        </p>
-                                        <p>
-                                            <input type="checkbox" id="property_single" />
-                                            <label for="property_single">Single question</label>
-                                        </p>
-                                        <p>
-                                            <input type="checkbox" id="property_multiple" />
-                                            <label for="property_multiple">Multi-coded question</label>
-                                        </p>
-                                        <p>
-                                            <input type="checkbox" id="property_numeric" />
-                                            <label for="property_numeric">Numeric question</label>
-                                        </p>
-                                        <p>
-                                            <input type="checkbox" id="property_open" />
-                                            <label for="property_open">Open question</label>
-                                        </p>
-                                        <p>
-                                            <input type="checkbox" id="property_date" />
-                                            <label for="property_date">Date/Time question</label>
-                                        </p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <button type="button" id="add_property">Add property</button>
-
-        </fieldset>
-
-    </section>
-
-    <div class="form-controls">
-        <button type="submit" id="apply">Apply</button>
-    </div>
-</form>
-<script src="../viewer.js"></script>
-<script src="projectSettings.info.js"></script>
-<script src="projectSettings.outputs.js"></script>
-<script src="projectSettings.properties.js"></script>
-<script src="projectSettings.js"></script>
-</body>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <button type="button" id="add_property">Add property</button>
+            </fieldset>
+        </section>
+        <div class="form-controls">
+            <button type="submit" id="apply">Apply</button>
+        </div>
+    </form>
+        <script src="../viewer.js"></script>
+        <script src="projectSettings.info.js"></script>
+        <script src="projectSettings.outputs.js"></script>
+        <script src="projectSettings.properties.js"></script>
+        <script src="projectSettings.js"></script>
+    </body>
 </html>
