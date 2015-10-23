@@ -42,7 +42,9 @@ section > div {
     margin-left:10px;
 }
 
-fieldset#output_list_fieldset, fieldset#contents_fieldset {
+fieldset#output_list_fieldset,
+fieldset#contents_fieldset,
+fieldset#categories_list_fieldset {
     padding-bottom: 15px;
 }
 
@@ -83,7 +85,8 @@ button:active {
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
 }
 
-button#new_output {
+button#new_output,
+button#new_category {
     background-color: #007DC5;
     border-radius   : 2px;
     border          : 1px solid rgba(0,0,0,.95);
@@ -95,19 +98,22 @@ button#new_output {
     transition      : background-color ease-in .2s, color ease-in .2s;
 }
 
-button#new_output:hover {
+button#new_output:hover,
+button#new_category:hover {
     background-color: #0085d1;
     border          : 1px solid rgba(0,0,0,1);
     color           : #EEE;
 }
 
-button#new_output:active {
+button#new_output:active,
+button#new_category:active {
     background-color: #007DC5;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
     color           : #EEE;
 }
 
-button#add_content {
+button#add_content,
+button#add_property {
     margin: 20px 0 0 0;
 }
 
@@ -152,7 +158,7 @@ ul {
 }
 
 table#contents,
-table#properties {
+table#properties_table {
     border-spacing  : 0;
     border-color    : transparent;
 }
@@ -170,7 +176,7 @@ table#properties {
 }
 
 #contents th,
-#properties th {
+#properties_table th {
     text-align  : left;
     padding-left: 15px;
     color       : #888888;
@@ -211,7 +217,7 @@ table#properties {
 }
 
 table#contents a,
-table#properties a {
+table#properties_table a {
     background-color: #BBBBBB;
     color           : #444444;
     padding         : 8px 10px;
@@ -223,7 +229,7 @@ table#properties a {
 }
 
 table#contents a:hover,
-table#properties a:hover {
+table#properties_table a:hover {
     background-color: #CCCCCC;
     color           : #222222;
     padding         : 8px 10px;
@@ -231,7 +237,7 @@ table#properties a:hover {
 }
 
 table#contents a:active,
-table#properties a:active {
+table#properties_table a:active {
     background-color: #BBBBBB;
     color           : #222222;
     padding         : 8px 10px;

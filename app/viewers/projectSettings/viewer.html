@@ -185,11 +185,14 @@
             </fieldset>
         </section>
         <section id="properties">
+            <fieldset id="categories_list_fieldset">
+                <legend>Templates</legend>
                 <div>
                     <select id="categories_list"></select>
                     <button type="button" id="new_category">New</button>
                     <button type="button" id="delete_category">Delete</button>
                 </div>
+            </fieldset>
                 <fieldset id="category_meta">
                     <legend>Categories</legend>
                     <p>
@@ -201,7 +204,7 @@
                         <textarea id="category_name" name="category[name]"></textarea>
                     </p>
                 </fieldset>
-                <fieldset>
+                <fieldset id="category_properties">
                     <legend>Properties</legend>
                     <table id="properties_table">
                         <thead>
@@ -209,7 +212,7 @@
                             <th>Id</th>
                             <th>Name</th>
                             <th>Type</th>
-                            <th>&nbsp;</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
