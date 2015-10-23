@@ -2,8 +2,16 @@
   var ipc = require('ipc'),
       exp = document.getElementById("explorer"),
       wks = document.getElementById("workspace"),
+      outEl = document.getElementById("panel_status_output_content"),
       askia = window.askia,
-      countDownReadyWebView = 2; // 2 web-views must be loaded
+      countDownReadyWebView = 2, // 2 web-views must be loaded
+      resizerStatus = new askia.Resizer({
+        element  : document.getElementById('panel_status'),
+        direction: 'vertical',
+        revert  : true
+    });
+
+    resizerStatus.start();
 
     /**
      * Look how many web-views are loaded and fire the ready event when all are ready
@@ -29,7 +37,7 @@
     });
     wks.addEventListener("dom-ready", function(){
       onWebViewLoaded();
-      wks.openDevTools();
+      // wks.openDevTools();
     });
 
 
@@ -49,6 +57,28 @@
             });
         }
 
+    });
+
+    /**
+     * Write in the output
+     * @param {String} text Text to write
+     */
+    ipc.on("output-write", function (text, type) {
+        var el = document.createElement("p");
+        el.innerText = text;
+        el.className = type;
+        outEl.appendChild(el);
+        // Scroll at the end
+        var sep = document.createElement("span");
+        outEl.appendChild(sep);
+        sep.scrollIntoView();
+    });
+
+    /**
+     * Clear the output
+     */
+    ipc.on("output-clear", function () {
+        outEl.innerHTML = '';
     });
 
     /**

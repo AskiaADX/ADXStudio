@@ -28,6 +28,7 @@ window.askia.Resizer = (function () {
      * @param {HTMLElement}  options.element HTML element to resize
      * @param {String|"vertical"|"horizontal"} options.direction Direction of the splitter
      * @param {Function} options.onResize Callback to call when the resizer has been resized
+     * @param {Boolean} options.revert Use the opposite side (top for vertical direction and right for horizontal)
      */
     function Resizer(options) {
         this.options = options || {};
@@ -40,8 +41,13 @@ window.askia.Resizer = (function () {
             offsetPos: (this.direction == 'horizontal') ? 'offsetLeft' : 'offsetTop',
             pos: (this.direction == 'horizontal') ? 'left' : 'top',
             offsetSize: (this.direction == 'horizontal') ? 'offsetWidth' : 'offsetHeight',
-            size: (this.direction == 'horizontal') ? 'width' : 'height'
+            size: (this.direction == 'horizontal') ? 'width' : 'height',
+            revert : options.revert
         };
+
+        if (options.revert) {
+            this.config.offsetSize = (this.direction == 'horizontal') ? 'offsetLeft' : 'offsetTop';
+        }
         
         if (this.options.onResize && typeof this.options.onResize === 'function') {
             this.config.onResize = options.onResize;
@@ -85,7 +91,12 @@ window.askia.Resizer = (function () {
             document.body.classList.remove('askia-resizer-' + direction + '-drag');
             document.body.removeEventListener('mouseup', up);
             document.body.removeEventListener('mousemove', move);
-            currentEl.adxEl.style[config.size] = currentEl[config.offsetPos] + 'px';
+            var size = currentEl[config.offsetPos];
+            if (config.revert) {
+                size = currentEl.adxEl[config.offsetSize] - currentEl[config.offsetPos];
+                size += currentEl.adxEl[(direction == 'horizontal') ? 'offsetWidth' : 'offsetHeight'];
+            }
+            currentEl.adxEl.style[config.size] = size + 'px';
             currentEl.adxResizer.refreshPosition();
             if (config.onResize) {
                 config.onResize();

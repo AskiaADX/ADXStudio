@@ -10,9 +10,22 @@
     <link rel="stylesheet" type="text/css" href="../themes/default/default.css"/>
   </head>
   <body class="grey">
-    <div id="main_panels">
-      <div id="panel_explorer"><webview id="explorer" src="../explorer/explorer.html" nodeintegration="on"></webview></div>
-      <div id="panel_workspace"><webview id="workspace" src="../workspace/workspace.html" nodeintegration="on"></webview></div>
+    <div id="panels">
+        <div id="panel_toolbar" class="panel"></div>
+        <div id="main_panels">
+          <div id="panel_explorer" class="panel"><webview id="explorer" src="../explorer/explorer.html" nodeintegration="on"></webview></div>
+          <div id="panel_workspace" class="panel"><webview id="workspace" src="../workspace/workspace.html" nodeintegration="on"></webview></div>
+        </div>
+        <div id="panel_status" class="panel">
+            <div id="panel_status_contents">
+                <div id="panel_status_output_content"></div>
+            </div>
+            <nav id="panel_status_tabs">
+                <ul>
+                    <li id="panel_status_output_tab">Output</li>
+                </ul>
+		    </nav>
+        </div>
     </div>
     <script type="text/javascript" src="../lib/askia/Resizer.js"></script>
     <script type="text/javascript" src="../lib/askia/ModalDialog.js"></script>

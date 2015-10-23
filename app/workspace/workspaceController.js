@@ -43,7 +43,8 @@ function tryIfADC(fn) {
         if (!adc.configurator.info) {
             return;
         }
-        var info = !adc.configurator.info.get();
+
+        var info = adc.configurator.info.get();
         if (!info || !info.name || !info.guid) {
             return;
         }

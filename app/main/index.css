@@ -5,13 +5,19 @@ html, body {
     margin:0;
 }
 
+#panels {
+    height:100vh;
+    display:flex;
+    flex-direction: column;
+}
+
 #main_panels {
     display:flex;
     flex-direction: row;
-    height:100vh;
+    flex:1;
 }
 
-#panel_explorer, #panel_workspace {
+.panel {
     position: relative;
 }
 
@@ -34,22 +40,63 @@ webview {
     left: 0;
 }
 
-#main_panels div#separatorExplorerWorkspace {
-  height: 100%;
-  width: 4px;
-  position: absolute;
-  z-index: 2;
-  left: 250px;
-  cursor: ew-resize;
+#panel_status {
+    height:150px;
+    display:flex;
+    flex-direction: column;
+    background  : #21252B;
+    color : #bbb;
+    margin-top: 4px;
+}
+#panel_status_tabs {
+    margin-left:2px;
+    border-top:1px solid #fff;
 }
 
-.hideWindow {
-  opacity: 0.4;
-  background: black;
-  width: 100vw;
-  height: 100vh;
-  z-index: 10000;
-  position: absolute;
-  top: 0;
-  left: 0;
+#panel_status_tabs ul {
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+#panel_status_tabs li {
+    font-size: 0.95rem;
+	display: inline-block;
+    padding: 0 5px;
+    border: 1px solid #aaa;
+    margin: 0;
+    background: #555;
+    cursor:pointer;
+}
+#panel_status_contents {
+    position:relative;
+    flex : 1;
+}
+
+#panel_status_contents > div {
+	/* Fit  the content */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow:auto;
+    padding:5px;
+}
+
+#panel_status_output_content p {
+    -webkit-user-select : initial;
+    user-select : initial;
+    margin:0;
+    padding:0 5px;
+    font-size:0.95em;
+}
+#panel_status_output_content p.error {
+    color : orangered;
+    font-weight: bold;
+}
+#panel_status_output_content p.warning {
+    color:yellow;
+}
+#panel_status_output_content p.success {
+    color:lightgreen;
 }

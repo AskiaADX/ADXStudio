@@ -13,7 +13,17 @@ The `global.project` provide an object with the following structure:
           adc          // {ADC}    Instance of the ADC object
       }
 
-     
+### adcLogger
+
+The `global.adcLogger` is a special logger to redirect the ADCUtil outputs flow
+
+		{
+        	writeMessage, 	// {Function}
+            writeSuccess, 	// {Function}
+            writeWarning,	// {Function}
+            writeError,		// {Function}
+        }
+
 ## Events from View
  
  The main view trigger the following events:

@@ -111,6 +111,20 @@ app.once('ready', function createAppMenu() {
         function projectSettingsClick() {
             app.emit("menu-show-project-settings");
         }
+        
+        /**
+         * Validate the ADC
+         */
+        function validateClick() {
+            app.emit("menu-validate");
+        }
+        
+        /**
+         * Build the ADC
+         */
+        function buildClick() {
+            app.emit("menu-build");
+        }
 
         /**
          * Preview
@@ -178,11 +192,14 @@ app.once('ready', function createAppMenu() {
                     label: 'Build',
                     submenu: [
                         {
+                        	label : '&Validate',
+                            accelerator: 'Ctrl+Shift+T',
+                            click : validateClick
+                        },
+                        {
                             label: '&Build',
-                            accelerator: 'Ctrl+B',
-                            click: function() {
-                                // function to define in order to build the ADC.
-                            }
+                            accelerator: 'Ctrl+Shift+B',
+                            click: buildClick
                         },
                         {
                             label: '&Preview',

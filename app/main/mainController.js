@@ -1,4 +1,5 @@
 var app = require('app');  // Module to control application life.
+var util = require('util');
 var ipc = require('ipc');
 var appSettings = require('../appSettings/appSettingsModel.js');
 var ADC = require('adcutil').ADC;
@@ -10,6 +11,41 @@ var mainView;
 require('../workspace/workspaceController.js');
 require('../explorer/explorerController.js');
 require('./menuController.js');
+
+/**
+ * Write message in the output window
+ *
+ * @param {String} text Message to write
+ * @param {String|"message"|"error"|"warning"|"success"} type Type of the message
+ */
+function writeOutput(text, type) {
+    mainView.send('output-write', text, type);
+}
+
+/**
+ * Clear the output window
+ */
+function clearOutput(){
+    mainView.send('output-clear');
+}
+
+/**
+ * Logger for the ADCUtil
+ */
+global.adcLogger = {
+    writeMessage : function writeMessage() {
+        writeOutput(util.format.apply(null, arguments), 'message');
+    },
+    writeError : function writeError() {
+        writeOutput(util.format.apply(null, arguments), 'error');
+    },
+    writeWarning : function writeWarning() {
+        writeOutput(util.format.apply(null, arguments), 'warning');
+    },
+    writeSuccess : function writeSuccess() {
+        writeOutput(util.format.apply(null, arguments), 'success');
+    }
+};
 
 /**
  * Show a modal dialog
@@ -61,6 +97,7 @@ function createNewProject(event, button, options) {
         return;
     }
 
+    clearOutput();
     showLoader("Creating `" + options.name + "` ADC project ...");
     var project = {
         output: options.path,
@@ -100,6 +137,38 @@ function createNewProject(event, button, options) {
 }
 
 /**
+ * Validate the project
+ */
+function validateProject() {
+    var adc = global.project.adc;
+    var logger = global.adcLogger;
+    if (!adc || !adc.path) {
+        return;
+    }
+
+    clearOutput();
+    adc.validate({
+        logger : logger
+    });
+}
+
+/**
+ * Build the project
+ */
+function buildProject() {
+    var adc = global.project.adc;
+    var logger = global.adcLogger;
+    if (!adc || !adc.path) {
+        return;
+    }
+
+    clearOutput();
+    adc.build({
+        logger : logger
+    });
+}
+
+/**
  * Fire when the main window is ready
  */
 ipc.on('main-ready', function (event) {
@@ -118,6 +187,12 @@ ipc.on('main-ready', function (event) {
 
     app.removeListener('menu-new-project', newProject);
     app.on('menu-new-project', newProject);
+    
+    app.removeListener('menu-validate', validateProject);
+    app.on('menu-validate', validateProject);
+    
+    app.removeListener('menu-build', buildProject);
+    app.on('menu-build', buildProject);
 
     ipc.removeListener('main-create-new-project', createNewProject);
     ipc.on('main-create-new-project', createNewProject);
