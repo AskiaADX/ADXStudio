@@ -45,6 +45,13 @@
             // Add extra class on the dialog box
             modalDialog.elements.dialog.classList.add('new-project');
 
+            // Title
+            el.title = document.createElement('p');
+            el.title.className = 'askia-modal-new-project-title';
+            el.title.innerHTML = 'Create a new ADX project';
+
+            root.appendChild(el.title);
+
             // Name
             el.name = document.createElement('div');
             el.name.className = 'askia-modal-new-project-container';
@@ -74,6 +81,7 @@
 
             el.pathInput = document.createElement('input');
             el.pathInput.setAttribute('id', 'modal_new_proj_path_' + autoIncrement);
+            el.pathInput.className = 'pathInput';
             el.pathInput.setAttribute('type', 'text');
             el.path.appendChild(el.pathInput);
 
