@@ -22,6 +22,35 @@ function saveWorkspaceStatus() {
     });
 }
 
+/**
+ * Try to execute the function if the project is an ADC
+ * @param {Function} fn
+ * @param {ADC} fn.adc Instance of the ADC
+ */
+function tryIfADC(fn) {
+    var adc = global.project.adc;
+    if (!adc || !adc.path) {
+        return;
+    }
+
+    adc.load(function (err) {
+        if (err) {
+            return;
+        }
+        if (!adc.configurator) {
+            return;
+        }
+        if (!adc.configurator.info) {
+            return;
+        }
+        var info = !adc.configurator.info.get();
+        if (!info || !info.name || !info.guid) {
+            return;
+        }
+        // Ok seems to be an ADC
+        fn(adc);
+    });
+}
 
 /**
  * Open project in the workspace
@@ -215,35 +244,36 @@ function getResourcesDirectoryStructure(callback) {
  * Open project settings
  */
 function openProjectSettings() {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
-        return;
-    }
-    workspace.find(adc.path, function (err, tab, pane) {
-
-        // If the tab already exist only focus it
-        if (tab) {
-            // TODO::Look if the content of the tab has changed
-            // TODO::Look if the file has been removed
-            workspaceView.send('workspace-focus-tab', err, tab, pane);
+    tryIfADC(function tryToOpenProjectSettings(adc) {
+        if (!adc || !adc.path) {
             return;
         }
+        workspace.find(adc.path, function (err, tab, pane) {
 
-        // When the tab doesn't exist, create it
-        workspace.createTab({
-            path : adc.path,
-            type : 'projectSettings'
-        }, function (err, tab, pane) {
-            // TODO::Don't throw the error but send it to the view
-            if (err) {
-                throw err;
+            // If the tab already exist only focus it
+            if (tab) {
+                // TODO::Look if the content of the tab has changed
+                // TODO::Look if the file has been removed
+                workspaceView.send('workspace-focus-tab', err, tab, pane);
+                return;
             }
-            getResourcesDirectoryStructure(function (structure) {
-                adc.load(function (err) {
-                    tab.adcConfig = (!err)  ? adc.configurator.get() : {};
-                    tab.adcStructure = structure;
 
-                    workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+            // When the tab doesn't exist, create it
+            workspace.createTab({
+                path : adc.path,
+                type : 'projectSettings'
+            }, function (err, tab, pane) {
+                // TODO::Don't throw the error but send it to the view
+                if (err) {
+                    throw err;
+                }
+                getResourcesDirectoryStructure(function (structure) {
+                    adc.load(function (err) {
+                        tab.adcConfig = (!err)  ? adc.configurator.get() : {};
+                        tab.adcStructure = structure;
+
+                        workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+                    });
                 });
             });
         });
@@ -293,12 +323,14 @@ function openPreview(options) {
  * Start the preview servers
  */
 function startPreview() {
-    if (!global.project.adc || !global.project.adc.path) {
-        return;
-    }
+    tryIfADC(function tryToStartPreview(adc) {
+        if (!adc || !adc.path) {
+            return;
+        }
 
-    global.project.adc.checkFixtures(function () {
-        servers.listen(openPreview);
+        adc.checkFixtures(function () {
+            servers.listen(openPreview);
+        });
     });
 }
 
