@@ -147,7 +147,8 @@
             el.className = type;
             outEl.appendChild(el);
             // Scroll at the end
-            var sep = document.createElement("span");
+            var sep = document.createElement("div");
+            // sep.innerText = 'SEP';
             outEl.appendChild(sep);
             sep.scrollIntoView();
         });
