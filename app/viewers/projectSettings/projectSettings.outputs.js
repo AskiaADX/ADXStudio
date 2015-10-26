@@ -204,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         row.appendChild(contentType);
 
         var contentControls = document.createElement("td");
+        contentControls.className =  "output-content content-controls";
         contentControls.innerHTML = '<a href="#" class="del">Delete</a>';
         row.appendChild(contentControls);
 

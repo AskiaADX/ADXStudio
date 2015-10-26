@@ -117,10 +117,16 @@ window.askia.modalDialog = (function () {
         var initialZIndex = 1000 + modalStack.length;
         var el = this.elements;
 
+        // Wrapper
+        el.wrapper = document.createElement('div');
+        el.wrapper.className = 'askia-modal-wrapper';
+        el.wrapper.style.zIndex = initialZIndex;
+
         // Dialog box
         el.dialog = document.createElement('div');
         el.dialog.className = 'askia-modal-dialog';
         el.dialog.style.zIndex = initialZIndex + 1;
+        el.wrapper.appendChild(el.dialog);
 
         // Register for the auto-focus on start up
         el.autoFocusOn = el.dialog;
@@ -186,7 +192,7 @@ window.askia.modalDialog = (function () {
 
         // Append it in the document
         document.body.appendChild(el.lightbox);
-        document.body.appendChild(el.dialog);
+        document.body.appendChild(el.wrapper);
 
         el.autoFocusOn.focus();
 
@@ -310,7 +316,7 @@ window.askia.modalDialog = (function () {
     ModalDialog.prototype.close  = function close() {
         currentInstance = modalStack.pop(); // Unstack
         this.removeListeners();
-        document.body.removeChild(this.elements.dialog);
+        document.body.removeChild(this.elements.wrapper);
         document.body.removeChild(this.elements.lightbox);
     };
 

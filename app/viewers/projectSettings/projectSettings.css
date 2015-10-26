@@ -1,22 +1,22 @@
 html, body {
-  margin: 0;
-  padding:0;
-  height :100vh;
+  margin    : 0;
+  padding   :0;
+  height    :100vh;
 }
 body {
-    display: flex;
-    flex-direction: row;
+    display         : flex;
+    flex-direction  : row;
 }
 nav, ul {
-    margin:0;
-    padding:0;
+    margin  :0;
+    padding :0;
 }
 nav {
-    width : 200px;
-    height : 100vh;
+    width   : 200px;
+    height  : 100vh;
 }
 nav li {
-    margin-bottom : 20px;
+    /*margin-bottom : 20px;*/
 }
 nav a {
     display : block;
@@ -24,28 +24,33 @@ nav a {
     width   : 180px;
 }
 form {
-  padding:0;
-  margin:0;
-  overflow: auto;
-  flex : 1;
-  height:100vh;
+  padding   :0;
+  margin    :0;
+  overflow  : auto;
+  flex      : 1;
+  height    :100vh;
 }
 
 section {
-    display : none;
+    display: none;
 }
 section.active {
-    display : block;
+    display: block;
 }
 
 section > div {
     margin-left:10px;
 }
 
+fieldset#output_list_fieldset,
+fieldset#contents_fieldset,
+fieldset#categories_list_fieldset {
+    padding-bottom: 15px;
+}
 
 label {
-  width     : 170px;
-  display   : inline-block;
+  width         : 170px;
+  display       : inline-block;
   vertical-align: top;
 }
 
@@ -53,8 +58,67 @@ input[type="text"], input[type="url"], textarea, select {
     width: 400px;
 }
 
+button {
+    padding         : 10px 15px;
+    cursor          : pointer;
+    align-self      : center;
+    margin-left     : 10px;
+    background-color: #BBBBBB;
+    border-radius   : 2px;
+    border          : 1px solid rgba(0,0,0,.95);
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #222;
+    font-size       : 14px;
+    font-weight     : bold;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}
+
+button:hover {
+    background-color: #CCCCCC;
+    color           : #000;
+}
+
+button:active {
+    background-color: #DDDDDD;
+    color           : #000;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
+}
+
+button#new_output,
+button#new_category {
+    background-color: #007DC5;
+    border-radius   : 2px;
+    border          : 1px solid rgba(0,0,0,.95);
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #DDD;
+    font-size       : 14px;
+    font-weight     : bold;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}
+
+button#new_output:hover,
+button#new_category:hover {
+    background-color: #0085d1;
+    border          : 1px solid rgba(0,0,0,1);
+    color           : #EEE;
+}
+
+button#new_output:active,
+button#new_category:active {
+    background-color: #007DC5;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
+    color           : #EEE;
+}
+
+button#add_content,
+button#add_property {
+    margin: 20px 0 0 0;
+}
+
 .inner-form label {
-    width     : 120px;
+    width: 120px;
 }
 
 .inner-form input[type="text"],
@@ -85,67 +149,110 @@ ul {
 }
 
 .error {
-  background: red;
+  background: #e74c3c;
+  color     : #000;
 }
 
 #contents select {
-    width:100%;
-    padding: 10px;
+    width   :100%;
+    padding : 10px;
 }
 #contents th,
 #contents td {
-    padding : 5px;
-    min-width : 120px;
-    width : 120px;
+    padding         : 5px;
+    min-width       : 120px;
+    width           : 120px;
+    border-bottom   : 1px solid #111;
 }
+
+#contents th,
+#properties_table th {
+    text-align  : left;
+    padding-left: 15px;
+    color       : #888888;
+}
+
 #properties_table tr,
 #contents tbody tr {
-    height : 55px;
+    height: 55px;
 }
 #contents span {
     padding: 10px;
 }
 .cat-prop,
 .output-content {
-    cursor : pointer;
+    cursor: pointer;
 }
-
 
 #properties_table th,
 #properties_table td {
-    padding : 5px;
-    min-width : 120px;
+    padding         : 5px;
+    min-width       : 120px;
+    border-bottom   : 1px solid #111;
 }
 
+#contents td.content-controls,
+#properties td.content-controls {
+    text-align: left;
+    padding-left: 15px;
+}
 
 #properties_table tfoot,
 #properties_table .inner-form {
-    display : none;
+    display: none;
 }
 
 #properties_table .inner-form.editable {
     display:table-row;
 }
 
+table#contents a,
+table#properties_table a {
+    background-color: #BBBBBB;
+    color           : #444444;
+    padding         : 8px 10px;
+    border          : 1px solid black;
+    border-radius   : 2px;
+    text-decoration : none;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    transition      : color ease-in .3s, background-color ease-in .3s;
+}
+
+table#contents a:hover,
+table#properties_table a:hover {
+    background-color: #CCCCCC;
+    color           : #222222;
+    padding         : 8px 10px;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+}
+
+table#contents a:active,
+table#properties_table a:active {
+    background-color: #BBBBBB;
+    color           : #222222;
+    padding         : 8px 10px;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
+}
+
 .property-options-list-container {
-    display : inline-block;
+    display: inline-block;
 }
 
 .property-options-list {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 160px;
-    width: 350px;
+    overflow-y  : auto;
+    overflow-x  : hidden;
+    max-height  : 160px;
+    width       : 350px;
 }
 .property-options-list,
 .property-options-list-row {
-    display : block;
+    display: block;
 }
 .property-options-list-row {
     margin-bottom: 4px;
 }
 .inner-form .property-options-list-row input[type=text] {
-    width : 125px;
+    width: 125px;
 }
 .property-option-value {
     margin-right: 5px;

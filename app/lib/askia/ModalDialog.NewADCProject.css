@@ -1,38 +1,47 @@
 .askia-modal-dialog.new-project {
-    top : 30%;
-    height : 500px;
+    width: 600px;
+}
+
+.askia-modal-new-project-title, p.askia-modal-new-project-title {
+    font-size   : 1.4em;
+    padding-left: 20px;
+    padding-top : 0;
+    margin-top  : 0;
 }
 
 .askia-modal-new-project-container {
-    padding: 15px;
+    padding: 15px 0px 15px 20px;
 }
-
 
 .askia-modal-new-project-container input,
 .askia-modal-new-project-container textarea,
 .askia-modal-new-project-container select {
-    padding: 10px;
-    width: 300px;
-    border-radius: 2px;
-    border: 1px solid #151515;
+    padding         : 10px;
+    width           : 370px;
+    border-radius   : 2px;
+    border          : 1px solid #151515;
     background-color: #21252B;
-    color: #BBB;
-    font-size: 14px;
-    margin-left: 10px;
+    color           : #BBB;
+    font-size       : 14px;
+    margin-left     : 10px;
+}
+
+.askia-modal-new-project-container .pathInput {
+    width: 320px;
 }
 
 .askia-modal-new-project-container input:focus,
 .askia-modal-new-project-container textarea:focus,
 .askia-modal-new-project-container select:focus {
-    border: 1px solid #007DC5;
-    outline: none;
+    border  : 1px solid #007DC5;
+    outline : none;
 }
 
 .askia-modal-new-project-container label {
-    display: block;
-    width: 100px;
-    float: left;
-    align-self: center;
+    display     : block;
+    width       : 100px;
+    float       : left;
+    align-self  : center;
 }
 
 .askia-modal-new-project-container textarea {
@@ -40,22 +49,38 @@
 }
 
 .askia-modal-new-project-container select {
-    width: 325px;
+    width   : 390px;
+    cursor  : pointer;
+}
+
+.new-project .askia-modal-buttons-container {
+    padding-right: 30px !important;
 }
 
 .askia-modal-new-project-container button {
-    width: 40px;
-    height: 30px;
-    cursor: pointer;
-    align-self: center;
-    margin-left: 10px;
+    width           : 40px;
+    height          : 37px;
+    cursor          : pointer;
+    align-self      : center;
+    margin-left     : 10px;
     background-color: #BBBBBB;
-    border-radius: 2px;
-    border: 1px solid rgba(0,0,0,.95);
-    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset;
-    color: #222;
-    font-size: 14px;
-    text-shadow: 0 1px 0 rgba(255,255,255,.5);
-    outline: none;
-    transition: all ease-in-out .3s;
+    border-radius   : 2px;
+    border          : 1px solid rgba(0,0,0,.95);
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #222;
+    font-size       : 14px;
+    font-weight     : bold;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}
+
+.askia-modal-new-project-container button:hover {
+    background-color: #CCCCCC;
+    color           : #000;
+}
+
+.askia-modal-new-project-container button:active {
+    background-color: #DDDDDD;
+    color           : #000;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
 }
