@@ -119,7 +119,6 @@ webview {
     flex        : 1;
     height      :150px;
     color       :#EEE;
-    font-size   : .8em;
     font-family : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 }
 
@@ -143,7 +142,7 @@ webview {
     user-select         : initial;
     margin              :0;
     padding             : 0 5px;
-    font-size           : 0.85rem;
+    font-size           : 0.8rem;
 }
 #panel_output .error {
     color       : #C0392B;

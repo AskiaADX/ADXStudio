@@ -89,7 +89,7 @@
                 revert  : true
             }),
             currentTab;
-        
+
         /**
          * Open the status bar
          */
@@ -107,7 +107,7 @@
             statusEl.classList.add('opened');
             resizerStatus.start();
         }
-        
+
         /**
          * Close the status bar
          */
@@ -132,14 +132,14 @@
                 shell.showItemInFolder(el.getAttribute('href'));
             }
         });
-        
+
         /**
          * Write in the output
          * @param {String} text Text to write
          */
         ipc.on("output-write", function (text, type) {
             openStatusBar("panel_output"); // Make sure it's open
-            
+
             var el = document.createElement("p");
             var rg = /(file:\/\/\/[^\s\r\n]+)/gi;
             el.innerText = text;
