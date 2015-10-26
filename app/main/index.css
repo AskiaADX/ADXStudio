@@ -43,59 +43,16 @@ webview {
 /** -------------------
     PANEL STATUS
     ------------------- **/
-
-#panel_status {
+#panel_status{
+    display:none;
+}
+#panel_status.opened {
     display         :flex;
     flex-direction  : column;
     background      : #21252B;
     color           : #555;
     margin-top      : 4px;
 }
-.panel-title-bar ,
-.panel-contents {
-    display: none;
-}
-.opened .panel-title-bar,
-.opened .panel-contents {
-	display: block;
-}
-
-.panel-tab-container {
-    background: #21252B;
-    border-top: 1px solid #000;
-}
-
-.panel-tab-container ul {
-    margin      :0;
-    padding     :0;
-    list-style  :none;
-    padding-left:2px;
-}
-.panel-tab {
-    font-size   : 0.95rem;
-    color       : #AAA;
-	display     : inline-block;
-    padding     : 0 5px;
-    margin      : 0;
-    cursor      :pointer;
-    border-right: 1px solid transparent;
-    border-left : 1px solid transparent;
-    transition  : color ease-in .2s;
-}
-
-.panel-tab:hover {
-    color: #DDD;
-}
-
-.panel-tab.selected {
-    background  : #000;
-    border-right: 1px solid rgba(255,255,255,.2);
-    border-left : 1px solid rgba(255,255,255,.2);
-    color       : #FFF;
-    padding     : 5px 10px;
-    font-size   : .8rem;
-}
-
 .panel-title-bar {
     background      : #21252B;
     padding         : 5px 0 5px 10px;
