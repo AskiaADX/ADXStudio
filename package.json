@@ -35,7 +35,8 @@
     "nodejs-websocket": "^1.4.0"
   },
   "devDependencies": {
-    "electron-prebuilt": "^0.34.0",
+    "electron-packager": "^5.1.0",
+    "electron-prebuilt": "^0.34.1",
     "jasmine-node": "^1.14.5"
   }
 }
