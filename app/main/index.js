@@ -2,7 +2,7 @@
   var ipc = require('ipc'),
       exp = document.getElementById("explorer"),
       wks = document.getElementById("workspace"),
-      outEl = document.getElementById("panel_status_output_content"),
+      outEl = document.getElementById("panel_status_output"),
       askia = window.askia,
       countDownReadyWebView = 2, // 2 web-views must be loaded
       resizerStatus = new askia.Resizer({
