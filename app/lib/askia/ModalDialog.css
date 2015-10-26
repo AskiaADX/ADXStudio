@@ -8,20 +8,24 @@
     justify-content : center;
     background-color: rgba(66, 66, 66, 0.4);
 }
+.askia-modal-wrapper {
+    /* Center it in the middle of then page */
+    position:absolute;
+    top             : 0;
+    left            : 0;
+    bottom          : 0;
+    right           : 0;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
 .askia-modal-dialog {
     font-family     : "Lucida Grande", Helvetica, Arial, sans-serif;
     line-height     : 1.5;
     color           : #DDD;
     font-size       : 14px;
     font-weight     : normal;
-    position        : absolute;
-    margin-top      : -70px;
-    margin-left     : -300px;
     padding         : 40px 40px 20px 40px;
-    top             : 50%;
-    left            : 50%;
-    width           : 600px;
-    height          : 140px;
     opacity         : 1;
     background      : #282C34;
     border          : 1px solid #181818;
