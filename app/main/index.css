@@ -144,6 +144,11 @@ webview {
     padding             : 0 5px;
     font-size           : 0.8rem;
 }
+
+#panel_output a {
+    color: #3498DB;
+}
+
 #panel_output .error {
     color       : #C0392B;
     font-weight : bold;
