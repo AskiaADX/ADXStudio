@@ -54,11 +54,18 @@ label, input[type="checkbox"] {
     cursor: pointer;
 }
 
-input, textarea, select {
+input, textarea {
     border-radius: 2px;
     border: 1px solid #151515;
     background-color: #21252B;
     color: #BBB;
+}
+
+select {
+    background-color: #343A44;
+    border-radius: 2px;
+    color: #BBB;
+    border: 1px solid #151505;
 }
 
 textarea {

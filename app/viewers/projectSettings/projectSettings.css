@@ -206,6 +206,11 @@ ul {
     display:table-row;
 }
 
+table#contents,
+table#properties_table {
+    border-spacing: 0;
+}
+
 table#contents a,
 table#properties_table a {
     background-color: #BBBBBB;

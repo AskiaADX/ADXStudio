@@ -30,7 +30,7 @@
     });
     wks.addEventListener("dom-ready", function () {
         onWebViewLoaded();
-        // wks.openDevTools();
+        wks.openDevTools();
     });
 
     /**
@@ -90,7 +90,7 @@
                 revert  : true
             }),
             currentTab;
-        
+
         /**
          * Open the status bar
          */
@@ -110,7 +110,7 @@
             statusEl.classList.add('opened');
             resizerStatus.start();
         }
-        
+
         /**
          * Close the status bar
          */
@@ -123,9 +123,9 @@
             statusEl.classList.remove('opened');
             resizerStatus.stop();
         }
-        
+
         /**
-         * Open or close the status bar according to the current state 
+         * Open or close the status bar according to the current state
          * @param {String} id Id of the status bar
          */
         function toggleStatusBar(id) {
@@ -135,7 +135,7 @@
                 closeStatusBar();
             }
         }
-        
+
         tabsEl.addEventListener('click', function onClickOnTab(event) {
             var el = event.srcElement;
             if (!el.classList.contains('panel-tab')) {
@@ -143,7 +143,7 @@
             }
             toggleStatusBar(el.id.replace(/_tab$/i, ''));
         });
-        
+
         statusEl.querySelector('.close').addEventListener('click', function onClickOnClose() {
             closeStatusBar();
         });
@@ -156,14 +156,14 @@
                 shell.showItemInFolder(el.getAttribute('href'));
             }
         });
-        
+
         /**
          * Write in the output
          * @param {String} text Text to write
          */
         ipc.on("output-write", function (text, type) {
             openStatusBar("panel_output"); // Make sure it's open
-            
+
             var el = document.createElement("p");
             var rg = /(file:\/\/\/[^\s\r\n]+)/gi;
             el.innerText = text;
