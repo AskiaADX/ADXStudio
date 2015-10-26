@@ -1,5 +1,6 @@
 (function () {
     var ipc = require('ipc'),
+        shell = require('shell'),
         exp = document.getElementById("explorer"),
         wks = document.getElementById("workspace"),
         askia = window.askia,
@@ -135,7 +136,7 @@
             }
         }
         
-        tabsEl.addEventListener('click', function clickOnTab(event) {
+        tabsEl.addEventListener('click', function onClickOnTab(event) {
             var el = event.srcElement;
             if (!el.classList.contains('panel-tab')) {
                 return;
@@ -143,8 +144,17 @@
             toggleStatusBar(el.id.replace(/_tab$/i, ''));
         });
         
-        statusEl.querySelector('.close').addEventListener('click', function clickOnClose() {
+        statusEl.querySelector('.close').addEventListener('click', function onClickOnClose() {
             closeStatusBar();
+        });
+
+        outEl.addEventListener('click', function onClickIOnOutput(event) {
+            var el = event.srcElement;
+            if (el.classList.contains('open-file-in-folder')) {
+                event.stopPropagation();
+                event.preventDefault();
+                shell.showItemInFolder(el.getAttribute('href'));
+            }
         });
         
         /**
@@ -155,7 +165,9 @@
             openStatusBar("panel_output"); // Make sure it's open
             
             var el = document.createElement("p");
+            var rg = /(file:\/\/\/[^\s\r\n]+)/gi;
             el.innerText = text;
+            el.innerHTML = el.innerText.replace(rg, '<a href="$1" class="open-file-in-folder">$1</a>');
             el.className = type;
             outEl.appendChild(el);
             // Scroll at the end
