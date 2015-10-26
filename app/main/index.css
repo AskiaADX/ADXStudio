@@ -40,52 +40,72 @@ webview {
     left: 0;
 }
 
+
+/** -------------------
+    PANEL STATUS
+    ------------------- **/
+
 #panel_status {
-    height:150px;
     display:flex;
     flex-direction: column;
     background  : #21252B;
-    color : #bbb;
+    color : #555;
     margin-top: 4px;
 }
-#panel_status_tabs {
-    margin-left:2px;
-    border-top:1px solid #fff;
+.panel-title-bar , 
+.panel-contents {
+    display:none;
+}
+.opened .panel-title-bar, 
+.opened .panel-contents {
+	display:block;
 }
 
-#panel_status_tabs ul {
+.panel-tab-container {
+    background:buttonface;
+}
+
+.panel-tab-container ul {
     margin:0;
     padding:0;
     list-style:none;
+    padding-left:2px;
 }
-#panel_status_tabs li {
+.panel-tab {
     font-size: 0.95rem;
 	display: inline-block;
     padding: 0 5px;
-    border: 1px solid #aaa;
-    margin: 0;
-    background: #555;
+    margin : 0;
     cursor:pointer;
+    border-right: 1px solid transparent;
+    border-left: 1px solid transparent;
 }
-#panel_status_title_bar {
-    background:buttonface;
-    color:#000;
-    padding:0 10px;
+.panel-tab.selected {
+    background:#bbb;
+    border-right: 1px solid #555;
+    border-left: 1px solid #555;
 }
 
-#panel_status_title_bar .close {
+.panel-title-bar {
+    background:buttonface;
+    padding:0 5px;
+}
+
+.panel-title-bar .close {
     float:right;
     display:inline-block;
     padding:0 8px;
     cursor:pointer;
 }
 
-#panel_status_contents {
+.panel-contents {
     position:relative;
     flex : 1;
+    height:150px;
+    color:#eee;
 }
 
-#panel_status_contents > div {
+.panel-tab-content {
 	/* Fit  the content */
     position: absolute;
     top: 0;
@@ -94,22 +114,26 @@ webview {
     left: 0;
     overflow:auto;
     padding:5px;
+    display:none;
+}
+.panel-tab-content.selected {
+    display:block;
 }
 
-#panel_status_output p {
+#panel_output p {
     -webkit-user-select : initial;
     user-select : initial;
     margin:0;
     padding:0 5px;
     font-size:0.95em;
 }
-#panel_status_output p.error {
+#panel_output .error {
     color : orangered;
     font-weight: bold;
 }
-#panel_status_output p.warning {
+#panel_output .warning {
     color:yellow;
 }
-#panel_status_output p.success {
+#panel_output .success {
     color:lightgreen;
 }

@@ -30,6 +30,13 @@ function clearOutput(){
 }
 
 /**
+ * Close the output
+ */
+function closeOutput() {
+    mainView.send('output-close');
+}
+
+/**
  * Logger for the ADCUtil
  */
 global.adcLogger = {
@@ -137,6 +144,14 @@ function createNewProject(event, button, options) {
 }
 
 /**
+ * Open a project
+ */
+function openProject() {
+    clearOutput();
+    closeOutput();
+}
+
+/**
  * Validate the project
  */
 function validateProject() {
@@ -187,7 +202,10 @@ ipc.on('main-ready', function (event) {
 
     app.removeListener('menu-new-project', newProject);
     app.on('menu-new-project', newProject);
-    
+
+    app.removeListener('menu-open-project', openProject);
+    app.on('menu-open-project', openProject);
+
     app.removeListener('menu-validate', validateProject);
     app.on('menu-validate', validateProject);
     

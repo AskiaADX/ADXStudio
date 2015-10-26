@@ -1,50 +1,41 @@
 (function () {
-  var ipc = require('ipc'),
-      exp = document.getElementById("explorer"),
-      wks = document.getElementById("workspace"),
-      outEl = document.getElementById("panel_status_output"),
-      askia = window.askia,
-      countDownReadyWebView = 2, // 2 web-views must be loaded
-      resizerStatus = new askia.Resizer({
-        element  : document.getElementById('panel_status'),
-        direction: 'vertical',
-        revert  : true
-    });
-
-    resizerStatus.start();
+    var ipc = require('ipc'),
+        exp = document.getElementById("explorer"),
+        wks = document.getElementById("workspace"),
+        askia = window.askia,
+        countDownReadyWebView = 2; // 2 web-views must be loaded
 
     /**
      * Look how many web-views are loaded and fire the ready event when all are ready
      */
-    function onWebViewLoaded(){
-      countDownReadyWebView--;
-      if (!countDownReadyWebView) {
-          // Resizer between the explorer element and the workspace
-          var resExpl = new askia.Resizer({
-              element  : document.getElementById('panel_explorer'),
-              direction: 'horizontal'
-          });
+    function onWebViewLoaded() {
+        countDownReadyWebView--;
+        if (!countDownReadyWebView) {
+            // Resizer between the explorer element and the workspace
+            var resExpl = new askia.Resizer({
+                element  : document.getElementById('panel_explorer'),
+                direction: 'horizontal'
+            });
 
-          resExpl.start();
-          ipc.send('main-ready');
-      }
+            resExpl.start();
+            ipc.send('main-ready');
+        }
     }
 
     // Dev tools of the webview
-    exp.addEventListener("dom-ready", function(){
-      onWebViewLoaded();
-      // exp.openDevTools();
+    exp.addEventListener("dom-ready", function () {
+        onWebViewLoaded();
+        // exp.openDevTools();
     });
-    wks.addEventListener("dom-ready", function(){
-      onWebViewLoaded();
-      // wks.openDevTools();
+    wks.addEventListener("dom-ready", function () {
+        onWebViewLoaded();
+        // wks.openDevTools();
     });
-
 
     /**
      * Show modal dialog from webview
      */
-    exp.addEventListener('ipc-message', function(event) {
+    exp.addEventListener('ipc-message', function (event) {
         if (event.channel === 'show-modal-dialog') {
             askia.modalDialog.show(event.args[0], function(result) {
                 if (result.button === 'ok' || result.button === 'yes') {
@@ -57,28 +48,6 @@
             });
         }
 
-    });
-
-    /**
-     * Write in the output
-     * @param {String} text Text to write
-     */
-    ipc.on("output-write", function (text, type) {
-        var el = document.createElement("p");
-        el.innerText = text;
-        el.className = type;
-        outEl.appendChild(el);
-        // Scroll at the end
-        var sep = document.createElement("span");
-        outEl.appendChild(sep);
-        sep.scrollIntoView();
-    });
-
-    /**
-     * Clear the output
-     */
-    ipc.on("output-clear", function () {
-        outEl.innerHTML = '';
     });
 
     /**
@@ -106,6 +75,108 @@
      * Close the modal dialog from the controller
      */
     ipc.on('close-modal-dialog', function () {
-       askia.modalDialog.close();
+        askia.modalDialog.close();
     });
+
+
+    document.addEventListener('DOMContentLoaded', function manageStatus() {
+        var statusEl = document.getElementById('panel_status'),
+            tabsEl   = statusEl.querySelector('.panel-tab-container'),
+            outEl = document.getElementById("panel_output"),
+            resizerStatus = new askia.Resizer({
+                element  : statusEl,
+                direction: 'vertical',
+                revert  : true
+            }),
+            currentTab;
+        
+        /**
+         * Open the status bar
+         */
+        function openStatusBar(id) {
+            if (currentTab !== id) {
+                if (currentTab) {
+                    document.getElementById(currentTab).classList.remove('selected')
+                    document.getElementById(currentTab + "_tab").classList.remove('selected');
+                    currentTab = null;
+                }
+                if (id) {
+                    document.getElementById(id).classList.add('selected');
+                    document.getElementById(id + "_tab").classList.add('selected');
+                    currentTab = id;
+                }
+            }
+            statusEl.classList.add('opened');
+            resizerStatus.start();
+        }
+        
+        /**
+         * Close the status bar
+         */
+        function closeStatusBar() {
+            if (currentTab) {
+                document.getElementById(currentTab).classList.remove('selected');
+                document.getElementById(currentTab + "_tab").classList.remove('selected');
+                currentTab = null;
+            }
+            statusEl.classList.remove('opened');
+            resizerStatus.stop();
+        }
+        
+        /**
+         * Open or close the status bar according to the current state 
+         * @param {String} id Id of the status bar
+         */
+        function toggleStatusBar(id) {
+            if (!statusEl.classList.contains('opened') || currentTab !== id) {
+                openStatusBar(id);
+            } else {
+                closeStatusBar();
+            }
+        }
+        
+        tabsEl.addEventListener('click', function clickOnTab(event) {
+            var el = event.srcElement;
+            if (!el.classList.contains('panel-tab')) {
+                return;
+            }
+            toggleStatusBar(el.id.replace(/_tab$/i, ''));
+        });
+        
+        statusEl.querySelector('.close').addEventListener('click', function clickOnClose() {
+            closeStatusBar();
+        });
+        
+        /**
+         * Write in the output
+         * @param {String} text Text to write
+         */
+        ipc.on("output-write", function (text, type) {
+            openStatusBar("panel_output"); // Make sure it's open
+            
+            var el = document.createElement("p");
+            el.innerText = text;
+            el.className = type;
+            outEl.appendChild(el);
+            // Scroll at the end
+            var sep = document.createElement("span");
+            outEl.appendChild(sep);
+            sep.scrollIntoView();
+        });
+
+        /**
+         * Clear the output
+         */
+        ipc.on("output-clear", function () {
+            outEl.innerHTML = '';
+        });
+
+        /**
+         * Close the status bar
+         */
+        ipc.on("output-close", function () {
+           closeStatusBar();
+        });
+    });
+
 }());
