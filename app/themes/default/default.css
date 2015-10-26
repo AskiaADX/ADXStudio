@@ -188,7 +188,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .selected {
-  background-color: #31363F;
+  background-color: #151515;
 }
 
 .selected > .name {
