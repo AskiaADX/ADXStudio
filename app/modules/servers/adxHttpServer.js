@@ -70,7 +70,7 @@ function serveADCOutput(err, request, response, fixtures) {
     if (fixtureName) {
         arg.fixture = fixtureName;
     }
-    arg.masterPage = 'node_modules/adcutil/templates/master_page/default.html';
+    arg.masterPage = path.join(__dirname, '../../../node_modules/adcutil/templates/master_page/default.html');
     if (properties) {
         arg.properties = properties;
     }
