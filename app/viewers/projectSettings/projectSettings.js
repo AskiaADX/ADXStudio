@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     viewer.saveContentAs = function saveContentAs() {
         tabs.onSaveAs(tab.id, getCurrentConfig());
     };
-    // Save and clsoe
+    // Save and close
     viewer.saveContentAndClose = function saveContentAndClose() {
         tabs.onSaveAndClose(tab.id, getCurrentConfig());
     };
