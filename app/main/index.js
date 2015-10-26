@@ -82,7 +82,6 @@
 
     document.addEventListener('DOMContentLoaded', function manageStatus() {
         var statusEl = document.getElementById('panel_status'),
-            tabsEl   = statusEl.querySelector('.panel-tab-container'),
             outEl = document.getElementById("panel_output"),
             resizerStatus = new askia.Resizer({
                 element  : statusEl,
@@ -97,13 +96,11 @@
         function openStatusBar(id) {
             if (currentTab !== id) {
                 if (currentTab) {
-                    document.getElementById(currentTab).classList.remove('selected')
-                    document.getElementById(currentTab + "_tab").classList.remove('selected');
+                    document.getElementById(currentTab).classList.remove('selected');
                     currentTab = null;
                 }
                 if (id) {
                     document.getElementById(id).classList.add('selected');
-                    document.getElementById(id + "_tab").classList.add('selected');
                     currentTab = id;
                 }
             }
@@ -117,33 +114,12 @@
         function closeStatusBar() {
             if (currentTab) {
                 document.getElementById(currentTab).classList.remove('selected');
-                document.getElementById(currentTab + "_tab").classList.remove('selected');
                 currentTab = null;
             }
             statusEl.classList.remove('opened');
             resizerStatus.stop();
         }
-        
-        /**
-         * Open or close the status bar according to the current state 
-         * @param {String} id Id of the status bar
-         */
-        function toggleStatusBar(id) {
-            if (!statusEl.classList.contains('opened') || currentTab !== id) {
-                openStatusBar(id);
-            } else {
-                closeStatusBar();
-            }
-        }
-        
-        tabsEl.addEventListener('click', function onClickOnTab(event) {
-            var el = event.srcElement;
-            if (!el.classList.contains('panel-tab')) {
-                return;
-            }
-            toggleStatusBar(el.id.replace(/_tab$/i, ''));
-        });
-        
+
         statusEl.querySelector('.close').addEventListener('click', function onClickOnClose() {
             closeStatusBar();
         });
