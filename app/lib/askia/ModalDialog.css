@@ -96,6 +96,10 @@
     transition      : background-color ease-in .2s, color ease-in .2s;
 }
 
+.askia-modal-button-cancel {
+    margin-left: 10px;
+}
+
 .askia-modal-button-cancel:hover,
 .askia-modal-button-no:hover {
     color           : #111111;
