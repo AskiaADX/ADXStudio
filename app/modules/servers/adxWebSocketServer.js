@@ -144,6 +144,6 @@ function broadcast(message) {
 // Return an http server
 exports.server =  new Server({
     factory : ws,
-    port    : 3501,
+    port    : 0, // Auto-search port
     reply   : reply
 });

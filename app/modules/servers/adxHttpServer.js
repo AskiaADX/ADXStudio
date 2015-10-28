@@ -182,6 +182,6 @@ function reply(request, response) {
 // Return an http server
 exports.server = new Server({
     factory : http,
-    port    : 3500,
+    port    : 0, // Auto-search
     reply   : reply
 });

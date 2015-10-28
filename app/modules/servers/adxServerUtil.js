@@ -1,3 +1,4 @@
+var portscanner = require("./portscanner.js");
 
 /**
  * Create a new server
@@ -23,23 +24,37 @@ function Server(options) {
  * @param {Number} callback.port Port when the server is listening into
  */
 Server.prototype.listen = function listen(callback) {
-    var self        = this,
-        innerServer = self.innerServer;
-
     // Already started
-    if (self.isStart) {
+    if (this.isStart) {
         if (typeof callback === 'function') {
-            callback(self.port);
+            callback(this.port);
         }
         return;
     }
 
-    if (!self.port) {
-        self.port = 3500; // TODO::Make stuff to search a free port
+    if (this.port) {
+        this.listenOnPort(this.port, callback);
+    } else {
+        var self = this;
+        portscanner.scan(function onPortFound(port) {
+           self.listenOnPort(port, callback);
+        });
     }
+};
+
+/**
+ * Listen on a given port
+ * @param {Number} port Port to listen
+ * @param {Function} callback Callback when the listening has started
+ */
+Server.prototype.listenOnPort = function listenOnPort(port, callback) {
+    var self = this,
+        innerServer = self.innerServer;
+
+    self.port = port;
 
     // Listen the port
-    innerServer.listen(self.port, function () {
+    innerServer.listen(self.port, function onListening() {
         self.isStart = true;
         if (typeof  callback === 'function') {
             callback(self.port);
@@ -47,7 +62,7 @@ Server.prototype.listen = function listen(callback) {
     });
 
     // Listen close event
-    innerServer.on('close', function () {
+    innerServer.on('close', function onClose() {
         self.isStart = false;
     });
 };
