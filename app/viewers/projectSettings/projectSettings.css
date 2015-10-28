@@ -144,6 +144,20 @@ button#add_property {
     width: 321px;
 }
 
+.collapsable-row .toggle {
+    display : inline-block;
+    width   : 16px;
+    height  : 16px;
+    background: url('collapsed.png') no-repeat center center;
+}
+
+.editing .toggle {
+    display : inline-block;
+    width   : 16px;
+    height  : 16px;
+    background: url('expanded.png') no-repeat center center;
+}
+
 input, textarea, select {
     padding: 10px;
 }
@@ -200,10 +214,16 @@ ul {
     cursor: pointer;
 }
 
+.property-toggle {
+    min-width   : 20px;
+    width       : 20px;
+    padding     : 5px 0 0 0 !important;
+}
+
 #properties_table th,
 #properties_table td {
     padding         : 5px;
-    min-width       : 120px;
+    max-width       : 120px;
     border-bottom   : 1px solid #111;
 }
 
