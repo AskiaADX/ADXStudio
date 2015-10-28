@@ -140,6 +140,10 @@ button#add_property {
     width: 300px;
 }
 
+.inner-form.editable select {
+    width: 321px;
+}
+
 input, textarea, select {
     padding: 10px;
 }
@@ -225,30 +229,52 @@ table#properties_table {
 }
 
 table#contents a,
-table#properties_table a {
-    background-color: #BBBBBB;
-    color           : #444444;
+table#properties_table a:not(.add-property-option) {
+    background-color: #C0392B;
+    color           : #DDDDDD;
     padding         : 8px 10px;
     border          : 1px solid black;
     border-radius   : 2px;
     text-decoration : none;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
     transition      : color ease-in .3s, background-color ease-in .3s;
 }
 
 table#contents a:hover,
-table#properties_table a:hover {
-    background-color: #CCCCCC;
-    color           : #222222;
+table#properties_table a:hover:not(.add-property-option) {
+    background-color: #D44435;
+    color           : #FFF;
     padding         : 8px 10px;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
 }
 
 table#contents a:active,
-table#properties_table a:active {
-    background-color: #BBBBBB;
-    color           : #222222;
+table#properties_table a:active:not(.add-property-option) {
+    background-color: #C0392B;
+    color           : #FFF;
     padding         : 8px 10px;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
+}
+
+.add-property-option {
+    background-color: #BBB;
+    color           : #222 !important;
+    padding         : 8px 10px;
+    border          : 1px solid black;
+    border-radius   : 2px;
+    text-decoration : none;
+    box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
+    transition      : color ease-in .3s, background-color ease-in .3s;
+}
+
+.add-property-option:hover {
+    background-color: #CCC;
+    color           : #000;
+}
+
+.add-property-option:active {
+    background-color: #BBB;
+    color           : #000;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
 }
 
