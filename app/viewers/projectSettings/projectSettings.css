@@ -118,7 +118,8 @@ button#add_property {
 }
 
 .inner-form label {
-    width: 120px;
+    width           : 120px;
+    vertical-align  : inherit;
 }
 
 .inner-form input[type="text"],
@@ -244,10 +245,11 @@ table#properties_table a:active {
 }
 
 .property-options-list {
-    overflow-y  : auto;
-    overflow-x  : hidden;
-    max-height  : 160px;
-    width       : 350px;
+    overflow-y      : auto;
+    overflow-x      : hidden;
+    max-height      : 160px;
+    width           : 350px;
+    padding-bottom  : 10px;
 }
 .property-options-list,
 .property-options-list-row {
