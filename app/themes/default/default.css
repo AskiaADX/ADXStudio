@@ -345,8 +345,19 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     color           : #DDD;
 }
 
+.viewer-project-settings #properties_table tbody tr,
+.viewer-project-settings #contents tbody tr {
+    transition: background-color ease-in .2s;
+}
+
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
-    background-color : #21252b;
+    background-color: #21252b;
+    transition      : background-color ease-in .2s;
+}
+
+.viewer-project-settings #properties_table tbody tr:hover:not(.editable),
+.viewer-project-settings #contents tbody tr:hover:not(.editable) {
+    background-color: #363C46;
 }
