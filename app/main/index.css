@@ -6,15 +6,15 @@ html, body {
 }
 
 #panels {
-    height          :100vh;
-    display         :flex;
+    height          : 100vh;
+    display         : flex;
     flex-direction  : column;
 }
 
 #main_panels {
-    display         :flex;
+    display         : flex;
     flex-direction  : row;
-    flex            :1;
+    flex            : 1;
 }
 
 .panel {
@@ -47,7 +47,7 @@ webview {
     display:none;
 }
 #panel_status.opened {
-    display         :flex;
+    display         : flex;
     flex-direction  : column;
     background      : #21252B;
     color           : #555;
@@ -62,20 +62,20 @@ webview {
 }
 
 .panel-title-bar .close {
-    float       :right;
-    display     :inline-block;
-    padding     :0 8px;
-    cursor      :pointer;
+    float       : right;
+    display     : inline-block;
+    padding     : 0 8px;
+    cursor      : pointer;
     background  : url('../themes/default/adxs-close.png') no-repeat center center;
     width       : 16px;
     height      : 16px;
 }
 
 .panel-contents {
-    position    :relative;
+    position    : relative;
     flex        : 1;
-    height      :150px;
-    color       :#EEE;
+    height      : 150px;
+    color       : #EEE;
     font-family : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 }
 
@@ -97,7 +97,7 @@ webview {
 #panel_output p {
     -webkit-user-select : initial;
     user-select         : initial;
-    margin              :0;
+    margin              : 0;
     padding             : 0 5px;
     font-size           : 0.8rem;
 }

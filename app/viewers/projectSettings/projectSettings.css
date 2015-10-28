@@ -1,16 +1,19 @@
 html, body {
   margin    : 0;
-  padding   :0;
-  height    :100vh;
+  padding   : 0;
+  height    : 100vh;
 }
+
 body {
     display         : flex;
     flex-direction  : row;
 }
+
 nav, ul {
-    margin  :0;
-    padding :0;
+    margin  : 0;
+    padding : 0;
 }
+
 nav {
     width   : 200px;
     height  : 100vh;
@@ -18,28 +21,31 @@ nav {
 nav li {
     /*margin-bottom : 20px;*/
 }
+
 nav a {
     display : block;
     padding : 10px;
     width   : 180px;
 }
+
 form {
-  padding   :0;
-  margin    :0;
+  padding   : 0;
+  margin    : 0;
   overflow  : auto;
   flex      : 1;
-  height    :100vh;
+  height    : 100vh;
 }
 
 section {
     display: none;
 }
+
 section.active {
     display: block;
 }
 
 section > div {
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 fieldset#output_list_fieldset,
@@ -194,7 +200,7 @@ ul {
 
 #contents td.content-controls,
 #properties td.content-controls {
-    text-align: left;
+    text-align  : left;
     padding-left: 15px;
 }
 
