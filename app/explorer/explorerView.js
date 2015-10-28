@@ -24,44 +24,52 @@ function itemRightClick(e) {
     selectItem.call(this);
 
     var contextualMenu = new Menu();
-  
+
     /* Open file in the OS manner */
-   	if (/\.html?$/i.test(file.name)) {
-  		contextualMenu.append(new MenuItem({
-         	label: 'Open in browser', 
-          	click: function onClickOpen() {
-              shell.openItem(file.path);
-          	}
+    if (/\.html?$/i.test(file.name)) {
+        contextualMenu.append(new MenuItem({
+            label: 'Open in browser', 
+            click: function onClickOpen() {
+                shell.openItem(file.path);
+            }
         }));
-                              
-		contextualMenu.append(new MenuItem({type : 'separator'}));
-	}
-  
-  
-  	/* Rename file */
+
+        contextualMenu.append(new MenuItem({type : 'separator'}));
+    }
+
+
+    /* Rename file */
     contextualMenu.append(new MenuItem({
         label: 'Rename',
         click: function onClickRename() {
             ipc.sendToHost('show-modal-dialog', {
                 type: 'prompt',
                 message : 'Rename:',
+                buttonText : {
+                    ok : "Rename",
+                    cancel : "Don't rename"
+                },
                 value: file.name
             }, 'explorer-rename', file);
 
         }
     }));
-  
-  	contextualMenu.append(new MenuItem({type : 'separator'}));
 
-  
-	/* Remove file */
+    contextualMenu.append(new MenuItem({type : 'separator'}));
+
+
+    /* Remove file */
     contextualMenu.append(new MenuItem({
         label: 'Remove', 
-      	click: function onClickRemove() {
+        click: function onClickRemove() {
 
             ipc.sendToHost('show-modal-dialog', {
                 type: 'yesNo',
-                message: 'Do you really want to remove `' + file.name + '`?'
+                message: 'Do you really want to remove `' + file.name + '`?',
+                buttonText : {
+                    yes : "Remove",
+                    no : "Don't remove"
+                }
             }, 'explorer-remove', file);
 
         }
@@ -114,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     ipc.on('explorer-expand-folder', function (err, path, files, isRoot, rootName) {
         var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
-            document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
+        document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
         var deep = parseInt(root.getAttribute('data-deep'), 10);
         root.innerHTML = '';
 

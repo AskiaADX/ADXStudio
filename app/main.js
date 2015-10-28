@@ -35,7 +35,12 @@ app.on('ready', function loadMainWindow() {
         }
         
         // Create the browser window, but don't show
-        mainWindow = new BrowserWindow({width: 800, height: 600, show : false});
+        mainWindow = new BrowserWindow({
+            width: 800, 
+            height: 600, 
+            show : false,
+            title : "ADX Studio"
+        });
 
         // Maximize it first
         mainWindow.maximize();

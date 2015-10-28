@@ -89,7 +89,10 @@ function showLoader(message) {
  */
 function newProject() {
     showModalDialog({
-        type : 'newADCProject'
+        type : 'newADCProject',
+        buttonText : {
+            ok : "Create project"
+        }
     }, 'main-create-new-project');
 }
 

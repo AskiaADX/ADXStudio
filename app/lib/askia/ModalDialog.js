@@ -47,6 +47,11 @@ window.askia.modalDialog = (function () {
      * @param {Object|String} options Options or Message to display
      * @param {String} options.message Message to display
      * @param {String|"okOnly"|"yesNoCancel"|"prompt"|"yesNo"|"okCancel"} [options.type='okOnly'] type of the dialog
+     * @param {Object} [options.buttonText] Text of the buttons
+     * @param {String} [options.buttonText.ok='Ok'] Text of the Ok button
+	 * @param {String} [options.buttonText.yes='Yes'] Text of the Yes button
+	 * @param {String} [options.buttonText.no='No'] Text of the No button
+	 * @param {String} [options.buttonText.cancel='Cancel'] Text of the Cancel button
      * @param {String} [options.value=''] Initial value for prompt dialog
      * @param {Function} [callback] callback
      * @param {Object} [callback.retVal] Return value
@@ -65,7 +70,22 @@ window.askia.modalDialog = (function () {
         this.options.type = this.options.type || 'okOnly';
         this.options.message = this.options.message || '';
         this.options.value = this.options.value || '';
+        
+        var defaultButtonText = {
+            ok : "Ok",
+            yes : "Yes",
+            no : "No",
+            cancel : "Cancel"
+        };
 
+        if (!this.options.buttonText) {
+            this.options.buttonText = defaultButtonText;
+        }
+        this.options.buttonText.ok = this.options.buttonText.ok || defaultButtonText.ok;
+        this.options.buttonText.yes = this.options.buttonText.yes || defaultButtonText.yes;
+        this.options.buttonText.no = this.options.buttonText.no || defaultButtonText.no;
+        this.options.buttonText.cancel = this.options.buttonText.cancel || defaultButtonText.cancel;
+        
         // Plugin associated with the type of the current modal
         this.plugin = plugins[this.options.type] || null;
 
@@ -204,8 +224,9 @@ window.askia.modalDialog = (function () {
      * @chainable
      */
     ModalDialog.prototype.addYesNoButtons = function addYesNoButtons() {
-        return this.addButton('yes', 'yes', "Yes")
-                   .addButton('no', 'no', "No");
+        var btnText = this.options.buttonText;
+        return this.addButton('yes', 'yes', btnText.yes)
+                   .addButton('no', 'no', btnText.no);
     };
 
     /**
@@ -213,7 +234,8 @@ window.askia.modalDialog = (function () {
      * @chainable
      */
     ModalDialog.prototype.addOkButton = function addOkButton() {
-        return this.addButton('ok', 'ok', "Ok");
+        var btnText = this.options.buttonText;
+        return this.addButton('ok', 'ok', btnText.ok);
     };
 
     /**
@@ -221,7 +243,8 @@ window.askia.modalDialog = (function () {
      * @chainable
      */
     ModalDialog.prototype.addCancelButton = function addCancelButton() {
-        return this.addButton('cancel', 'cancel', "Cancel");
+        var btnText = this.options.buttonText;
+        return this.addButton('cancel', 'cancel', btnText.cancel);
     };
 
     /**

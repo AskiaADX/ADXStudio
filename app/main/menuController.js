@@ -113,12 +113,19 @@ app.once('ready', function createAppMenu() {
         }
         
         /**
+         * Exit the application
+         */
+        function exitClick() {
+            console.log("TODO");
+        }
+
+        /**
          * Validate the ADC
          */
         function validateClick() {
             app.emit("menu-validate");
         }
-        
+
         /**
          * Build the ADC
          */
@@ -138,7 +145,7 @@ app.once('ready', function createAppMenu() {
                 {
                     label: '&File',
                     submenu: [
-                         {
+                        {
                             label: '&New Project',
                             accelerator : 'Ctrl+Shift+N',
                             click : newProjectClick
@@ -185,6 +192,13 @@ app.once('ready', function createAppMenu() {
                         {
                             label: '&Project settings',
                             click : projectSettingsClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Exit',
+                            click : exitClick
                         }
                     ]
                 },
@@ -192,7 +206,7 @@ app.once('ready', function createAppMenu() {
                     label: 'Build',
                     submenu: [
                         {
-                        	label : '&Validate',
+                            label : '&Validate',
                             accelerator: 'Ctrl+Shift+T',
                             click : validateClick
                         },
@@ -254,7 +268,7 @@ app.once('ready', function createAppMenu() {
                     ]
                 }
             ];
-            
+
             if (mru.length) {
                 var i, l, subMenuOpenRecent = template[menuFileIndex].submenu[menuOpenRecentIndex].submenu;
                 for (i = 0, l = mru.length; i < l; i += 1) {
