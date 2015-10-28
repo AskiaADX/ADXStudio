@@ -8,9 +8,15 @@ var path = require("path");
 var uuid = require('node-uuid');
 var mainView;
 
-require('../workspace/workspaceController.js');
+var workspaceController = require('../workspace/workspaceController.js');
 require('../explorer/explorerController.js');
 require('./menuController.js');
+
+/**
+ * Enforce the quit of the application even if files are editing
+ * @type {boolean}
+ */
+var enforceQuit = false;
 
 /**
  * Write message in the output window
@@ -187,6 +193,42 @@ function buildProject() {
 }
 
 /**
+ * Closing the main window
+ * @param event
+ */
+function onCloseMainWindow(event) {
+    if (!enforceQuit && workspaceController.hasEditingTabs()) {
+        event.preventDefault();
+        showModalDialog({
+            type : 'yesNoCancel',
+            message : "Do you want to save modification before quit?"
+        }, 'main-save-before-quit');
+    }
+}
+
+/**
+ * Save or not files before to quit
+ */
+function saveOrNotBeforeQuit(event, button) {
+    switch(button) {
+        case 'yes':
+        case 'ok':
+            app.on("workspace-save-all-finish", function () {
+               app.quit();
+            });
+            app.emit('menu-save-all-files');
+            break;
+        case 'no':
+            enforceQuit = true;
+            app.quit();
+            break;
+        case 'cancel':
+            // Do nothing
+            break;
+    }
+}
+
+/**
  * Fire when the main window is ready
  */
 ipc.on('main-ready', function (event) {
@@ -217,4 +259,11 @@ ipc.on('main-ready', function (event) {
 
     ipc.removeListener('main-create-new-project', createNewProject);
     ipc.on('main-create-new-project', createNewProject);
+
+    global.mainWindow.removeListener('close', onCloseMainWindow);
+    global.mainWindow.on('close', onCloseMainWindow);
+
+    ipc.removeListener('main-save-before-quit', saveOrNotBeforeQuit);
+    ipc.on('main-save-before-quit', saveOrNotBeforeQuit);
+
 });

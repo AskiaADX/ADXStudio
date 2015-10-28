@@ -116,7 +116,7 @@ app.once('ready', function createAppMenu() {
          * Exit the application
          */
         function exitClick() {
-            console.log("TODO");
+            app.quit();
         }
 
         /**

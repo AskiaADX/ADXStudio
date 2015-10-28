@@ -335,8 +335,6 @@ function startPreview() {
     });
 }
 
-
-
 /**
  * Set the current tab
  * @param event
@@ -415,6 +413,19 @@ function onRestoreContent(event, tabId) {
 }
 
 /**
+ * Send the update tab event
+ * Called after saving a file
+ */
+function sendUpdateTabEvent(err, tab, pane) {
+    tab.edited = false;
+    workspaceView.send('workspace-update-tab', err, tab, pane);
+    // Trigger the event in the app
+    if (!exports.hasEditingTabs()) {
+        app.emit("workspace-save-all-finish");
+    }
+}
+
+/**
  * Save content
  * @param event
  * @param {String} tabId Id of the tab
@@ -423,7 +434,7 @@ function onRestoreContent(event, tabId) {
 function onSaveContent(event, tabId, content) {
     workspace.find(tabId, function (err, tab, pane) {
         if (err) {
-            workspaceView.send('workspace-update-tab', err, null, null);
+            sendUpdateTabEvent(err, null, null);
             return;
         }
         if (tab.type === 'projectSettings') {
@@ -438,14 +449,14 @@ function onSaveContent(event, tabId, content) {
                 getResourcesDirectoryStructure(function (structure) {
                     tab.adcConfig = adc.configurator.get();
                     tab.adcStructure = structure;
-                    workspaceView.send('workspace-update-tab', err, tab, pane);
+                    sendUpdateTabEvent(err, tab, pane);
                 });
 
             });
         }
         else {
             tab.saveFile(content, function (err) {
-                workspaceView.send('workspace-update-tab', err, tab, pane);
+                sendUpdateTabEvent(err, tab, pane);
             });
         }
     });
@@ -645,9 +656,17 @@ ipc.on('workspace-ready', function (event) {
 
     ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
     ipc.on('workspace-reload-or-not-reload', onConfirmReload);
-
-
 });
+
+/**
+ * Indicates if some tabs is editing
+ */
+exports.hasEditingTabs = function hasEditingTabs() {
+    return  workspace.tabs.some(function (tab) {
+        return tab.edited;
+    });
+};
+
 
 
 
