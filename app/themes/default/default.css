@@ -330,10 +330,6 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     transition: background-color ease-in .2s, color ease-in .2s;
 }
 
-.viewer-project-settings nav ul li:first-child a {
-    box-shadow: 0 1px 0 rgba(0,0,0,.5) inset;
-}
-
 .viewer-project-settings nav ul li:first-child a.active {
     box-shadow: 0 1px 0 rgba(255,255,255,.2) inset;
 }
