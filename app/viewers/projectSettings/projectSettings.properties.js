@@ -208,6 +208,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function addProperty(property) {
         var row = document.createElement("tr");
         row.property = property;
+        row.className = "collapsable-row";
+
+        var toggle = document.createElement("td");
+        toggle.className =  "cat-prop property-toggle";
+        toggle.innerHTML = '<span class="toggle"></span>';
+        row.appendChild(toggle);
+
         var propertyId = document.createElement("td");
         propertyId.className =  "cat-prop property-id";
         propertyId.innerHTML = '<span>' + property.id + '</span>';
@@ -230,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var rowPlaceholder = document.createElement("tr");
         rowPlaceholder.className = 'inner-form';
         var cellPlaceholder = document.createElement('td');
-        cellPlaceholder.setAttribute("colspan", 4);
+        cellPlaceholder.setAttribute("colspan", 5);
         rowPlaceholder.appendChild(cellPlaceholder);
 
         propertiesBodyEl.appendChild(row);

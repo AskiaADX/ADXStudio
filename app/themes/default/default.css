@@ -9,8 +9,8 @@
     Share styling
    ======================================== */
 html {
-    text-rendering: optimizeLegibility !important;
-    -webkit-font-smoothing: antialiased !important;
+    text-rendering          : optimizeLegibility !important;
+    -webkit-font-smoothing  : antialiased !important;
 }
 
 body {
@@ -19,14 +19,14 @@ body {
 }
 
 body.grey {
-    background  : #111;
+    background: #111;
 }
 
 body.form-viewer {
-    background: #282C34;
-    color: #BBB;
-    line-height: 1.7;
-    font-size: 14px;
+    background  : #282C34;
+    color       : #BBB;
+    line-height : 1.7;
+    font-size   : 14px;
 }
 
 body.form-viewer a {
@@ -34,39 +34,38 @@ body.form-viewer a {
 }
 
 h3 {
-    font-size: 14px;
-    font-weight: bold;
+    font-size   : 14px;
+    font-weight : bold;
 }
 
 fieldset {
     border-width: 0 0 1px 0;
     border-color: #111;
-    margin-top: 20px;
+    margin-top  : 20px;
 }
 
 legend {
-    font-size: 18px;
-    font-weight: bold;
+    font-size   : 18px;
+    font-weight : bold;
 }
-
 
 label, input[type="checkbox"] {
     cursor: pointer;
 }
 
 input, textarea {
-    border-radius: 2px;
-    border: 1px solid #151515;
+    border-radius   : 2px;
+    border          : 1px solid #151515;
     background-color: #21252B;
-    color: #BBB;
+    color           : #BBB;
 }
 
 select {
     background-color: #343A44;
-    border-radius: 2px;
-    color: #BBB;
-    border: 1px solid #151505;
-    cursor: pointer;
+    border-radius   : 2px;
+    color           : #BBB;
+    border          : 1px solid #151505;
+    cursor          : pointer;
 }
 
 textarea {
@@ -78,8 +77,8 @@ input[readonly] {
 }
 
 input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
-    border: 1px solid #007DC5;
-    outline: none;
+    border  : 1px solid #007DC5;
+    outline : none;
 }
 
 .splitter {
@@ -127,7 +126,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
   display           : inline-block;
   width             : 20px;
   height            : 20px;
-  transition        : background-image ease-in-out .3s;
+  transition        : background-image ease-in .2s;
 }
 
 .folder > .item-info > .icon {
@@ -135,7 +134,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
   display           : inline-block;
   width             : 20px;
   height            : 20px;
-  transition        : background-image ease-in-out .3s;
+  transition        : background-image ease-in .2s;
 }
 
 .folder > .item-info:hover > .icon {
@@ -147,7 +146,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
   display           : inline-block;
   width             : 20px;
   height            : 20px;
-  transition        : background-image ease-in-out .3s;
+  transition        : background-image ease-in .2s;
 }
 
 .file > .item-info:hover > .icon {
@@ -159,13 +158,13 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .item-info {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    padding: 2px 0px;
-    width: 100%;
-    transition: all ease-in-out .3s;
+    display         : flex;
+    flex-direction  : row;
+    flex-wrap       : nowrap;
+    white-space     : nowrap;
+    padding         : 2px 0;
+    width           : 100%;
+    transition      : all ease-in .2s;
 }
 
 .name {
@@ -176,9 +175,9 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .folder {
-  color : #BBB;
-  cursor: pointer;
-  transition: color ease-in .3s;
+  color     : #BBB;
+  cursor    : pointer;
+  transition: color ease-in .2s;
 }
 
 .folder:hover {
@@ -186,8 +185,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .file {
-  cursor: pointer;
-  color : #BBB;
+  cursor    : pointer;
+  color     : #BBB;
   transition: color ease-in .3s;
 }
 
@@ -229,7 +228,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     cursor          : pointer;
     font-size       : 14px;
     color           : #B0B0B0;
-    padding         : 10px 25px;
+    padding         : 10px;
     position        : relative;
     height          : 24px;
     line-height     : 23px;
@@ -237,9 +236,9 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll div    {
-    margin	: 0;
-    padding : 2px;
-    vertical-align: middle;
+    margin          : 0;
+    padding         : 2px;
+    vertical-align  : middle;
 }
 
 
@@ -318,20 +317,17 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 .viewer-project-settings nav {
     background-color: #21252B;
-    border-right: 1px solid #111;
-}
-.viewer-project-settings nav a {
-    color: #BBB;
-    background-color: #282C34;
-    text-decoration: none;
-    cursor : pointer;
-    border-bottom: 1px solid #151515;
-    box-shadow: 0 1px 0 rgba(255,255,255,.05) inset;
-    transition: background-color ease-in .2s, color ease-in .2s;
+    border-right    : 1px solid #111;
 }
 
-.viewer-project-settings nav ul li:first-child a {
-    box-shadow: 0 1px 0 rgba(0,0,0,.5) inset;
+.viewer-project-settings nav a {
+    color           : #BBB;
+    background-color: #282C34;
+    text-decoration : none;
+    cursor          : pointer;
+    border-bottom   : 1px solid #151515;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.05) inset;
+    transition      : background-color ease-in .2s, color ease-in .2s;
 }
 
 .viewer-project-settings nav ul li:first-child a.active {
@@ -339,18 +335,29 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
-    color: #fff;
+    color           : #fff;
     background-color: #007DC5;
-    box-shadow: 0 1px 0 rgba(255,255,255,.2) inset;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
 }
 
 .viewer-project-settings nav a:hover {
     background-color: #30343E;
-    color: #DDD;
+    color           : #DDD;
+}
+
+.viewer-project-settings #properties_table tbody tr,
+.viewer-project-settings #contents tbody tr {
+    transition: background-color ease-in .2s;
 }
 
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
-    background-color : #21252b;
+    background-color: #21252b;
+    transition      : background-color ease-in .2s;
+}
+
+.viewer-project-settings #properties_table tbody tr:hover:not(.editable),
+.viewer-project-settings #contents tbody tr:hover:not(.editable) {
+    background-color: #363C46;
 }

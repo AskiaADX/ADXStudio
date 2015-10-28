@@ -10,7 +10,7 @@
 }
 .askia-modal-wrapper {
     /* Center it in the middle of then page */
-    position:absolute;
+    position        : absolute;
     top             : 0;
     left            : 0;
     bottom          : 0;
@@ -26,7 +26,7 @@
     font-size       : 14px;
     font-weight     : normal;
     padding         : 40px 60px 40px 40px;
-    width           : 500px;    
+    width           : 500px;
     opacity         : 1;
     background      : #282C34;
     border          : 1px solid #181818;
