@@ -1,38 +1,38 @@
 html, body {
-    width   :100vw;
-    height  :100vh;
-    padding :0;
-    margin  :0;
-    overflow:hidden;
+    width   : 100vw;
+    height  : 100vh;
+    padding : 0;
+    margin  : 0;
+    overflow: hidden;
 }
 
 #iframes {
-    z-index:1;
-    width:0;
-    height:0;
-	padding:0;
-    margin:0;
-    position:relative;
+    z-index : 1;
+    width   : 0;
+    height  : 0;
+	padding : 0;
+    margin  : 0;
+    position: relative;
 }
 
 
 #panes  {
-    z-index: 0;
-    display: flex;
-    flex-direction: row;
+    z-index         : 0;
+    display         : flex;
+    flex-direction  : row;
 }
 
 #panes.full .pane {
-    flex : 1;
+    flex: 1;
 }
 
 #panes.split #second_pane {
-    flex: 1;
+    flex        : 1;
     margin-left : 6px; /* Size of splitter */
 }
 
 .pane.open {
-    display : flex;
+    display: flex;
 }
 
 .pane {
@@ -43,7 +43,7 @@ html, body {
 }
 
 .tabs-container {
-    display : flex;
+    display: flex;
 }
 
 .tabs-wrapper {
@@ -53,11 +53,11 @@ html, body {
 
 .tabs-scroll {
     margin      : 0;
-    visibility: hidden;
+    visibility  : hidden;
 }
 
 .tabs-scroll div {
-    display : inline-block;
+    display: inline-block;
 }
 
 .tabs {
@@ -72,9 +72,9 @@ html, body {
 .tab, .tab-placeholder {
     display     : flex;
     list-style  : none;
-    min-width   : 75px;
-    width       : 150px;
-    max-width   : 200px;
+    min-width   : 180px;
+    width       : 180px;
+    max-width   : 180px;
     margin      : 0;
 }
 
@@ -98,12 +98,11 @@ html, body {
     text-overflow   : ellipsis;
 }
 
-
 .tab-end {
-    flex       : 1;
-    margin     : 0;
-    padding    : 3px;
-    list-style: none;
+    flex        : 1;
+    margin      : 0;
+    padding     : 3px;
+    list-style  : none;
 }
 
 .tabs-content {
@@ -141,15 +140,15 @@ html, body {
 }
 
 .content div iframe {
-    margin  :0;
-    padding :0;
-    border  :0;
-    width   :100%;
-    height  :100%;
+    margin  : 0;
+    padding : 0;
+    border  : 0;
+    width   : 100%;
+    height  : 100%;
     overflow: hidden;
-    position:absolute;
-    top     :0;
-    bottom  :0;
-    left    :0;
-    right   :0;
+    position: absolute;
+    top     : 0;
+    bottom  : 0;
+    left    : 0;
+    right   : 0;
 }

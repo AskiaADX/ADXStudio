@@ -54,6 +54,11 @@ fieldset#categories_list_fieldset {
     padding-bottom: 15px;
 }
 
+#outputs_list,
+#categories_list {
+    margin-right: 30px;
+}
+
 label {
   width         : 170px;
   display       : inline-block;
@@ -61,7 +66,7 @@ label {
 }
 
 input[type="text"], input[type="url"], textarea, select {
-    width: 400px;
+    width: 460px;
 }
 
 button {
@@ -140,11 +145,11 @@ input, textarea, select {
 }
 
 #style_width, #style_height {
-    width: 181px;
+    width: 211px;
 }
 
 #responses_min, #responses_max {
-    width: 400px;
+    width: 460px;
 }
 
 ul {
@@ -215,7 +220,8 @@ ul {
 
 table#contents,
 table#properties_table {
-    border-spacing: 0;
+    border-spacing  : 0;
+    width           : 100%;
 }
 
 table#contents a,
