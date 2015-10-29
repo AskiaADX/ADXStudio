@@ -56,7 +56,7 @@ fieldset#categories_list_fieldset {
 
 #outputs_list,
 #categories_list {
-    margin-right: 30px;
+    width: 490px;
 }
 
 label {
