@@ -37,7 +37,7 @@
 
             el.userNameLabel = document.createElement('label');
             el.userNameLabel.setAttribute('for', 'modal_preferences_user_name_' + autoIncrement);
-            el.userNameLabel.innerHTML = 'User name:';
+            el.userNameLabel.innerHTML = 'Author name:';
             el.userName.appendChild(el.userNameLabel);
 
             el.userNameInput = document.createElement('input');
