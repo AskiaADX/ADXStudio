@@ -4,6 +4,9 @@
 var askiaScript = CodeMirror.askiaScript;
 
 askiaScript.extend(askiaScript.types, {
+    "ADC" : "adc",    
+    "ADCCONTENT" : "adccontent",    
+    "ADCPROPERTY" : "adcproperty",    
     "ASSERT" : "assert",    
     "BROWSER" : "browser",    
     "INTERVIEW" : "interview",    
@@ -14,6 +17,9 @@ askiaScript.extend(askiaScript.types, {
 
 askiaScript.extend(askiaScript.i18n, {
     "types" : {
+        "adc" : "ADC",        
+        "adccontent" : "ADCContent",        
+        "adcproperty" : "ADCProperty",        
         "assert" : "Assert",        
         "browser" : "Browser",        
         "interview" : "Interview",        
@@ -22,6 +28,36 @@ askiaScript.extend(askiaScript.i18n, {
         "responses" : "Responses"
     },    
     "core" : {
+        "adc" : {
+            "desc" : [
+                "\tObject used to obtain information about the ADC (Askia Design Control).<br/>",                
+                "\tThis variable is on the ADC scope, so it's only available on the ADC itself.<br />",                
+                "",                
+                "\tIt is accessible through a local variable named CurrentADC<br />"
+            ],            
+            "alsoSee" : "CurrentADC",            
+            "version" : "5.3.3.0"
+        },        
+        "adccontent" : {
+            "desc" : [
+                "\tThis object represent a content defined in the ADC.",                
+                "",                
+                "\tObject mainly used in the ADC 2.0 to retrieves the &lt;content&gt; in the current &lt;output&gt;.",                
+                "",                
+                "\tThis object is accessible through the CurrentADC.Contents[ Index ] property or the CurrentADC.GetContent( Location ) method."
+            ],            
+            "version" : "5.3.3.0"
+        },        
+        "adcproperty" : {
+            "desc" : [
+                "\tThis object represent a property exposed by the ADC.",                
+                "",                
+                "\tIt's mainly used in the ADC 2.0 to retrieves information about a <property> defined in the ADC.",                
+                "",                
+                "\tThis object is accessible through the CurrentADC.Properties[ Index ] property or the CurrentADC.GetProperty( PropertyId ) method."
+            ],            
+            "version" : "5.3.3.0"
+        },        
         "assert" : {
             "desc" : "Object used to validate the integrity of the interviews data.",            
             "remarks" : "Mainly used in AskiaTools.",            
@@ -77,7 +113,7 @@ askiaScript.extend(askiaScript.i18n, {
                 " ??age??     ' => 35",                
                 " ??brands??  ' => {3; 5; 7}",                
                 "",                
-                " %%country%%   ' => \"US\"",                
+                "\t %%country%%   ' => \"US\"",                
                 " %%brands%%    ' => {\"coca\"; \"sprite\"; \"7up\"}",                
                 "",                
                 " q1",                
@@ -251,6 +287,17 @@ askiaScript.extend(askiaScript.lexical, {
                 "Question.IsLastIteration",                
                 "Question.Iteration"
             ]
+        },        
+        {
+            "name" : "CurrentADC",            
+            "base" : "const",            
+            "type" : "adc",            
+            "desc" : "\tReturn the current running ADC instance.",            
+            "examples" : [
+                "\tCurrentADC.InstanceId ' => 1",                
+                "\tCurrentADC.Name ' => \"my-adc\""
+            ],            
+            "version" : "5.3.3.0"
         },        
         {
             "name" : "CurrentItem",            
@@ -839,6 +886,13 @@ askiaScript.extend(askiaScript.lexical, {
             "examples" : "ResolutionY"
         },        
         {
+            "name" : "ResPath",            
+            "base" : "const",            
+            "type" : "string",            
+            "desc" : "Retrieves the Resource Path fieldwork.",            
+            "examples" : "ReadTextFile(ResPath + \"normal.css\")"
+        },        
+        {
             "name" : "ResponseCode",            
             "base" : "function",            
             "type" : "string",            
@@ -1030,972 +1084,27 @@ askiaScript.extend(askiaScript.lexical, {
         }
     ],    
     "members" : {
-        "browser" : [
-            {
-                "name" : "Mobile",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "True if the browser is running on mobile device",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
-                ],                
-                "examples" : "Browser.Mobile ' => true",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Name",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Name of the browser",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
-                ],                
-                "examples" : [
-                    " Browser.Name ' => \"Explorer\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Firefox\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Chrome\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Safari\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Opera\"",                    
-                    "",                    
-                    " Browser.Name ' => \"\"  (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "OS",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Short name of the operating system",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
-                ],                
-                "examples" : [
-                    " Browser.OS ' => \"Windows\"",                    
-                    "",                    
-                    " Browser.OS ' => \"Mac\"",                    
-                    "",                    
-                    " Browser.OS ' => \"Linux\"",                    
-                    "",                    
-                    " Browser.OS ' => \"iPhone/iPod\"",                    
-                    "",                    
-                    " Browser.OS ' => \"\" (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "PluginVersion",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "pluginName",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the plugin.It could be one of the following name:<br /><ul><li>Flash</li><li>Silverlight</li><li>AdobeReader</li><li>PDFReader</li><li>QuickTime</li><li>WindowsMediaPlayer</li><li>RealPlayer</li><li>VLC</li></ul>"
-                    }
-                ],                
-                "desc" : [
-                    " Return the version of the specified plugin.",                    
-                    " Return an empty string if the plugin is not supported."
-                ],                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a>"
-                ],                
-                "examples" : [
-                    " Browser.PluginVersion(\"Flash\") ' => \"11.2.202.235\"",                    
-                    " Browser.PluginVersion(\"Silverlight\") ' => \"4.1.10329.0\"",                    
-                    " Browser.PluginVersion(\"QuickTime\") ' => \"\" (not supported)"
-                ],                
-                "alsoSee" : "Browser.Support",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenAvailHeight",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the available height in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenAvailHeight ' => 1040",                    
-                    " Browser.ScreenHeight ' => 1080",                    
-                    " Browser.WindowHeight ' => 895",                    
-                    "",                    
-                    " Browser.ScreenAvailHeight ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenAvailWidth",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the available width in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenAvailWidth ' => 1920",                    
-                    " Browser.ScreenWidth ' => 1920",                    
-                    " Browser.WindowWidth ' => 1916",                    
-                    "",                    
-                    " Browser.ScreenAvailWidth ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenAvailHeight",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenColorDepth",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenColorDepth ' => 32",                    
-                    "",                    
-                    " Browser.ScreenColorDepth ' => 0 (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenHeight",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the height in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenHeight ' => 1080",                    
-                    " Browser.ScreenAvailHeight ' => 1040",                    
-                    " Browser.WindowHeight ' => 895",                    
-                    "",                    
-                    " Browser.ScreenHeight ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenWidth",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the width in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenWidth ' => 1920",                    
-                    " Browser.ScreenAvailWidth ' => 1920",                    
-                    " Browser.WindowWidth ' => 1916",                    
-                    "",                    
-                    " Browser.ScreenWidth ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenHeight",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Support",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "featureKey",                        
-                        "type" : "string",                        
-                        "desc" : "Feature to check.<br/><a href=\"#feature-keys\">Click here to display the list of feature keys</a>"
-                    }
-                ],                
-                "desc" : "Return a boolean value which indicates if the browser can support the specified feature.",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " <ul><li>Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a></li><li>HTML5 / ES5 / CSS3 features detection using the <a href=\"http://modernizr.com/\" target=\"_blank\">Modernizr</a></li></ul>"
-                ],                
-                "examples" : [
-                    " ' Support flash?",                    
-                    " Browser.Support(\"flash\") ' => true",                    
-                    "",                    
-                    " ' Support touch events?",                    
-                    " Browser.Support(\"touch\") ' => false",                    
-                    "",                    
-                    " ' Support cookies?",                    
-                    " Browser.Support(\"cookies\") ' => true",                    
-                    "",                    
-                    " ' Support HTML 5 video tag?",                    
-                    " Browser.Support(\"video\") ' => true"
-                ],                
-                "sections" : [
-                    {
-                        "name" : "Feature keys:",                        
-                        "linkName" : "feature-keys",                        
-                        "tagName" : "h2",                        
-                        "desc" : "List of all feature keys. All keys are not case-sensitive meaning that \"Flash\" or \"flash\" are equivalent."
-                    },                    
-                    {
-                        "name" : "Plugin keys",                        
-                        "linkName" : "plugin-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead>",                            
-                            " <tr>",                            
-                            " <th>Key</th>",                            
-                            " <th>Description</th>",                            
-                            " </tr>",                            
-                            " </thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Flash</td><td>Indicates if the browser support the Flash plugin</td></tr>",                            
-                            " <tr><td>Silverlight</td><td>Indicates if the browser support the Silverlight plugin</td></tr>",                            
-                            " <tr><td>QuickTime</td><td>Indicates if the browser support the QuickTime plugin</td></tr>",                            
-                            " <tr><td>WindowsMediaPlayer</td><td>Indicates if the browser support the Windows Media Player plugin</td></tr>",                            
-                            " <tr><td>RealPlayer</td><td>Indicates if the browser support the Real Player plugin</td></tr>",                            
-                            " <tr><td>VLC</td><td>Indicates if the browser support the VLC plugin</td></tr>",                            
-                            " <tr><td>AdobeReader</td><td>Indicates if the browser support the Adobe PDF Reader plugin</td></tr>",                            
-                            " <tr><td>PDFReader</td><td>Indicates if the browser support the any other PDF Reader plugin</td></tr>",                            
-                            " </tbody></table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 and HTML generic keys",                        
-                        "linkName" : "html5-generic-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Javascript</td><td>Indicates if the browser support Javascript</td></tr>",                            
-                            " <tr><td>Touch</td><td>Indicates if the browser support the <a href=\"http://www.w3.org/TR/touch-events/\" target=\"_blank\">HTML5 touch events API</a></td></tr>",                            
-                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source.html\" target=\"_blank\">HTML5 Geo Location API</a></td></tr>",                            
-                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"https://developer.mozilla.org/en/DOM/window.postMessage\" target=\"_blank\">HTML5 Post Message API</a></td></tr>",                            
-                            " <tr><td>HashChange</td><td> Indicates the browser support the  <a href=\"https://developer.mozilla.org/en/DOM/window.onhashchange\" target=\"_blank\">HTML5 HashChange event</a></td></tr>",                            
-                            " <tr><td>History</td><td>Indicates the browser support the <a href=\"https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history\" target=\"_blank\">HTML5 History API</a></td></tr>",                            
-                            " <tr><td>DragAndDrop</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2011/WD-html5-20110405/dnd.html\" target=\"_blank\">HTML5 Drag And Drop API</a></td></tr>",                            
-                            " <tr><td>FullScreen </td><td> Indicates the browser support the <a href=\"http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html\" target=\"_blank\">FullScreen API</a> </td></tr>",                            
-                            " <tr><td>SpeechInput </td><td> Indicates if the browser support the <a href=\"http://lists.w3.org/Archives/Public/public-xg-htmlspeech/2011Feb/att-0020/api-draft.html\" target=\"_blank\">Speech Input API</a> </td></tr>",                            
-                            " <tr><td>Cookies </td><td> Indicates the browser support the <a href=\"http://en.wikipedia.org/wiki/HTTP_cookie\" target=\"_blank\">cookies</a> </td></tr>",                            
-                            " <tr><td>Unicode </td><td> Indicates if the browser support the unicode </td></tr>",                            
-                            " <tr><td>StrictMode </td><td> Indicates if the browser support the <a href=\"http://dmitrysoshnikov.com/ecmascript/es5-chapter-2-strict-mode/\" target=\"_blank\">EcmaScript5 strict mode</a> </td></tr>",                            
-                            " <tr><td>JSON </td><td> Indicates if the browser support the native <a href=\"http://www.json.org/js.html\" target=\"_blank\">JSON API</a> </td></tr>",                            
-                            " <tr><td>MathML </td><td> Indicates if the browser support <a href=\"http://www.w3.org/Math/\" target=\"_blank\">MathML</a> </td></tr>",                            
-                            " <tr><td>DeviceMotion </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#devicemotion\" target=\"_blank\">devicemotion events</a> </td></tr>",                            
-                            " <tr><td>DeviceOrientation </td><td> Indicates if the browser suppor the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#deviceorientation\" target=\"_blank\">deviceorientation events</a> </td></tr>",                            
-                            " <tr><td> Battery </td><td> Indicates the browser support the  <a href=\"http://www.w3.org/TR/battery-status/\" target=\"_blank\">Battery Status API</a> </td></tr>",                            
-                            " <tr><td> FileReader </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/FileAPI/#dfn-filereader\" target=\"_blank\">FileReader API</a> </td></tr>",                            
-                            " <tr><td> FileSystem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/file-system-api/#the-filesystem-interface\" target=\"_blank\">FileSystem API</a> </td></tr>",                            
-                            " <tr><td>IE8Compat </td><td> Indicates the  <a href=\"http://blogs.msdn.com/b/askie/archive/2009/03/23/understanding-compatibility-modes-in-internet-explorer-8.aspx\" target=\"_blank\">IE8 compatibility mode</a> is enable on Microsoft Internet Explorer</td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 forms keys (inputs, attributes ...)",                        
-                        "linkName" : "html5-forms-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><th colspan=\"2\">Tags </th></tr>",                            
-                            " <tr><td> OutputElem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#New_output_mechanisms\" target=\"_blank\">HTML5 &lt;output&gt; tag</a> </td></tr>",                            
-                            " <tr><td> ProgressBar </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;progress&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Meter</td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;meter&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Details </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/details\" target=\"_blank\">HTML5 &lt;details&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Ruby </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/ruby/#intro\" target=\"_blank\">HTML5 &lt;ruby&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Track </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/track\" target=\"_blank\">HTML5 &lt;track&gt; tag</a> </td></tr>",                            
-                            " <tr><th colspan=\"2\">Inputs </th></tr>",                            
-                            " <tr><td> Number </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.number.html\" target=\"_blank\">HTML 5 &lt;input type=number&gt;</a> </td></tr>",                            
-                            " <tr><td> Range </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.range.html\" target=\"_blank\">HTML 5 &lt;input type=range&gt;</a> </td></tr>",                            
-                            " <tr><td> Date </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.date.html\" target=\"_blank\">HTML 5 &lt;input type=date&gt;</a> </td></tr>",                            
-                            " <tr><td> DateTime </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime.html\" target=\"_blank\">HTML 5 &lt;input type=datetime&gt;</a> </td></tr>",                            
-                            " <tr><td> DateTime-Local </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime-local.html\" target=\"_blank\">HTML 5 &lt;input type=datetime-local&gt;</a> </td></tr>",                            
-                            " <tr><td> Month </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.month.html\" target=\"_blank\">HTML 5 &lt;input type=month&gt;</a> </td></tr>",                            
-                            " <tr><td> Week </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.week.html\" target=\"_blank\">HTML 5 &lt;input type=week&gt;</a> </td></tr>",                            
-                            " <tr><td> Time </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.time.html\" target=\"_blank\">HTML 5 &lt;input type=time&gt;</a> </td></tr>",                            
-                            " <tr><td> Tel </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.tel.html\" target=\"_blank\">HTML 5 &lt;input type=tel&gt;</a> </td></tr>",                            
-                            " <tr><td> Email </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.email.html\" target=\"_blank\">HTML 5 &lt;input type=email&gt;</a> </td></tr>",                            
-                            " <tr><td> URL </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.url.html\" target=\"_blank\">HTML 5 &lt;input type=url&gt;</a> </td></tr>",                            
-                            " <tr><td> Color </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.color.html\" target=\"_blank\">HTML 5 &lt;input type=color&gt;</a> </td></tr>",                            
-                            " <tr><td> Search </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.search.html\" target=\"_blank\">HTML 5 &lt;input type=search&gt;</a> </td></tr>",                            
-                            " <tr><th colspan=\"2\">Attributes </th></tr>",                            
-                            " <tr><td> AutoComplete </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-autocomplete\" target=\"_blank\">HTML5 autocomplete attribute</a> </td></tr>",                            
-                            " <tr><td> AutoFocus </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/Submission/web-forms2/#the-autofocus\" target=\"_blank\">HTML5 autofocus attribute</a> </td></tr>",                            
-                            " <tr><td> List </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-list\" target=\"_blank\">HTML5 datalist element and list attribute</a> </td></tr>",                            
-                            " <tr><td> Placeholder </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-placeholder\" target=\"_blank\">HTML5 placeholder attribute</a> </td></tr>",                            
-                            " <tr><td> Min </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 min attribute</a> </td></tr>",                            
-                            " <tr><td> Max </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 max attribute</a> </td></tr>",                            
-                            " <tr><td> Step </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-step\" target=\"_blank\">HTML5 step attribute</a> </td></tr>",                            
-                            " <tr><td> Multiple </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-multiple\" target=\"_blank\">HTML5 multiple attribute</a> </td></tr>",                            
-                            " <tr><td> Pattern </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-pattern\" target=\"_blank\">HTML5 pattern attribute</a> </td></tr>",                            
-                            " <tr><td> Required </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-required\" target=\"_blank\">HTML5 required attribute</a> </td></tr>",                            
-                            " <tr><td> FormValidation </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#Validation\" target=\"_blank\">Form Validation using required and pattern attributes</a> </td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 storage keys",                        
-                        "linkName" : "html5-storage-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>IndexedDB</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/IndexedDB/\" target=\"_blank\">HTML5 Indexed Database API</a></td></tr>",                            
-                            " <tr><td>LocalStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-localstorage-attribute\" target=\"_blank\">HTML5 Local Storage API</a></td></tr>",                            
-                            " <tr><td>SessionStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-sessionstorage-attribute\" target=\"_blank\">HTML5 Session Storage API</a></td></tr>",                            
-                            " <tr><td>ApplicationCache </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/offline-webapps/#offline\" target=\"_blank\">HTML5 Offline Application Cache API</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 communication keys",                        
-                        "linkName" : "html5-communication-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>WebSockets</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a></td></tr>",                            
-                            " <tr><td>WebSocketsBinary</td><td> Indicates if the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a> could accept binary data</td></tr>",                            
-                            " <tr><td>WebWorkers</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/workers/\" target=\"_blank\">HTML5 WebWorkers API</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 graphic keys",                        
-                        "linkName" : "html5-graphic-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Canvas</td><td> Indicates the browser support the <a href=\"https://developer.mozilla.org/en/HTML/Canvas\" target=\"_blank\">HTML5 Canvas API</a></td></tr>",                            
-                            " <tr><td>CanvasText</td><td> Indicates the browser support the <a href=\"http://www.canvastext.com/\" target=\"_blank\">HTML5 Canvas Text API</a></td></tr>",                            
-                            " <tr><td>WebGL</td><td> Indicates the browser support the <a href=\"http://www.khronos.org/webgl/wiki/Main_Page\" target=\"_blank\">HTML5 WebGL API</a></td></tr>",                            
-                            " <tr><td>SVG</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/SVG/proposals/svg-html/svg-html-proposal.html\" target=\"_blank\">HTML5 SVG API</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 video keys",                        
-                        "linkName" : "html5-video-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Video</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video\" target=\"_blank\">HTML5 &lt;video&gt; tag</a></td></tr>",                            
-                            " <tr><td>Ogg</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">Ogg codec</a></td></tr>",                            
-                            " <tr><td>H264</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">H264 codec</a></td></tr>",                            
-                            " <tr><td>WebM</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">WebM codec</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 audio keys",                        
-                        "linkName" : "html5-audio-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Audio</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio\" target=\"_blank\">HTML5 &lt;audio&gt; tag</a></td></tr>",                            
-                            " <tr><td>mp3</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">mp3 codec</a></td></tr>",                            
-                            " <tr><td>wav</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">wav codec</a></td></tr>",                            
-                            " <tr><td>m4a</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">m4a codec</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "CSS 3 keys",                        
-                        "linkName" : "css3-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>MediaQueries</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-mediaqueries/\" target=\"_blank\">CSS3 media queries</a></td></tr>",                            
-                            " <tr><td>GeneratedContent</td><td> Indicates the browser support the <a href=\"http://dev.opera.com/articles/view/css-generated-content-techniques/\" target=\"_blank\">CSS2/CSS3 generated content :before / :after / content</a></td></tr>",                            
-                            " <tr><td>FontFace</td><td> Indicates the browser support the <a href=\"http://www.css3.info/preview/web-fonts-with-font-face/\" title=\"@font-face\" target=\"_blank\">CSS3 web font</a></td></tr>",                            
-                            " <tr><td>Flexbox</td><td> Indicates the browser support the <a href=\"http://www.html5rocks.com/en/tutorials/flexbox/quick/\" target=\"_blank\">CSS3 flexbox</a></td></tr>",                            
-                            " <tr><td>RGBa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#rgba-color\" target=\"_blank\">CSS3 RGB with Alpha</a></td></tr>",                            
-                            " <tr><td>HSLa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#hsla-color\" target=\"_blank\">CSS3 HSLA</a></td></tr>",                            
-                            " <tr><td>MultipleBgs</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#layering\" target=\"_blank\">CSS3 multiple background</a></td></tr>",                            
-                            " <tr><td>BackgroundSize</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#the-background-size\" target=\"_blank\">CSS3 background size property</a></td></tr>",                            
-                            " <tr><td>BorderImage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#border-images\" target=\"_blank\">CSS3 border image properties</a></td></tr>",                            
-                            " <tr><td>BorderRadius</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#corners\" target=\"_blank\">CSS3 border radius properties</a></td></tr>",                            
-                            " <tr><td>BoxShadow</td><td> Indicates the browser support the \"CSS3 box shadow property\"</td></tr>",                            
-                            " <tr><td>TextShadow</td><td> Indicates the browser support the <a href=\"http://www.w3.org/Style/Examples/007/text-shadow.en.html\" target=\"_blank\">CSS3 text shadow property</a></td></tr>",                            
-                            " <tr><td>Opacity</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#opacity\" target=\"_blank\">CSS3 opacity property</a></td></tr>",                            
-                            " <tr><td>CSSAnimations</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-animations/#introduction\" target=\"_blank\">CSS3 animations properties</a></td></tr>",                            
-                            " <tr><td>CSSColumns</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-multicol/#introduction\" target=\"_blank\">CSS3 multi-columns properties</a></td></tr>",                            
-                            " <tr><td>CSSGradients</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/csswg/css3-images/#gradients\" target=\"_blank\">CSS3 linear-gradient, radial-gradients... properties</a></td></tr>",                            
-                            " <tr><td>CSSReflections</td><td> Indicates the browser support the <a href=\"http://designshack.net/articles/css/mastering-css-reflections-in-webkit/\" target=\"_blank\">CSS3 reflections properties</a></td></tr>",                            
-                            " <tr><td>CSSTransforms</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-rendering\" target=\"_blank\">CSS3 transforms properties</a></td></tr>",                            
-                            " <tr><td>CSSTransforms3D</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-3d-rendering\" target=\"_blank\">CSS3 3D transforms properties</a></td></tr>",                            
-                            " <tr><td>CSSTransitions</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transitions/#introduction\" target=\"_blank\">CSS3 transitions properties</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    }
-                ],                
-                "alsoSee" : "Browser.PluginVersion",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Browser.ToString()",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns \"browser\"",                
-                "examples" : "Browser.TypeOf() ' => \"browser\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "UserAgent",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "User-agent of the browser",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " ' Internet Explorer 9.0",                    
-                    " Browser.UserAgent ' => \"Mozilla/5.0 (compatible; MSIE 9.0;",                    
-                    "  Windows NT 6.1; Trident/5.0)\"",                    
-                    "",                    
-                    " ' Firefox 25.0",                    
-                    " Browser.UserAgent ' => \"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0)",                    
-                    "  Gecko/20100101 Firefox/25.0\"",                    
-                    "",                    
-                    " ' Safari 6.0",                    
-                    " Browser.UserAgent ' => \"Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X)",                    
-                    " AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Version",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Major version number of the browser",                
-                "remarks" : "Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>",                
-                "examples" : [
-                    " Browser.Version ' => 8",                    
-                    "",                    
-                    " Browser.Version ' => 11.6",                    
-                    "",                    
-                    " Browser.Version '=> 0 (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "WindowHeight",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.WindowHeight ' => 895",                    
-                    " Browser.ScreenHeight ' => 1080",                    
-                    " Browser.ScreenAvailHeight ' => 1040",                    
-                    "",                    
-                    " Browser.WindowHeight ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.WindowWidth",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "WindowWidth",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.WindowWidth ' => 1916",                    
-                    " Browser.ScreenWidth ' => 1920",                    
-                    " Browser.ScreenAvailWidth ' => 1920",                    
-                    "",                    
-                    " Browser.WindowWidth ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.WindowHeight",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight"
-                ],                
-                "version" : "5.3.3.0"
-            }
-        ],        
-        "interview" : [
-            {
-                "name" : "Broker",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the Broker ID as received in askia web",                
-                "remarks" : "",                
-                "examples" : "Interview.Broker ' => \"SSI\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "BrokerPanelID",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
-                "remarks" : "",                
-                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "GUID",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
-                "remarks" : "",                
-                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "IPAddress",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the IPAddress if available",                
-                "remarks" : "This is usually only available in askiaWeb",                
-                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Latitude",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the Latitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Latitude ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Longitude",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the longitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Longitude ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "PanelID",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the askia Panel ID as received in askia web when available",                
-                "remarks" : "",                
-                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Progress",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the percentage value of progress through the questionnaire.",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Progress ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Seed",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
-                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
-                "examples" : "Interview.Seed ' => 133",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Browser.ToString()",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns \"interview\"",                
-                "examples" : "interview.TypeOf() ' => \"interview\"",                
-                "version" : "5.3.3.0"
-            }
-        ],        
-        "responses" : [
-            {
-                "accessor" : "response"
-            },            
-            {
-                "name" : "Caption",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the caption of responses in the collection",                
-                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Count",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the number of items in the collection",                
-                "examples" : "gender.Responses.Count ' => 2",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code of responses in the collection",                
-                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
-                "examples" : [
-                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
-                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Index",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
-                "examples" : [
-                    " gender.Responses.Index ' => {1; 2}",                    
-                    " country.AvailableResponses.Index ' => {2; 3; 1}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ResourceURL",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
-                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses.ToString()",                    
-                    " ' => [{",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " },{",                    
-                    " \"index\" : 2,",                    
-                    " \"entryCode\":\"002\",",                    
-                    " \"caption\":\"Woman\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Woman.png\"",                    
-                    " }]"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
-                "version" : "5.3.2.0"
-            }
-        ],        
-        "response" : [
-            {
-                "name" : "Caption",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the caption of the response",                
-                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Entry-code of the response",                
-                "examples" : "brands.Responses[1].EntryCode ' => 4",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Entry-code of the response (as string)",                
-                "examples" : "country.Responses[1].EntryCodeStr ' => \"US\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Factor",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a factor as their was entered in the value column of the scale responses",                
-                "examples" : [
-                    " gender.Responses[1].Factor ' => 3",                    
-                    " country.AvailableResponses[1].Factor ' => 7"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Id",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Internal unique identifier of the response",                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].id  ' => 456",                    
-                    " CurrentQuestion.AvailableResponses[2].id ' => 455"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Index",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the index of response (based 1) as it was entered",                
-                "examples" : [
-                    " gender.Responses[1].Index  ' => 1",                    
-                    " gender.Responses[2].Index  ' => 2"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "InputName",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Indicates the full-name of the HTML input for this response.",                    
-                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
-                    " <ul><li><strong>ranking</strong>: Obtain the full-name of the input to set the rank of this response</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.InputName() ' => \"U0\"",                    
-                    " gender.Responses[1].InputName() ' => \"U0\"",                    
-                    " gender.Responses[2].InputName() ' => \"U0\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.InputName() ' => \"M2\"",                    
-                    " brands.Responses[1].InputName() ' => \"M2 510\"",                    
-                    " brands.Responses[2].InputName() ' => \"M2 511\"",                    
-                    " brands.Responses[3].InputName() ' => \"M2 512\"",                    
-                    "",                    
-                    " ' Multiple with ranking",                    
-                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
-                    " brands.Responses[1].InputName(\"ranking\") ' => \"R2 510\"",                    
-                    " brands.Responses[2].InputName(\"ranking\") ' => \"R2 511\"",                    
-                    " brands.Responses[3].InputName(\"ranking\") ' => \"R2 512\""
-                ],                
-                "alsoSee" : [
-                    "Question.InputName",                    
-                    "Question.InputValue",                    
-                    "Response.InputValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "InputValue",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input value to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns the HTML input value attribute for this response.",                    
-                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
-                    " <ul><li><strong>ranking</strong>: Obtain the rank value of the response input</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.Responses[1].InputValue() ' => \"256\"",                    
-                    " gender.Responses[2].InputValue() ' => \"257\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.Responses[1].InputValue() ' => \"510\"",                    
-                    " brands.Responses[2].InputValue() ' => \"511\"",                    
-                    " brands.Responses[3].InputValue() ' => \"512\"",                    
-                    "",                    
-                    " ' Multiple with ranking (return the rank)",                    
-                    " brands.Responses[1].InputValue(\"ranking\") ' => \"2\"",                    
-                    " brands.Responses[2].InputValue(\"ranking\") ' => \"1\"",                    
-                    " brands.Responses[3].InputValue(\"ranking\") ' => \"\""
-                ],                
-                "alsoSee" : [
-                    "Question.InputName",                    
-                    "Question.InputValue",                    
-                    "Response.InputName"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsExclusive",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the response is considered (flag) as \"Exclusive\" answer.",                    
-                    " It returns always True for a single closed question, even if it's linked into a multiple"
-                ],                
-                "examples" : "gender.Responses[3].IsExclusive ' => True",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsIgnored",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the response is ignored",                
-                "examples" : "brands.Responses[5].IsIgnored ' => False",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsSelected",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].IsSelected  ' => true",                    
-                    " CurrentQuestion.AvailableResponses[2].IsSelected ' => false",                    
-                    " ' Similar than",                    
-                    " ' CurrentQuestion.Value Has CurrentQuestion.AvailableResponses[2].Index"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Order",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the order of response (based 1) on display.",                    
-                    " Returns DK if the question is skipped or the response was ignored."
-                ],                
-                "examples" : [
-                    " brands.Responses[1].Order  ' => 2",                    
-                    " brands.Responses[2].Order  ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Rank",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates in which order the answer has been selected by the respondent.",                    
-                    " Sequence from 0 (when no selection) to the number of answers.<br />If the response has not been selected the value is 0.",                    
-                    " For multiple ranking question it returns the order of the selection (based 1)",                    
-                    " For classical multiple question, the order of the selection is a sequence (based 1) <br />that may be sort according to how the responses has been displayed."
-                ],                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].Rank ' => 0 (not selected)",                    
-                    " CurrentQuestion.AvailableResponses[2].Rank ' => 3 (third selected)",                    
-                    " CurrentQuestion.AvailableResponses[3].Rank ' => 1 (first selected)",                    
-                    " CurrentQuestion.AvailableResponses[4].Rank ' => 2 (second selected)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ResourceURL",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the URL of resource for the response",                
-                "examples" : "gender.Responses[1].ResourceURL  ' => \"/man.png\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses[1].ToString()",                    
-                    " ' => {",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"isSelected\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " }"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
-                "version" : "5.3.2.0"
-            }
-        ],        
         "question" : [
+            {
+                "name" : "AllIterations",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : [
+                    " Returns all the positions of a question ",                    
+                    " "
+                ],                
+                "examples" : [
+                    " Q1 is a single question inside a loop with 3 iterations",                    
+                    " Q1.AllIterations.Count ' => 3",                    
+                    "",                    
+                    " ",                    
+                    " Q5 is a single question inside a loop of loop with respectively 3 and 2 iterations",                    
+                    " Q5.AllIterations.Count",                    
+                    " ' => 6",                    
+                    "  "
+                ],                
+                "version" : "5.3.5.0"
+            },            
             {
                 "name" : "AllValues",                
                 "base" : "property",                
@@ -2189,9 +1298,20 @@ askiaScript.extend(askiaScript.lexical, {
                 "name" : "HasNA",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "Indicates if the question has not answered \"Not asked\" answer",                
+                "desc" : "Indicates if the question is skipped",                
                 "examples" : "gender.HasNA ' => False",                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "HasNoData",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if there is some data in the question (skipped or not skipped)",                    
+                    " "
+                ],                
+                "examples" : "gender.HasNoData ' => False",                
+                "version" : "5.3.5.0"
             },            
             {
                 "name" : "HasParentLoop",                
@@ -2203,6 +1323,17 @@ askiaScript.extend(askiaScript.lexical, {
                     " gender.HasParentLoop '=> False"
                 ],                
                 "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "HasValidData",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the answer of the question is valid for open, numeric and closed question",                    
+                    " It checks if there is a value and if that value is compatible with DK settings (for all), min /max number of responses and exclusivity (for multiple), size (for open), range (for numeric and date)"
+                ],                
+                "examples" : "gender.HasValidData ' => True",                
+                "version" : "5.3.5.0"
             },            
             {
                 "name" : "Id",                
@@ -2761,11 +1892,548 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
+        "adcproperty" : [
+            {
+                "name" : "Id",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the id of the ADC Property",                
+                "examples" : "CurrentADC.Properties[1].Id  ' => \"tickColor\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of property, available types are:",                    
+                    "- \"number\" ",                    
+                    "- \"boolean\" ",                    
+                    "- \"string\" ",                    
+                    "- \"color\" ",                    
+                    "- \"file\" ",                    
+                    "- \"question\""
+                ],                
+                "examples" : [
+                    " CurrentADC.Properties[1].Type  ' => \"color\" ",                    
+                    " CurrentADC.Properties[2].Type  ' => \"string\" ",                    
+                    " CurrentADC.Properties[3].Type '  => \"question\""
+                ],                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "response" : [
+            {
+                "name" : "Caption",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the caption of the response",                
+                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCode",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Entry-code of the response",                
+                "examples" : "brands.Responses[1].EntryCode ' => 4",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Entry-code of the response (as string)",                
+                "examples" : "country.Responses[1].EntryCodeStr ' => \"US\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Factor",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a factor as their was entered in the value column of the scale responses",                
+                "examples" : [
+                    " gender.Responses[1].Factor ' => 3",                    
+                    " country.AvailableResponses[1].Factor ' => 7"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Id",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Internal unique identifier of the response",                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].id  ' => 456",                    
+                    " CurrentQuestion.AvailableResponses[2].id ' => 455"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Index",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the index of response (based 1) as it was entered",                
+                "examples" : [
+                    " gender.Responses[1].Index  ' => 1",                    
+                    " gender.Responses[2].Index  ' => 2"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "InputName",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Indicates the full-name of the HTML input for this response.",                    
+                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
+                    " <ul><li><strong>ranking</strong>: Obtain the full-name of the input to set the rank of this response</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.InputName() ' => \"U0\"",                    
+                    " gender.Responses[1].InputName() ' => \"U0\"",                    
+                    " gender.Responses[2].InputName() ' => \"U0\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.InputName() ' => \"M2\"",                    
+                    " brands.Responses[1].InputName() ' => \"M2 510\"",                    
+                    " brands.Responses[2].InputName() ' => \"M2 511\"",                    
+                    " brands.Responses[3].InputName() ' => \"M2 512\"",                    
+                    "",                    
+                    " ' Multiple with ranking",                    
+                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
+                    " brands.Responses[1].InputName(\"ranking\") ' => \"R2 510\"",                    
+                    " brands.Responses[2].InputName(\"ranking\") ' => \"R2 511\"",                    
+                    " brands.Responses[3].InputName(\"ranking\") ' => \"R2 512\""
+                ],                
+                "alsoSee" : [
+                    "Question.InputName",                    
+                    "Question.InputValue",                    
+                    "Response.InputValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InputValue",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input value to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the HTML input value attribute for this response.",                    
+                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
+                    " <ul><li><strong>ranking</strong>: Obtain the rank value of the response input</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.Responses[1].InputValue() ' => \"256\"",                    
+                    " gender.Responses[2].InputValue() ' => \"257\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.Responses[1].InputValue() ' => \"510\"",                    
+                    " brands.Responses[2].InputValue() ' => \"511\"",                    
+                    " brands.Responses[3].InputValue() ' => \"512\"",                    
+                    "",                    
+                    " ' Multiple with ranking (return the rank)",                    
+                    " brands.Responses[1].InputValue(\"ranking\") ' => \"2\"",                    
+                    " brands.Responses[2].InputValue(\"ranking\") ' => \"1\"",                    
+                    " brands.Responses[3].InputValue(\"ranking\") ' => \"\""
+                ],                
+                "alsoSee" : [
+                    "Question.InputName",                    
+                    "Question.InputValue",                    
+                    "Response.InputName"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsExclusive",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the response is considered (flag) as \"Exclusive\" answer.",                    
+                    " It returns always True for a single closed question, even if it's linked into a multiple"
+                ],                
+                "examples" : "gender.Responses[3].IsExclusive ' => True",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsIgnored",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the response is ignored",                
+                "examples" : "brands.Responses[5].IsIgnored ' => False",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsSelected",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].IsSelected  ' => true",                    
+                    " CurrentQuestion.AvailableResponses[2].IsSelected ' => false",                    
+                    " ' Similar than",                    
+                    " ' CurrentQuestion.Value Has CurrentQuestion.AvailableResponses[2].Index"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Order",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the order of response (based 1) on display.",                    
+                    " Returns DK if the question is skipped or the response was ignored."
+                ],                
+                "examples" : [
+                    " brands.Responses[1].Order  ' => 2",                    
+                    " brands.Responses[2].Order  ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Rank",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates in which order the answer has been selected by the respondent.",                    
+                    " Sequence from 0 (when no selection) to the number of answers.<br />If the response has not been selected the value is 0.",                    
+                    " For multiple ranking question it returns the order of the selection (based 1)",                    
+                    " For classical multiple question, the order of the selection is a sequence (based 1) <br />that may be sort according to how the responses has been displayed."
+                ],                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].Rank ' => 0 (not selected)",                    
+                    " CurrentQuestion.AvailableResponses[2].Rank ' => 3 (third selected)",                    
+                    " CurrentQuestion.AvailableResponses[3].Rank ' => 1 (first selected)",                    
+                    " CurrentQuestion.AvailableResponses[4].Rank ' => 2 (second selected)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the URL of resource for the response",                
+                "examples" : "gender.Responses[1].ResourceURL  ' => \"/man.png\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses[1].ToString()",                    
+                    " ' => {",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"isSelected\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " }"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "adc" : [
+            {
+                "name" : "Contents",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "\tList of contents in the current selected output.",                
+                "examples" : [
+                    "\tCurrentADC.Contents.Count ' => 2",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1]",                    
+                    "\t' => <ADCContent::dynamic:default.html>"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "GetContent",                
+                "base" : "method",                
+                "type" : "adccontent",                
+                "args" : [
+                    {
+                        "name" : "location",                        
+                        "type" : "string",                        
+                        "desc" : "Location of the content to obtain"
+                    }
+                ],                
+                "desc" : "\tReturns the ADC Content object with the specified location.",                
+                "examples" : [
+                    "\tCurrentADC.GetContent(\"share/jquery.js\")  ",                    
+                    "\t' => <ADCContent::share:jquery.js>",                    
+                    "",                    
+                    "\tCurrentADC.GetContent(\"static/styles.css\").Type ",                    
+                    "\t' => \"css\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "GetProperty",                
+                "base" : "method",                
+                "type" : "adcproperty",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to obtain"
+                    }
+                ],                
+                "desc" : "\tReturns the ADC Property object with the specified id.",                
+                "examples" : [
+                    "\tCurrentADC.GetProperty(\"tickColor\")  ",                    
+                    "\t' => <ADCProperty::tickColor>",                    
+                    "",                    
+                    "\tCurrentADC.GetProperty(\"tickColor\").Name ",                    
+                    "\t' => \"Tick color\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InstanceId",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the unique identifier of the ADC instance.",                    
+                    "\tThe same ADC could appears several times in the same page and each of it has it's own unique identifier that could be retrieve through this property."
+                ],                
+                "examples" : [
+                    "\tCurrentADC.InstanceId  ",                    
+                    "\t' => 1, for the first ADC instance ",                    
+                    "\t' available in the current page"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "OutputId",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the current output in use.",                
+                "examples" : "\tCurrentADC.OutputId ' => \"mobileHTMLOutput\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Properties",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "\tEntire collection of properties defined in the ADC.",                
+                "examples" : [
+                    "\tCurrentADC.Properties.Count ' => 2",                    
+                    "",                    
+                    "\tCurrentADC.Properties[1] ",                    
+                    "\t' => <ADCProperty::tickColor>"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "PropValue",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to read"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the value of the property as a string.",                    
+                    "\tIf the value of the variable is an object (like a question), the system calls his ToString() method.",                    
+                    "\tIf you want to access the question object associated with the variable use the PropQuestion method instead.",                    
+                    "\t\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
+                    "\t' => \"FlashEnable\"",                    
+                    "",                    
+                    "\tCurrentADC.PropValue(\"tickColour\") ' => \"0,255,0\"",                    
+                    "",                    
+                    "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "URLTo",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "location",                        
+                        "type" : "string",                        
+                        "desc" : "Location of the content to obtain"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the relative URL path to content file at the specify location.",                    
+                    "\tFor dynamic file:",                    
+                    "\t- It returns the path to the pre-processor component such as AskiaExt.dll.",                    
+                    "\t- It's likely to be use in AJAX query. In that case, you could also post the data of current HTML form to obtain a live output.",                    
+                    "\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.URLTo(\"static/tick.png\") ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/tick.png\"",                    
+                    "",                    
+                    "\tCurrentADC.URLTo(\"shared/jquery.js\") ",                    
+                    "\t' => \"../Resources/[Survey]/jquery.js\" ",                    
+                    "",                    
+                    "\tCurrentADC.URLTo(\"dynamic/default.js\")",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "responses" : [
+            {
+                "accessor" : "response"
+            },            
+            {
+                "name" : "Caption",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the caption of responses in the collection",                
+                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Count",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the number of items in the collection",                
+                "examples" : "gender.Responses.Count ' => 2",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCode",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code of responses in the collection",                
+                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
+                "examples" : [
+                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
+                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Index",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
+                "examples" : [
+                    " gender.Responses.Index ' => {1; 2}",                    
+                    " country.AvailableResponses.Index ' => {2; 3; 1}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
+                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses.ToString()",                    
+                    " ' => [{",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " },{",                    
+                    " \"index\" : 2,",                    
+                    " \"entryCode\":\"002\",",                    
+                    " \"caption\":\"Woman\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Woman.png\"",                    
+                    " }]"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
         "assert" : [
+            {
+                "name" : "AddContext",                
+                "base" : "method",                
+                "type" : "assert",                
+                "args" : [
+                    {
+                        "name" : "Question",                        
+                        "type" : "question",                        
+                        "desc" : "that will be added to the context"
+                    },                    
+                    {
+                        "name" : "Message",                        
+                        "type" : "string",                        
+                        "desc" : "Message that will be prefix the value of the context",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Adds a question to the context. Whenever an Assert will fail, the content of the question will be added to the output",                    
+                    " "
+                ],                
+                "examples" : [
+                    "      Assert.AddContext( Gender ).AddContext( Age ,\"Age=\")",                    
+                    "      Assert ( Gender = 1 and Age < 18, \"We do not know allow males under 18)",                    
+                    "      Assert.ResetContext()"
+                ]
+            },            
             {
                 "name" : "Check",                
                 "base" : "method",                
-                "type" : "number",                
+                "type" : "assert",                
                 "args" : [
                     {
                         "name" : "expression",                        
@@ -2780,8 +2448,9 @@ askiaScript.extend(askiaScript.lexical, {
                 ],                
                 "desc" : [
                     " Evaluate the expression as a boolean value.",                    
-                    " If the value of the expression is true, the assert then succeed and the method return true",                    
-                    " Otherwise the assert failed and the message is used to give an explanation of the failure."
+                    " If the value of the expression is true, nothing happens",                    
+                    " Otherwise the assert failed and the message is used to give an explanation of the failure.",                    
+                    " The Asset object is returned to allow chaining of actions"
                 ],                
                 "examples" : [
                     " If Country has {1} Then",                    
@@ -2812,6 +2481,20 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "ResetContext",                
+                "base" : "method",                
+                "type" : "assert",                
+                "desc" : [
+                    " Resets the context and removes all question reporting",                    
+                    " "
+                ],                
+                "examples" : [
+                    "      Assert.AddContext( Gender ).AddContext( Age )",                    
+                    "\t  Assert ( Gender = 1 and Age < 18, \"We do not know allow males under 18)",                    
+                    "      Assert.ResetContext()"
+                ]
+            },            
+            {
                 "name" : "ToString",                
                 "base" : "method",                
                 "type" : "string",                
@@ -2825,6 +2508,733 @@ askiaScript.extend(askiaScript.lexical, {
                 "type" : "string",                
                 "desc" : "Returns \"assert\"",                
                 "examples" : "Assert.TypeOf() ' => \"assert\"",                
+                "version" : "5.3.5.0"
+            }
+        ],        
+        "browser" : [
+            {
+                "name" : "Mobile",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "True if the browser is running on mobile device",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
+                ],                
+                "examples" : "Browser.Mobile ' => true",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Name",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Name of the browser",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
+                ],                
+                "examples" : [
+                    " Browser.Name ' => \"Explorer\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Firefox\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Chrome\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Safari\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Opera\"",                    
+                    "",                    
+                    " Browser.Name ' => \"\"  (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "OS",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Short name of the operating system",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
+                ],                
+                "examples" : [
+                    " Browser.OS ' => \"Windows\"",                    
+                    "",                    
+                    " Browser.OS ' => \"Mac\"",                    
+                    "",                    
+                    " Browser.OS ' => \"Linux\"",                    
+                    "",                    
+                    " Browser.OS ' => \"iPhone/iPod\"",                    
+                    "",                    
+                    " Browser.OS ' => \"\" (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "PluginVersion",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "pluginName",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the plugin.It could be one of the following name:<br /><ul><li>Flash</li><li>Silverlight</li><li>AdobeReader</li><li>PDFReader</li><li>QuickTime</li><li>WindowsMediaPlayer</li><li>RealPlayer</li><li>VLC</li></ul>"
+                    }
+                ],                
+                "desc" : [
+                    " Return the version of the specified plugin.",                    
+                    " Return an empty string if the plugin is not supported."
+                ],                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a>"
+                ],                
+                "examples" : [
+                    " Browser.PluginVersion(\"Flash\") ' => \"11.2.202.235\"",                    
+                    " Browser.PluginVersion(\"Silverlight\") ' => \"4.1.10329.0\"",                    
+                    " Browser.PluginVersion(\"QuickTime\") ' => \"\" (not supported)"
+                ],                
+                "alsoSee" : "Browser.Support",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenAvailHeight",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the available height in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenAvailHeight ' => 1040",                    
+                    " Browser.ScreenHeight ' => 1080",                    
+                    " Browser.WindowHeight ' => 895",                    
+                    "",                    
+                    " Browser.ScreenAvailHeight ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenAvailWidth",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the available width in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenAvailWidth ' => 1920",                    
+                    " Browser.ScreenWidth ' => 1920",                    
+                    " Browser.WindowWidth ' => 1916",                    
+                    "",                    
+                    " Browser.ScreenAvailWidth ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenAvailHeight",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenColorDepth",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenColorDepth ' => 32",                    
+                    "",                    
+                    " Browser.ScreenColorDepth ' => 0 (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenHeight",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the height in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenHeight ' => 1080",                    
+                    " Browser.ScreenAvailHeight ' => 1040",                    
+                    " Browser.WindowHeight ' => 895",                    
+                    "",                    
+                    " Browser.ScreenHeight ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenWidth",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the width in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenWidth ' => 1920",                    
+                    " Browser.ScreenAvailWidth ' => 1920",                    
+                    " Browser.WindowWidth ' => 1916",                    
+                    "",                    
+                    " Browser.ScreenWidth ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenHeight",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Support",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "featureKey",                        
+                        "type" : "string",                        
+                        "desc" : "Feature to check.<br/><a href=\"#feature-keys\">Click here to display the list of feature keys</a>"
+                    }
+                ],                
+                "desc" : "Return a boolean value which indicates if the browser can support the specified feature.",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " <ul><li>Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a></li><li>HTML5 / ES5 / CSS3 features detection using the <a href=\"http://modernizr.com/\" target=\"_blank\">Modernizr</a></li></ul>"
+                ],                
+                "examples" : [
+                    " ' Support flash?",                    
+                    " Browser.Support(\"flash\") ' => true",                    
+                    "",                    
+                    " ' Support touch events?",                    
+                    " Browser.Support(\"touch\") ' => false",                    
+                    "",                    
+                    " ' Support cookies?",                    
+                    " Browser.Support(\"cookies\") ' => true",                    
+                    "",                    
+                    " ' Support HTML 5 video tag?",                    
+                    " Browser.Support(\"video\") ' => true"
+                ],                
+                "sections" : [
+                    {
+                        "name" : "Feature keys:",                        
+                        "linkName" : "feature-keys",                        
+                        "tagName" : "h2",                        
+                        "desc" : "List of all feature keys. All keys are not case-sensitive meaning that \"Flash\" or \"flash\" are equivalent."
+                    },                    
+                    {
+                        "name" : "Plugin keys",                        
+                        "linkName" : "plugin-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead>",                            
+                            " <tr>",                            
+                            " <th>Key</th>",                            
+                            " <th>Description</th>",                            
+                            " </tr>",                            
+                            " </thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Flash</td><td>Indicates if the browser support the Flash plugin</td></tr>",                            
+                            " <tr><td>Silverlight</td><td>Indicates if the browser support the Silverlight plugin</td></tr>",                            
+                            " <tr><td>QuickTime</td><td>Indicates if the browser support the QuickTime plugin</td></tr>",                            
+                            " <tr><td>WindowsMediaPlayer</td><td>Indicates if the browser support the Windows Media Player plugin</td></tr>",                            
+                            " <tr><td>RealPlayer</td><td>Indicates if the browser support the Real Player plugin</td></tr>",                            
+                            " <tr><td>VLC</td><td>Indicates if the browser support the VLC plugin</td></tr>",                            
+                            " <tr><td>AdobeReader</td><td>Indicates if the browser support the Adobe PDF Reader plugin</td></tr>",                            
+                            " <tr><td>PDFReader</td><td>Indicates if the browser support the any other PDF Reader plugin</td></tr>",                            
+                            " </tbody></table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 and HTML generic keys",                        
+                        "linkName" : "html5-generic-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Javascript</td><td>Indicates if the browser support Javascript</td></tr>",                            
+                            " <tr><td>Touch</td><td>Indicates if the browser support the <a href=\"http://www.w3.org/TR/touch-events/\" target=\"_blank\">HTML5 touch events API</a></td></tr>",                            
+                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source.html\" target=\"_blank\">HTML5 Geo Location API</a></td></tr>",                            
+                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"https://developer.mozilla.org/en/DOM/window.postMessage\" target=\"_blank\">HTML5 Post Message API</a></td></tr>",                            
+                            " <tr><td>HashChange</td><td> Indicates the browser support the  <a href=\"https://developer.mozilla.org/en/DOM/window.onhashchange\" target=\"_blank\">HTML5 HashChange event</a></td></tr>",                            
+                            " <tr><td>History</td><td>Indicates the browser support the <a href=\"https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history\" target=\"_blank\">HTML5 History API</a></td></tr>",                            
+                            " <tr><td>DragAndDrop</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2011/WD-html5-20110405/dnd.html\" target=\"_blank\">HTML5 Drag And Drop API</a></td></tr>",                            
+                            " <tr><td>FullScreen </td><td> Indicates the browser support the <a href=\"http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html\" target=\"_blank\">FullScreen API</a> </td></tr>",                            
+                            " <tr><td>SpeechInput </td><td> Indicates if the browser support the <a href=\"http://lists.w3.org/Archives/Public/public-xg-htmlspeech/2011Feb/att-0020/api-draft.html\" target=\"_blank\">Speech Input API</a> </td></tr>",                            
+                            " <tr><td>Cookies </td><td> Indicates the browser support the <a href=\"http://en.wikipedia.org/wiki/HTTP_cookie\" target=\"_blank\">cookies</a> </td></tr>",                            
+                            " <tr><td>Unicode </td><td> Indicates if the browser support the unicode </td></tr>",                            
+                            " <tr><td>StrictMode </td><td> Indicates if the browser support the <a href=\"http://dmitrysoshnikov.com/ecmascript/es5-chapter-2-strict-mode/\" target=\"_blank\">EcmaScript5 strict mode</a> </td></tr>",                            
+                            " <tr><td>JSON </td><td> Indicates if the browser support the native <a href=\"http://www.json.org/js.html\" target=\"_blank\">JSON API</a> </td></tr>",                            
+                            " <tr><td>MathML </td><td> Indicates if the browser support <a href=\"http://www.w3.org/Math/\" target=\"_blank\">MathML</a> </td></tr>",                            
+                            " <tr><td>DeviceMotion </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#devicemotion\" target=\"_blank\">devicemotion events</a> </td></tr>",                            
+                            " <tr><td>DeviceOrientation </td><td> Indicates if the browser suppor the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#deviceorientation\" target=\"_blank\">deviceorientation events</a> </td></tr>",                            
+                            " <tr><td> Battery </td><td> Indicates the browser support the  <a href=\"http://www.w3.org/TR/battery-status/\" target=\"_blank\">Battery Status API</a> </td></tr>",                            
+                            " <tr><td> FileReader </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/FileAPI/#dfn-filereader\" target=\"_blank\">FileReader API</a> </td></tr>",                            
+                            " <tr><td> FileSystem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/file-system-api/#the-filesystem-interface\" target=\"_blank\">FileSystem API</a> </td></tr>",                            
+                            " <tr><td>IE8Compat </td><td> Indicates the  <a href=\"http://blogs.msdn.com/b/askie/archive/2009/03/23/understanding-compatibility-modes-in-internet-explorer-8.aspx\" target=\"_blank\">IE8 compatibility mode</a> is enable on Microsoft Internet Explorer</td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 forms keys (inputs, attributes ...)",                        
+                        "linkName" : "html5-forms-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><th colspan=\"2\">Tags </th></tr>",                            
+                            " <tr><td> OutputElem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#New_output_mechanisms\" target=\"_blank\">HTML5 &lt;output&gt; tag</a> </td></tr>",                            
+                            " <tr><td> ProgressBar </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;progress&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Meter</td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;meter&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Details </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/details\" target=\"_blank\">HTML5 &lt;details&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Ruby </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/ruby/#intro\" target=\"_blank\">HTML5 &lt;ruby&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Track </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/track\" target=\"_blank\">HTML5 &lt;track&gt; tag</a> </td></tr>",                            
+                            " <tr><th colspan=\"2\">Inputs </th></tr>",                            
+                            " <tr><td> Number </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.number.html\" target=\"_blank\">HTML 5 &lt;input type=number&gt;</a> </td></tr>",                            
+                            " <tr><td> Range </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.range.html\" target=\"_blank\">HTML 5 &lt;input type=range&gt;</a> </td></tr>",                            
+                            " <tr><td> Date </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.date.html\" target=\"_blank\">HTML 5 &lt;input type=date&gt;</a> </td></tr>",                            
+                            " <tr><td> DateTime </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime.html\" target=\"_blank\">HTML 5 &lt;input type=datetime&gt;</a> </td></tr>",                            
+                            " <tr><td> DateTime-Local </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime-local.html\" target=\"_blank\">HTML 5 &lt;input type=datetime-local&gt;</a> </td></tr>",                            
+                            " <tr><td> Month </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.month.html\" target=\"_blank\">HTML 5 &lt;input type=month&gt;</a> </td></tr>",                            
+                            " <tr><td> Week </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.week.html\" target=\"_blank\">HTML 5 &lt;input type=week&gt;</a> </td></tr>",                            
+                            " <tr><td> Time </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.time.html\" target=\"_blank\">HTML 5 &lt;input type=time&gt;</a> </td></tr>",                            
+                            " <tr><td> Tel </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.tel.html\" target=\"_blank\">HTML 5 &lt;input type=tel&gt;</a> </td></tr>",                            
+                            " <tr><td> Email </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.email.html\" target=\"_blank\">HTML 5 &lt;input type=email&gt;</a> </td></tr>",                            
+                            " <tr><td> URL </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.url.html\" target=\"_blank\">HTML 5 &lt;input type=url&gt;</a> </td></tr>",                            
+                            " <tr><td> Color </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.color.html\" target=\"_blank\">HTML 5 &lt;input type=color&gt;</a> </td></tr>",                            
+                            " <tr><td> Search </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.search.html\" target=\"_blank\">HTML 5 &lt;input type=search&gt;</a> </td></tr>",                            
+                            " <tr><th colspan=\"2\">Attributes </th></tr>",                            
+                            " <tr><td> AutoComplete </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-autocomplete\" target=\"_blank\">HTML5 autocomplete attribute</a> </td></tr>",                            
+                            " <tr><td> AutoFocus </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/Submission/web-forms2/#the-autofocus\" target=\"_blank\">HTML5 autofocus attribute</a> </td></tr>",                            
+                            " <tr><td> List </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-list\" target=\"_blank\">HTML5 datalist element and list attribute</a> </td></tr>",                            
+                            " <tr><td> Placeholder </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-placeholder\" target=\"_blank\">HTML5 placeholder attribute</a> </td></tr>",                            
+                            " <tr><td> Min </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 min attribute</a> </td></tr>",                            
+                            " <tr><td> Max </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 max attribute</a> </td></tr>",                            
+                            " <tr><td> Step </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-step\" target=\"_blank\">HTML5 step attribute</a> </td></tr>",                            
+                            " <tr><td> Multiple </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-multiple\" target=\"_blank\">HTML5 multiple attribute</a> </td></tr>",                            
+                            " <tr><td> Pattern </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-pattern\" target=\"_blank\">HTML5 pattern attribute</a> </td></tr>",                            
+                            " <tr><td> Required </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-required\" target=\"_blank\">HTML5 required attribute</a> </td></tr>",                            
+                            " <tr><td> FormValidation </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#Validation\" target=\"_blank\">Form Validation using required and pattern attributes</a> </td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 storage keys",                        
+                        "linkName" : "html5-storage-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>IndexedDB</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/IndexedDB/\" target=\"_blank\">HTML5 Indexed Database API</a></td></tr>",                            
+                            " <tr><td>LocalStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-localstorage-attribute\" target=\"_blank\">HTML5 Local Storage API</a></td></tr>",                            
+                            " <tr><td>SessionStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-sessionstorage-attribute\" target=\"_blank\">HTML5 Session Storage API</a></td></tr>",                            
+                            " <tr><td>ApplicationCache </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/offline-webapps/#offline\" target=\"_blank\">HTML5 Offline Application Cache API</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 communication keys",                        
+                        "linkName" : "html5-communication-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>WebSockets</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a></td></tr>",                            
+                            " <tr><td>WebSocketsBinary</td><td> Indicates if the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a> could accept binary data</td></tr>",                            
+                            " <tr><td>WebWorkers</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/workers/\" target=\"_blank\">HTML5 WebWorkers API</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 graphic keys",                        
+                        "linkName" : "html5-graphic-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Canvas</td><td> Indicates the browser support the <a href=\"https://developer.mozilla.org/en/HTML/Canvas\" target=\"_blank\">HTML5 Canvas API</a></td></tr>",                            
+                            " <tr><td>CanvasText</td><td> Indicates the browser support the <a href=\"http://www.canvastext.com/\" target=\"_blank\">HTML5 Canvas Text API</a></td></tr>",                            
+                            " <tr><td>WebGL</td><td> Indicates the browser support the <a href=\"http://www.khronos.org/webgl/wiki/Main_Page\" target=\"_blank\">HTML5 WebGL API</a></td></tr>",                            
+                            " <tr><td>SVG</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/SVG/proposals/svg-html/svg-html-proposal.html\" target=\"_blank\">HTML5 SVG API</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 video keys",                        
+                        "linkName" : "html5-video-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Video</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video\" target=\"_blank\">HTML5 &lt;video&gt; tag</a></td></tr>",                            
+                            " <tr><td>Ogg</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">Ogg codec</a></td></tr>",                            
+                            " <tr><td>H264</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">H264 codec</a></td></tr>",                            
+                            " <tr><td>WebM</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">WebM codec</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 audio keys",                        
+                        "linkName" : "html5-audio-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Audio</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio\" target=\"_blank\">HTML5 &lt;audio&gt; tag</a></td></tr>",                            
+                            " <tr><td>mp3</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">mp3 codec</a></td></tr>",                            
+                            " <tr><td>wav</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">wav codec</a></td></tr>",                            
+                            " <tr><td>m4a</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">m4a codec</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "CSS 3 keys",                        
+                        "linkName" : "css3-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>MediaQueries</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-mediaqueries/\" target=\"_blank\">CSS3 media queries</a></td></tr>",                            
+                            " <tr><td>GeneratedContent</td><td> Indicates the browser support the <a href=\"http://dev.opera.com/articles/view/css-generated-content-techniques/\" target=\"_blank\">CSS2/CSS3 generated content :before / :after / content</a></td></tr>",                            
+                            " <tr><td>FontFace</td><td> Indicates the browser support the <a href=\"http://www.css3.info/preview/web-fonts-with-font-face/\" title=\"@font-face\" target=\"_blank\">CSS3 web font</a></td></tr>",                            
+                            " <tr><td>Flexbox</td><td> Indicates the browser support the <a href=\"http://www.html5rocks.com/en/tutorials/flexbox/quick/\" target=\"_blank\">CSS3 flexbox</a></td></tr>",                            
+                            " <tr><td>RGBa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#rgba-color\" target=\"_blank\">CSS3 RGB with Alpha</a></td></tr>",                            
+                            " <tr><td>HSLa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#hsla-color\" target=\"_blank\">CSS3 HSLA</a></td></tr>",                            
+                            " <tr><td>MultipleBgs</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#layering\" target=\"_blank\">CSS3 multiple background</a></td></tr>",                            
+                            " <tr><td>BackgroundSize</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#the-background-size\" target=\"_blank\">CSS3 background size property</a></td></tr>",                            
+                            " <tr><td>BorderImage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#border-images\" target=\"_blank\">CSS3 border image properties</a></td></tr>",                            
+                            " <tr><td>BorderRadius</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#corners\" target=\"_blank\">CSS3 border radius properties</a></td></tr>",                            
+                            " <tr><td>BoxShadow</td><td> Indicates the browser support the \"CSS3 box shadow property\"</td></tr>",                            
+                            " <tr><td>TextShadow</td><td> Indicates the browser support the <a href=\"http://www.w3.org/Style/Examples/007/text-shadow.en.html\" target=\"_blank\">CSS3 text shadow property</a></td></tr>",                            
+                            " <tr><td>Opacity</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#opacity\" target=\"_blank\">CSS3 opacity property</a></td></tr>",                            
+                            " <tr><td>CSSAnimations</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-animations/#introduction\" target=\"_blank\">CSS3 animations properties</a></td></tr>",                            
+                            " <tr><td>CSSColumns</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-multicol/#introduction\" target=\"_blank\">CSS3 multi-columns properties</a></td></tr>",                            
+                            " <tr><td>CSSGradients</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/csswg/css3-images/#gradients\" target=\"_blank\">CSS3 linear-gradient, radial-gradients... properties</a></td></tr>",                            
+                            " <tr><td>CSSReflections</td><td> Indicates the browser support the <a href=\"http://designshack.net/articles/css/mastering-css-reflections-in-webkit/\" target=\"_blank\">CSS3 reflections properties</a></td></tr>",                            
+                            " <tr><td>CSSTransforms</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-rendering\" target=\"_blank\">CSS3 transforms properties</a></td></tr>",                            
+                            " <tr><td>CSSTransforms3D</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-3d-rendering\" target=\"_blank\">CSS3 3D transforms properties</a></td></tr>",                            
+                            " <tr><td>CSSTransitions</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transitions/#introduction\" target=\"_blank\">CSS3 transitions properties</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    }
+                ],                
+                "alsoSee" : "Browser.PluginVersion",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToString",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Browser.ToString()",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns \"browser\"",                
+                "examples" : "Browser.TypeOf() ' => \"browser\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "UserAgent",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "User-agent of the browser",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " ' Internet Explorer 9.0",                    
+                    " Browser.UserAgent ' => \"Mozilla/5.0 (compatible; MSIE 9.0;",                    
+                    "  Windows NT 6.1; Trident/5.0)\"",                    
+                    "",                    
+                    " ' Firefox 25.0",                    
+                    " Browser.UserAgent ' => \"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0)",                    
+                    "  Gecko/20100101 Firefox/25.0\"",                    
+                    "",                    
+                    " ' Safari 6.0",                    
+                    " Browser.UserAgent ' => \"Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X)",                    
+                    " AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Version",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Major version number of the browser",                
+                "remarks" : "Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>",                
+                "examples" : [
+                    " Browser.Version ' => 8",                    
+                    "",                    
+                    " Browser.Version ' => 11.6",                    
+                    "",                    
+                    " Browser.Version '=> 0 (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "WindowHeight",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.WindowHeight ' => 895",                    
+                    " Browser.ScreenHeight ' => 1080",                    
+                    " Browser.ScreenAvailHeight ' => 1040",                    
+                    "",                    
+                    " Browser.WindowHeight ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.WindowWidth",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "WindowWidth",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.WindowWidth ' => 1916",                    
+                    " Browser.ScreenWidth ' => 1920",                    
+                    " Browser.ScreenAvailWidth ' => 1920",                    
+                    "",                    
+                    " Browser.WindowWidth ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.WindowHeight",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight"
+                ],                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "adccontent" : [
+            {
+                "name" : "FileName",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the file name associated with the content",                
+                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Mode",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the mode of the content.",                    
+                    "\tAvailable modes are:",                    
+                    "\t- \"share\" ",                    
+                    "\t- \"static\" ",                    
+                    "\t- \"dynamic\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Position",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the position of the content.",                    
+                    "\tAvailable positions are:",                    
+                    "\t- \"none\" ",                    
+                    "\t- \"head\" ",                    
+                    "\t- \"placeholder\" ",                    
+                    "\t- \"foot\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToText",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the content of the file associated with the content. ",                    
+                    "",                    
+                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
+                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToURL",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the final relative URL path to the content file",                    
+                    "",                    
+                    "\tThis is a shorthand to the method:",                    
+                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.Contents[1].ToURL() ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of the content. Available types are:",                    
+                    "- \"text\" ",                    
+                    "-- \"html\" ",                    
+                    "-- \"css\" ",                    
+                    "-- \"javascript\" ",                    
+                    "- \"binary\" ",                    
+                    "-- \"image\" ",                    
+                    "-- \"audio\" ",                    
+                    "-- \"video\" ",                    
+                    "-- \"flash\""
+                ],                
+                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "interview" : [
+            {
+                "name" : "Broker",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker ID as received in askia web",                
+                "remarks" : "",                
+                "examples" : "Interview.Broker ' => \"SSI\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "BrokerPanelID",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
+                "remarks" : "",                
+                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "GUID",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
+                "remarks" : "",                
+                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "IPAddress",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the IPAddress if available",                
+                "remarks" : "This is usually only available in askiaWeb",                
+                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Latitude",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the Latitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Latitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Longitude",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the longitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Longitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "PanelID",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the askia Panel ID as received in askia web when available",                
+                "remarks" : "",                
+                "examples" : "Interview.PanelID ' => \"2356b\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Progress",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the percentage value of progress through the questionnaire.",                
+                "examples" : "Interview.Progress ' => 32",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Seed",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Seed ' => 133",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ToString",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Interview.ToString()",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns \"interview\"",                
+                "examples" : "interview.TypeOf() ' => \"interview\"",                
                 "version" : "5.3.5.0"
             }
         ]

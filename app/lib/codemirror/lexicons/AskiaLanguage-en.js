@@ -2191,6 +2191,180 @@ askiaScript.extend(askiaScript.lexical, {
         }
     ],    
     "members" : {
+        "date" : [
+            {
+                "name" : "Day",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the day of the date as number",                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.Day ' => 25"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "DayOfWeek",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the day of week (1-7) of the specified date.",                    
+                    " eg.",                    
+                    " if the day is Sunday, the property will return 1.",                    
+                    " if the day is Monday, the property will return 2.",                    
+                    " if the day is Saturday, the property will return 7, and so on."
+                ],                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.DayOfWeek ' => 6"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "DayOfYear",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the day of year (1-366) of the specified date.",                    
+                    " eg.",                    
+                    " if the date is 01/01/2012, the property will return 1.",                    
+                    " if the date is 31/12/2012, the property will return 365, and so on."
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Format",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "format",                        
+                        "type" : "string",                        
+                        "desc" : "Format of the date to obtain (case sensitive)"
+                    },                    
+                    {
+                        "name" : "string2",                        
+                        "type" : "string",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "string3",                        
+                        "type" : "string",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Format a date to string using the format parameter",                
+                "examples" : [
+                    " dim dt= #02/03/2011 16:32:07# ' March 2nd, 2011",                    
+                    " dt.Format(\"dd/MM/yyyy\") ' => \"02/03/2011\"",                    
+                    " dt.Format(\"yyyy-MM-dd\") ' => \"2011-03-02\"",                    
+                    " dt.Format(\"MM/dd/yyyy\") ' => \"03/02/2011\"",                    
+                    " dt.Format(\"dd MMM yyyy\") ' => \"02 Mar 2011\"",                    
+                    " dt.Format(\"dd MMMM yyyy\") ' => \"02 March 2011\"",                    
+                    " dt.Format(\"MMMM dd, ddd.  yyyy\") ' => \"March 02, Wed. 2011\"",                    
+                    " dt.Format(\"MMMM dd, dddd yyyy\") ' => \"March 02, Wednesday 2011\"",                    
+                    " dt.Format(\"d-M-yy\") ' => \"2-3-11\"",                    
+                    " dt.Format(\"dd/MM/yyyy HH:mm\") ' => \"02/03/2011 16:32\"",                    
+                    " dt.Format(\"dd/MM/yyyy hh:mm\") ' => \"02/03/2011 04:32\"",                    
+                    " dt.Format(\"dd/MM/yyyy hh:mmampm\") ' => \"02/03/2011 04:32pm\"",                    
+                    " dt.Format(\"dd/MM/yyyy hh:mm:ssAMPM\") ' => \"02/03/2011 04:32:07PM\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Hour",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the hour of the time as number",                
+                "examples" : [
+                    " dim tm = #16:32:07#",                    
+                    " tm.Hour ' => 16"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Minute",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the minute of the time as number",                
+                "examples" : [
+                    " dim tm = #16:32:07#",                    
+                    " tm.Minute ' => 32"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Month",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the month of the date as number",                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.Month ' => 3"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Second",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the second of the time as number",                
+                "examples" : [
+                    " dim tm = #16:32:07#",                    
+                    " tm.Second ' => 7"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToNumber",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Try to convert the date to a number.",                
+                "examples" : [
+                    " dim dt= #25/03/2011 16:32:07#",                    
+                    " dt.ToNumber() ' => 40627.688969907409"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Convert a date to a string using the regional settings context",                    
+                    " (from the language of respondent or the current machine)",                    
+                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the format"
+                ],                
+                "examples" : [
+                    " dim dt= #25/03/2011 16:32:07#",                    
+                    " dt.ToString() ' => \"25/03/2011 16:32:07\" or \"3/25/2011 04:32:07 PM\"",                    
+                    " ' depending on the regional settings"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : [
+                    " dim dt= #12/01/2009#",                    
+                    " dt.TypeOf() ' => \"date\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Year",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the year of the date as number",                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.Year ' => 2011"
+                ],                
+                "version" : "5.3.2.0"
+            }
+        ],        
         "string" : [
             {
                 "name" : "IndexOf",                
@@ -2724,6 +2898,278 @@ askiaScript.extend(askiaScript.lexical, {
                 "examples" : [
                     " dim s = \"abc\"",                    
                     " s.TypeOf() ' => \"string\""
+                ],                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "number" : [
+            {
+                "name" : "Abs",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Returns the absolute part of a number. (Positive value)",                
+                "examples" : [
+                    " dim counter = -3",                    
+                    " counter.Abs() ' => 3",                    
+                    " '",                    
+                    " dim i = -1.5",                    
+                    " i.Abs() ' => 1.5"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Ceil",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "decimals",                        
+                        "type" : "number",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Returns the next highest value by rounding up value .",                
+                "examples" : [
+                    " dim counter = 1.2",                    
+                    " counter.Ceil() ' => 2",                    
+                    " '",                    
+                    " dim i = -3.14",                    
+                    " i.Ceil() ' => -3",                    
+                    " '",                    
+                    " dim j = 1.5222",                    
+                    " j.Ceil(2) ' => 1.53"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Floor",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "decimals",                        
+                        "type" : "number",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Returns the next lowest value by rounding down value .",                
+                "examples" : [
+                    " dim counter = 1.7",                    
+                    " counter.Floor() ' => 1",                    
+                    " '",                    
+                    " dim i = -3.84",                    
+                    " i.Floor() ' => -4",                    
+                    " '",                    
+                    " dim j = 1.5777",                    
+                    " j.Floor(2) ' => 1.57"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Format",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "format",                        
+                        "type" : "string",                        
+                        "desc" : "Representation of the desire format"
+                    },                    
+                    {
+                        "name" : "decimalSep",                        
+                        "type" : "string",                        
+                        "desc" : "Decimal separator",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "thousandSep",                        
+                        "type" : "string",                        
+                        "desc" : "Thousand separator",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Format a number to string using the format parameter",                    
+                    " When the separators are omitted, the system will use the separators from the regional settings context",                    
+                    " (language of the respondent or the regional settings of the current machine)"
+                ],                
+                "examples" : [
+                    " dim i = 3456.7",                    
+                    " i.Format(\"00000.00\")",                    
+                    " ' => \"03456.70\" or \"03456,70\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"#.##\")",                    
+                    " ' =>\"3456.7\" or \"3456,7\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"#,##0.00\")",                    
+                    " '=>  \"3,456.70\" or \"3 456,70\" or \"3.456,70\"",                    
+                    " '  depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"$#,##0.00\")",                    
+                    " '=> \"$3,456.70\" or \"$3 456,70\" or \"$3.456,70\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " '",                    
+                    " i = 0.1",                    
+                    " i.Format(\"#.##\") ' => \".1\" or \",1\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"0.##\") ' => \"0.1\" or \"0,1\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"0.00\") ' => \"0.10\" or \"0,10\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " '",                    
+                    " i = 123456.78",                    
+                    " i.Format(\"#,##0.00\", \",\", \".\") ' => \"123.456,78\"",                    
+                    " i.Format(\"#,##0.00\", \".\", \",\") ' => \"123,456.78\"",                    
+                    " i.Format(\"#,##0.00\", \"#\", \"@\") ' => \"123@456#78\"",                    
+                    " i.Format(\"#.##\", \",\") ' => \"123456,78\"",                    
+                    " i.Format(\"#.##\", \".\") ' => \"123456.78\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Pow",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "power",                        
+                        "type" : "number",                        
+                        "desc" : "Power value"
+                    }
+                ],                
+                "desc" : "Return the power of a value",                
+                "examples" : [
+                    " dim counter = 2",                    
+                    " counter.Pow(3) ' => 8",                    
+                    " 'Same as (2 * 2 * 2)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Round",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "decimal",                        
+                        "type" : "number",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Round a number.",                
+                "examples" : [
+                    " dim counter = 1.2",                    
+                    " counter.Round() ' => 1",                    
+                    " '",                    
+                    " dim i = 1.5",                    
+                    " i.Round() ' => 2",                    
+                    " '",                    
+                    " dim j = 1.55555",                    
+                    " j.Round(2) ' => 1.56",                    
+                    " '",                    
+                    " dim k = 1",                    
+                    " k.Round(2) ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToDays",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to days: (number)",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToDays() ' => 2",                    
+                    " (Date1 - Date2).ToDays() ' => The number of days"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToHours",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to hours: (number * (24) )",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToHours() ' => 48",                    
+                    " (Date1 - Date2).ToHours()",                    
+                    " ' => (Date1 - Date2) * (24)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToInt",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts a number (double) to integer. This method will not round the number.",                
+                "examples" : [
+                    " dim counter = 1.2",                    
+                    " counter.ToInt() ' => 1",                    
+                    " '",                    
+                    " dim i = 1.5",                    
+                    " i.ToInt() ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToMinutes",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to minutes: (number * (24 * 60) )",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToMinutes() ' => 2880",                    
+                    " (Date1 - Date2).ToMinutes()",                    
+                    " ' => (Date1 - Date2) * (24 * 60)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToSeconds",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to seconds: (number * (24 * 3600) )",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToSeconds() ' => 172800",                    
+                    " (Date1 - Date2).ToSeconds()",                    
+                    " ' => (Date1 - Date2) * (24 * 3600)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Converts a number to string using the regional settings context",                    
+                    " (from the language of respondent or the current machine) to determine the decimal separator",                    
+                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the decimal separator"
+                ],                
+                "examples" : [
+                    " dim counter = 1.9",                    
+                    " counter.ToString() ' => \"1.9\" or \"1,9\"",                    
+                    " ' depending on the regional settings"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.TypeOf() ' => \"number\""
                 ],                
                 "version" : "5.3.2.0"
             }
@@ -3439,452 +3885,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "examples" : [
                     " dim arr = {2;3}",                    
                     " arr.TypeOf() ' => \"array\""
-                ],                
-                "version" : "5.3.2.0"
-            }
-        ],        
-        "number" : [
-            {
-                "name" : "Abs",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Returns the absolute part of a number. (Positive value)",                
-                "examples" : [
-                    " dim counter = -3",                    
-                    " counter.Abs() ' => 3",                    
-                    " '",                    
-                    " dim i = -1.5",                    
-                    " i.Abs() ' => 1.5"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Ceil",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "decimals",                        
-                        "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Returns the next highest value by rounding up value .",                
-                "examples" : [
-                    " dim counter = 1.2",                    
-                    " counter.Ceil() ' => 2",                    
-                    " '",                    
-                    " dim i = -3.14",                    
-                    " i.Ceil() ' => -3",                    
-                    " '",                    
-                    " dim j = 1.5222",                    
-                    " j.Ceil(2) ' => 1.53"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Floor",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "decimals",                        
-                        "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Returns the next lowest value by rounding down value .",                
-                "examples" : [
-                    " dim counter = 1.7",                    
-                    " counter.Floor() ' => 1",                    
-                    " '",                    
-                    " dim i = -3.84",                    
-                    " i.Floor() ' => -4",                    
-                    " '",                    
-                    " dim j = 1.5777",                    
-                    " j.Floor(2) ' => 1.57"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Format",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "format",                        
-                        "type" : "string",                        
-                        "desc" : "Representation of the desire format"
-                    },                    
-                    {
-                        "name" : "decimalSep",                        
-                        "type" : "string",                        
-                        "desc" : "Decimal separator",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "thousandSep",                        
-                        "type" : "string",                        
-                        "desc" : "Thousand separator",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Format a number to string using the format parameter",                    
-                    " When the separators are omitted, the system will use the separators from the regional settings context",                    
-                    " (language of the respondent or the regional settings of the current machine)"
-                ],                
-                "examples" : [
-                    " dim i = 3456.7",                    
-                    " i.Format(\"00000.00\")",                    
-                    " ' => \"03456.70\" or \"03456,70\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"#.##\")",                    
-                    " ' =>\"3456.7\" or \"3456,7\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"#,##0.00\")",                    
-                    " '=>  \"3,456.70\" or \"3 456,70\" or \"3.456,70\"",                    
-                    " '  depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"$#,##0.00\")",                    
-                    " '=> \"$3,456.70\" or \"$3 456,70\" or \"$3.456,70\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " '",                    
-                    " i = 0.1",                    
-                    " i.Format(\"#.##\") ' => \".1\" or \",1\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"0.##\") ' => \"0.1\" or \"0,1\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"0.00\") ' => \"0.10\" or \"0,10\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " '",                    
-                    " i = 123456.78",                    
-                    " i.Format(\"#,##0.00\", \",\", \".\") ' => \"123.456,78\"",                    
-                    " i.Format(\"#,##0.00\", \".\", \",\") ' => \"123,456.78\"",                    
-                    " i.Format(\"#,##0.00\", \"#\", \"@\") ' => \"123@456#78\"",                    
-                    " i.Format(\"#.##\", \",\") ' => \"123456,78\"",                    
-                    " i.Format(\"#.##\", \".\") ' => \"123456.78\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Pow",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "power",                        
-                        "type" : "number",                        
-                        "desc" : "Power value"
-                    }
-                ],                
-                "desc" : "Return the power of a value",                
-                "examples" : [
-                    " dim counter = 2",                    
-                    " counter.Pow(3) ' => 8",                    
-                    " 'Same as (2 * 2 * 2)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Round",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "decimal",                        
-                        "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Round a number.",                
-                "examples" : [
-                    " dim counter = 1.2",                    
-                    " counter.Round() ' => 1",                    
-                    " '",                    
-                    " dim i = 1.5",                    
-                    " i.Round() ' => 2",                    
-                    " '",                    
-                    " dim j = 1.55555",                    
-                    " j.Round(2) ' => 1.56",                    
-                    " '",                    
-                    " dim k = 1",                    
-                    " k.Round(2) ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToDays",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to days: (number)",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToDays() ' => 2",                    
-                    " (Date1 - Date2).ToDays() ' => The number of days"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToHours",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to hours: (number * (24) )",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToHours() ' => 48",                    
-                    " (Date1 - Date2).ToHours()",                    
-                    " ' => (Date1 - Date2) * (24)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToInt",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts a number (double) to integer. This method will not round the number.",                
-                "examples" : [
-                    " dim counter = 1.2",                    
-                    " counter.ToInt() ' => 1",                    
-                    " '",                    
-                    " dim i = 1.5",                    
-                    " i.ToInt() ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToMinutes",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to minutes: (number * (24 * 60) )",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToMinutes() ' => 2880",                    
-                    " (Date1 - Date2).ToMinutes()",                    
-                    " ' => (Date1 - Date2) * (24 * 60)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToSeconds",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to seconds: (number * (24 * 3600) )",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToSeconds() ' => 172800",                    
-                    " (Date1 - Date2).ToSeconds()",                    
-                    " ' => (Date1 - Date2) * (24 * 3600)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    " Converts a number to string using the regional settings context",                    
-                    " (from the language of respondent or the current machine) to determine the decimal separator",                    
-                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the decimal separator"
-                ],                
-                "examples" : [
-                    " dim counter = 1.9",                    
-                    " counter.ToString() ' => \"1.9\" or \"1,9\"",                    
-                    " ' depending on the regional settings"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.TypeOf() ' => \"number\""
-                ],                
-                "version" : "5.3.2.0"
-            }
-        ],        
-        "date" : [
-            {
-                "name" : "Day",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the day of the date as number",                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.Day ' => 25"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "DayOfWeek",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the day of week (1-7) of the specified date.",                    
-                    " eg.",                    
-                    " if the day is Sunday, the property will return 1.",                    
-                    " if the day is Monday, the property will return 2.",                    
-                    " if the day is Saturday, the property will return 7, and so on."
-                ],                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.DayOfWeek ' => 6"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "DayOfYear",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the day of year (1-366) of the specified date.",                    
-                    " eg.",                    
-                    " if the date is 01/01/2012, the property will return 1.",                    
-                    " if the date is 31/12/2012, the property will return 365, and so on."
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Format",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "format",                        
-                        "type" : "string",                        
-                        "desc" : "Format of the date to obtain (case sensitive)"
-                    },                    
-                    {
-                        "name" : "string2",                        
-                        "type" : "string",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "string3",                        
-                        "type" : "string",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Format a date to string using the format parameter",                
-                "examples" : [
-                    " dim dt= #02/03/2011 16:32:07# ' March 2nd, 2011",                    
-                    " dt.Format(\"dd/MM/yyyy\") ' => \"02/03/2011\"",                    
-                    " dt.Format(\"yyyy-MM-dd\") ' => \"2011-03-02\"",                    
-                    " dt.Format(\"MM/dd/yyyy\") ' => \"03/02/2011\"",                    
-                    " dt.Format(\"dd MMM yyyy\") ' => \"02 Mar 2011\"",                    
-                    " dt.Format(\"dd MMMM yyyy\") ' => \"02 March 2011\"",                    
-                    " dt.Format(\"MMMM dd, ddd.  yyyy\") ' => \"March 02, Wed. 2011\"",                    
-                    " dt.Format(\"MMMM dd, dddd yyyy\") ' => \"March 02, Wednesday 2011\"",                    
-                    " dt.Format(\"d-M-yy\") ' => \"2-3-11\"",                    
-                    " dt.Format(\"dd/MM/yyyy HH:mm\") ' => \"02/03/2011 16:32\"",                    
-                    " dt.Format(\"dd/MM/yyyy hh:mm\") ' => \"02/03/2011 04:32\"",                    
-                    " dt.Format(\"dd/MM/yyyy hh:mmampm\") ' => \"02/03/2011 04:32pm\"",                    
-                    " dt.Format(\"dd/MM/yyyy hh:mm:ssAMPM\") ' => \"02/03/2011 04:32:07PM\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Hour",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the hour of the time as number",                
-                "examples" : [
-                    " dim tm = #16:32:07#",                    
-                    " tm.Hour ' => 16"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Minute",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the minute of the time as number",                
-                "examples" : [
-                    " dim tm = #16:32:07#",                    
-                    " tm.Minute ' => 32"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Month",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the month of the date as number",                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.Month ' => 3"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Second",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the second of the time as number",                
-                "examples" : [
-                    " dim tm = #16:32:07#",                    
-                    " tm.Second ' => 7"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToNumber",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Try to convert the date to a number.",                
-                "examples" : [
-                    " dim dt= #25/03/2011 16:32:07#",                    
-                    " dt.ToNumber() ' => 40627.688969907409"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    " Convert a date to a string using the regional settings context",                    
-                    " (from the language of respondent or the current machine)",                    
-                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the format"
-                ],                
-                "examples" : [
-                    " dim dt= #25/03/2011 16:32:07#",                    
-                    " dt.ToString() ' => \"25/03/2011 16:32:07\" or \"3/25/2011 04:32:07 PM\"",                    
-                    " ' depending on the regional settings"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : [
-                    " dim dt= #12/01/2009#",                    
-                    " dt.TypeOf() ' => \"date\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Year",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the year of the date as number",                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.Year ' => 2011"
                 ],                
                 "version" : "5.3.2.0"
             }
