@@ -58,8 +58,11 @@
 .cm-s-askia span.cm-def { color: rgba(233, 237, 237, 1); }
 .cm-s-askia span.cm-error {
   color     : #FFF !important;
-  background: #EC5F67;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
+  background-position: left bottom;
+  background-repeat: repeat-x;
 }
+
 .cm-s-askia span.cm-string { color: #C3E88D; }
 .cm-s-askia span.cm-string-2 { color: #80CBC4; }
 .cm-s-askia span.cm-comment { color: #9e9e9e; }
