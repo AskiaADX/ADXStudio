@@ -34,10 +34,6 @@
     box-shadow      : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
 }
 
-.askia-modal-message-container {
-}
-
-.askia-modal-message {}
 .askia-modal-body-container {
     padding-top     : 30px;
     padding-right   : 30px;
@@ -46,10 +42,6 @@
 .askia-modal-buttons-container {
     padding-top : 40px;
     text-align  : right;
-}
-
-.askia-modal-buttons-container button {
-    /*margin-right: 10px;*/
 }
 
 .askia-modal-button-ok,
