@@ -239,7 +239,8 @@ ul {
 }
 
 #properties_table .inner-form.editable {
-    display:table-row;
+    display         :table-row;
+    background-color: transparent !important;
 }
 
 table#contents,
