@@ -77,10 +77,13 @@ AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(ite
         }
         mru.unshift(item);
         self._cache.mru = mru;
-        fs.writeFile(path.join(self.rootPath, 'MRU.json'),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
-            if (typeof callback === 'function') {
-                callback(err);
-            }
+        // Make sure the directory exist
+        fs.mkdir(self.rootPath, function () {
+            fs.writeFile(path.join(self.rootPath, 'MRU.json'),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
+                if (typeof callback === 'function') {
+                    callback(err);
+                }
+            });
         });
     });
 };

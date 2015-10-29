@@ -15,6 +15,7 @@ describe('appSettings', function () {
             fs: {
                 stat: spyOn(fs, 'stat'),
                 statSync: spyOn(fs, 'statSync'),
+                mkdir   : spyOn(fs, 'mkdir'),
                 readFile : spyOn(fs, 'readFile'),
                 writeFile : spyOn(fs, 'writeFile')
             }
@@ -38,6 +39,10 @@ describe('appSettings', function () {
                     return value;
                 }
             };
+        });
+        
+        spies.fs.mkdir.andCallFake(function (dir, cb) {
+            cb(null);
         });
     });
 
