@@ -30,7 +30,7 @@
     });
     wks.addEventListener("dom-ready", function () {
         onWebViewLoaded();
-        wks.openDevTools();
+        // wks.openDevTools();
     });
 
     /**
