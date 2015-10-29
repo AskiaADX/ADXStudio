@@ -3,10 +3,10 @@
 }
 
 .cm-s-askia.CodeMirror {
-    background: #282C34;
-    color: #f8f8f2;
-    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
-    font-size: 14px;
+    background  : #282C34;
+    color       : #f8f8f2;
+    font-family : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    font-size   : 14px;
 }
 
 .cm-s-askia div.CodeMirror-selected {
@@ -14,7 +14,7 @@
 }
 
 .cm-s-askia .CodeMirror-gutters {
-    background: #282C34;
+    background  : #282C34;
     border-right: 1px solid #2C323B;
 }
 
@@ -39,8 +39,8 @@
 }
 
 .cm-s-askia .CodeMirror-matchingbracket {
-  text-decoration: underline;
-  color: #FFF !important;
+  text-decoration   : underline;
+  color             : #FFF !important;
 }
 
 .CodeMirror-activeline .CodeMirror-linenumber {
@@ -48,7 +48,6 @@
 }
 
 /* Code styling */
-
 .cm-s-askia span.cm-keyword { color: rgba(199, 146, 234, 1); }
 .cm-s-askia span.cm-operator { color: rgba(233, 237, 237, 1); }
 .cm-s-askia span.cm-variable-2 { color: #80CBC4; }
@@ -58,7 +57,7 @@
 .cm-s-askia span.cm-number { color: #F77669; }
 .cm-s-askia span.cm-def { color: rgba(233, 237, 237, 1); }
 .cm-s-askia span.cm-error {
-  color: #FFF !important;
+  color     : #FFF !important;
   background: #EC5F67;
 }
 .cm-s-askia span.cm-string { color: #C3E88D; }

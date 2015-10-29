@@ -18,9 +18,6 @@ nav {
     width   : 200px;
     height  : 100vh;
 }
-nav li {
-    /*margin-bottom : 20px;*/
-}
 
 nav a {
     display : block;
