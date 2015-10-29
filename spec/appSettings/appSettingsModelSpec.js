@@ -270,4 +270,5 @@ describe('appSettings', function () {
         });
 
     });
+
 });

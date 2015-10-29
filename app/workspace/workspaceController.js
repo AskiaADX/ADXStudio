@@ -645,8 +645,8 @@ ipc.on('workspace-ready', function (event) {
     app.removeListener('menu-save-all-files', saveAllFiles);
     app.on('menu-save-all-files', saveAllFiles);
 
-    app.removeListener('menu-show-project-settings', openProjectSettings);
-    app.on('menu-show-project-settings', openProjectSettings);
+    app.removeListener('menu-open-project-settings', openProjectSettings);
+    app.on('menu-open-project-settings', openProjectSettings);
 
     app.removeListener('menu-preview', startPreview);
     app.on('menu-preview', startPreview);

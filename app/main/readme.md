@@ -33,6 +33,6 @@ It's fire with the following arguments:
 * **folderpath** Path of the project folder to open
 
 
-### menu-show-project-settings
+### menu-open-project-settings
 
-The `menu-show-project-settings` event is fire when the user request to display the project settings.
+The `menu-open-project-settings` event is fire when the user request to open the project settings tab.

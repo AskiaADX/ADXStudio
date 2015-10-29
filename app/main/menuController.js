@@ -109,7 +109,14 @@ app.once('ready', function createAppMenu() {
          * Project settings
          */
         function projectSettingsClick() {
-            app.emit("menu-show-project-settings");
+            app.emit("menu-open-project-settings");
+        }
+
+        /**
+         * Preferences
+         */
+        function preferencesClick() {
+            app.emit("menu-open-preferences");
         }
         
         /**
@@ -138,6 +145,13 @@ app.once('ready', function createAppMenu() {
          */
         function previewClick() {
             app.emit("menu-preview");
+        }
+        
+        /**
+         * About ADX Studio
+         */
+        function aboutADXStudioClick() {
+            app.emit("menu-about-adxstudio");
         }
 
         if (process.platforn !== 'darwin') {
@@ -197,13 +211,20 @@ app.once('ready', function createAppMenu() {
                             type: 'separator'
                         },
                         {
+                            label : '&Preferences',
+                            click : preferencesClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
                             label : '&Exit',
                             click : exitClick
                         }
                     ]
                 },
                 {
-                    label: 'Build',
+                    label: 'Tools',
                     submenu: [
                         {
                             label : '&Validate',
@@ -211,14 +232,14 @@ app.once('ready', function createAppMenu() {
                             click : validateClick
                         },
                         {
-                            label: '&Build',
-                            accelerator: 'Ctrl+Shift+B',
-                            click: buildClick
-                        },
-                        {
                             label: '&Preview',
                             accelerator: 'F5',
                             click : previewClick
+                        },
+                        {
+                            label: '&Build',
+                            accelerator: 'Ctrl+Shift+B',
+                            click: buildClick
                         }
                     ]
                 },
@@ -251,19 +272,32 @@ app.once('ready', function createAppMenu() {
                     label: 'Help',
                     submenu: [
                         {
+                            label : '&About ADX Studio',
+                            click : aboutADXStudioClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                        	label : 'ADC 2.0',
+                            click : function () { 
+                                shell.openExternal('https://support.askia.com/hc/en-us/articles/200003261-Specification-of-the-adc-2-0-controls-since-5-3-3-');
+                            }
+                        },
+                        {
                             label: 'AskiaScript 2.0',
-                            click: function() { shell.openExternal('https://support.askia.com/hc/en-us/articles/200003251-AskiaScript-2-0-specification') }
+                            click: function() { 
+                                shell.openExternal('https://support.askia.com/hc/en-us/articles/200003251-AskiaScript-2-0-specification');
+                            }
                         },
                         {
                             type: 'separator'
                         },
                         {
                             label: '&About Askia',
-                            click: function() { shell.openExternal('http://www.askia.com/') }
-                        },
-                        {
-                            label: '&About Askia Design',
-                            click: function() { shell.openExternal('http://www.askia.com/design') }
+                            click: function() {
+                                shell.openExternal('http://www.askia.com/');
+                            }
                         }
                     ]
                 }

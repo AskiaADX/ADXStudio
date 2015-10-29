@@ -204,11 +204,15 @@ window.askia.modalDialog = (function () {
 
         el.dialog.appendChild(el.buttonsContainer);
 
-
+        
         // Lightbox
         el.lightbox = document.createElement('div');
         el.lightbox.className = 'askia-modal-lightbox';
         el.lightbox.style.zIndex = initialZIndex;
+        
+        if (this.plugin && typeof this.plugin.beforeDisplay === 'function') {
+            this.plugin.beforeDisplay(this);
+        }
 
         // Append it in the document
         document.body.appendChild(el.lightbox);

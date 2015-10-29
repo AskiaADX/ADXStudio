@@ -1,0 +1,86 @@
+.askia-modal-dialog.preferences {
+    width: 600px;
+}
+
+.askia-modal-preferences-title, p.askia-modal-preferences-title {
+    font-size   : 1.4em;
+    padding-left: 20px;
+    padding-top : 0;
+    margin-top  : 0;
+}
+
+.askia-modal-preferences-container {
+    padding: 15px 0 15px 20px;
+}
+
+.askia-modal-preferences-container input,
+.askia-modal-preferences-container textarea,
+.askia-modal-preferences-container select {
+    padding         : 10px;
+    width           : 418px;
+    border-radius   : 2px;
+    border          : 1px solid #151515;
+    background-color: #21252B;
+    color           : #BBB;
+    font-size       : 14px;
+    margin-left     : 10px;
+}
+
+.askia-modal-preferences-container .pathInput {
+    width: 368px;
+}
+
+.askia-modal-preferences-container input:focus,
+.askia-modal-preferences-container textarea:focus,
+.askia-modal-preferences-container select:focus {
+    border  : 1px solid #007DC5;
+    outline : none;
+}
+
+.askia-modal-preferences-container label {
+    display     : block;
+    width       : 100px;
+    float       : left;
+    align-self  : center;
+}
+
+.askia-modal-preferences-container textarea {
+    height: 60px;
+}
+
+.askia-modal-preferences-container select {
+    width   : 440px;
+    cursor  : pointer;
+}
+
+.preferences .askia-modal-buttons-container {
+    padding-right: 30px !important;
+}
+
+.askia-modal-preferences-container button {
+    width           : 40px;
+    height          : 37px;
+    cursor          : pointer;
+    align-self      : center;
+    margin-left     : 10px;
+    background-color: #BBBBBB;
+    border-radius   : 2px;
+    border          : 1px solid rgba(0,0,0,.95);
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #222;
+    font-size       : 14px;
+    font-weight     : bold;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}
+
+.askia-modal-preferences-container button:hover {
+    background-color: #CCCCCC;
+    color           : #000;
+}
+
+.askia-modal-preferences-container button:active {
+    background-color: #DDDDDD;
+    color           : #000;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
+}

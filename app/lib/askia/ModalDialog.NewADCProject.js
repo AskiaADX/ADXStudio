@@ -6,15 +6,6 @@
         throw new Error("NodalDialog.js is not loaded, please load it first");
     }
 
-    askia.modalDialog.adctemplates = askia.modalDialog.adctemplates ||  [
-            {
-                name : 'blank'
-            },
-            {
-                name : 'all'
-            }
-        ];
-
     var modalDialog     = askia.modalDialog,
         autoIncrement   = 0,
         remote          = require('remote'),
@@ -22,10 +13,14 @@
 
     /**
      * Show open directory dialog box
-     * @param callback
+     * @param {String} defaultPath
+     * @param {Function} callback
      */
-    function showOpenDirectory(callback) {
-        openDialog.showOpenDialog({properties: ['openDirectory']}, callback);
+    function showOpenDirectory(defaultPath, callback) {
+        openDialog.showOpenDialog({
+            properties: ['openDirectory'],
+            defaultPath : defaultPath
+        }, callback);
     }
 
     modalDialog.addPlugin('newADCProject', {
@@ -39,7 +34,10 @@
             var root = modalDialog.elements.bodyContainer,
                 el   = modalDialog.elements.newProject,
                 i, l,
-                templateList =  askia.modalDialog.adctemplates,
+                templateList =  (modalDialog.options && modalDialog.options.adcTemplates) || [
+                        { name : 'blank'},
+                        {name : 'all'}
+                    ],
                 options;
 
             // Add extra class on the dialog box
@@ -83,6 +81,7 @@
             el.pathInput.setAttribute('id', 'modal_new_proj_path_' + autoIncrement);
             el.pathInput.className = 'pathInput';
             el.pathInput.setAttribute('type', 'text');
+            el.pathInput.value = (modalDialog.options && modalDialog.options.defaultRootDir) || "";
             el.path.appendChild(el.pathInput);
 
             el.pathButton = document.createElement('button');
@@ -141,7 +140,7 @@
             modalDialog.events  = modalDialog.events || {};
             modalDialog.events.browseDirectory = function (event) {
                 event.stopPropagation();
-                showOpenDirectory(function (folderpath) {
+                showOpenDirectory(el.pathInput.value, function (folderpath) {
                     if (folderpath) {
                         el.pathInput.value = folderpath;
                     }

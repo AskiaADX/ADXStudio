@@ -2,6 +2,7 @@ var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var appSettings = require('./appSettings/appSettingsModel.js');
 var ADC = require('adcutil').ADC;
+var shell =  require('shell');
 
 require('./main/mainController.js');
 
@@ -47,6 +48,12 @@ app.on('ready', function loadMainWindow() {
         // and load the index.html of the app.
         global.mainWindow.loadUrl('file://' + __dirname + '/main/index.html');
 
+        // redirect all new window url to the default browser
+        global.mainWindow.webContents.on('new-window', function onNewWindow(event, url) {
+            event.preventDefault();
+            shell.openExternal(url);
+        });
+        
         // Now show it
         global.mainWindow.show();
 

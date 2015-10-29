@@ -19,8 +19,8 @@
             });
 
             resExpl.start();
-            ipc.send('main-ready');
         }
+        ipc.send('main-ready');
     }
 
     // Dev tools of the webview
@@ -30,7 +30,7 @@
     });
     wks.addEventListener("dom-ready", function () {
         onWebViewLoaded();
-        wks.openDevTools();
+        // wks.openDevTools();
     });
 
     /**
@@ -51,12 +51,6 @@
 
     });
 
-    /**
-     * Get the list of ADC templates
-     */
-    ipc.on('set-template-list', function (templates) {
-        askia.modalDialog.adctemplates = templates;
-    });
 
     /**
      * Show modal dialog from the controller

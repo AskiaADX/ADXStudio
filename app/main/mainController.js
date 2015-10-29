@@ -31,7 +31,7 @@ function writeOutput(text, type) {
 /**
  * Clear the output window
  */
-function clearOutput(){
+function clearOutput() {
     mainView.send('output-clear');
 }
 
@@ -91,15 +91,28 @@ function showLoader(message) {
 }
 
 /**
+ * Display the about window
+ */
+function showAbout() {
+    showModalDialog({
+        type : 'about'
+    });
+}
+
+/**
  * Show the modal dialog to create a new project
  */
 function newProject() {
-    showModalDialog({
-        type : 'newADCProject',
-        buttonText : {
-            ok : "Create project"
-        }
-    }, 'main-create-new-project');
+    ADC.getTemplateList(function (err, templates) {
+        showModalDialog({
+            type : 'newADCProject',
+            buttonText : {
+                ok : "Create project"
+            },
+            adcTemplates : templates,
+            defaultRootDir : path.join(process.env.USERPROFILE, 'Documents')
+        }, 'main-create-new-project');
+    });
 }
 
 /**
@@ -193,6 +206,31 @@ function buildProject() {
 }
 
 /**
+ * Open preferences
+ */
+function openPreferences(){
+    ADC.preferences.read({silent : true},function onReadPreferences(preferences) {
+        showModalDialog({
+            type : 'preferences',
+            author : (preferences && preferences.author) || null
+        }, 'main-save-preferences');
+    });
+}
+
+/**
+ * Save preferences
+ */
+function savePreferences(event, button, options) {
+    if (button !== 'ok' && button !== 'yes') {
+        return;
+    }
+    if (!options.author) {
+        return;
+    }
+    ADC.preferences.write(options);
+}
+
+/**
  * Closing the main window
  * @param event
  */
@@ -210,11 +248,11 @@ function onCloseMainWindow(event) {
  * Save or not files before to quit
  */
 function saveOrNotBeforeQuit(event, button) {
-    switch(button) {
+    switch (button) {
         case 'yes':
         case 'ok':
             app.on("workspace-save-all-finish", function () {
-               app.quit();
+                app.quit();
             });
             app.emit('menu-save-all-files');
             break;
@@ -223,10 +261,12 @@ function saveOrNotBeforeQuit(event, button) {
             app.quit();
             break;
         case 'cancel':
+        default:
             // Do nothing
             break;
     }
 }
+
 
 /**
  * Fire when the main window is ready
@@ -234,36 +274,43 @@ function saveOrNotBeforeQuit(event, button) {
 ipc.on('main-ready', function (event) {
     mainView = event.sender;
 
-    ADC.getTemplateList(function (err, templates) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        mainView.send('set-template-list', templates);
-    });
-
     app.removeListener('show-modal-dialog', showModalDialog);
     app.on('show-modal-dialog', showModalDialog);
 
+    // New project
     app.removeListener('menu-new-project', newProject);
     app.on('menu-new-project', newProject);
-
-    app.removeListener('menu-open-project', openProject);
-    app.on('menu-open-project', openProject);
-
-    app.removeListener('menu-validate', validateProject);
-    app.on('menu-validate', validateProject);
-    
-    app.removeListener('menu-build', buildProject);
-    app.on('menu-build', buildProject);
-
     ipc.removeListener('main-create-new-project', createNewProject);
     ipc.on('main-create-new-project', createNewProject);
 
+    // Open project
+    app.removeListener('menu-open-project', openProject);
+    app.on('menu-open-project', openProject);
+
+    // Validate project
+    app.removeListener('menu-validate', validateProject);
+    app.on('menu-validate', validateProject);
+
+    // Build project
+    app.removeListener('menu-build', buildProject);
+    app.on('menu-build', buildProject);
+
+    // About ADXStudio
+    app.removeListener('menu-about-adxstudio', showAbout);
+    app.on('menu-about-adxstudio', showAbout);
+    
+    // Preferences
+    app.removeListener('menu-open-preferences', openPreferences);
+    app.on('menu-open-preferences', openPreferences);
+    ipc.removeListener('main-save-preferences', savePreferences);
+    ipc.on('main-save-preferences', savePreferences);
+
+    // Verify everything before to quit the application
     global.mainWindow.removeListener('close', onCloseMainWindow);
     global.mainWindow.on('close', onCloseMainWindow);
-
     ipc.removeListener('main-save-before-quit', saveOrNotBeforeQuit);
     ipc.on('main-save-before-quit', saveOrNotBeforeQuit);
+
+
 
 });

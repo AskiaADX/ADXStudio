@@ -47,7 +47,7 @@
     <script src="../../lib/linters/csslint.js"></script>
     <script src="../../lib/codemirror/addon/lint/lint.js"></script>
     <script src="../../lib/codemirror-lint-eslint/eslint-lint.js"></script>
-    <script src="../../lib/codemirror/addon/lint/css-lint.js"></script> 
+    <!-- script src="../../lib/codemirror/addon/lint/css-lint.js"></script--> 
   	
   	<!-- Sense  -->
   	<link rel="stylesheet" href="../../lib/codemirror/addon/sense/sense.css" />
@@ -88,7 +88,7 @@
             var tab      = viewer.currentTab;
             var textarea = document.getElementById('code');
 
-            var matchFileExt = /\.(.*?)$/.exec(tab.name);
+            var matchFileExt = /\.([^\.]+)$/.exec(tab.name);
             var contentType = (matchFileExt && matchFileExt.length) ?
                     contentTypeByFileExt[matchFileExt[1].toLocaleLowerCase()] : '';
 

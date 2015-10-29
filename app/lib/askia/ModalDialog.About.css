@@ -1,0 +1,83 @@
+.askia-modal-dialog.about {
+    width: 666px;
+    height:266px;
+    padding : 0;
+    margin : 0;
+    
+    border-radius       : 2px 2px 2px 2px !important;
+    background-color    : #CBCBCB;
+    background-image    : -moz-linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
+    background-image    : -o-linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
+    background-image    : -webkit-linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
+    background-image    : linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
+
+    -moz-box-shadow     : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 8px 0px #000000;
+    -webkit-box-shadow  : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 8px 0px #000000;
+    box-shadow          : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 8px 0px #000000;
+}
+
+.askia-modal-dialog.about h3,
+.askia-modal-dialog.about h4,
+.askia-modal-dialog.about div {
+    margin : 0;
+    padding: 0;
+}
+
+.askia-modal-dialog.about .left {
+    float   : left;
+    width   : 250px;
+    height  : 266px;
+    background-color : #0073EA;
+    background-image : -moz-linear-gradient(bottom, #0081ED 0%, #00BDFF 100%);
+    background-image : -o-linear-gradient(bottom, #0081ED 0%, #00BDFF 100%);
+    background-image : -webkit-linear-gradient(bottom, #0081ED 0%, #00BDFF 100%);
+    background-image : linear-gradient(bottom, #0081ED 0%, #00BDFF 100%);
+
+    -moz-box-shadow     : inset 0 1px 0 rgba(255,255,255,.4), 0px 0px 8px 0px #000000;
+    -webkit-box-shadow  : inset 0 1px 0 rgba(255,255,255,.4), 0px 0px 8px 0px #000000;
+    box-shadow          : inset 0 1px 0 rgba(255,255,255,.4), 0px 0px 8px 0px #000000;
+}
+
+.askia-modal-dialog.about .right {
+    float   : right;
+    width   : 60%;
+    padding : 10px 8px 0 0;
+    color       : #222222;
+    text-shadow : 0 1px 0 rgba(255, 255, 255, .6);
+}
+.askia-modal-dialog.about  h3 {
+    font-size   : 1.33em;
+    font-weight : bold;
+}
+.askia-modal-dialog.about  h4 {
+    font-size : .95em;
+    color     : #444444;
+}
+
+.askia-modal-dialog.about  p {
+	font-size: .75em;
+}
+
+.askia-modal-dialog.about  a {
+     color: #0073EA;
+}
+.askia-modal-dialog.about  a:hover {
+     background  : #0073EA;
+    text-shadow : 0 -1px 0 #444444;
+    color       : #FFFFFF;
+}
+
+.askia-modal-dialog.about #askialogo {
+    background : url(about-askialogo.png) no-repeat center center;
+    height     : 31px;
+    width      : 31px;
+}
+
+.askia-modal-dialog.about #about-logo {
+    background : url(about-adxstudiologo.png) no-repeat center center;
+    width      : 216px;
+    height     : 216px;
+    padding    : 25px 14px;
+}
+
+
