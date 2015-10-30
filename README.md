@@ -42,6 +42,7 @@ Available resources
 -------------------
 
 -	[Askiascript 2.0 specs](https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications)
+-	[ADC 2.0 specs](https://dev.askia.com/projects/askiadesign/wiki/Design6_ADC_2_0)
 -	[List of ADCs 2.0](https://support.askia.com/hc/en-us/sections/200009182-askia-design-control-ADC-2-0-Javascript-)
 -	[Askia website](http://askia.com/)
 
