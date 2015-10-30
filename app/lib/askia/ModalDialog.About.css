@@ -27,7 +27,7 @@
     float   : right;
     width   : 60%;
     padding : 10px 8px;
-    color   : #222222;
+    color   : #222;
 }
 
 .askia-modal-dialog.about .right p {
@@ -40,7 +40,7 @@
 }
 .askia-modal-dialog.about  h4 {
     font-size : .85rem;
-    color     : #444444;
+    color     : #888;
 }
 
 .askia-modal-dialog.about  p {
@@ -54,5 +54,5 @@
 }
 .askia-modal-dialog.about  a:hover {
     background  : #0073EA;
-    color       : #FFFFFF;
+    color       : #FFF;
 }
