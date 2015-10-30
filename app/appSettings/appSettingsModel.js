@@ -1,6 +1,36 @@
 var path = require('path');
 var fs = require('fs');
 
+var PREF_FILENAME = "Prefs.json";
+var MRU_FILENAME = "MRU.json";
+
+/**
+ * Merge two object together (recursively)
+ * @param {Object} destination Destination object (where the data will be append)
+ * @param {Object} source Source object (where the data will be read)
+ * @return {Object} Merged object
+ */
+function merge(destination, source) {
+    var k;
+    for (k in source) {
+        if (source.hasOwnProperty(k)) {
+            if (!destination.hasOwnProperty(k)) {
+                if (Array.isArray(source[k])) {
+                    destination[k] = source[k].slice();
+                } else if (typeof source[k] === 'object') {
+                    destination[k] = {};
+                    merge(destination[k], source[k]);
+                } else {
+                    destination[k] = source[k];
+                }
+            }
+        }
+    }
+
+    return destination;
+}
+
+
 /**
  * Manage the settings of the application
  * @constructor
@@ -18,6 +48,35 @@ AppDataSettings.prototype.getAppDataPath = function getAppDataPath() {
 };
 
 /**
+ * Get the user application preferences
+ * @param {Function} callback
+ * @param {Error} callback.err
+ * @param {Object} callback.preferences
+ * @param {String} callback.preferences.defaultProjectsLocation Default path to create projects
+ */
+AppDataSettings.prototype.getPreferences = function getPreferences(callback) {
+    // No callback
+    if (typeof callback !== 'function') {
+        return;
+    }
+    var filePath = path.join(this.rootPath, PREF_FILENAME);
+    var self = this;
+    var defaultPreferences = {
+        defaultProjectsLocation  : path.join(process.env.USERPROFILE, 'Documents')
+    };
+
+    fs.readFile(filePath, function onReadPrefs(err, data) {
+        if (err) {
+            callback(err, defaultPreferences);
+            return;
+        }
+
+        var prefs = merge(data ? JSON.parse(data) : {}, defaultPreferences);
+        callback(null, prefs);
+    });
+};
+
+/**
  * Get the list of most recently used project
  * @param {Function} callback
  * @param {Error} callback.err
@@ -32,7 +91,7 @@ AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed(cal
         callback(null, this._cache.mru);
         return;
     }
-    var filePath = path.join(this.rootPath, 'MRU.json');
+    var filePath = path.join(this.rootPath, MRU_FILENAME);
     var self = this;
     fs.readFile(filePath, function onReadMRU(err, data) {
         if (err) {
@@ -79,7 +138,7 @@ AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(ite
         self._cache.mru = mru;
         // Make sure the directory exist
         fs.mkdir(self.rootPath, function () {
-            fs.writeFile(path.join(self.rootPath, 'MRU.json'),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
+            fs.writeFile(path.join(self.rootPath, MRU_FILENAME),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
                 if (typeof callback === 'function') {
                     callback(err);
                 }

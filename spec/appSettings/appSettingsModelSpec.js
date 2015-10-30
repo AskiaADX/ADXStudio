@@ -9,6 +9,7 @@ describe('appSettings', function () {
         delete require.cache[cacheKey];
 
         process.env.APPDATA = '/username.domain/AppData/Roaming';
+        process.env.USERPROFILE = '/username.domain';
         appSettings = require("../../app/appSettings/appSettingsModel.js");
 
         spies = {
@@ -168,6 +169,20 @@ describe('appSettings', function () {
             expect(spy).toHaveBeenCalled();
         });
 
+        it('should try to create the AppData directory for ADXStudio', function () {
+            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+                cb(null, [{"path" : "A"}, {"path" : "B"}]);
+            });
+            runSync(function (done) {
+                spies.fs.mkdir.andCallFake(function (dirPath) {
+                    expect(dirPath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio'));
+                    done();
+                });
+
+                appSettings.addMostRecentlyUsed({ path : 'test'});
+            });
+        });
+
         it('should return append a new item on top of the MRU array and write it in the MRU.json', function () {
             spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
@@ -252,6 +267,73 @@ describe('appSettings', function () {
                 });
             });
         })
+
+    });
+
+    describe('#getPreferences', function () {
+        it("Should be a function", function () {
+            expect(typeof appSettings.getPreferences).toBe('function');
+        });
+
+        it('should read the Prefs.json file under the APPDATA/ADXStudio', function () {
+            var readPath;
+            spies.fs.readFile.andCallFake(function (filePath) {
+                readPath = filePath;
+            });
+            appSettings.getPreferences(function () {});
+            expect(readPath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'Prefs.json'));
+        });
+
+        it('should return an error when the Prefs.json could not be accessible', function () {
+            var sendError = new Error("ENOFILE"), returnError;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(sendError);
+            });
+            appSettings.getPreferences(function (err) {
+                returnError = err;
+            });
+            expect(sendError).toBe(returnError);
+        });
+
+        it('should return an the default preferences when the Prefs.json could not be accessible', function () {
+            var result;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(new Error("Error"));
+            });
+            appSettings.getPreferences(function (err, data) {
+                result = data;
+            });
+            expect(result).toEqual({
+                defaultProjectsLocation : pathHelper.join(process.env.USERPROFILE, 'Documents')
+            });
+        });
+
+        it('should return the preferences from the Prefs.json when it\'s accessible', function () {
+            var result;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here"}');
+            });
+            appSettings.getPreferences(function (err, data) {
+                result = data;
+            });
+            expect(result).toEqual({
+                defaultProjectsLocation : "Here"
+            });
+        });
+
+        it('should update the preferences with the default preferences when there are missing keys', function () {
+            var result;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"another_key": "Here"}');
+            });
+            appSettings.getPreferences(function (err, data) {
+                result = data;
+            });
+            expect(result).toEqual({
+                another_key : "Here",
+                defaultProjectsLocation : pathHelper.join(process.env.USERPROFILE, 'Documents')
+            });
+        });
 
     });
 
