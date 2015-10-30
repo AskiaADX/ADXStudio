@@ -6,7 +6,7 @@
     border-radius   : 2px !important;
     background-color: #CBCBCB;
     background-image: linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
-    box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 12px 0px rgba(0, 0, 0, .4);
+    box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 17px 4px rgba(0, 0, 0, .4);
 }
 
 .askia-modal-dialog.about h3,
@@ -27,7 +27,7 @@
     float   : right;
     width   : 60%;
     padding : 10px 8px;
-    color   : #222222;
+    color   : #222;
 }
 
 .askia-modal-dialog.about .right p {
@@ -40,11 +40,11 @@
 }
 .askia-modal-dialog.about  h4 {
     font-size : .85rem;
-    color     : #444444;
+    color     : #888;
 }
 
 .askia-modal-dialog.about  p {
-	font-size: .7rem;
+	font-size: .75rem;
 }
 
 .askia-modal-dialog.about  a {
@@ -54,5 +54,5 @@
 }
 .askia-modal-dialog.about  a:hover {
     background  : #0073EA;
-    color       : #FFFFFF;
+    color       : #FFF;
 }
