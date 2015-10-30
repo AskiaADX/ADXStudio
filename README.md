@@ -24,7 +24,7 @@ Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases) ar
 3.	Double-click the `ADXStudio.exe` executable.
 4.	Try to create your ADC with the ADCTemplate (project automatically open), or create a new Project.
 
-Note: do not tamper with any other components of `ADXStudio-win32-x64` folder.
+*Note: do not tamper with any other components of `ADXStudio-win32-x64` / `ADXStudio-win32-ia32` folder.*
 
 #### Manual
 
