@@ -17,7 +17,7 @@ Setup
 
 #### Installer
 
-Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases) archive.
+Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/latest) archive.
 
 1.	After downloading the release, unzip `ADXStudio-win32-x64.zip` or `ADXStudio-win32-ia32.zip` depending on your OS environment.
 2.	Open the `ADXStudio-win32-x64` (or `ADXStudio-win32-ia32.zip`) folder.
