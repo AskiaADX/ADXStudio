@@ -15,6 +15,17 @@ Install [NodeJS](https://nodejs.org/download/).
 Setup
 -----
 
+#### Installer
+
+Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases) archive.
+
+1.	After downloading the release, unzip `ADXStduio_Alpha1_0_0x64.zip` or `ADXStduio_Alpha1_0_0x86.zip` depending on your OS environment.
+2.	Open the `ADXStduio_Alpha1_0_0x64` (or `ADXStduio_Alpha1_0_0x86.zip`) folder.
+3.	Double-click the `ADXStudioAlpha1_0_0.exe` executable.
+4.	Try to create your ADC with the ADCTemplate (project automatically open), or create a new Project.
+
+Note: do not tamper with any other components of `ADXStduio_Alpha1_0_0x64` folder.
+
 #### Manual
 
 Open [Powershell](https://msdn.microsoft.com/en-us/dd742419) as an `Administrator` and browse to the local ADXStudio repository. There, run the following commands:
