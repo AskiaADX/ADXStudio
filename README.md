@@ -25,13 +25,15 @@ npm update
 electron app/main.js
 ```
 
-### Available resources
+Available resources
+-------------------
 
 -	[Askiascript 2.0 specs](https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications)
 -	[List of ADCs 2.0](https://support.askia.com/hc/en-us/sections/200009182-askia-design-control-ADC-2-0-Javascript-)
 -	[Askia website](http://askia.com/)
 
-### Authors
+Authors
+-------
 
 -	[Maxime Gasnier](https://github.com/Maximeesilv)
 -	[Mamadou Sy](https://github.com/MamadouSy)
