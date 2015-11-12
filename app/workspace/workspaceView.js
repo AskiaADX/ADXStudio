@@ -293,7 +293,6 @@ document.addEventListener('DOMContentLoaded', function () {
         Menu	= remote.require('menu'),
         MenuItem = remote.require('menu-item'),
         shell	= remote.require('shell'),
-        linter   = remote.require('eslint').linter,
         tabs = window.tabs,
         askia =  window.askia,
         resizer = new askia.Resizer({
@@ -307,14 +306,6 @@ document.addEventListener('DOMContentLoaded', function () {
             second : document.getElementById('second_pane').querySelector('.tabs-content')
         },
         modalDialog = window.askia.modalDialog;
-
-
-    // Expose the reference to the ESLint
-    window.eslint = {
-        verify : function (code, config) {
-            return linter.verify(code, config);
-        }
-    };
 
     /**
      * Indicates if the element has horizontal scroll

@@ -42,11 +42,11 @@
   	<script src="../../lib/codemirror/addon/fold/comment-fold.js"></script>
     
   	<!-- Linters -->
-  	<link rel="stylesheet" href="../../lib/codemirror/addon/lint/lint.css">
-    <script src="../../lib/linters/eslint.js"></script>
-    <script src="../../lib/linters/csslint.js"></script>
-    <script src="../../lib/codemirror/addon/lint/lint.js"></script>
-    <script src="../../lib/codemirror-lint-eslint/eslint-lint.js"></script>
+  	<!--link rel="stylesheet" href="../../lib/codemirror/addon/lint/lint.css"-->
+    <!--script src="../../lib/linters/eslint.js"></script-->
+    <!--script src="../../lib/linters/csslint.js"></script-->
+    <!--script src="../../lib/codemirror/addon/lint/lint.js"></script-->
+    <!--script src="../../lib/codemirror-lint-eslint/eslint-lint.js"></script-->
     <!-- script src="../../lib/codemirror/addon/lint/css-lint.js"></script--> 
   	
   	<!-- Sense  -->
@@ -73,9 +73,6 @@
     <textarea id="code" name="code"></textarea>
     <script>
         (function () {
-            // Add the reference to the linter
-            window.eslint = window.parent.eslint;
-
             var contentTypeByFileExt = {
                 html : 'askiascript/html',
                 htm  : 'askiascript/html',

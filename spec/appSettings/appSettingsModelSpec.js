@@ -36,6 +36,9 @@ describe('appSettings', function () {
         spies.fs.statSync.andCallFake(function (file) {
             var value = (/file/.test(file));
             return {
+                isDirectory : function () {
+                    return true;
+                },
                 isFile: function () {
                     return value;
                 }
@@ -132,6 +135,23 @@ describe('appSettings', function () {
                 result = data;
             });
             expect(result).toEqual([{path : 'A'}, {path : 'B'}]);
+        });
+
+        it('should include only existing paths in the return array', function () {
+            var result;
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '[{"path" : "A"}, {"path" : "B"}]');
+            });
+            spies.fs.statSync.andCallFake(function (dir) {
+                if (dir === 'A') {
+                    throw new Error('no such file or directory');
+                }
+                return fakeStats;
+            });
+            appSettings.getMostRecentlyUsed(function (err, data) {
+                result = data;
+            });
+            expect(result).toEqual([{path : 'B'}]);
         });
     });
 

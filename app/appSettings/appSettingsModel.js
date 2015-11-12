@@ -99,8 +99,24 @@ AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed(cal
            return;
         }
 
-        var mru = data ? JSON.parse(data) : [];
-        self._cache.mru = mru || [];
+        var directories = data ? JSON.parse(data) : [];
+        var stat;
+        var mru = [];
+        var i, l;
+        for (i = 0, l = directories.length; i < l; i += 1) {
+            try {
+                stat = fs.statSync(directories[i].path);
+                if (stat.isDirectory()) {
+                    mru.push(directories[i]);
+                }
+            } catch (ex) {
+                /* Do nothing */
+            }
+        }
+
+        // Push in cache
+        self._cache.mru = mru;
+        // Return a copy
         callback(null, self._cache.mru.slice());
     });
 };
