@@ -17,14 +17,14 @@ Setup
 
 #### Installer
 
-Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases) archive.
+Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/latest) archive.
 
-1.	After downloading the release, unzip `ADXStudio_Alpha1_0_0x64.zip` or `ADXStudio_Alpha1_0_0x86.zip` depending on your OS environment.
-2.	Open the `ADXStudio_Alpha1_0_0x64` (or `ADXStudio_Alpha1_0_0x86.zip`) folder.
-3.	Double-click the `ADXStudioAlpha1_0_0.exe` executable.
+1.	After downloading the release, unzip `ADXStudio-win32-x64.zip` or `ADXStudio-win32-ia32.zip` depending on your OS environment.
+2.	Open the `ADXStudio-win32-x64` (or `ADXStudio-win32-ia32.zip`) folder.
+3.	Double-click the `ADXStudio.exe` executable.
 4.	Try to create your ADC with the ADCTemplate (project automatically open), or create a new Project.
 
-Note: do not tamper with any other components of `ADXStudio_Alpha1_0_0x64` folder.
+*Note: do not tamper with any other components of `ADXStudio-win32-x64` / `ADXStudio-win32-ia32` folder.*
 
 #### Manual
 
