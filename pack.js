@@ -2,7 +2,7 @@ var path = require("path");
 var fs = require('fs');
 var packager = require('electron-packager');
 
-var outputPath = path.join(process.cwd(), "releases/0.0.0.1alpha/");
+var outputPath = path.join(process.cwd(), "releases/0.0.0.1/");
 var opts = {
     "dir"  : process.cwd(),
     "name" : "ADXStudio",
@@ -31,16 +31,5 @@ packager(opts, function done (err, appPath) {
         console.log(err);
         return;
     }
-
-    console.log("Renaming the 32bit version of the AskCmn for the ia32 output...");
-    var adxshellPath = path.join(outputPath, "ADXStudio-win32-ia32/resources/app/node_modules/adcutil/lib/adxshell/");
-    fs.unlink(path.join(adxshellPath, 'AskCmn.dll'), function () {
-        fs.rename(path.join(adxshellPath, 'AskCmn32.dll') , path.join(adxshellPath, 'AskCmn.dll'));
-    });
-    fs.unlink(path.join(adxshellPath, 'AskCmn.pdb'), function (err) {
-        if (!err) {
-            fs.rename(path.join(adxshellPath, 'AskCmn32.pdb'), path.join(adxshellPath, 'AskCmn.pdb'));
-        }
-    });
     console.log("Package done in `" + appPath + "`");
 });

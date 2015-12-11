@@ -74,7 +74,6 @@ function serveADCOutput(err, request, response, fixtures) {
     if (properties) {
         arg.properties = properties;
     }
-
     adc.show(arg, function (err, output) {
         if (err) {
             throwError(err, response);
