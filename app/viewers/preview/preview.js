@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     var  askia =  window.askia,
         resizer = new askia.Resizer({
-            element: document.getElementById('preview'),
-            direction: 'vertical'
+            element: document.getElementById('grid'),
+            direction: 'vertical',
+            revert : true
         }),
         tab = viewer.currentTab,
         wsConnection =  new WebSocket("ws://localhost:" + tab.ports.ws);
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         FormBuilder.instance = this;
         this.grid    = document.getElementById("grid");
         this.iframe  = document.getElementById("preview_frame");
+        this.addressURL = document.getElementById("addressURL");
         this.listen(); // Only one listener
     }
 
@@ -312,12 +314,23 @@ document.addEventListener('DOMContentLoaded', function () {
         if (params.length) {
             url += '?' + params.join('&')
         }
-        console.log('Set iframe src: ' + url);
         this.iframe.src = url ;
+        this.addressURL.value = url;
 
         return this;
     };
 
+    document.getElementById('openPreview').addEventListener('click', function () {
+        var builder = FormBuilder.getInstance();
+        var url = builder.addressURL.value;
+        if (url) {
+            viewer.tabs.openExternal(url);
+        }
+    });
+
+    document.getElementById('reloadPreview').addEventListener('click', function () {
+        FormBuilder.getInstance().reloadPreview();
+    });
 
     resizer.start();
     viewer.fireReady();

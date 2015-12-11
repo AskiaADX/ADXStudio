@@ -311,6 +311,14 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     background-color: #21252B;
 }
 
+/* ========================================
+   Preview Part
+   ======================================== */
+
+#addressURL[readonly] {
+    color : #fff;
+}
+
 
 /* ========================================
    Viewer Part - Project Settings
