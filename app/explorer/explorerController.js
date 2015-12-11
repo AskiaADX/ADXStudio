@@ -1,10 +1,11 @@
-var app = require('app');  // Module to control application life.
-var ipc = require('ipc');
-var explorer = require('./explorerModel.js');
-var appSettings = require('../appSettings/appSettingsModel.js');
-var path = require('path');
-var ADC = require('adcutil').ADC;
-var explorerView;
+const electron = require('electron');
+const app = electron.app;
+const ipc = electron.ipcMain;
+const explorer = require('./explorerModel.js');
+const appSettings = require('../appSettings/appSettingsModel.js');
+const path = require('path');
+const ADC = require('adcutil').ADC;
+var  explorerView;
 
 /**
  * Open the root folder

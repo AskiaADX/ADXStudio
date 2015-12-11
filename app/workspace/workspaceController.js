@@ -1,11 +1,12 @@
-var app = require('app');
-var ipc = require('ipc');
-var path = require('path');
-var fs = require('fs');
-var dialog = require('dialog');
-var ADCConfigurator = require('adcutil').Configurator;
-var workspace = require('./workspaceModel.js');
-var servers   = require('../modules/servers/adxServers.js');
+const electron = require('electron');
+const app = electron.app;
+const ipc = electron.ipcMain;
+const path = require('path');
+const fs = require('fs');
+const dialog = electron.dialog;
+const ADCConfigurator = require('adcutil').Configurator;
+const workspace = require('./workspaceModel.js');
+const servers   = require('../modules/servers/adxServers.js');
 var workspaceView;
 
 /**

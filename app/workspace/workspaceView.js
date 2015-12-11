@@ -288,11 +288,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     "use strict";
 
-    var ipc  = require('ipc'),
-        remote	= require('remote'),
-        Menu	= remote.require('menu'),
-        MenuItem = remote.require('menu-item'),
-        shell	= remote.require('shell'),
+    var electron = require('electron'),
+        ipc  = electron.ipcRenderer,
+        remote	= electron.remote,
+        Menu	= remote.Menu,
+        MenuItem = remote.MenuItem,
+        shell	= remote.shell,
         tabs = window.tabs,
         askia =  window.askia,
         resizer = new askia.Resizer({
@@ -1190,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* --- LISTEN EVENTS EMIT FROM THE SERVER SIDE CONTROLLER  --- */
 
-    ipc.on('workspace-create-tab', function (err, tab, pane) {
+    ipc.on('workspace-create-tab', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;
@@ -1198,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', function () {
         addTab(tab, pane);
     });
 
-    ipc.on('workspace-focus-tab', function (err, tab, pane) {
+    ipc.on('workspace-focus-tab', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;
@@ -1212,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    ipc.on('workspace-create-and-focus-tab', function (err, tab, pane) {
+    ipc.on('workspace-create-and-focus-tab', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;
@@ -1226,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ipc.on('workspace-save-all-files', saveAll);
 
-    ipc.on('workspace-remove-tab', function (err, tab, pane) {
+    ipc.on('workspace-remove-tab', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;
@@ -1234,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', function () {
         removeTab(tab, pane);
     });
 
-    ipc.on('workspace-remove-tabs', function (err, removedTabs) {
+    ipc.on('workspace-remove-tabs', function (event, err, removedTabs) {
         if (err) {
             console.warn(err);
             return;
@@ -1246,7 +1247,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
-    ipc.on('workspace-change-tab-location', function (err, tab, pane) {
+    ipc.on('workspace-change-tab-location', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;
@@ -1254,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', function () {
         moveTab(tab, pane);
     });
 
-    ipc.on('workspace-update-tab', function (err, tab, pane) {
+    ipc.on('workspace-update-tab', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;
@@ -1262,7 +1263,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateTab(tab, pane);
     });
 
-    ipc.on('workspace-reload-tab', function (err, tab, pane) {
+    ipc.on('workspace-reload-tab', function (event, err, tab, pane) {
         if (err) {
             console.warn(err);
             return;

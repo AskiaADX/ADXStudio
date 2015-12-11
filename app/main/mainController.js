@@ -1,14 +1,15 @@
-var app = require('app');  // Module to control application life.
-var util = require('util');
-var ipc = require('ipc');
-var appSettings = require('../appSettings/appSettingsModel.js');
-var ADC = require('adcutil').ADC;
-var fs = require("fs");
-var path = require("path");
-var uuid = require('node-uuid');
+const electron = require('electron');
+const app = electron.app;
+const util = require('util');
+const ipc = electron.ipcMain;
+const appSettings = require('../appSettings/appSettingsModel.js');
+const ADC = require('adcutil').ADC;
+const fs = require("fs");
+const path = require("path");
+const uuid = require('node-uuid');
 var mainView;
 
-var workspaceController = require('../workspace/workspaceController.js');
+const workspaceController = require('../workspace/workspaceController.js');
 require('../explorer/explorerController.js');
 require('./menuController.js');
 
@@ -110,7 +111,7 @@ function newProject() {
                 ok : "Create project"
             },
             adcTemplates : templates,
-            defaultRootDir : path.join(process.env.USERPROFILE, 'Documents')
+            defaultRootDir : app.getPath('documents')
         }, 'main-create-new-project');
     });
 }

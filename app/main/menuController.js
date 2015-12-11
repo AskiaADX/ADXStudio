@@ -1,12 +1,13 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
-var menu = require('menu');
-var dialog = require('dialog');
-var shell = require('shell');
-var fs = require('fs');
-var path = require('path');
-var ADC = require('adcutil').ADC;
-var appSettings = require('../appSettings/appSettingsModel.js');
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const Menu = electron.Menu;
+const dialog = electron.dialog;
+const shell = electron.shell;
+const fs = require('fs');
+const path = require('path');
+const ADC = require('adcutil').ADC;
+const appSettings = require('../appSettings/appSettingsModel.js');
 
 // Default Menu of the app.
 app.once('ready', function createAppMenu() {
@@ -315,7 +316,7 @@ app.once('ready', function createAppMenu() {
             }
         }
 
-        var menuTemplate = menu.buildFromTemplate(template);
-        menu.setApplicationMenu(menuTemplate);
+        var menuTemplate = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menuTemplate);
     });
 });

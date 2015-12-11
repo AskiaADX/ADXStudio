@@ -1,9 +1,10 @@
 // the object map is created to give unique id to each item
-var remote 		= require('remote');
-var Menu 		= remote.require('menu');
-var MenuItem 	= remote.require('menu-item');
-var ipc 		= require('ipc');
-var shell   	= require('shell');
+var electron    = require('electron');
+var remote 		= electron.remote;
+var Menu 		= remote.Menu;
+var MenuItem 	= remote.MenuItem;
+var ipc 		= electron.ipcRenderer;
+var shell   	= electron.shell;
 
 function selectItem() {
     var divGlobal = document.querySelector('.selected');
@@ -120,7 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {Array} files files or folder inside rootPath.
      * @param {Boolean} isRoot indicate if e are on root.
      */
-    ipc.on('explorer-expand-folder', function (err, path, files, isRoot, rootName) {
+    ipc.on('explorer-expand-folder', function (event, err, path, files, isRoot, rootName) {
+        console.log(arguments);
         var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
         document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
         var deep = parseInt(root.getAttribute('data-deep'), 10);

@@ -8,8 +8,9 @@
 
     var modalDialog     = askia.modalDialog,
         autoIncrement   = 0,
-        remote          = require('remote'),
-        openDialog      = remote.require('dialog');
+        electron        = require('electron'),
+        remote          = electron.remote,
+        openDialog      = remote.dialog;
 
     /**
      * Show open directory dialog box

@@ -1,13 +1,14 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
-var appSettings = require('./appSettings/appSettingsModel.js');
-var ADC = require('adcutil').ADC;
-var shell =  require('shell');
+const electron = require('electron');
+const app = electron.app;  // Module to control application life.
+const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
+const appSettings = require('./appSettings/appSettingsModel.js');
+const ADC = require('adcutil').ADC;
+const shell =  electron.shell;
 
 require('./main/mainController.js');
 
 // Report crashes to our server.
-require('crash-reporter').start();
+electron.crashReporter.start();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -46,7 +47,7 @@ app.on('ready', function loadMainWindow() {
         global.mainWindow.maximize();
 
         // and load the index.html of the app.
-        global.mainWindow.loadUrl('file://' + __dirname + '/main/index.html');
+        global.mainWindow.loadURL('file://' + __dirname + '/main/index.html');
 
         // redirect all new window url to the default browser
         global.mainWindow.webContents.on('new-window', function onNewWindow(event, url) {

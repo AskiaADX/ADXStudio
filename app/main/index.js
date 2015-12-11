@@ -1,6 +1,7 @@
 (function () {
-    var ipc = require('ipc'),
-        shell = require('shell'),
+    var electron = require('electron'),
+        ipc = electron.ipcRenderer,
+        shell = electron.shell,
         exp = document.getElementById("explorer"),
         wks = document.getElementById("workspace"),
         askia = window.askia,
@@ -55,7 +56,7 @@
     /**
      * Show modal dialog from the controller
      */
-    ipc.on('show-modal-dialog', function (options, callbackEventName) {
+    ipc.on('show-modal-dialog', function (event, options, callbackEventName) {
         var args = Array.prototype.slice.call(arguments, 1, arguments.length); // Remove the first args
         askia.modalDialog.show(options, function(result) {
             args.push(result.button);
@@ -131,7 +132,7 @@
          * Write in the output
          * @param {String} text Text to write
          */
-        ipc.on("output-write", function (text, type) {
+        ipc.on("output-write", function (event, text, type) {
             openStatusBar("panel_output"); // Make sure it's open
 
             var el = document.createElement("p");
