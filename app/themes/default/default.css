@@ -316,7 +316,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 
 #addressURL[readonly] {
-    color : #fff;
+    color : #BBB;
 }
 
 

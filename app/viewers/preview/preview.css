@@ -21,6 +21,18 @@ h3 {
 
 #addressURL {
     flex: 1;
+    background-color: #343A44;
+    border-left: none;
+}
+
+#reloadPreview, #openPreview {
+    background-color: #21252B;
+    color: #ddd;
+    border-color: #151515;
+    border-width: 1px 1px 1px 0 !important;
+    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset;
+    cursor: pointer;
+    outline: none;
 }
 
 #main {
