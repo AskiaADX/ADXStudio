@@ -268,6 +268,15 @@ function saveOrNotBeforeQuit(event, button) {
     }
 }
 
+/**
+ * Open or close the dev tools of the specified view
+ * @param event
+ * @param {String} view Name of the webview from where to toggle the dev tools
+ */
+function toggleDevTools(view) {
+    mainView.send('toggle-dev-tools', view);
+}
+
 
 /**
  * Fire when the main window is ready
@@ -295,6 +304,9 @@ ipc.on('main-ready', function (event) {
     // Build project
     app.removeListener('menu-build', buildProject);
     app.on('menu-build', buildProject);
+
+    app.removeListener('menu-dev-tools', toggleDevTools);
+    app.on('menu-dev-tools', toggleDevTools);
 
     // About ADXStudio
     app.removeListener('menu-about-adxstudio', showAbout);

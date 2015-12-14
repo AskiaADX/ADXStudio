@@ -14,9 +14,10 @@ app.once('ready', function createAppMenu() {
 
 
     appSettings.getMostRecentlyUsed(function (err, mru){
-        var template,
-            menuFileIndex = 0,
-            menuOpenRecentIndex = 4;
+        const menuFileIndex = 0;
+        const menuOpenRecentIndex = 4;
+
+        var template;
 
         function createOpenRecentMenu(mruItem) {
             return {
@@ -147,6 +148,20 @@ app.once('ready', function createAppMenu() {
         function previewClick() {
             app.emit("menu-preview");
         }
+
+        /**
+         * Open the dev tools of the explorer view
+         */
+        function devToolsExplorerClick() {
+            app.emit("menu-dev-tools", 'explorer');
+        }
+
+        /**
+         * Open the dev tools of the workspace view
+         */
+        function devToolsWorkspaceClick() {
+            app.emit("menu-dev-tools", 'workspace');
+        }
         
         /**
          * About ADX Studio
@@ -258,14 +273,29 @@ app.once('ready', function createAppMenu() {
                             }
                         },
                         {
-                            label: 'Toggle &Developer Tools',
-                            accelerator: 'Alt+Ctrl+I',
-                            click: function() {
-                                var focusedWindow = BrowserWindow.getFocusedWindow();
-                                if (focusedWindow) {
-                                    focusedWindow.toggleDevTools();
+                            label : '&Developer Tools',
+                            submenu : [
+                                {
+                                    label: '&Main window',
+                                    accelerator: 'Alt+Ctrl+I',
+                                    click: function() {
+                                        var focusedWindow = BrowserWindow.getFocusedWindow();
+                                        if (focusedWindow) {
+                                            focusedWindow.toggleDevTools();
+                                        }
+                                    }
+                                },
+                                {
+                                    label : '&Explorer view',
+                                    accelerator: 'Alt+Ctrl+E',
+                                    click : devToolsExplorerClick
+                                },
+                                {
+                                    label : '&Workspace view',
+                                    accelerator: 'Alt+Ctrl+W',
+                                    click : devToolsWorkspaceClick
                                 }
-                            }
+                            ]
                         }
                     ]
                 },

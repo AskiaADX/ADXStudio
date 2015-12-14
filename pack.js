@@ -2,13 +2,13 @@ var path = require("path");
 var fs = require('fs');
 var packager = require('electron-packager');
 
-var outputPath = path.join(process.cwd(), "releases/0.0.0.1/");
+var outputPath = path.join(process.cwd(), "releases/0.0.0.2/");
 var opts = {
     "dir"  : process.cwd(),
     "name" : "ADXStudio",
     "platform" : "win32",
     "arch" : "all",
-    "version" : "0.34.1",
+    "version" : "0.36.0",
     "out" : outputPath,
     "icon" : path.join(process.cwd(), "app/adx-studio_icon.ico"),
     "overwrite" : true,
@@ -18,8 +18,8 @@ var opts = {
         "LegalCopyright" : "Copyright (c) Askia 2015",
         "FileDescription" : "Askia Design eXtension - Studio",
         "OriginalFilename" : "ADXStudio",
-        "FileVersion" : "0.0.0.1",
-        "ProductVersion" : "0.0.0.1",
+        "FileVersion" : "0.0.0.2",
+        "ProductVersion" : "0.0.0.2",
         "ProductName" : "ADXStudio",
         "InternalName" : "ADXStudio"
     }

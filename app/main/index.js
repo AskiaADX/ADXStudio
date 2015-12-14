@@ -25,19 +25,17 @@
     }
 
     // Dev tools of the webview
-    exp.addEventListener("dom-ready", function () {
+    exp.addEventListener("dom-ready", function onExplorerDomReady() {
         onWebViewLoaded();
-        // exp.openDevTools();
     });
-    wks.addEventListener("dom-ready", function () {
+    wks.addEventListener("dom-ready", function onWorkspaceDomReady() {
         onWebViewLoaded();
-        // wks.openDevTools();
     });
 
     /**
      * Show modal dialog from webview
      */
-    exp.addEventListener('ipc-message', function (event) {
+    exp.addEventListener('ipc-message', function listenExplorerMessage(event) {
         if (event.channel === 'show-modal-dialog') {
             askia.modalDialog.show(event.args[0], function(result) {
                 if (result.button === 'ok' || result.button === 'yes') {
@@ -49,14 +47,13 @@
                 }
             });
         }
-
     });
 
 
     /**
      * Show modal dialog from the controller
      */
-    ipc.on('show-modal-dialog', function (event, options, callbackEventName) {
+    ipc.on('show-modal-dialog', function showModalDialog(event, options, callbackEventName) {
         var args = Array.prototype.slice.call(arguments, 1, arguments.length); // Remove the first args
         askia.modalDialog.show(options, function(result) {
             args.push(result.button);
@@ -70,8 +67,24 @@
     /**
      * Close the modal dialog from the controller
      */
-    ipc.on('close-modal-dialog', function () {
+    ipc.on('close-modal-dialog', function closeModalDialog() {
         askia.modalDialog.close();
+    });
+
+    /**
+     * Toggle the dev tools on the specified view
+     * @param event
+     * @param {String} view View to toggle
+     */
+    ipc.on('toggle-dev-tools', function toggleDevTools(event, view) {
+        switch (view) {
+            case 'explorer':
+                exp.isDevToolsOpened() ? exp.closeDevTools() : exp.openDevTools();
+                break;
+            case 'workspace':
+                wks.isDevToolsOpened() ? wks.closeDevTools() : wks.openDevTools();
+                break;
+        }
     });
 
 
