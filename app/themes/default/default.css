@@ -269,7 +269,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background      : #21252B;
+    background: #21252B;
 }
 
 .tab.active {

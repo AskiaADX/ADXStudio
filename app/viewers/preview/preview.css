@@ -20,10 +20,10 @@ h3 {
 }
 
 #addressURL {
-    flex: 1;
+    flex            : 1;
     background-color: #343A44;
-    border-top: 1px solid #151515;
-    border-left: none;
+    border-top      : 1px solid #151515;
+    border-left     : none;
 }
 
 #addressURL:focus {
@@ -31,25 +31,30 @@ h3 {
 }
 
 #reloadPreview, #openPreview {
+    padding         : 1px 17px;
     background-color: #21252B;
-    color: #ddd;
-    border-color: #151515;
-    border-width: 1px 1px 1px 0 !important;
-    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset;
-    cursor: pointer;
-    outline: none;
-    transition: color ease-in .2s, background-color ease-in .2s;
+    color           : #DDD;
+    border-color    : #151515;
+    border-width    : 1px 1px 1px 0 !important;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.1) inset;
+    cursor          : pointer;
+    outline         : none;
+    transition      : color ease-in .2s, background-color ease-in .2s;
+}
+
+#reloadPreview {
+    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, -1px 0 0 rgba(255,255,255,.1) inset;
 }
 
 #reloadPreview:hover, #openPreview:hover {
-    color: #FFF;
+    color           : #FFF;
     background-color: #31363E;
 }
 
 #reloadPreview:active, #openPreview:active {
-    color: #FFF;
+    color           : #FFF;
     background-color: #21252B;
-    box-shadow: 0px 0px 8px 0px rgba(0,0,0,.5) inset;
+    box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
 #main {
