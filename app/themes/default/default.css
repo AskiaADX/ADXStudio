@@ -270,7 +270,6 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll, .tab-end {
     background      : #21252B;
-    border-bottom   : 1px solid #111;
 }
 
 .tab.active {

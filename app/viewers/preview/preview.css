@@ -22,7 +22,11 @@ h3 {
 #addressURL {
     flex: 1;
     background-color: #343A44;
-    border-left: none;
+    border-top: 1px solid #151515;
+}
+
+#addressURL:focus {
+    border: 1px solid #151515;
 }
 
 #reloadPreview, #openPreview {
@@ -33,6 +37,18 @@ h3 {
     box-shadow: 0 1px 0 rgba(255,255,255,.1) inset;
     cursor: pointer;
     outline: none;
+    transition: color ease-in .2s, background-color ease-in .2s;
+}
+
+#reloadPreview:hover, #openPreview:hover {
+    color: #FFF;
+    background-color: #31363E;
+}
+
+#reloadPreview:active, #openPreview:active {
+    color: #FFF;
+    background-color: #21252B;
+    box-shadow: 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
 #main {
