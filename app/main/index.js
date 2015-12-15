@@ -54,7 +54,7 @@
      * Show modal dialog from the controller
      */
     ipc.on('show-modal-dialog', function showModalDialog(event, options, callbackEventName) {
-        var args = Array.prototype.slice.call(arguments, 1, arguments.length); // Remove the first args
+        var args = Array.prototype.slice.call(arguments, 2, arguments.length); // Remove the first args
         askia.modalDialog.show(options, function(result) {
             args.push(result.button);
             if (result.value) {

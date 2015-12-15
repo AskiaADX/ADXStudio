@@ -77,6 +77,7 @@ function renameFile(event, file, newName) {
  * @param {Array} files Files or folders in the directory
  */
 function onChange(dir, files) {
+    console.log('on change', dir, files);
     var rootPath = explorer.getRootPath(),
         rg = new RegExp('^' + rootPath.replace(/\\/g, '\\\\') + '\\\\?$', 'i');
 

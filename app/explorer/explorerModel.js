@@ -60,7 +60,7 @@ Explorer.prototype.initWatcher = function initWatcher() {
         this._watcher.close();
     }
 
-    this._watcher = watcher.create(this._root + '\\'); // <- The trailing forward slash are needed at the end!!!
+    this._watcher = watcher.create(this._root + '\\**'); // <- The trailing forward slash are needed at the end!!!
 
     var self = this;
     /**
@@ -75,7 +75,7 @@ Explorer.prototype.initWatcher = function initWatcher() {
             if (err) {
                 return;
             }
-            module.exports.emit('change', pathChanged, files);
+            self.emit('change', pathChanged, files);
         });
     }
 
