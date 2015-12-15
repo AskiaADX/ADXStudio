@@ -23,6 +23,7 @@ h3 {
     flex: 1;
     background-color: #343A44;
     border-top: 1px solid #151515;
+    border-left: none;
 }
 
 #addressURL:focus {
@@ -54,7 +55,6 @@ h3 {
 #main {
     display         : flex;
     flex-direction  : column;
-    border-left     : 4px solid #111;
     position        : relative;
     height          : 100%;
 }
