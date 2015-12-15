@@ -2,7 +2,7 @@ var path = require("path");
 var fs = require('fs');
 var packager = require('electron-packager');
 
-var outputPath = path.join(process.cwd(), "releases/0.0.0.2/");
+var outputPath = path.join(process.cwd(), "releases/0.0.0.3/");
 var opts = {
     "dir"  : process.cwd(),
     "name" : "ADXStudio",
@@ -15,11 +15,11 @@ var opts = {
     "ignore" : /(\.adxstudio|docs|tmp|\.git|\.idea|releases|jasmine-node|pack\.js)/i,
     "version-string" : {
         "CompanyName" : "Askia SAS",
-        "LegalCopyright" : "Copyright (c) Askia 2015",
+        "LegalCopyright" : "Copyright (c) Askia 2016",
         "FileDescription" : "Askia Design eXtension - Studio",
         "OriginalFilename" : "ADXStudio",
-        "FileVersion" : "0.0.0.2",
-        "ProductVersion" : "0.0.0.2",
+        "FileVersion" : "0.0.0.3",
+        "ProductVersion" : "0.0.0.3",
         "ProductName" : "ADXStudio",
         "InternalName" : "ADXStudio"
     }
