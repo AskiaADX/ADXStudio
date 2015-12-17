@@ -97,6 +97,7 @@ describe('explorer', function () {
         });
     });
 
+
     describe('#setRootPath', function () {
         it("Should be a function", function () {
             expect(typeof explorer.setRootPath).toBe('function');
@@ -235,7 +236,7 @@ describe('explorer', function () {
                 explorer.load('root', true, function () {
                     var spy = spyOn(explorer._watcher, 'add');
                     explorer.load('root/subfolder', function () {
-                        expect(spy).toHaveBeenCalledWith(pathHelper.resolve('root/subfolder') + '\\');
+                        expect(spy).toHaveBeenCalledWith(pathHelper.resolve('root/subfolder'));
                         done();
                     });
                 });
@@ -325,7 +326,7 @@ describe('explorer', function () {
 
                 explorer.on('change', onchange);
                 explorer.load('path', true, function () {
-                    explorer._watcher.emit('all', null, 'path');
+                    explorer._watcher.emit('change', null, 'path');
                 });
             });
 

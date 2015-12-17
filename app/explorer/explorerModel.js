@@ -1,9 +1,11 @@
-var fs = require('fs');
-var fsExtra = require('fs.extra');
-var watcher = require('../modules/watcher/watcher.js');
-var path = require("path");
-var util = require("util");
-var EventEmitter = require("events").EventEmitter;
+"use strict";
+
+const fs = require('fs');
+const fsExtra = require('fs.extra');
+const watcher = require('../modules/watcher/watcher.js');
+const path = require("path");
+const util = require("util");
+const EventEmitter = require("events").EventEmitter;
 
 
 /**
@@ -60,9 +62,9 @@ Explorer.prototype.initWatcher = function initWatcher() {
         this._watcher.close();
     }
 
-    this._watcher = watcher.create(this._root + '\\**'); // <- The trailing forward slash are needed at the end!!!
+    this._watcher = watcher.create(this._root);
 
-    var self = this;
+    const self = this;
     /**
      * Event trigger when the structure of the directory has been changed
      * @param {String} event Name of event
@@ -79,7 +81,7 @@ Explorer.prototype.initWatcher = function initWatcher() {
         });
     }
 
-    this._watcher.on('all', onRootChange);
+    this._watcher.on('change', onRootChange);
 };
 
 
@@ -121,9 +123,8 @@ Explorer.prototype.load = function (dir, isRoot, callback) {
     if (isRoot) {
         this.setRootPath(dir);
     } else {
-        if (this._watcher && this._watcher.add && this._watcher.remove) {
-            this._watcher.remove(path.resolve(dir)  + '\\'); // Remove it first to avoid crash
-            this._watcher.add(path.resolve(dir)  + '\\'); // <- The trailing forward slash are needed at the end!!!
+        if (this._watcher && this._watcher.add) {
+            this._watcher.add(path.resolve(dir));
         }
     }
 
@@ -146,10 +147,9 @@ Explorer.prototype.load = function (dir, isRoot, callback) {
             }
 
             var stats;
-            var finalFiles = [];
-            var i, l = files.length;
+            const finalFiles = [];
 
-            for (i = 0; i < l; i++) {
+            for (let i = 0, l = files.length; i < l; i++) {
                 try {
                     stats = fs.statSync(path.join(dir, files[i]));
                 }
@@ -217,8 +217,6 @@ Explorer.prototype.remove = function(pathToRemove, callback) {
     if (!pathToRemove && !callback) {
         throw new Error('Invalid argument');
     }
-
-    var parentDir = path.join(pathToRemove, '..');
 
     callback = callback || function () {};
 

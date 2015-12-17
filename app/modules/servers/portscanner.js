@@ -1,3 +1,5 @@
+"use strict";
+
 var net = require('net');
 var host = 'localhost';
 var start = 3500;

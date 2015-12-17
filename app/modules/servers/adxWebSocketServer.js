@@ -1,17 +1,19 @@
-var ws      = require("nodejs-websocket");
-var path    = require('path');
-var serverUtil  = require('./adxServerUtil.js');
-var getFixtures = serverUtil.getFixtures;
-var Server      = serverUtil.Server;
-var watcher = require('../watcher/watcher.js');
+"use strict";
 
-var that = {};
+const ws      = require("nodejs-websocket");
+const path    = require('path');
+const serverUtil  = require('./adxServerUtil.js');
+const getFixtures = serverUtil.getFixtures;
+const Server      = serverUtil.Server;
+const watcher = require('../watcher/watcher.js');
+
+const that = {};
 
 /**
  * When the resources folder or the config.xml has changed
  */
 function onADCResourcesChanged(eventName, filepath) {
-    var adc = global.project.adc;
+    const adc = global.project.adc;
 
     // For the Config xml: reload the config
     if (filepath.toLowerCase() === path.join(adc.path, 'config.xml').toLowerCase()) {
@@ -31,7 +33,7 @@ function onADCResourcesChanged(eventName, filepath) {
  * Watch the ADC
  */
 function watchADC() {
-    var adc = global.project.adc;
+    const adc = global.project.adc;
     if (that.watched === adc.path) {
         return;
     }
@@ -39,10 +41,10 @@ function watchADC() {
         that.watcher.close();
     }
     that.watched = adc.path;
-    that.watcher = watcher.create(path.join(adc.path, 'Resources/**/*'));
-    that.watcher.add(path.join(adc.path, 'tests/**/*'));
+    that.watcher = watcher.create(path.join(adc.path, 'resources'), {recursive : true});
+    that.watcher.add(path.join(adc.path, 'tests'), {recursive : true});
     that.watcher.add(path.join(adc.path, 'config.xml'));
-    that.watcher.on('all', onADCResourcesChanged);
+    that.watcher.on('change', onADCResourcesChanged);
 }
 
 /**
@@ -51,7 +53,7 @@ function watchADC() {
  * @param {Object} connection WS connection
  */
 function throwError(err, connection) {
-    var str = '500 Internal server error\n';
+    let str = '500 Internal server error\n';
     if (err) {
         str +=  err.message + '\n';
     }
@@ -67,8 +69,8 @@ function throwError(err, connection) {
  * @param {Object} [fixtures]
  */
 function createMessage(action, fixtures) {
-    var adc = global.project.adc;
-    var obj = {
+    const adc = global.project.adc;
+    const obj = {
         error : 0,
         action : action || 'getConfig',
         message : {
@@ -91,7 +93,7 @@ function serveADCConfig(err, connection, fixtures) {
         return;
     }
 
-    var message = createMessage('getConfig', fixtures);
+    const message = createMessage('getConfig', fixtures);
     connection.sendText(message);
     watchADC();
 }
@@ -104,8 +106,8 @@ function reply(connection) {
 
     connection.on("text", function onReceiveMessage(message) {
         // Always reload to obtain the up-to-date info
-        var adc = global.project.adc;
-        var query = JSON.parse(message);
+        const adc = global.project.adc;
+        const query = JSON.parse(message);
         adc.load(function (err) {
             if (query.action === 'getConfig') {
                 getFixtures(function (fixtures) {
@@ -115,7 +117,7 @@ function reply(connection) {
         });
     });
     connection.on("close", function () {
-        var ws = exports.server.innerServer;
+        const ws = exports.server.innerServer;
         if (!ws.connections.length) {
             // Close the web-socket server
             // and close the watcher
@@ -134,7 +136,7 @@ function reply(connection) {
  * @param {String} message Message to broadcast
  */
 function broadcast(message) {
-    var ws = exports.server.innerServer;
+    const ws = exports.server.innerServer;
     ws.connections.forEach(function (connection) {
         connection.sendText(message)
     });

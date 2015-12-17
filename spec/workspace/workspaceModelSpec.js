@@ -840,80 +840,67 @@ describe("workspace", function () {
             expect(typeof workspace.emit).toBe('function');
         });
 
-        ['changed', 'renamed', 'deleted'].forEach(function (key) {
-            describe('@file-' + key, function () {
+        describe('@file-changed', function () {
 
-                it('should be triggered when the watcher trigger `' + key + '`.', function () {
-                    runSync(function (done) {
+            it('should be triggered when the watcher trigger `changed`.', function () {
+                runSync(function (done) {
 
-                        workspace.on('file-' + key, function () {
-                            expect(true).toBe(true);
-                            done();
-                        });
+                    workspace.on('file-changed', function () {
+                        expect(true).toBe(true);
+                        done();
+                    });
 
-                        workspace.createTab({
-                            path : 'path/of/file'
-                        }, function(err, tab) {
-                            tab.emit('loaded');
-                            var args = [key, nodePath.resolve('path/of/file')];
-                            if (key === 'renamed') {
-                                args.push(args[1]);
-                                args[1] = 'new/path';
-                            }
-                            fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
-                        });
+                    workspace.createTab({
+                        path : 'path/of/file'
+                    }, function(err, tab) {
+                        tab.emit('loaded');
+                        var args = ['change', null, nodePath.resolve('path/of/file')];
+                        fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
                     });
                 });
-
-                it('should be triggered with the tab as a first arg', function () {
-                    runSync(function (done) {
-                        var tabId;
-
-                        workspace.on('file-' + key, function (tab) {
-                            expect(tab.id).toBe(tabId);
-                            done();
-                        });
-
-                        workspace.createTab({
-                            path : 'path/of/file'
-                        }, function(err, tab) {
-                            tabId = tab.id;
-                            tab.emit('loaded');
-                            var args = [key, nodePath.resolve('path/of/file')];
-                            if (key === 'renamed') {
-                                args.push(args[1]);
-                                args[1] = 'new/path';
-                            }
-                            fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
-                        });
-                    });
-                });
-
-                it('should be triggered with the pane as a second arg', function () {
-                    runSync(function (done) {
-                        var currentPane;
-
-                        workspace.on('file-' + key, function (tab, pane) {
-                            expect(currentPane).toBe(pane);
-                            done();
-                        });
-
-                        workspace.createTab({
-                            path : 'path/of/file'
-                        }, function(err, tab, pane) {
-                            currentPane = pane;
-                            tab.emit('loaded');
-                            var args = [key, nodePath.resolve('path/of/file')];
-                            if (key === 'renamed') {
-                                args.push(args[1]);
-                                args[1] = 'new/path';
-                            }
-                            fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
-                        });
-                    });
-                });
-
             });
+
+
+            it('should be triggered with the tab as a first arg', function () {
+                runSync(function (done) {
+                    var tabId;
+
+                    workspace.on('file-changed', function (tab) {
+                        expect(tab.id).toBe(tabId);
+                        done();
+                    });
+
+                    workspace.createTab({
+                        path : 'path/of/file'
+                    }, function(err, tab) {
+                        tabId = tab.id;
+                        tab.emit('loaded');
+                        var args = ['change', null, nodePath.resolve('path/of/file')];
+                        fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                    });
+                });
+            });
+
+            it('should be triggered with the pane as a second arg', function () {
+                runSync(function (done) {
+                    var currentPane;
+
+                    workspace.on('file-changed', function (tab, pane) {
+                        expect(currentPane).toBe(pane);
+                        done();
+                    });
+
+                    workspace.createTab({
+                        path : 'path/of/file'
+                    }, function(err, tab, pane) {
+                        currentPane = pane;
+                        tab.emit('loaded');
+                        var args = ['change', null, nodePath.resolve('path/of/file')];
+                        fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                    });
+                });
+            });
+
         });
         
         describe('@change', function () {

@@ -1,4 +1,6 @@
-var portscanner = require("./portscanner.js");
+"use strict";
+
+const portscanner = require("./portscanner.js");
 
 /**
  * Create a new server
@@ -9,8 +11,8 @@ var portscanner = require("./portscanner.js");
  * @constructor
  */
 function Server(options) {
-    var factory  = options.factory;
-    var reply    = options.reply;
+    const factory  = options.factory;
+    const reply    = options.reply;
     this.options = options;
     this.port    = this.options.port || 0;
 
@@ -35,7 +37,7 @@ Server.prototype.listen = function listen(callback) {
     if (this.port) {
         this.listenOnPort(this.port, callback);
     } else {
-        var self = this;
+        const self = this;
         portscanner.scan(function onPortFound(port) {
            self.listenOnPort(port, callback);
         });
@@ -48,7 +50,7 @@ Server.prototype.listen = function listen(callback) {
  * @param {Function} callback Callback when the listening has started
  */
 Server.prototype.listenOnPort = function listenOnPort(port, callback) {
-    var self = this,
+    const self = this,
         innerServer = self.innerServer;
 
     self.port = port;
@@ -72,9 +74,9 @@ Server.prototype.listenOnPort = function listenOnPort(port, callback) {
  * @param {Function} callback Callback when the listening has started
  */
 Server.prototype.close = function close(callback) {
-    var self = this;
+    const self = this;
     if (self.innerServer) {
-        var innerServer = self.innerServer;
+        let innerServer = self.innerServer;
         if (typeof innerServer.close !== 'function' && innerServer.socket) {
             innerServer = innerServer.socket;
         }
@@ -101,20 +103,19 @@ Server.prototype.close = function close(callback) {
  * @param {String} callback.fixtures.defaultFixture Default fixture
  */
 function getFixtures(callback) {
-    var adc = global.project.adc;
+    const adc = global.project.adc;
 
     adc.getFixtureList(function (err, fixtures) {
-        var result = {
+        const result = {
             list : fixtures  || []
         };
         // Search the first allowed question type
-        var defaultFixture = '';
-        var constraints = adc.configurator.info.constraints(),
-            i, l;
+        let defaultFixture = '';
+        const constraints = adc.configurator.info.constraints();
         if (constraints.questions) {
-            for (var constraint in constraints.questions) {
+            for (const constraint in constraints.questions) {
                 if (constraints.questions.hasOwnProperty(constraint)) {
-                    for (i  = 0, l = result.list.length; i < l; i += 1) {
+                    for (let i  = 0, l = result.list.length; i < l; i += 1) {
                         if (result.list[i].toLocaleLowerCase() === constraint.toLocaleLowerCase() + '.xml') {
                             defaultFixture = result.list[i];
                             break;

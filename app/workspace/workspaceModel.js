@@ -1,8 +1,10 @@
-var Tab = require('./TabModel.js').Tab;
-var EventEmitter = require('events').EventEmitter;
-var util = require('util');
-var nodePath = require('path');
-var watcher = require('../modules/watcher/watcher.js');
+"use strict";
+
+const Tab = require('./TabModel.js').Tab;
+const EventEmitter = require('events').EventEmitter;
+const util = require('util');
+const nodePath = require('path');
+const watcher = require('../modules/watcher/watcher.js');
 
 /**
  * Workspace model
@@ -11,7 +13,7 @@ var watcher = require('../modules/watcher/watcher.js');
 function Workspace(){
     EventEmitter.call(this);
 
-    var self = this;
+    const self = this;
 
     /**
      * Current pane
@@ -85,7 +87,7 @@ util.inherits(Workspace, EventEmitter);
  * @private
  */
 Workspace.prototype._initWatcher = function _initWatcher() {
-    var self = this;
+    const self = this;
 
     if (this._watcher) {
         this._watcher.close();
@@ -96,14 +98,8 @@ Workspace.prototype._initWatcher = function _initWatcher() {
      * @private
      */
     this._watcher = watcher.create();
-    this._watcher.on('changed', function (filePath) {
+    this._watcher.on('change', function (event, filePath) {
         self._propagateWatcherEvents('file-changed', filePath);
-    });
-    this._watcher.on('deleted', function (filePath) {
-        self._propagateWatcherEvents('file-deleted', filePath);
-    });
-    this._watcher.on('renamed', function (newPath, oldPath) {
-        self._propagateWatcherEvents('file-renamed', oldPath, newPath);
     });
 
     /**
@@ -120,7 +116,7 @@ Workspace.prototype._initWatcher = function _initWatcher() {
  * @param {String} [newPath] New path of the file (when renamed)
  */
 Workspace.prototype._propagateWatcherEvents = function _propagateWatcherEvents(eventName, path, newPath) {
-    var self = this;
+    const self = this;
     this.find(path, function onFind(err, tab, pane) {
         if (err || !tab) {
             return;
@@ -154,7 +150,7 @@ Workspace.prototype.init = function init(config, callback) {
     this.panes.orientation = '';
     
     // Loads the config
-    var self = this;
+    const self = this;
     if (config) {
         if (Array.isArray(config.tabs)) {
             config.tabs.forEach(function (tab) {
@@ -194,13 +190,13 @@ Workspace.prototype.init = function init(config, callback) {
  * @return {Object} Return the JSON representation of the workspace
  */
 Workspace.prototype.toJSON = function toJSON() {
-    var obj = {}, i, l, tab, jsonTab, 
-        self = this;
-    
+    const self = this;
+    const obj = {};
+
     obj.tabs = [];
-    for (i = 0, l = this.tabs.length; i < l; i += 1) {
-        tab = this.tabs[i];
-        jsonTab = {
+    for (let i = 0, l = this.tabs.length; i < l; i += 1) {
+        let tab = this.tabs[i];
+        let jsonTab = {
             id : tab.id,
             pane : self.panes.mapByTabId[tab.id]
         };
@@ -238,8 +234,8 @@ Workspace.prototype.toJSON = function toJSON() {
  * @param {String} callback.paneName Name of the pane where the tab is associated
  */
 Workspace.prototype.createTab = function createTab(config, pane, callback) {
-    var tab = new Tab(config),
-        self = this;
+    const tab = new Tab(config);
+    const self = this;
 
     // Swap arguments
     if (typeof pane === 'function') {
@@ -258,7 +254,6 @@ Workspace.prototype.createTab = function createTab(config, pane, callback) {
         if (self._saving[tab.id]) {
             return;
         }
-        self._watcher.remove(tab.path);
         self._watcher.add(tab.path);
     }
 
@@ -308,7 +303,7 @@ Workspace.prototype.removeTab = function removeTab(tab, callback) {
         return;
     }
 
-    var self = this;
+    const self = this;
     this.find(tab, function (err, tab, pane) {
         if (err) {
             callback(err);
@@ -350,8 +345,8 @@ Workspace.prototype.removeAllTabs = function removeAllTabs(options, callback) {
         options = null;
     }
 
-    var self = this;
-    var result = [];
+    const self = this;
+    const result = [];
     // Collect the tab to remove
     self.tabs.forEach(function (tab) {
         // Keep the `except` tab open
@@ -362,7 +357,7 @@ Workspace.prototype.removeAllTabs = function removeAllTabs(options, callback) {
         if (tab.edited) {
             return;
         }
-        var info = {
+        const info = {
             tab : tab,
             pane : self.panes.mapByTabId[tab.id]
         };
@@ -374,7 +369,7 @@ Workspace.prototype.removeAllTabs = function removeAllTabs(options, callback) {
     result.forEach(function (info) {
         self._watcher.remove(info.tab.path);
 
-        var index = self.tabs.indexOf(info.tab);
+        const index = self.tabs.indexOf(info.tab);
         if (index > -1) {
             self.tabs.splice(index, 1);
         }
@@ -409,7 +404,7 @@ Workspace.prototype.moveTab = function moveTab(tab, targetPane, callback) {
         }
 		return;
     }
-    var self = this;
+    const self = this;
     this.find(tab, function (err, tab, pane) {
         if (err) {
             if (typeof callback === 'function') {
@@ -488,11 +483,10 @@ Workspace.prototype.where = function where(tab) {
  * @param {String} callback.pane Name of the pane
  */
 Workspace.prototype.find = function find(criteria, callback) {
-    var tab  = null,
+    let tab  = null,
         path = null,
         id   = null,
-        pane = null,
-        i, l;
+        pane = null;
 
     if (criteria && criteria instanceof Tab) {
         id = criteria.id;
@@ -504,7 +498,7 @@ Workspace.prototype.find = function find(criteria, callback) {
     }
 
     if (id || path) {
-        for (i = 0, l = this.tabs.length; i < l; i += 1) {
+        for (let i = 0, l = this.tabs.length; i < l; i += 1) {
             if ((id && this.tabs[i].id === id) || (path && this.tabs[i].path === path)) {
                 tab = this.tabs[i];
                 break;
@@ -531,9 +525,9 @@ Workspace.prototype.find = function find(criteria, callback) {
  */
 Workspace.prototype.currentTab = function getSetCurrentTab(tabOrPane, callback) {
     // Swap arguments
-    var tab =  (tabOrPane instanceof Tab) ? tabOrPane : null;
-    var pane = (typeof tabOrPane === 'string') ? tabOrPane : null;
-    var cb = (typeof tabOrPane === 'function' && !callback) ? tabOrPane : callback;
+    const tab =  (tabOrPane instanceof Tab) ? tabOrPane : null;
+    let pane = (typeof tabOrPane === 'string') ? tabOrPane : null;
+    const cb = (typeof tabOrPane === 'function' && !callback) ? tabOrPane : callback;
 
     // Setter
     if (tab) {

@@ -1,3 +1,5 @@
+"use strict";
+
 // Web server
 exports.web = require('./adxHttpServer.js').server;
 // Web socket server

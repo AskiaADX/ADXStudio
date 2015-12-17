@@ -11,4 +11,4 @@ It's used to preview an ADX content
 
 ## modules/watcher/
 
-Watcher Factory around the Gaze watcher. Mostly used to facilitate the unit testing.
+Watcher Factory to watch modification on directories and files
