@@ -1,6 +1,6 @@
 {
   "name": "ADXStudio",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
