@@ -1,68 +1,94 @@
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     var tab      = viewer.currentTab; // From viewer.js
+    var toolbarEl = document.getElementById('toolbar');
+    var elements = {
+        container : document.getElementById('container'),
+        toolbar   : {
+            zoomIn    : toolbarEl.querySelector('.zoomIn'),
+            zoomOut   : toolbarEl.querySelector('.zoomOut'),
+            zoomReset : toolbarEl.querySelector('.initialSize'),
+            toggleChess : toolbarEl.querySelector('.chessControl')
+        }
+    };
 
-    var contener = document.getElementById('contener');
-    var img = document.createElement('img');
-    img.src = 'file:///' + tab.path;
-    img.id = 'imageLoaded';
-    img.alt = tab.name;
-    img.title = tab.name;
-  //  img.style.order = '2';
-  //  img.style.alignSelf = 'center';
-    img.style.backgroundImage = "url('bg.png')";
-    img.style.backgroundRepeat = "repeat";
-    document.body.appendChild(img);
-    contener.appendChild(img);
+    // Load the image
+    elements.image =  (function () {
+        var img = document.createElement('img');
+        img.src = 'file:///' + tab.path;
+        img.alt = tab.name;
+        img.title = tab.name;
+        img.style.backgroundImage = "url('bg.png')";
+        img.style.backgroundRepeat = "repeat";
+        elements.container.appendChild(img);
+        return img;
+    }());
+
+    /**
+     * Zoom in
+     */
+    function zoomIn() {
+        var zoom = parseInt(elements.image.style.zoom || 100, 10);
+        zoom += 10;
+        elements.image.style.zoom = zoom + '%';
+    }
+
+    /**
+     * Zoom out
+     */
+    function onMouseDownZoomIn() {
+        var timer;
+        function onMouseUp() {
+            clearInterval(timer);
+            elements.toolbar.zoomIn.removeEventListener('mouseup', onMouseUp);
+        }
+        elements.toolbar.zoomIn.addEventListener('mouseup', onMouseUp, false);
+        zoomIn();
+        timer = setInterval(zoomIn, 100);
+    }
+
+    /**
+     * Zoom out
+     */
+    function zoomOut() {
+        var zoom = parseInt(elements.image.style.zoom || 100, 10);
+        zoom -= 10;
+        elements.image.style.zoom = zoom + '%';
+    }
+
+    /**
+     * Zoom out
+     */
+    function onMouseDownZoomOut() {
+        var timer;
+        function onMouseUp() {
+            clearInterval(timer);
+            elements.toolbar.zoomOut.removeEventListener('mouseup', onMouseUp);
+        }
+        elements.toolbar.zoomOut.addEventListener('mouseup', onMouseUp, false);
+        zoomOut();
+        timer = setInterval(zoomOut, 100);
+    }
+
+    /**
+     * Zoom reset
+     */
+    function zoomReset() {
+        elements.image.style.zoom = '';
+    }
+
+    /**
+     * Toggle chess background
+     */
+    function toggleChess() {
+        var currentBg = elements.image.style.backgroundImage;
+        elements.image.style.backgroundImage = (!currentBg || currentBg === 'none') ? "url('bg.png')" : "none";
+    }
+
+    elements.toolbar.zoomIn.addEventListener('mousedown', onMouseDownZoomIn, false);
+    elements.toolbar.zoomOut.addEventListener('mousedown', onMouseDownZoomOut, false);
+    elements.toolbar.zoomReset.addEventListener('click', zoomReset, false);
+    elements.toolbar.toggleChess.addEventListener('click', toggleChess, false);
+
 
     viewer.fireReady();
-}());
-
-var img = document.getElementById('imageLoaded');
-var toolbar = document.getElementById('toolbarimg');
-var zoomin = toolbar.querySelector('.zoomIn');
-var  zoomout = toolbar.querySelector('.zoomOut');
-var  size = toolbar.querySelector('.initialSize');
-var element = {};
-var i = 50;
-//function click on each button of the toolbar.
-
-toolbar.addEventListener('click', function(event) {
-  element = {
-    elclass: event.srcElement.className || event.srcElement.parentNode.className
-  };
-    toolbarexe();
 });
-
-function toolbarexe() {
-  //function click ZOOMIN
-  if (element.elclass == 'zoomIn tool') {
-    i += 10;
-    img.style.width = i + '%';
-  }
-
-//function click ZOOMOUT
-  if (element.elclass == 'zoomOut tool') {
-    i -= 10;
-    img.style.width = i + '%';
-  }
-
-  //function click INITSIZE
-    if (element.elclass == 'initialSize tool') {
-      img.style.width = 50 + '%';
-      i = 50;
-    }
-    if (element.elclass == 'chessControl tool') {
-      switch (img.style.backgroundImage) {
-
-        case 'none':
-          img.style.backgroundImage = "url('bg.png')";
-          break;
-
-        default:
-          img.style.backgroundImage = "none";
-      }
-
-    }else {
-      return;
-    }
-}
