@@ -7,8 +7,6 @@ const shell =  electron.shell;
 
 require('./main/mainController.js');
 
-// Report crashes to our server.
-electron.crashReporter.start();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
