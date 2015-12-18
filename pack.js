@@ -2,7 +2,7 @@ var path = require("path");
 var fs = require('fs');
 var packager = require('electron-packager');
 
-var outputPath = path.join(process.cwd(), "releases/0.0.0.3/");
+var outputPath = path.join(process.cwd(), "releases/0.0.0.4/");
 var opts = {
     "dir"  : process.cwd(),
     "name" : "ADXStudio",
@@ -18,8 +18,8 @@ var opts = {
         "LegalCopyright" : "Copyright (c) Askia 2016",
         "FileDescription" : "Askia Design eXtension - Studio",
         "OriginalFilename" : "ADXStudio",
-        "FileVersion" : "0.0.0.3",
-        "ProductVersion" : "0.0.0.3",
+        "FileVersion" : "0.0.0.4",
+        "ProductVersion" : "0.0.0.4",
         "ProductName" : "ADXStudio",
         "InternalName" : "ADXStudio"
     }
