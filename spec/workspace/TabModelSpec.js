@@ -18,8 +18,6 @@ describe("Tab", function () {
 
         spies.uuid  = spyOn(uuid, "v4").andReturn("random-guid");
 
-        spies.basename = spyOn(nodePath, "basename");
-        spies.basename.andReturn("");
 
         spies.fs = {};
 
@@ -76,14 +74,12 @@ describe("Tab", function () {
         });
 
         it("should set #type, #name, #path when the argument is a string", function () {
-            spies.basename.andReturn("file1.txt");
             var tab = new Tab('path/of/file1.txt');
             expect(tab.name).toBe('file1.txt');
             expect(tab.path).toBe(nodePath.resolve('path/of/file1.txt'));
         });
 
         it("should set the name of the tab using the path when it's defined", function () {
-            spies.basename.andReturn("file1.txt");
             var tab = new Tab({
                 type : 'file',
                 path : 'path/of/file1.txt'
@@ -425,14 +421,11 @@ describe("Tab", function () {
                     });
                 });
 
-                spies.basename.andReturn('newName.txt');
-
                 cb(null);
             });
 
             runSync(function (done) {
                 var tab = new Tab({
-                    name : 'oldName.txt',
                     path : '/the/path/oldName.txt'
                 });
                 tab.loadFile(function () {
@@ -471,6 +464,184 @@ describe("Tab", function () {
         });
     });
 
+    describe('#fixName', function () {
+        it('should be a function', function () {
+            var tab = new Tab({
+                path: 'file/to/load'
+            });
+
+            expect(typeof tab.fixName).toBe('function');
+        });
+
+        it('should use the name from the config when it\'s defined', function () {
+            var tab = new Tab({
+                name : 'test',
+                path: '/the/path'
+            });
+            tab.name = 'another';
+            tab.fixName();
+            expect(tab.name).toEqual('test');
+        });
+
+        it('should use the basename of the path', function () {
+            var tab = new Tab({
+                path: '/the/path/filename'
+            });
+            tab.name = 'another';
+            tab.fixName();
+            expect(tab.name).toEqual('filename');
+        });
+
+        it('should use the not use the basename of the path when the name is define in the config', function () {
+            var tab = new Tab({
+                name : 'test',
+                path: '/the/path/filename'
+            });
+            tab.name = 'another';
+            tab.fixName();
+            expect(tab.name).toEqual('test');
+        });
+    });
+
+    describe('#changePath', function () {
+        it('should be a function', function () {
+            var tab = new Tab({
+                path : 'file/to/load'
+            });
+
+            expect(typeof tab.changePath).toBe('function');
+        });
+
+        it('should change the #path when it\'s defined', function () {
+            var tab = new Tab({
+                path : '/the/path'
+            });
+            tab.changePath('new/path');
+            expect(tab.path).toEqual(nodePath.resolve('new/path'));
+        });
+
+        it('should not change the #path when it\'s not defined', function () {
+            var tab = new Tab({
+                path : '/the/path'
+            });
+            tab.changePath();
+            expect(tab.path).toEqual(nodePath.resolve('/the/path'));
+        });
+
+        it('should change the #name when newPath is defined', function () {
+            var tab = new Tab({
+                path : '/the/path/oldName'
+            });
+            tab.changePath('/the/path/newName');
+            expect(tab.name).toEqual('newName');
+        });
+
+        it('should not change the #name when newPath is not defined', function () {
+            var tab = new Tab({
+                path : '/the/path/oldName'
+            });
+            tab.changePath();
+            expect(tab.name).toEqual('oldName');
+        });
+
+
+        it('Should trigger the `unwatch` event before changing the path.', function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path'
+                });
+
+                tab.on('unwatch', function () {
+                    expect(tab.path).toEqual(nodePath.resolve('/the/path'));
+                    done();
+                });
+
+                tab.changePath('new/path');
+            });
+        });
+
+        it('Should trigger the `watch` event after changing the path.', function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path'
+                });
+
+                tab.on('watch', function () {
+                    expect(tab.path).toEqual(nodePath.resolve('new/path'));
+                    done();
+                });
+
+                tab.changePath('new/path');
+            });
+        });
+
+        it('Should trigger the `rename` event after changing the path.', function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path'
+                });
+
+                tab.on('rename', function () {
+                    expect(tab.path).toEqual(nodePath.resolve('new/path'));
+                    done();
+                });
+
+                tab.changePath('new/path');
+            });
+        });
+
+    });
+
+    describe('#unwatch', function () {
+        it('should be a function', function () {
+            var tab = new Tab({
+                path : 'file/to/load'
+            });
+
+            expect(typeof tab.unwatch).toBe('function');
+        });
+
+        it('Should trigger the `unwatch` event.', function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+
+                tab.on('unwatch', function () {
+                    expect(true).toBe(true);
+                    done();
+                });
+
+                tab.unwatch();
+            });
+        });
+    });
+
+    describe('#watch', function () {
+        it('should be a function', function () {
+            var tab = new Tab({
+                path : 'file/to/load'
+            });
+
+            expect(typeof tab.watch).toBe('function');
+        });
+
+        it('Should trigger the `watch` event.', function () {
+            runSync(function (done) {
+                var tab = new Tab({
+                    path : '/the/path/'
+                });
+
+                tab.on('watch', function () {
+                    expect(true).toBe(true);
+                    done();
+                });
+
+                tab.watch();
+            });
+        });
+    });
+
     describe('events', function () {
 
         it('Should inherit of eventListener from nodeJS.', function () {
@@ -496,7 +667,7 @@ describe("Tab", function () {
 
         });
 
-        it('Should trigger the `saving` event before saving the file.', function () {
+        it('Should trigger the `unwatch` event before saving the file.', function () {
             var path, content;
             spies.fs.writeFile.andCallFake(function (p, c, cb) {
                 path = p;
@@ -508,7 +679,7 @@ describe("Tab", function () {
                     path : '/the/path/'
                 });
 
-                tab.on('saving', function () {
+                tab.on('unwatch', function () {
                     expect(true).toBe(true);
                     done();
                 });
@@ -518,7 +689,7 @@ describe("Tab", function () {
         });
 
 
-        it('Should trigger the `saved` event after saving the file.', function () {
+        it('Should trigger the `watch` event after saving the file.', function () {
             var path, content;
             spies.fs.writeFile.andCallFake(function (p, c, cb) {
                 path = p;
@@ -530,7 +701,7 @@ describe("Tab", function () {
                     path : '/the/path/'
                 });
 
-                tab.on('saved', function () {
+                tab.on('watch', function () {
                     expect(true).toBe(true);
                     done();
                 });

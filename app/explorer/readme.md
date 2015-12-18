@@ -26,6 +26,17 @@ This event is fire when the user click on file.
 
 This event is fire when the user click on folder.
 
+### explorer-add-item
+
+This event is fire when the user try add a new file or folder.
+
+It's fire with the following arguments:
+
+* **event** Event object
+* **dirPath** Path of the directory where to create the new item.
+* **tyoe** Type of item it could be ('file', 'directory', 'html', 'css', 'js').
+* **itemName** Name of the file or directory
+
 ### explorer-rename
 
 This event is fire when the user try renaming a file or folder.
@@ -44,6 +55,10 @@ It's fire with the following arguments:
 
 * **event** Event object
 * **file** Object that contains the item definition (name, path, type).
+
+### explorer-show-project-settings
+
+This event is fire when the user wants to display the project settings
 
 ## Events from Controller
 

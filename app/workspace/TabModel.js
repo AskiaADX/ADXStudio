@@ -1,9 +1,12 @@
-var uuid = require('node-uuid');
-var detector = require('charset-detector');
-var fs = require('fs');
-var nodePath = require('path');
-var EventEmitter = require('events').EventEmitter;
-var util = require('util');
+"use strict";
+
+const uuid = require('node-uuid');
+const detector = require('charset-detector');
+const fs = require('fs');
+const nodePath = require('path');
+const EventEmitter = require('events').EventEmitter;
+const util = require('util');
+
 
 /**
  * Tab in pane
@@ -38,13 +41,21 @@ function Tab(config) {
 util.inherits(Tab, EventEmitter);
 
 /**
+ * Fix the name of the tab
+ * Use the name defined in the config or use the basename of the path
+ */
+Tab.prototype.fixName = function fixName() {
+    this.name = this.config.name || (this.path && nodePath.basename(this.path)) || '';
+};
+
+/**
  * Load the file and initialize additional properties in the tab object
  *
  * @param callback
  * @param {Error} callback.err
  */
 Tab.prototype.loadFile = function loadFile(callback) {
-    var self = this;
+    const self = this;
 
     fs.stat(this.path, function (err, stats) {
         if (err) {
@@ -105,13 +116,13 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
         self    = this,
         finalPath;
 
-    this.emit('saving');
+    this.unwatch();
 
     function cb(){
         if (typeof callback === 'function') {
             callback.apply(null, arguments);
         }
-        self.emit('saved');
+        self.watch();
     }
 
     if (file === undefined || file === null || (typeof file !== 'object' && typeof file !== 'string')) {
@@ -120,7 +131,7 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
     }
 
     if (typeof file === 'object') {
-        if (!file.path && !file.content){
+        if (!file.path && !file.content) {
             cb(new Error("invalid `file` argument. Expect an object with the `content` and/or the `path` keys"));
             return;
         }
@@ -161,8 +172,8 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
                     return;
                 }
 
-                self.name = nodePath.basename(finalPath);
                 self.path = finalPath;
+                self.fixName();
                 self.loadFile(cb);
             });
         }
@@ -197,6 +208,35 @@ Tab.prototype.saveFile = function saveFile(file, callback) {
     trySaveContent();
 };
 
+/**
+ * Change the path of the file associated with the tab
+ * @param {String} newPath New file path
+ */
+Tab.prototype.changePath = function changePath(newPath) {
+    this.unwatch();
+    if (newPath) {
+        this.path = nodePath.resolve(newPath);
+        this.fixName();
+    }
+    this.watch();
+    if (newPath) {
+        this.emit('rename');
+    }
+};
+
+/**
+ * Unwatch the current tab
+ */
+Tab.prototype.unwatch = function unwatch() {
+    this.emit('unwatch');
+};
+
+/**
+ * Re-watch the current tab
+ */
+Tab.prototype.watch = function watch() {
+    this.emit('watch');
+};
 
 /**
  * Test if the file at the specified path is text or binary

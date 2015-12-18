@@ -4,6 +4,7 @@ const Tab = require('./TabModel.js').Tab;
 const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const nodePath = require('path');
+const fs = require('fs');
 const watcher = require('../modules/watcher/watcher.js');
 
 /**
@@ -99,13 +100,17 @@ Workspace.prototype._initWatcher = function _initWatcher() {
      */
     this._watcher = watcher.create();
     this._watcher.on('change', function (event, filePath) {
-        self._propagateWatcherEvents('file-changed', filePath);
+        fs.stat(filePath, function (err) {
+            let eventName = (!err) ? 'file-changed' : 'file-removed';
+            self._propagateWatcherEvents(eventName, filePath);
+        });
     });
 
     /**
-     * Temporary information that indicates if the tab is currently saving
+     * Prevent the event on watcher
+     * This is used when a file is saving or temporary unwatched
      */
-    this._saving = {};
+    this._unwatched = {};
 };
 
 /**
@@ -113,9 +118,8 @@ Workspace.prototype._initWatcher = function _initWatcher() {
  *
  * @param {String|'file-changed'|'file-deleted'|'file-renamed'} eventName Name of the event
  * @param {String} path Path of the file that has changed
- * @param {String} [newPath] New path of the file (when renamed)
  */
-Workspace.prototype._propagateWatcherEvents = function _propagateWatcherEvents(eventName, path, newPath) {
+Workspace.prototype._propagateWatcherEvents = function _propagateWatcherEvents(eventName, path) {
     const self = this;
     this.find(path, function onFind(err, tab, pane) {
         if (err || !tab) {
@@ -154,8 +158,18 @@ Workspace.prototype.init = function init(config, callback) {
     if (config) {
         if (Array.isArray(config.tabs)) {
             config.tabs.forEach(function (tab) {
-                if (tab.config && tab.id && tab.pane) {
-                    self.createTab(tab.config, tab.pane, function (err, tabCreated) {
+                if (tab.id && tab.pane) {
+                    const tabConfig = {};
+                    if (tab.path || (tab.config && tab.config.path)) { // Backwards compatibility
+                        tabConfig.path = tab.path || (tab.config && tab.config.path);
+                    }
+                    if (tab.type || (tab.config && tab.config.type)) { // Backwards compatibility
+                        tabConfig.type = tab.type || (tab.config && tab.config.type);
+                    }
+                    if (tab.name) { // Don't manage the backwards compatibility
+                        tabConfig.name = tab.name;
+                    }
+                    self.createTab(tabConfig, tab.pane, function (err, tabCreated) {
                         if (tab.current) {
                             self.panes[tab.pane].currentTabId = tabCreated.id;
                         }
@@ -204,18 +218,16 @@ Workspace.prototype.toJSON = function toJSON() {
         if (tab.id === this.panes[jsonTab.pane].currentTabId) {
             jsonTab.current = true;
         }
-        
-        jsonTab.config = {};
-        if (tab.config) {
-            if ('name' in tab.config)  {
-                jsonTab.config.name = tab.config.name;
-            }
-            if ('path' in tab.config)  {
-                jsonTab.config.path = tab.config.path;
-            }
-            if ('type' in tab.config)  {
-                jsonTab.config.type = tab.config.type;
-            }
+
+        if (tab.path) {
+            jsonTab.path = tab.path;
+        }
+        if (tab.type) {
+            jsonTab.type = tab.type;
+        }
+        // Use the internal config
+        if (tab.config && tab.config.name) {
+            jsonTab.name = tab.config.name;
         }
         obj.tabs.push(jsonTab);
     }
@@ -251,7 +263,7 @@ Workspace.prototype.createTab = function createTab(config, pane, callback) {
      * When the tab is fully loaded, watch it
      */
     function onTabLoaded() {
-        if (self._saving[tab.id]) {
+        if (self._unwatched[tab.id]) {
             return;
         }
         self._watcher.add(tab.path);
@@ -261,15 +273,20 @@ Workspace.prototype.createTab = function createTab(config, pane, callback) {
     tab.on('loaded', onTabLoaded);
 
     // Unwatch it during the save
-    tab.on('saving', function onTabSaving() {
-        self._saving[tab.id] = true; // Prevent earlier listening
+    tab.on('unwatch', function onTabSaving() {
+        self._unwatched[tab.id] = true; // Prevent earlier listening
         self._watcher.remove(tab.path);
     });
 
     // Re-watch it after the save
-    tab.on('saved', function onTabSaved() {
-        delete self._saving[tab.id];
+    tab.on('watch', function onTabSaved() {
+        delete self._unwatched[tab.id];
         onTabLoaded();
+    });
+
+    // Propagate event when the tab has been renamed
+    tab.on('rename', function () {
+        self.emit('change');
     });
 
     this.tabs.push(tab);

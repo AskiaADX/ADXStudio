@@ -7,6 +7,7 @@ const ADC = require('adcutil').ADC;
 const fs = require("fs");
 const path = require("path");
 const uuid = require('node-uuid');
+const packageJson = require('../../package.json');
 var mainView;
 
 const workspaceController = require('../workspace/workspaceController.js');
@@ -96,7 +97,10 @@ function showLoader(message) {
  */
 function showAbout() {
     showModalDialog({
-        type : 'about'
+        type : 'about',
+        app : {
+            version : (packageJson && packageJson.version)
+        }
     });
 }
 

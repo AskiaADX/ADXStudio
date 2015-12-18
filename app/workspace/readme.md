@@ -187,6 +187,16 @@ It's fire with the following arguments
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab should be created
 
+###  workspace-rename-tab
+
+The `workspace-rename-tab` event is fire when a tab has been renamed
+
+It's fire with following arguments:
+ 
+ * **err** Possible error that could occurred, null when everything is ok.
+ * **tab** Tab object, with id/name/content/path etc...
+ * **pane** Name of the pane where the tab is located
+
 ### workspace-remove-tab
  
 The `workspace-remove-tab` event is fire when a tab could be remove safely.

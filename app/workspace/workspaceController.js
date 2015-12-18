@@ -165,7 +165,8 @@ function openFile(file) {
  * @param {String|Object} file File to open
  */
 function openFileFromExplorer(event, file) {
-    openFile(file);
+    var filePath = (typeof file === 'string') ? file : file.path;
+    openFile(filePath);
 }
 
 /**
@@ -589,6 +590,57 @@ function onFileChanged(tab, pane) {
     }
 }
 
+/**
+ * When a file has removed
+ */
+function onFileRemoved(tab) {
+    workspace.removeTab(tab, function (err, tab, pane) {
+        workspaceView.send('workspace-remove-tab', err, tab, pane);
+    });
+}
+
+/**
+ * A file is gonna to be rename in the explorer
+ *
+ * @param {String|'file'|'folder'} fileType Type of item (file or folder)
+ * @param {String} oldPath Old file path (current)
+ * @param {String} newPath New file path
+ */
+function explorerRenamingFile(fileType, oldPath, newPath) {
+    if (fileType === 'file') {
+        workspace.find(oldPath, function (err, tab) {
+            if (err) {
+                return;
+            }
+            tab.unwatch();
+        });
+    }
+}
+
+/**
+ * A file should has been renamed in the explorer
+ *
+ * @param {Error}  err Error
+ * @param {String|'file'|'folder'} fileType Type of item (file or folder)
+ * @param {String} oldPath Old file path (current)
+ * @param {String} newPath New file path
+ */
+function explorerRenamedFile(err, fileType, oldPath, newPath) {
+    workspace.find(oldPath, function (errFind, tab, pane) {
+        if (errFind) {
+            return;
+        }
+        if (err) {
+            tab.watch();
+            return;
+        }
+
+        tab.changePath(newPath);
+        tab.watch();
+
+        workspaceView.send('workspace-rename-tab', null, tab, pane);
+    });
+}
 
 ipc.on('workspace-ready', function (event) {
     
@@ -652,8 +704,20 @@ ipc.on('workspace-ready', function (event) {
     app.removeListener('menu-preview', startPreview);
     app.on('menu-preview', startPreview);
 
+    // A file is gonna to be rename in the explorer
+    app.removeListener('explorer-file-renaming', explorerRenamingFile);
+    app.on('explorer-file-renaming', explorerRenamingFile);
+
+    // A file has been renamed in the explorer
+    app.removeListener('explorer-file-renamed', explorerRenamedFile);
+    app.on('explorer-file-renamed', explorerRenamedFile);
+
     workspace.removeListener('file-changed', onFileChanged);
     workspace.on('file-changed', onFileChanged);
+
+    workspace.removeListener('file-removed', onFileRemoved);
+    workspace.on('file-removed', onFileRemoved);
+
 
     ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
     ipc.on('workspace-reload-or-not-reload', onConfirmReload);

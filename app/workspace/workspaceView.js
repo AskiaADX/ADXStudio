@@ -521,6 +521,25 @@
         }
 
         /**
+         * Rename a tab
+         * @param tab
+         */
+        function renameTab(tab) {
+            var el = document.getElementById('tab-' + tab.id);
+            if (!el) {
+                return;
+            }
+            el.setAttribute('title', tab.path);
+            var elText = el.querySelector('.tab-text');
+            elText.innerHTML = tab.name || 'File';
+            var tabRegister = tabs[tab.id];
+            if (tabRegister) {
+                tabRegister.name = tab.name;
+                tabRegister.path = tab.path;
+            }
+        }
+
+        /**
          * Remove a tab
          *
          * @param {Tab} tab Tab object to remove
@@ -1273,6 +1292,14 @@
                 return;
             }
             reloadTab(tab, pane);
+        });
+
+        ipc.on('workspace-rename-tab', function (event, err, tab, pane) {
+            if (err) {
+                console.warn(err);
+                return;
+            }
+            renameTab(tab, pane);
         });
 
         ipc.send('workspace-ready');

@@ -8,6 +8,7 @@ describe("workspace", function () {
         nodePath = require('path'),
         util = require('util'),
         uuid = require('node-uuid'),
+        fs   = require('fs'),
         watcher,
         fakeWatcherInstance;
 
@@ -22,6 +23,12 @@ describe("workspace", function () {
     FakeWatcher.prototype.close = function () {};
 
     beforeEach(function () {
+        spies.fs = {};
+        spies.fs.stat = spyOn(fs, 'stat');
+        spies.fs.stat.andCallFake(function (path, cb) {
+            cb(null, {});
+        });
+
         watcher = require('../../app/modules/watcher/watcher.js');
 
         spies.watcher = {};
@@ -38,6 +45,8 @@ describe("workspace", function () {
         var workspaceCacheKey = require.resolve("../../app/workspace/workspaceModel.js");
         delete require.cache[workspaceCacheKey];
         workspace = require("../../app/workspace/workspaceModel.js");
+
+
         
     });
 
@@ -99,6 +108,7 @@ describe("workspace", function () {
             });
         });
     });
+
 
     describe("#createTab", function () {
         it("should be a function", function () {
@@ -162,7 +172,7 @@ describe("workspace", function () {
             });
         });
 
-        it("should unwatch file while `saving` (event)", function () {
+        it("should unwatch file while `unwatch` (event)", function () {
             runSync(function (done) {
                 spyOn(fakeWatcherInstance, 'remove').andCallFake(function (pattern) {
                     expect(pattern).toBe(nodePath.resolve('path/of/file'));
@@ -171,7 +181,7 @@ describe("workspace", function () {
                 workspace.createTab({
                     path : 'path/of/file'
                 }, function(err, tab) {
-                    tab.emit('saving');
+                    tab.emit('unwatch');
                 });
             });
         });
@@ -591,7 +601,7 @@ describe("workspace", function () {
             expect(Array.isArray(json.tabs)).toBe(true);
         });
 
-        it("should return an object with an array of all tabs (id, pane, current, config)", function () {
+        it("should return an object with an array of all tabs (id, pane, current, path, type, name)", function () {
             var fakeGuid = spyOn(uuid, 'v4');
             workspace.panes.current('main');
             fakeGuid.andReturn('aaaaaa-aaaaaa-aaaaaa-aaaaaa');
@@ -600,9 +610,9 @@ describe("workspace", function () {
             workspace.createTab({ name : 'second', path : 'path/of/second/file', type : 'file'});
             workspace.panes.current('second');
             fakeGuid.andReturn('cccccc-cccccc-cccccc-cccccc');
-            workspace.createTab({ name : 'third', path : 'path/of/third/file', type : 'file'});
+            workspace.createTab({  path : 'path/of/third/file', type : 'file'});
             fakeGuid.andReturn('dddddd-dddddd-dddddd-dddddd');
-            workspace.createTab({ name : 'fourth', path : 'path/of/fourth/file', type : 'file'});
+            workspace.createTab({ path : 'path/of/fourth/file', type : 'file'});
             
             var json = workspace.toJSON();
             
@@ -611,39 +621,29 @@ describe("workspace", function () {
                     id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
                     pane : 'main',
                     current : true,
-                    config : {
-                        name : 'first',
-                        path : 'path/of/first/file',
-                        type : 'file'
-                    }
+                    name : 'first',
+                    path : nodePath.resolve('path/of/first/file'),
+                    type : 'file'
                 },
                 {
                     id : 'bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb',
                     pane : 'main',
-                    config : {
-                        name : 'second',
-                        path : 'path/of/second/file',
-                        type : 'file'
-                    }
+                    name : 'second',
+                    path : nodePath.resolve('path/of/second/file'),
+                    type : 'file'
                 },
                 {
                     id : 'cccccc-cccccc-cccccc-cccccc',
                     pane : 'second',
                     current : true,
-                    config : {
-                        name : 'third',
-                        path : 'path/of/third/file',
-                        type : 'file'
-                    }
+                    path : nodePath.resolve('path/of/third/file'),
+                    type : 'file'
                 },
                 {
                     id : 'dddddd-dddddd-dddddd-dddddd',
                     pane : 'second',
-                    config : {
-                        name : 'fourth',
-                        path : 'path/of/fourth/file',
-                        type : 'file'
-                    }
+                    path : nodePath.resolve('path/of/fourth/file'),
+                    type : 'file'
                 }
             ]);
         });
@@ -677,7 +677,7 @@ describe("workspace", function () {
                     done();
                 });
             });
-        })
+        });
         
         it("should initialize the workspace with the `config` in argument", function () {
             var conf = {
@@ -686,36 +686,28 @@ describe("workspace", function () {
                             id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
                             pane : 'main',
                             current : true,
-                            config : {
-                                name : 'first',
-                                path : 'path/of/first/file',
-                                type : 'file'
-                            }
+                            path : 'path/of/first/file',
+                            type : 'file'
                         },
                         {
                             id : 'bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb',
                             pane : 'main',
-                            config : {
-                                name : 'second',
-                                path : 'path/of/second/file',
-                                type : 'file'
-                            }
+                            path : 'path/of/second/file',
+                            type : 'file'
                         },
                         {
                             id : 'cccccc-cccccc-cccccc-cccccc',
                             pane : 'second',
                             current : true,
-                            config : {
-                                name : 'third',
-                                path : 'path/of/third/file',
-                                type : 'file'
-                            }
+                            path : 'path/of/third/file',
+                            type : 'file'
                         },
                         {
                             id : 'dddddd-dddddd-dddddd-dddddd',
                             pane : 'second',
+                            name : 'testWithName',
+                            // Backwards-compatibility
                             config : {
-                                name : 'fourth',
                                 path : 'path/of/fourth/file',
                                 type : 'file'
                             }
@@ -737,7 +729,6 @@ describe("workspace", function () {
                         {
                             pane : 'main',
                             config : {
-                                name : 'first',
                                 path : 'path/of/first/file',
                                 type : 'file'
                             }
@@ -745,7 +736,6 @@ describe("workspace", function () {
                         {
                             pane : 'main',
                             config : {
-                                name : 'second',
                                 path : 'path/of/second/file',
                                 type : 'file'
                             }
@@ -753,7 +743,6 @@ describe("workspace", function () {
                         {
                             pane : 'second',
                             config : {
-                                name : 'third',
                                 path : 'path/of/third/file',
                                 type : 'file'
                             }
@@ -761,7 +750,7 @@ describe("workspace", function () {
                         {
                             pane : 'second',
                             config : {
-                                name : 'fourth',
+                                name : 'testWithName',
                                 path : 'path/of/fourth/file',
                                 type : 'file'
                             }
@@ -779,39 +768,29 @@ describe("workspace", function () {
                             id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
                             pane : 'main',
                             current : true,
-                            config : {
-                                name : 'first',
-                                path : 'path/of/first/file',
-                                type : 'file'
-                            }
+                            name : 'first',
+                            path : 'path/of/first/file',
+                            type : 'file'
                         },
                         {
                             id : 'bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb',
                             pane : 'main',
-                            config : {
-                                name : 'second',
-                                path : 'path/of/second/file',
-                                type : 'file'
-                            }
+                            path : 'path/of/second/file',
+                            type : 'file'
                         },
                         {
                             id : 'cccccc-cccccc-cccccc-cccccc',
                             pane : 'second',
                             current : true,
-                            config : {
-                                name : 'third',
-                                path : 'path/of/third/file',
-                                type : 'file'
-                            }
+                            name : 'third',
+                            path : 'path/of/third/file',
+                            type : 'file'
                         },
                         {
                             id : 'dddddd-dddddd-dddddd-dddddd',
                             pane : 'second',
-                            config : {
-                                name : 'fourth',
-                                path : 'path/of/fourth/file',
-                                type : 'file'
-                            }
+                            path : 'path/of/fourth/file',
+                            type : 'file'
                         }
                     ]
                 };
@@ -842,7 +821,7 @@ describe("workspace", function () {
 
         describe('@file-changed', function () {
 
-            it('should be triggered when the watcher trigger `changed`.', function () {
+            it('should be triggered when the watcher trigger `changed` and the file still exist.', function () {
                 runSync(function (done) {
 
                     workspace.on('file-changed', function () {
@@ -859,7 +838,6 @@ describe("workspace", function () {
                     });
                 });
             });
-
 
             it('should be triggered with the tab as a first arg', function () {
                 runSync(function (done) {
@@ -886,6 +864,74 @@ describe("workspace", function () {
                     var currentPane;
 
                     workspace.on('file-changed', function (tab, pane) {
+                        expect(currentPane).toBe(pane);
+                        done();
+                    });
+
+                    workspace.createTab({
+                        path : 'path/of/file'
+                    }, function(err, tab, pane) {
+                        currentPane = pane;
+                        tab.emit('loaded');
+                        var args = ['change', null, nodePath.resolve('path/of/file')];
+                        fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                    });
+                });
+            });
+
+        });
+
+
+        describe('@file-removed', function () {
+            beforeEach(function () {
+                spies.fs.stat.andCallFake(function (p, cb) {
+                    cb(new Error());
+                });
+            });
+
+            it('should be triggered when the watcher trigger `changed` and when the file no longer exist.', function () {
+                runSync(function (done) {
+
+                    workspace.on('file-removed', function () {
+                        expect(true).toBe(true);
+                        done();
+                    });
+
+                    workspace.createTab({
+                        path : 'path/of/file'
+                    }, function(err, tab) {
+                        tab.emit('loaded');
+                        var args = ['change', null, nodePath.resolve('path/of/file')];
+                        fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                    });
+                });
+            });
+
+            it('should be triggered with the tab as a first arg', function () {
+                runSync(function (done) {
+                    var tabId;
+
+                    workspace.on('file-removed', function (tab) {
+                        expect(tab.id).toBe(tabId);
+                        done();
+                    });
+
+                    workspace.createTab({
+                        path : 'path/of/file'
+                    }, function(err, tab) {
+                        tabId = tab.id;
+                        tab.emit('loaded');
+                        var args = ['change', null, nodePath.resolve('path/of/file')];
+                        fakeWatcherInstance.emit.apply(fakeWatcherInstance, args);
+                    });
+                });
+            });
+
+            it('should be triggered with the pane as a second arg', function () {
+                runSync(function (done) {
+                    var currentPane;
+
+                    workspace.on('file-removed', function (tab, pane) {
                         expect(currentPane).toBe(pane);
                         done();
                     });
@@ -939,6 +985,22 @@ describe("workspace", function () {
                         });
                         
                         workspace.removeTab(tab, function () {});
+                    });
+                });
+            });
+
+            it('should be triggered when a tab was renamed', function () {
+                runSync(function (done) {
+                    workspace.panes.current("main");
+                    workspace.createTab({
+                        path : 'old/path'
+                    }, function(err, tab) {
+                        workspace.on('change', function () {
+                            expect(true).toBe(true);
+                            done();
+                        });
+
+                        tab.changePath('new/path');
                     });
                 });
             });

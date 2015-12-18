@@ -26,55 +26,121 @@ function itemRightClick(e) {
 
     var contextualMenu = new Menu();
 
-    /* Open file in the OS manner */
-    if (/\.html?$/i.test(file.name)) {
-        contextualMenu.append(new MenuItem({
-            label: 'Open in browser', 
-            click: function onClickOpen() {
-                shell.openItem(file.path);
+    /* Add file */
+    function addNewFile(menuItem) {
+        var messageByType = {
+            file : 'File name:',
+            directory : 'Directory name:',
+            html  : 'HTML file name:',
+            css : 'Stylesheet file name:',
+            js  : 'Javascript file name:'
+        };
+        var filePath = file.path;
+        if (file.type === 'file') { // Remove the file name
+            filePath = filePath.replace(file.name, '');
+        }
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'prompt',
+            message : messageByType[menuItem.id],
+            buttonText : {
+                ok : "Create",
+                cancel : "Don't create"
             }
-        }));
-
-        contextualMenu.append(new MenuItem({type : 'separator'}));
+        }, 'explorer-add-item', filePath, menuItem.id);
     }
 
-
-    /* Rename file */
     contextualMenu.append(new MenuItem({
-        label: 'Rename',
-        click: function onClickRename() {
-            ipc.sendToHost('show-modal-dialog', {
-                type: 'prompt',
-                message : 'Rename:',
-                buttonText : {
-                    ok : "Rename",
-                    cancel : "Don't rename"
-                },
-                value: file.name
-            }, 'explorer-rename', file);
-
-        }
+        label : 'New',
+        submenu : [
+            {
+                id  : 'file',
+                label : 'File',
+                click : addNewFile
+            },
+            {
+                id : 'directory',
+                label : 'Directory',
+                click : addNewFile
+            },
+            {
+                type : 'separator'
+            },
+            {
+                id : 'html',
+                label : 'HTML file',
+                click : addNewFile
+            },
+            {
+                id : 'css',
+                label : 'Stylesheet',
+                click : addNewFile
+            },
+            {
+                id : 'js',
+                label : 'Javascript file',
+                click : addNewFile
+            }
+        ]
     }));
 
     contextualMenu.append(new MenuItem({type : 'separator'}));
 
-
-    /* Remove file */
-    contextualMenu.append(new MenuItem({
-        label: 'Remove', 
-        click: function onClickRemove() {
-
-            ipc.sendToHost('show-modal-dialog', {
-                type: 'yesNo',
-                message: 'Do you really want to remove `' + file.name + '`?',
-                buttonText : {
-                    yes : "Remove",
-                    no : "Don't remove"
+    if (file.root) {
+        contextualMenu.append(new MenuItem({
+            label : 'Project settings',
+            click : function () {
+               ipc.send('explorer-show-project-settings');
+            }
+        }));
+    } else {
+        /* Open file in the OS manner */
+        if (/\.html?$/i.test(file.name)) {
+            contextualMenu.append(new MenuItem({
+                label: 'Open in browser',
+                click: function onClickOpen() {
+                    shell.openItem(file.path);
                 }
-            }, 'explorer-remove', file);
+            }));
 
+            contextualMenu.append(new MenuItem({type : 'separator'}));
         }
-    }));
+
+        /* Rename file */
+        contextualMenu.append(new MenuItem({
+            label: 'Rename',
+            click: function onClickRename() {
+                ipc.sendToHost('show-modal-dialog', {
+                    type: 'prompt',
+                    message : 'Rename:',
+                    buttonText : {
+                        ok : "Rename",
+                        cancel : "Don't rename"
+                    },
+                    value: file.name
+                }, 'explorer-rename', file);
+
+            }
+        }));
+
+        contextualMenu.append(new MenuItem({type : 'separator'}));
+
+        /* Remove file */
+        contextualMenu.append(new MenuItem({
+            label: 'Remove',
+            click: function onClickRemove() {
+
+                ipc.sendToHost('show-modal-dialog', {
+                    type: 'yesNo',
+                    message: 'Do you really want to remove `' + file.name + '`?',
+                    buttonText : {
+                        yes : "Remove",
+                        no : "Don't remove"
+                    }
+                }, 'explorer-remove', file);
+
+            }
+        }));
+    }
 
     contextualMenu.popup(remote.getCurrentWindow());
 }
@@ -122,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {Boolean} isRoot indicate if e are on root.
      */
     ipc.on('explorer-expand-folder', function (event, err, path, files, isRoot, rootName) {
-        console.log(arguments);
         var root = (isRoot) ? document.getElementById('root').querySelector('.child') :
         document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
         var deep = parseInt(root.getAttribute('data-deep'), 10);
@@ -131,11 +196,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isRoot) {
             root.parentNode.setAttribute('data-path', path);
             root.parentNode.file = {
+                root : true,
                 path: path,
                 type: 'folder',
                 name: /(?:\/|\\)([^\/\\]+)(?:\/|\\)?$/.exec(path)[1]
             };
-            root.parentNode.querySelector('.item-info').onclick = itemclick;
+            var rootInfo = root.parentNode.querySelector('.item-info');
+            rootInfo.removeEventListener('click', itemclick);
+            rootInfo.addEventListener('click', itemclick, false);
+            rootInfo.removeEventListener('contextmenu', itemRightClick);
+            rootInfo.addEventListener('contextmenu', itemRightClick, false);
             root.parentNode.querySelector('.name').innerHTML = rootName;
             root.parentNode.style.display = 'block';
         }
@@ -153,10 +223,8 @@ document.addEventListener('DOMContentLoaded', function () {
             itemInfo.className = 'item-info';
 
             //The function when someone click on a div itemInfo
-            itemInfo.onclick = itemclick;
-
+            itemInfo.addEventListener('click', itemclick, false);
             itemInfo.addEventListener('contextmenu', itemRightClick, false);
-
 
             var toggle = document.createElement('div');
             toggle.className = 'toggle';

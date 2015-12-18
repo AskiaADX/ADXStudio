@@ -82,6 +82,7 @@ function trueCasePathSync(fsPath) {
 function Watcher(pattern, options) {
     EventEmitter.call(this);
     this._watchers = {};
+    this._timeouts = {};
     if (pattern) {
         this.add(pattern, options);
     }
@@ -106,6 +107,13 @@ Watcher.prototype.add = function add(pattern, options) {
     this.remove(pattern);
     this._watchers[key] = fs.watch(resolvedPath, options);
     this._watchers[key].on('change', function (event, filename) {
+        // The events are triggered several times, just filter it
+        if (self._timeouts[key]) {
+            return;
+        }
+        self._timeouts[key] = setTimeout(function () {
+            delete self._timeouts[key];
+        }, 500);
         self.emit('change', event, resolvedPath, filename);
     });
 };

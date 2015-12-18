@@ -14,12 +14,6 @@
          * @param  modalDialog
          */
         createButtons : function (modalDialog) {
-            modalDialog.elements.newProject = {};
-            var root = modalDialog.elements.bodyContainer,
-                el   = modalDialog.elements.newProject,
-                i, l,
-                templateList =  askia.modalDialog.adctemplates,
-                options;
 
             // Add extra class on the dialog box
             modalDialog.elements.dialog.classList.add('loader');
