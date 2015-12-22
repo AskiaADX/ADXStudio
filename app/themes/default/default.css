@@ -238,13 +238,16 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll div    {
     margin          : 0;
-    padding         : 2px;
+    padding         : 10px 2px;
     vertical-align  : middle;
 }
 
-
 .tab:hover, .tabs-scroll div:hover {
     color: #DDDDDD;
+}
+
+.scroll-left, .scroll-right {
+    border: 0;
 }
 
 .tab-icon {
@@ -270,7 +273,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background: #21252B;
+    background      : #21252B;
 }
 
 .tab.active {
