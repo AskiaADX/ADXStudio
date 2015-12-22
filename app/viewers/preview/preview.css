@@ -75,7 +75,12 @@ h3 {
     border-bottom   : 1px solid #21252B;
     box-shadow      : 0 1px 0 #2F3032;
     color           : rgb(215, 215, 215);
-    text-shadow     : 0 -1px 0 #000;
+}
+
+#grid h3 {
+    padding: 26px 0 0 0;
+    border-top: 1px solid #2F3032;
+    box-shadow: 0 -1px 0 #21252b;
 }
 
 #grid table {
@@ -98,6 +103,10 @@ h3 {
 #grid input[type=text],
 #grid input[type=number] {
     width: 95%;
+}
+
+#grid input[type=color] {
+    cursor: pointer;
 }
 
 #grid select {
