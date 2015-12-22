@@ -7,7 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var contentsEl = document.getElementById("contents");
     var contentsBodyEl = contentsEl.querySelector("tbody");
     var currentSelectedOutputIndex = -1;
-    var originalOutputs = tab.adcConfig.outputs;
+    var originalOutputs = tab.adcConfig.outputs || {};
+    if (!originalOutputs.outputs) {
+        originalOutputs.outputs = [];
+    }
+    if (!originalOutputs.defaultOutput) {
+        originalOutputs.defaultOutput = '';
+    }
     // Copy of the object
     var currentOutputs = JSON.parse(JSON.stringify(originalOutputs));
     var newIncrement = originalOutputs.outputs.length;

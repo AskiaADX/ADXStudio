@@ -16,7 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var elTypeFile  = innerFormEl.querySelector(".property-type-file");
     var elPropOptionList = innerFormEl.querySelector(".property-options-list");
     var currentSelectedCatIndex = -1;
-    var originalProps = tab.adcConfig.properties;
+    var originalProps = tab.adcConfig.properties || {};
+    if (!originalProps.categories) {
+        originalProps.categories = [];
+    }
     // Copy of the object
     var currentProps = JSON.parse(JSON.stringify(originalProps));
     var categoryIncrement = currentProps.categories.length;
