@@ -1,4 +1,11 @@
-﻿(function defineLexical() {
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"), require("../../mode/askiascript/askiascript"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror", "../../mode/askiascript/askiascript"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function defineLexical(CodeMirror) {
   "use strict";
 
 var askiaScript = CodeMirror.askiaScript;
@@ -19,6 +26,7 @@ askiaScript.extend(askiaScript.i18n, {
     },    
     "core" : {
         "array" : {
+            "ns" : "askialanguage",            
             "creation" : "Assign a set of values (also an empty set) between curly brackets ({}) and separated by semi colon (;)",            
             "desc" : "Variable which contains a collection of data items that can be selected by indices computed at run-time.",            
             "examples" : [
@@ -35,6 +43,7 @@ askiaScript.extend(askiaScript.i18n, {
             "version" : "5.3.2.0"
         },        
         "date" : {
+            "ns" : "askialanguage",            
             "creation" : [
                 " <h3>Date:</h3>",                
                 " Assign a date to a variable using (between) the hash sign (#) and using slash as separator (/).<br />#DD/MM/YYYY#",                
@@ -54,6 +63,7 @@ askiaScript.extend(askiaScript.i18n, {
             "version" : "5.3.2.0"
         },        
         "number" : {
+            "ns" : "askialanguage",            
             "creation" : "Assign a number to a variable.<br/>To create a double or decimal value, the decimal dot period separator is require",            
             "desc" : "Variable which contains a numerical value.<br />The numerical value could be an integer or a double.",            
             "examples" : [
@@ -65,6 +75,7 @@ askiaScript.extend(askiaScript.i18n, {
             "version" : "5.3.2.0"
         },        
         "string" : {
+            "ns" : "askialanguage",            
             "creation" : [
                 " Assign a string value (also an empty string) between double quotes (\").<br/>If the string to assign contains a double quotes it's possible to escape it using the slash character (\\).",                
                 " The carriage return is an available characters, that mean that you can write a string in multiple line, the end of the string is the latest non-escape double quotes."
@@ -85,35 +96,47 @@ askiaScript.extend(askiaScript.i18n, {
 }, true);
 
 askiaScript.extend(askiaScript.lexical, {
+    "namespaces" : {
+        "askialanguage" : {
+            "name" : "AskiaLanguage",            
+            "ns" : "askialanguage"
+        }
+    },    
     "versions" : [
         {
             "name" : "5.3.5.0",            
+            "ns" : "askialanguage",            
             "desc" : "Include the `Assert` and `Interview` objects and `GoTo` statement"
         },        
         {
             "name" : "5.3.3.0",            
+            "ns" : "askialanguage",            
             "desc" : "Include the `Browser` object and additional members mainly for the ADC 2.0"
         },        
         {
             "name" : "5.3.2.0",            
+            "ns" : "askialanguage",            
             "desc" : "Initialize version of the AskiaScript 2.0"
         }
     ],    
     "builtin" : [
         {
             "name" : "A",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "Has"
         },        
         {
             "name" : "AAucun",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "HasNone"
         },        
         {
             "name" : "Abs",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -132,12 +155,14 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "AEtAucuneAutre",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "HasNoneAndNoOther"
         },        
         {
             "name" : "And",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : [
                 " Logical \"And\" between two expressions",                
@@ -147,6 +172,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Annee",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -160,18 +186,21 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "AToutes",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "HasAll"
         },        
         {
             "name" : "AToutesEtAucuneAutre",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "HasAllAndNoOther"
         },        
         {
             "name" : "Avg",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -188,6 +217,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Break",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "desc" : "Breaks the iteration of the \"For\" loop",            
             "examples" : [
@@ -207,6 +237,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CDate",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "date",            
             "args" : [
@@ -223,6 +254,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CvDkNa",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -230,12 +262,19 @@ askiaScript.extend(askiaScript.lexical, {
                     "name" : "number",                    
                     "type" : "number",                    
                     "desc" : "Value to clean"
+                },                
+                {
+                    "name" : "DefaultValue",                    
+                    "type" : "number",                    
+                    "desc" : "indicate which value to replace it by if not 0",                    
+                    "opt" : true
                 }
             ],            
             "desc" : [
-                " Use this function to convert a numeric question's Askia system codes for \"Don't know\" and \"Not Asked\" into 0.",                
+                " Use this function to convert a numeric question's Askia system codes for \"Don't know\" and \"Not Asked\" into 0 or a specifief default value.",                
                 "",                
                 " CvDkNa(??Q1??)",                
+                " ",                
                 "",                
                 " You can further define the function to convert all responses, along with the system DKs and NAs, to a binary format 0 or 1.",                
                 " The function will convert those values you specify to 1, and all other values to 0."
@@ -246,6 +285,9 @@ askiaScript.extend(askiaScript.lexical, {
                 " DKs, NAs and any answer except 55 will be coded into: 0.",                
                 " The value 55 will be coded into: 1.",                
                 "",                
+                " CvDkNa(??Q1??,-1)",                
+                " will return -1 if Q1 is DK or NA",                
+                "",                
                 " CvDkNa(??Q1??) Has {5 To 10}",                
                 "",                
                 " The following values will be coded into 1: 5, 6, 7, 8, 9 and 10.",                
@@ -254,6 +296,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CvNrNi",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -267,6 +310,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Date",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "date",            
             "desc" : [
@@ -288,6 +332,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Day",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -317,6 +362,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Dim",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "declare" : true,            
             "creation" : [
@@ -360,6 +406,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "DK",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : [
@@ -383,6 +430,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Else",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "open" : "If",            
             "close" : "EndIf",            
@@ -413,6 +461,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ElseIf",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "open" : "If",            
             "close" : "EndIf",            
@@ -443,6 +492,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "End",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "open" : "If",            
             "remarks" : "The ElseIf and Else clauses are both optional. You can have as many ElseIf clauses as you want in an If...Then...Else statement, but no ElseIf clause can appear after an Else clause. If...Then...Else statements can be nested within each other.",            
@@ -472,6 +522,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "EndIf",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "open" : "If",            
             "desc" : "Part of the If / Then / Else statement. Indicates the end of the \"If\" statement",            
@@ -501,6 +552,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Entier",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -514,18 +566,21 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "EstInclusDans",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "IsIncludedIn"
         },        
         {
             "name" : "Et",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "And"
         },        
         {
             "name" : "Exit",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "desc" : "Breaks the iteration of the \"For\" loop",            
             "examples" : [
@@ -545,6 +600,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "False",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Use this operator to qualify a statement, thereby enabling you to save time and increase clarity when defining conditions.",            
@@ -558,6 +614,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Faux",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "number",            
             "deprecated" : true,            
@@ -565,6 +622,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "FindIndexIn",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -595,6 +653,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "For",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "close" : "Next",            
             "desc" : [
@@ -627,6 +686,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Format",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -651,6 +711,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ForMax",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "variant",            
             "args" : [
@@ -694,6 +755,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ForMin",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "args" : [
                 {
@@ -736,6 +798,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ForSet",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "variant",            
             "args" : [
@@ -775,6 +838,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ForSum",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "variant",            
             "args" : [
@@ -817,6 +881,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "GetParameter",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -865,6 +930,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "GoTo",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "useLabel" : true,            
             "desc" : [
@@ -925,6 +991,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Has",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "This function checks that at least one of the referenced response items was selected. If this is the case, the function returns 1; otherwise, it returns 0.",            
             "examples" : [
@@ -937,6 +1004,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "HasAll",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "This function checks that all of the referenced response items were selected. Note that other responses may be selected as well and the function will still return 1.",            
             "examples" : [
@@ -949,6 +1017,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "HasAllAndNoOther",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "This is similar to “HasAll”, but it returns 0 if the respondent selected any responses other than those in the list. In other words, the selected response must match the list exactly.",            
             "examples" : [
@@ -961,6 +1030,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "HasAndNoOther",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "This function checks that at least one of the specified responses was selected by the respondent. However, if any responses not in the list were selected, then the function returns 0.",            
             "examples" : [
@@ -973,6 +1043,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "HasNone",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "This is the opposite of “has”. It returns 1 if none of the specified response items were selected by the respondent.",            
             "examples" : [
@@ -985,6 +1056,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Heure",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1001,6 +1073,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Hour",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1027,6 +1100,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "If",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "close" : "EndIf",            
             "desc" : "Part of the If / Then / Else statement. Evaluate the code between \"If\" and \"EndIf\" (or \"Else\" or \"ElseIf\") when the condition is true",            
@@ -1056,6 +1130,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "In",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "Test if at least one value is included in the expression on left of the keyword. Same as \"IsIncludedIn\" keyword",            
             "examples" : [
@@ -1070,6 +1145,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IndexOfMax",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1097,6 +1173,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IndexOfMin",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1124,6 +1201,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "InStr",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1156,6 +1234,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Int",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1184,6 +1263,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Intersection",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : [
                 " This function retrieves the common values of two sets.",                
@@ -1209,6 +1289,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IsDate",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1233,6 +1314,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IsEmail",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1252,6 +1334,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IsIncludedIn",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "Test if at least one value is included in the expression on left of the keyword. Same as \"In\" keyword",            
             "examples" : [
@@ -1266,6 +1349,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IsUKPostcode",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1279,6 +1363,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Jour",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1295,6 +1380,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Khi2",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1313,6 +1399,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "LCase",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -1328,6 +1415,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Len",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1348,6 +1436,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Max",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1363,6 +1452,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Mid",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -1399,6 +1489,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Min",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1414,6 +1505,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Minute",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1440,6 +1532,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Mod",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : "Modulo operator. Returns the remainder of the division",            
             "examples" : [
@@ -1450,6 +1543,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Mois",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1466,6 +1560,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Month",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1492,6 +1587,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "MonthAsString",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -1519,6 +1615,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Moy",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1535,6 +1632,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Next",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "open" : "For",            
             "desc" : [
@@ -1567,6 +1665,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Non",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1580,6 +1679,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Normal",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1593,6 +1693,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "NormalInv",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1606,6 +1707,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Not",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1624,6 +1726,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Now",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "date",            
             "desc" : [
@@ -1645,6 +1748,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "NR",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1652,6 +1756,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "On",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "variant",            
             "args" : [
@@ -1709,6 +1814,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Or",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : [
                 " Logical \"Or\" between two expressions",                
@@ -1718,12 +1824,14 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Ou",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "deprecated" : true,            
             "prefer" : "Or"
         },        
         {
             "name" : "Pow",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1747,6 +1855,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Range",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "array",            
             "args" : [
@@ -1773,6 +1882,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Replace",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -1798,6 +1908,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Return",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "desc" : [
                 " Breaks the current script evaluation and returns the associated value",                
@@ -1824,6 +1935,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Second",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1850,6 +1962,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Seconde",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1866,6 +1979,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Shuffle",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "array",            
             "args" : [
@@ -1884,6 +1998,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Size",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1909,6 +2024,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Somme",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1925,6 +2041,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Student",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1943,6 +2060,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Sum",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -1958,6 +2076,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Taille",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -1974,6 +2093,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Then",            
+            "ns" : "askialanguage",            
             "base" : "statement",            
             "desc" : "Part of the If / Then / Else statement. Indicates the start of an \"If\" or \"ElseIf\" loop",            
             "remarks" : "The ElseIf and Else clauses are both optional. You can have as many ElseIf clauses as you want in an If...Then...Else statement, but no ElseIf clause can appear after an Else clause. If...Then...Else statements can be nested within each other.",            
@@ -2002,6 +2122,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "To",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : [
                 " Use this function to specify a range of values without listing every individual value within the range,",                
@@ -2015,6 +2136,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "True",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : [
@@ -2041,6 +2163,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "UCase",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -2056,6 +2179,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Union",            
+            "ns" : "askialanguage",            
             "base" : "operator",            
             "desc" : [
                 " Return the concatenation of two groups without duplicates (those values which occur in either or both group)",                
@@ -2074,6 +2198,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Val",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -2100,6 +2225,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Vrai",            
+            "ns" : "askialanguage",            
             "base" : "const",            
             "type" : "number",            
             "deprecated" : true,            
@@ -2107,6 +2233,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "WeekDay",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -2137,6 +2264,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "WeekDayAsString",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -2166,6 +2294,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Year",            
+            "ns" : "askialanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -2194,6 +2323,7 @@ askiaScript.extend(askiaScript.lexical, {
         "date" : [
             {
                 "name" : "Day",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the day of the date as number",                
@@ -2205,6 +2335,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "DayOfWeek",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -2222,6 +2353,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "DayOfYear",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -2234,6 +2366,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Format",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -2273,6 +2406,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Hour",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the hour of the time as number",                
@@ -2284,6 +2418,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Minute",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the minute of the time as number",                
@@ -2295,6 +2430,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Month",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the month of the date as number",                
@@ -2306,6 +2442,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Second",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the second of the time as number",                
@@ -2317,6 +2454,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToNumber",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Try to convert the date to a number.",                
@@ -2328,6 +2466,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : [
@@ -2344,6 +2483,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the type of the current object / variable",                
@@ -2355,6 +2495,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Year",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the year of the date as number",                
@@ -2365,546 +2506,10 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
-        "string" : [
-            {
-                "name" : "IndexOf",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "Text",                        
-                        "type" : "string",                        
-                        "desc" : "String to search"
-                    },                    
-                    {
-                        "name" : "CaseSensitive",                        
-                        "type" : "number",                        
-                        "desc" : "When true indicates if the search must be case sensitive",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Search the text in the string and returns his position (based 1)",                    
-                    " Returns DK if the text is not found",                    
-                    " By default, the text search is not case sensitive."
-                ],                
-                "examples" : [
-                    " dim s = \"abcdefghijk\"",                    
-                    " s.IndexOf(\"cde\") ' => 3",                    
-                    " s.IndexOf(\"BcD\") ' => 2",                    
-                    " s.IndexOf(\"lmn\") ' => DK (not found)",                    
-                    " '",                    
-                    " s.IndexOf(\"CDE\", true) ' => DK (not found with the case sensitive flag)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsDate",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "format",                        
-                        "type" : "string",                        
-                        "desc" : "Indicates the date format to use for the validation",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Verify the format of the string as a valid date format",                    
-                    " using the regional settings associated with the current interview",                    
-                    " or using the optional format parameter you can enforce a specify format."
-                ],                
-                "examples" : [
-                    " dim s = \"22/03/2011\"",                    
-                    " s.IsDate() ' => True",                    
-                    " '",                    
-                    " s = \"22##03##2011\"",                    
-                    " s.IsDate() ' => False",                    
-                    " s.IsDate(\"dd##MM##yyyy\") ' => True"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsEmail",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Verify the format of the string as a valid email format (x@x.xxx)",                
-                "examples" : [
-                    " dim s = \"askia@askia.com\"",                    
-                    " s.IsEmail() ' => True",                    
-                    " '",                    
-                    " dim s1 = \"askia#askia.com\"",                    
-                    " s1.IsEmail() ' => False"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsMatch",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "regexp",                        
-                        "type" : "string",                        
-                        "desc" : "Regular expression as string"
-                    }
-                ],                
-                "desc" : "Verify the format of the string as a valid format using regular expression",                
-                "examples" : [
-                    " dim email = \"askia@askia.com\"",                    
-                    " email.IsMatch(\"w+@w+.[a-z]+\")",                    
-                    " '",                    
-                    " ' Regular expression to valid",                    
-                    " ' that a string contains the uk phone number pattern",                    
-                    " ' +(##) ### ### #### or 00## ### ### ####",                    
-                    " dim rgUkPhone = \"(+|00)s*d{2}(s?d{3}){2}s?d{4}\"",                    
-                    " '",                    
-                    " (\"0044 207 689 5492\").IsMatch(rgUkPhone) ' => true",                    
-                    " (\"00442076895492\").IsMatch(rgUkPhone) ' => true",                    
-                    " (\"+44 207 689 5492\").IsMatch(rgUkPhone) ' => true",                    
-                    " (\"+442076895492\").IsMatch(rgUkPhone) ' => true",                    
-                    " (\"207 689 5492\").IsMatch(rgUkPhone) ' => false",                    
-                    " (\"44 207 689 5492\").IsMatch(rgUkPhone) ' => false",                    
-                    " (\"442076895492\").IsMatch(rgUkPhone) ' => false",                    
-                    " (\"Before it was 00 44 204 689 5492 and now it's 00 44 207 689 5492\").IsMatch(rgUkPhone)",                    
-                    " ' => true",                    
-                    " (\"My contact numbers are:",                    
-                    " +44 207 689 5492",                    
-                    " or",                    
-                    " 0044 207 123 4567\").IsMatch(rgUkPhone) ' => true",                    
-                    " '",                    
-                    " ' Same regular expression than above",                    
-                    " ' but test if the string ONLY contains",                    
-                    " ' the uk phone number and nothing else",                    
-                    " dim rgOnlyUkPhone = \"^(+|00)s*d{2}(s?d{3}){2}s?d{4}$\"",                    
-                    " '",                    
-                    " (\"+44 207 689 5492\").IsMatch(rgOnlyUkPhone) ' => true",                    
-                    " (\"0044 207 689 5492\").IsMatch(rgOnlyUkPhone) ' => true",                    
-                    " (\"Before it was 00 44 204 689 5492",                    
-                    " and now it's 00 44 207 689 5492\").IsMatch(rgOnlyUkPhone)",                    
-                    " ' => false"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsNumber",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Verify the format of the string as a valid number format",                
-                "examples" : [
-                    " dim s = \"abcde\"",                    
-                    " s.IsNumber() ' => 0",                    
-                    " Dim s = \"123.99\"",                    
-                    " s.IsNumber() ' => True",                    
-                    " Dim s = \"123,99\"",                    
-                    " s.IsNumber() ' => True",                    
-                    " Dim s = \"123,999.32\"",                    
-                    " s.IsNumber() ' => False thousand separators not supported"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsUKPostcode",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Verify the format of the string as a valid UK Postcode format",                
-                "examples" : [
-                    " dim s = \"L1 4AB\"",                    
-                    " s.IsUKPostCode() ' => True",                    
-                    " '",                    
-                    " s = \"L4B1C12\"",                    
-                    " s.IsUKPostCode() ' => False"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Left",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "length",                        
-                        "type" : "number",                        
-                        "desc" : "Positive number which indicates the length of the sub-string to extract"
-                    }
-                ],                
-                "desc" : [
-                    " Extract a left part of the string.",                    
-                    " If the specify length is higher than the length of the string,",                    
-                    " it returns the entire string"
-                ],                
-                "examples" : [
-                    " dim s = \"abcde\"",                    
-                    " s.Left(3) ' => \"abc\"",                    
-                    " s.Left(10) ' => \"abcde\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Length",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the length of the string (number of characters)",                
-                "examples" : [
-                    " dim my_string = \"abcd\"",                    
-                    " my_string.length  ' => 4",                    
-                    " dim my_empty_string = \"\"",                    
-                    " my_empty_string.length ' => 0"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Replace",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "pattern",                        
-                        "type" : "string",                        
-                        "desc" : "String to replace"
-                    },                    
-                    {
-                        "name" : "replacement",                        
-                        "type" : "string",                        
-                        "desc" : "Replacement string"
-                    },                    
-                    {
-                        "name" : "caseSensitive",                        
-                        "type" : "boolean",                        
-                        "desc" : "When true indicates if the replacement must be case sensitive",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns a new string and replace the specify pattern by the specify replacement.",                    
-                    " (by default the text replacement is not case sensitive)"
-                ],                
-                "examples" : [
-                    " dim s = \"Hello world!\"",                    
-                    " s = s.Replace(\"Hello\", \"Hi\")",                    
-                    " ' => \"Hi world!\"",                    
-                    " '",                    
-                    " dim abc = \"abc\"",                    
-                    " abc = abc.Replace(\"A\", \"X\")",                    
-                    " ' => \"Xbc\"",                    
-                    " '",                    
-                    " dim case = \"Sensitive\"",                    
-                    " case.Replace(\"sensitive\", \"Insensitive\", true)",                    
-                    " ' => \"Sensitive\" Doesn't change",                    
-                    " '",                    
-                    " case.Replace(\"sensitive\", \"Insensitive\",false)",                    
-                    " ' => \"Insensitive\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Right",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "length",                        
-                        "type" : "number",                        
-                        "desc" : "Positive number which indicates the length of the sub-string to extract"
-                    }
-                ],                
-                "desc" : [
-                    " Extract a right part of the string.",                    
-                    " If the specify length is higher than the length of the string,",                    
-                    " it returns the entire the string"
-                ],                
-                "examples" : [
-                    " dim s = \"abcde\"",                    
-                    " s.Right(3) ' => \"cde\"",                    
-                    " s.Right(10) ' => \"abcde\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Split",                
-                "base" : "method",                
-                "type" : "array",                
-                "args" : [
-                    {
-                        "name" : "separator",                        
-                        "type" : "string",                        
-                        "desc" : "Separator string (coma by default)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Split a given string into an array of strings.",                
-                "examples" : [
-                    " dim s = \"1,3,5,7,9\"",                    
-                    " s.Split()",                    
-                    " ' => {\"1\"; \"3\"; \"5\"; \"7\"; \"9\"}",                    
-                    " '",                    
-                    " s = \"a|b|c|d|e\"",                    
-                    " s.Split(\"|\")",                    
-                    " ' => {\"a\"; \"b\"; \"c\"; \"d\"; \"e\"}",                    
-                    " '",                    
-                    " s = \"a|b|c|d|e\"",                    
-                    " s.Split(\"|\")[2]",                    
-                    " ' => \"b\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "SplitToNumbers",                
-                "base" : "method",                
-                "type" : "array",                
-                "args" : [
-                    {
-                        "name" : "separator",                        
-                        "type" : "string",                        
-                        "desc" : "Separator string (coma by default)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Split a given string into an array of numbers.",                
-                "examples" : [
-                    " dim s = \"1,3,5,7,9\"",                    
-                    " s.SplitToNumbers()",                    
-                    " ' => {1; 3; 5; 7; 9}",                    
-                    " '",                    
-                    " s = \"1|3|5|7|9\"",                    
-                    " s.SplitToNumbers(\"|\")",                    
-                    " ' => {1; 3; 5; 7; 9}",                    
-                    " '",                    
-                    " s = \"1|3|5|7|9\"",                    
-                    " s.SplitToNumbers(\"|\")[2]",                    
-                    " ' => 3",                    
-                    " '",                    
-                    " s = \"1|3|toto|7|tata|12\"",                    
-                    " s.SplitToNumbers(\"|\")",                    
-                    " ' => {1; 3; DK; 7; DK; 12}"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "SubString",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "start",                        
-                        "type" : "number",                        
-                        "desc" : "Positive number which indicates the start of the sub-string"
-                    },                    
-                    {
-                        "name" : "length",                        
-                        "type" : "number",                        
-                        "desc" : "Positive number which indicates the length of the sub-string to obtain. If it is not set, it returns the rest of the string",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Extract a sub-string using starting at the specify index (based 1) with a given length",                    
-                    " If the specify length is higher than the length of the string, it returns the end of the string",                    
-                    " If the start position is higher than the length of the string, it returns an empty string"
-                ],                
-                "examples" : [
-                    " dim s = \"abcde\"",                    
-                    " s.Substring(2, 3) ' => \"bcd\"",                    
-                    " s.Substring(2) ' => \"bcde\"",                    
-                    " s.Substring(3, 10) ' => \"cde\"",                    
-                    " s.Substring(10, 2) ' => \"\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToDate",                
-                "base" : "method",                
-                "type" : "date",                
-                "args" : [
-                    {
-                        "name" : "format",                        
-                        "type" : "string",                        
-                        "desc" : "Indicates the date format of the string",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Use this function to convert the string as a date using the regional settings",                    
-                    " associated with the current interview or",                    
-                    " using the optional format parameter you can enforce a specify format.",                    
-                    " Returns DK when the string could not be converted to a date."
-                ],                
-                "examples" : [
-                    " dim s = \"22/03/2011\"",                    
-                    " s.ToDate() ' => #22/03/2011#",                    
-                    " '",                    
-                    " dim t = \"2011-03-22\"",                    
-                    " t.ToDate(\"yyyy-MM-dd\") ' => #22/03/2011#",                    
-                    " '",                    
-                    " dim invalidDate = \"Hello world!\"",                    
-                    " invalidDate.ToDate() ' => DK (Invalid date)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToHexa",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's Hexadecimal equivalent string.<br />Drop the \"alpha\" value when the string represent an RGBA color.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
-                "examples" : [
-                    " dim hexa_red_color = \"#ff0000\"",                    
-                    " hexa_red_color.ToHexa() '=> \"#ff0000\"",                    
-                    "",                    
-                    " dim rgba_green_color = \"0,255,0,0.5\"",                    
-                    " rgba_green_color.ToHexa() '=> \"#00ff00\"",                    
-                    "",                    
-                    " dim rgb_blue_color = \"0,0,255\"",                    
-                    " rgb_blue_color.ToHexa() '=> \"#0000ff\"",                    
-                    "",                    
-                    " dim not_a_color = \"not a color\"",                    
-                    " not_a_color.ToHexa() '=> \"\"",                    
-                    "",                    
-                    " dim named_color = \"red\"",                    
-                    " named_color.ToHexa() '=> \"\" (not interpreted)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToLowerCase",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a new string in lowercase.",                
-                "examples" : [
-                    " dim s = \"Hello World!\"",                    
-                    " s = s.ToLowerCase()",                    
-                    " ' => \"hello world!\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToNumber",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : [
-                    " Try to convert the string to a number.",                    
-                    " Returns DK when the string could not be converted to number.",                    
-                    " Be careful, the thousand separator could make an exception during the conversion.",                    
-                    " Because french people use the coma as a decimal separator",                    
-                    " when american use it for the thousand separator:",                    
-                    " \"123,456\" is a 123.456 for french but 123456 for american.",                    
-                    " To avoid confusion the thousand separator is not allowed in the conversion."
-                ],                
-                "examples" : [
-                    " dim s = \"abcde\"",                    
-                    " s.ToNumber() ' => DK (not a valid number)",                    
-                    " '",                    
-                    " s = \"123\"",                    
-                    " s.ToNumber() ' => 123",                    
-                    " '",                    
-                    " s = \"123.99\"",                    
-                    " s.ToNumber() ' => 123.99",                    
-                    " '",                    
-                    " s = \"123,456\"",                    
-                    " s.ToNumber() ' => 123.456",                    
-                    " '",                    
-                    " s = \"123,456.789\"",                    
-                    " s.ToNumber() ' => DK (not a valid number)",                    
-                    " ' The thousand separator generate an exception"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToRGB",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGB equivalent string.<br />Drop the \"alpha\" value when the string represent an RGBA color.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
-                "examples" : [
-                    " dim hexa_red_color = \"#ff0000\"",                    
-                    " hexa_red_color.ToRGB() '=> \"255,0,0\"",                    
-                    "",                    
-                    " dim rgba_green_color = \"0,255,0,0.5\"",                    
-                    " rgba_green_color.ToRGB() '=> \"0,255,0\"",                    
-                    "",                    
-                    " dim rgb_blue_color = \"0,0,255\"",                    
-                    " rgb_blue_color.ToRGB() '=> \"0,0,255\"",                    
-                    "",                    
-                    " dim not_a_color = \"not a color\"",                    
-                    " not_a_color.ToRGB() '=> \"\"",                    
-                    "",                    
-                    " dim named_color = \"red\"",                    
-                    " named_color.ToRGB() '=> \"\" (not interpreted)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToRGBA",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGBA equivalent string.<br />Always make the color fully opaque when the opacity is not part of the color representation.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
-                "examples" : [
-                    " dim hexa_red_color = \"#ff0000\"",                    
-                    " hexa_red_color.ToRGBA() '=> \"255,0,0,1\"",                    
-                    "",                    
-                    " dim rgba_green_color = \"0,255,0,0.5\"",                    
-                    " rgba_green_color.ToRGBA() '=> \"0,255,0,0.5\"",                    
-                    "",                    
-                    " dim rgb_blue_color = \"0,0,255\"",                    
-                    " rgb_blue_color.ToRGBA() '=> \"0,0,255,1\"",                    
-                    "",                    
-                    " dim not_a_color = \"not a color\"",                    
-                    " not_a_color.ToRGBA() '=> \"\"",                    
-                    "",                    
-                    " dim named_color = \"red\"",                    
-                    " named_color.ToRGBA() '=> \"\" (not interpreted)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToString",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : [
-                    " dim s = \"Hello world!\"",                    
-                    " s.ToString() ' => \"Hello world!\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToUpperCase",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a new string in uppercase.",                
-                "examples" : [
-                    " dim s = \"Hello world!\"",                    
-                    " s = s.ToUpperCase()",                    
-                    " ' => \"HELLO WORLD!\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Trim",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a new string without the trailing spaces before and after the string.",                
-                "examples" : [
-                    " dim s = \"  spaces before/after   \"",                    
-                    " s = s.Trim()",                    
-                    " ' => \"spaces before/after\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : [
-                    " dim s = \"abc\"",                    
-                    " s.TypeOf() ' => \"string\""
-                ],                
-                "version" : "5.3.2.0"
-            }
-        ],        
         "number" : [
             {
                 "name" : "Abs",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Returns the absolute part of a number. (Positive value)",                
@@ -2919,6 +2524,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Ceil",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -2944,6 +2550,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Floor",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -2969,6 +2576,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Format",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -3036,6 +2644,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Pow",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3055,6 +2664,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Round",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3083,6 +2693,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToDays",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Converts the specified number of days to days: (number)",                
@@ -3095,6 +2706,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToHours",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Converts the specified number of days to hours: (number * (24) )",                
@@ -3108,6 +2720,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToInt",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Converts a number (double) to integer. This method will not round the number.",                
@@ -3122,6 +2735,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToMinutes",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Converts the specified number of days to minutes: (number * (24 * 60) )",                
@@ -3135,6 +2749,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToSeconds",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : "Converts the specified number of days to seconds: (number * (24 * 3600) )",                
@@ -3148,6 +2763,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : [
@@ -3164,6 +2780,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the type of the current object / variable",                
@@ -3174,12 +2791,574 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
+        "string" : [
+            {
+                "name" : "IndexOf",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "Text",                        
+                        "type" : "string",                        
+                        "desc" : "String to search"
+                    },                    
+                    {
+                        "name" : "CaseSensitive",                        
+                        "type" : "number",                        
+                        "desc" : "When true indicates if the search must be case sensitive",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Search the text in the string and returns his position (based 1)",                    
+                    " Returns DK if the text is not found",                    
+                    " By default, the text search is not case sensitive."
+                ],                
+                "examples" : [
+                    " dim s = \"abcdefghijk\"",                    
+                    " s.IndexOf(\"cde\") ' => 3",                    
+                    " s.IndexOf(\"BcD\") ' => 2",                    
+                    " s.IndexOf(\"lmn\") ' => DK (not found)",                    
+                    " '",                    
+                    " s.IndexOf(\"CDE\", true) ' => DK (not found with the case sensitive flag)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsDate",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "format",                        
+                        "type" : "string",                        
+                        "desc" : "Indicates the date format to use for the validation",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Verify the format of the string as a valid date format",                    
+                    " using the regional settings associated with the current interview",                    
+                    " or using the optional format parameter you can enforce a specify format."
+                ],                
+                "examples" : [
+                    " dim s = \"22/03/2011\"",                    
+                    " s.IsDate() ' => True",                    
+                    " '",                    
+                    " s = \"22##03##2011\"",                    
+                    " s.IsDate() ' => False",                    
+                    " s.IsDate(\"dd##MM##yyyy\") ' => True"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsEmail",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Verify the format of the string as a valid email format (x@x.xxx)",                
+                "examples" : [
+                    " dim s = \"askia@askia.com\"",                    
+                    " s.IsEmail() ' => True",                    
+                    " '",                    
+                    " dim s1 = \"askia#askia.com\"",                    
+                    " s1.IsEmail() ' => False"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsMatch",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "regexp",                        
+                        "type" : "string",                        
+                        "desc" : "Regular expression as string"
+                    }
+                ],                
+                "desc" : "Verify the format of the string as a valid format using regular expression",                
+                "examples" : [
+                    " dim email = \"askia@askia.com\"",                    
+                    " email.IsMatch(\"w+@w+.[a-z]+\")",                    
+                    " '",                    
+                    " ' Regular expression to valid",                    
+                    " ' that a string contains the uk phone number pattern",                    
+                    " ' +(##) ### ### #### or 00## ### ### ####",                    
+                    " dim rgUkPhone = \"(+|00)s*d{2}(s?d{3}){2}s?d{4}\"",                    
+                    " '",                    
+                    " (\"0044 207 689 5492\").IsMatch(rgUkPhone) ' => true",                    
+                    " (\"00442076895492\").IsMatch(rgUkPhone) ' => true",                    
+                    " (\"+44 207 689 5492\").IsMatch(rgUkPhone) ' => true",                    
+                    " (\"+442076895492\").IsMatch(rgUkPhone) ' => true",                    
+                    " (\"207 689 5492\").IsMatch(rgUkPhone) ' => false",                    
+                    " (\"44 207 689 5492\").IsMatch(rgUkPhone) ' => false",                    
+                    " (\"442076895492\").IsMatch(rgUkPhone) ' => false",                    
+                    " (\"Before it was 00 44 204 689 5492 and now it's 00 44 207 689 5492\").IsMatch(rgUkPhone)",                    
+                    " ' => true",                    
+                    " (\"My contact numbers are:",                    
+                    " +44 207 689 5492",                    
+                    " or",                    
+                    " 0044 207 123 4567\").IsMatch(rgUkPhone) ' => true",                    
+                    " '",                    
+                    " ' Same regular expression than above",                    
+                    " ' but test if the string ONLY contains",                    
+                    " ' the uk phone number and nothing else",                    
+                    " dim rgOnlyUkPhone = \"^(+|00)s*d{2}(s?d{3}){2}s?d{4}$\"",                    
+                    " '",                    
+                    " (\"+44 207 689 5492\").IsMatch(rgOnlyUkPhone) ' => true",                    
+                    " (\"0044 207 689 5492\").IsMatch(rgOnlyUkPhone) ' => true",                    
+                    " (\"Before it was 00 44 204 689 5492",                    
+                    " and now it's 00 44 207 689 5492\").IsMatch(rgOnlyUkPhone)",                    
+                    " ' => false"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsNumber",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Verify the format of the string as a valid number format",                
+                "examples" : [
+                    " dim s = \"abcde\"",                    
+                    " s.IsNumber() ' => 0",                    
+                    " Dim s = \"123.99\"",                    
+                    " s.IsNumber() ' => True",                    
+                    " Dim s = \"123,99\"",                    
+                    " s.IsNumber() ' => True",                    
+                    " Dim s = \"123,999.32\"",                    
+                    " s.IsNumber() ' => False thousand separators not supported"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsUKPostcode",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Verify the format of the string as a valid UK Postcode format",                
+                "examples" : [
+                    " dim s = \"L1 4AB\"",                    
+                    " s.IsUKPostCode() ' => True",                    
+                    " '",                    
+                    " s = \"L4B1C12\"",                    
+                    " s.IsUKPostCode() ' => False"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Left",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "length",                        
+                        "type" : "number",                        
+                        "desc" : "Positive number which indicates the length of the sub-string to extract"
+                    }
+                ],                
+                "desc" : [
+                    " Extract a left part of the string.",                    
+                    " If the specify length is higher than the length of the string,",                    
+                    " it returns the entire string"
+                ],                
+                "examples" : [
+                    " dim s = \"abcde\"",                    
+                    " s.Left(3) ' => \"abc\"",                    
+                    " s.Left(10) ' => \"abcde\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Length",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the length of the string (number of characters)",                
+                "examples" : [
+                    " dim my_string = \"abcd\"",                    
+                    " my_string.length  ' => 4",                    
+                    " dim my_empty_string = \"\"",                    
+                    " my_empty_string.length ' => 0"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Replace",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "pattern",                        
+                        "type" : "string",                        
+                        "desc" : "String to replace"
+                    },                    
+                    {
+                        "name" : "replacement",                        
+                        "type" : "string",                        
+                        "desc" : "Replacement string"
+                    },                    
+                    {
+                        "name" : "caseSensitive",                        
+                        "type" : "boolean",                        
+                        "desc" : "When true indicates if the replacement must be case sensitive",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns a new string and replace the specify pattern by the specify replacement.",                    
+                    " (by default the text replacement is not case sensitive)"
+                ],                
+                "examples" : [
+                    " dim s = \"Hello world!\"",                    
+                    " s = s.Replace(\"Hello\", \"Hi\")",                    
+                    " ' => \"Hi world!\"",                    
+                    " '",                    
+                    " dim abc = \"abc\"",                    
+                    " abc = abc.Replace(\"A\", \"X\")",                    
+                    " ' => \"Xbc\"",                    
+                    " '",                    
+                    " dim case = \"Sensitive\"",                    
+                    " case.Replace(\"sensitive\", \"Insensitive\", true)",                    
+                    " ' => \"Sensitive\" Doesn't change",                    
+                    " '",                    
+                    " case.Replace(\"sensitive\", \"Insensitive\",false)",                    
+                    " ' => \"Insensitive\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Right",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "length",                        
+                        "type" : "number",                        
+                        "desc" : "Positive number which indicates the length of the sub-string to extract"
+                    }
+                ],                
+                "desc" : [
+                    " Extract a right part of the string.",                    
+                    " If the specify length is higher than the length of the string,",                    
+                    " it returns the entire the string"
+                ],                
+                "examples" : [
+                    " dim s = \"abcde\"",                    
+                    " s.Right(3) ' => \"cde\"",                    
+                    " s.Right(10) ' => \"abcde\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Split",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "separator",                        
+                        "type" : "string",                        
+                        "desc" : "Separator string (coma by default)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Split a given string into an array of strings.",                
+                "examples" : [
+                    " dim s = \"1,3,5,7,9\"",                    
+                    " s.Split()",                    
+                    " ' => {\"1\"; \"3\"; \"5\"; \"7\"; \"9\"}",                    
+                    " '",                    
+                    " s = \"a|b|c|d|e\"",                    
+                    " s.Split(\"|\")",                    
+                    " ' => {\"a\"; \"b\"; \"c\"; \"d\"; \"e\"}",                    
+                    " '",                    
+                    " s = \"a|b|c|d|e\"",                    
+                    " s.Split(\"|\")[2]",                    
+                    " ' => \"b\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "SplitToNumbers",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "separator",                        
+                        "type" : "string",                        
+                        "desc" : "Separator string (coma by default)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Split a given string into an array of numbers.",                
+                "examples" : [
+                    " dim s = \"1,3,5,7,9\"",                    
+                    " s.SplitToNumbers()",                    
+                    " ' => {1; 3; 5; 7; 9}",                    
+                    " '",                    
+                    " s = \"1|3|5|7|9\"",                    
+                    " s.SplitToNumbers(\"|\")",                    
+                    " ' => {1; 3; 5; 7; 9}",                    
+                    " '",                    
+                    " s = \"1|3|5|7|9\"",                    
+                    " s.SplitToNumbers(\"|\")[2]",                    
+                    " ' => 3",                    
+                    " '",                    
+                    " s = \"1|3|toto|7|tata|12\"",                    
+                    " s.SplitToNumbers(\"|\")",                    
+                    " ' => {1; 3; DK; 7; DK; 12}"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "SubString",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "start",                        
+                        "type" : "number",                        
+                        "desc" : "Positive number which indicates the start of the sub-string"
+                    },                    
+                    {
+                        "name" : "length",                        
+                        "type" : "number",                        
+                        "desc" : "Positive number which indicates the length of the sub-string to obtain. If it is not set, it returns the rest of the string",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Extract a sub-string using starting at the specify index (based 1) with a given length",                    
+                    " If the specify length is higher than the length of the string, it returns the end of the string",                    
+                    " If the start position is higher than the length of the string, it returns an empty string"
+                ],                
+                "examples" : [
+                    " dim s = \"abcde\"",                    
+                    " s.Substring(2, 3) ' => \"bcd\"",                    
+                    " s.Substring(2) ' => \"bcde\"",                    
+                    " s.Substring(3, 10) ' => \"cde\"",                    
+                    " s.Substring(10, 2) ' => \"\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToDate",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "date",                
+                "args" : [
+                    {
+                        "name" : "format",                        
+                        "type" : "string",                        
+                        "desc" : "Indicates the date format of the string",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Use this function to convert the string as a date using the regional settings",                    
+                    " associated with the current interview or",                    
+                    " using the optional format parameter you can enforce a specify format.",                    
+                    " Returns DK when the string could not be converted to a date."
+                ],                
+                "examples" : [
+                    " dim s = \"22/03/2011\"",                    
+                    " s.ToDate() ' => #22/03/2011#",                    
+                    " '",                    
+                    " dim t = \"2011-03-22\"",                    
+                    " t.ToDate(\"yyyy-MM-dd\") ' => #22/03/2011#",                    
+                    " '",                    
+                    " dim invalidDate = \"Hello world!\"",                    
+                    " invalidDate.ToDate() ' => DK (Invalid date)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToHexa",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's Hexadecimal equivalent string.<br />Drop the \"alpha\" value when the string represent an RGBA color.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
+                "examples" : [
+                    " dim hexa_red_color = \"#ff0000\"",                    
+                    " hexa_red_color.ToHexa() '=> \"#ff0000\"",                    
+                    "",                    
+                    " dim rgba_green_color = \"0,255,0,0.5\"",                    
+                    " rgba_green_color.ToHexa() '=> \"#00ff00\"",                    
+                    "",                    
+                    " dim rgb_blue_color = \"0,0,255\"",                    
+                    " rgb_blue_color.ToHexa() '=> \"#0000ff\"",                    
+                    "",                    
+                    " dim not_a_color = \"not a color\"",                    
+                    " not_a_color.ToHexa() '=> \"\"",                    
+                    "",                    
+                    " dim named_color = \"red\"",                    
+                    " named_color.ToHexa() '=> \"\" (not interpreted)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToLowerCase",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a new string in lowercase.",                
+                "examples" : [
+                    " dim s = \"Hello World!\"",                    
+                    " s = s.ToLowerCase()",                    
+                    " ' => \"hello world!\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToNumber",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : [
+                    " Try to convert the string to a number.",                    
+                    " Returns DK when the string could not be converted to number.",                    
+                    " Be careful, the thousand separator could make an exception during the conversion.",                    
+                    " Because french people use the coma as a decimal separator",                    
+                    " when american use it for the thousand separator:",                    
+                    " \"123,456\" is a 123.456 for french but 123456 for american.",                    
+                    " To avoid confusion the thousand separator is not allowed in the conversion."
+                ],                
+                "examples" : [
+                    " dim s = \"abcde\"",                    
+                    " s.ToNumber() ' => DK (not a valid number)",                    
+                    " '",                    
+                    " s = \"123\"",                    
+                    " s.ToNumber() ' => 123",                    
+                    " '",                    
+                    " s = \"123.99\"",                    
+                    " s.ToNumber() ' => 123.99",                    
+                    " '",                    
+                    " s = \"123,456\"",                    
+                    " s.ToNumber() ' => 123.456",                    
+                    " '",                    
+                    " s = \"123,456.789\"",                    
+                    " s.ToNumber() ' => DK (not a valid number)",                    
+                    " ' The thousand separator generate an exception"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToRGB",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGB equivalent string.<br />Drop the \"alpha\" value when the string represent an RGBA color.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
+                "examples" : [
+                    " dim hexa_red_color = \"#ff0000\"",                    
+                    " hexa_red_color.ToRGB() '=> \"255,0,0\"",                    
+                    "",                    
+                    " dim rgba_green_color = \"0,255,0,0.5\"",                    
+                    " rgba_green_color.ToRGB() '=> \"0,255,0\"",                    
+                    "",                    
+                    " dim rgb_blue_color = \"0,0,255\"",                    
+                    " rgb_blue_color.ToRGB() '=> \"0,0,255\"",                    
+                    "",                    
+                    " dim not_a_color = \"not a color\"",                    
+                    " not_a_color.ToRGB() '=> \"\"",                    
+                    "",                    
+                    " dim named_color = \"red\"",                    
+                    " named_color.ToRGB() '=> \"\" (not interpreted)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToRGBA",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGBA equivalent string.<br />Always make the color fully opaque when the opacity is not part of the color representation.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
+                "examples" : [
+                    " dim hexa_red_color = \"#ff0000\"",                    
+                    " hexa_red_color.ToRGBA() '=> \"255,0,0,1\"",                    
+                    "",                    
+                    " dim rgba_green_color = \"0,255,0,0.5\"",                    
+                    " rgba_green_color.ToRGBA() '=> \"0,255,0,0.5\"",                    
+                    "",                    
+                    " dim rgb_blue_color = \"0,0,255\"",                    
+                    " rgb_blue_color.ToRGBA() '=> \"0,0,255,1\"",                    
+                    "",                    
+                    " dim not_a_color = \"not a color\"",                    
+                    " not_a_color.ToRGBA() '=> \"\"",                    
+                    "",                    
+                    " dim named_color = \"red\"",                    
+                    " named_color.ToRGBA() '=> \"\" (not interpreted)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : [
+                    " dim s = \"Hello world!\"",                    
+                    " s.ToString() ' => \"Hello world!\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToUpperCase",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a new string in uppercase.",                
+                "examples" : [
+                    " dim s = \"Hello world!\"",                    
+                    " s = s.ToUpperCase()",                    
+                    " ' => \"HELLO WORLD!\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Trim",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a new string without the trailing spaces before and after the string.",                
+                "examples" : [
+                    " dim s = \"  spaces before/after   \"",                    
+                    " s = s.Trim()",                    
+                    " ' => \"spaces before/after\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : [
+                    " dim s = \"abc\"",                    
+                    " s.TypeOf() ' => \"string\""
+                ],                
+                "version" : "5.3.2.0"
+            }
+        ],        
         "array" : [
             {
+                "ns" : "askialanguage",                
                 "accessor" : "variant"
             },            
             {
                 "name" : "Avg",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : [
@@ -3201,6 +3380,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Count",                
+                "ns" : "askialanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Return the number of items in the array",                
@@ -3212,6 +3392,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IndexOf",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3250,6 +3431,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IndexOfMax",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3274,6 +3456,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IndexOfMin",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3298,6 +3481,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Insert",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3360,6 +3544,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "InsertAt",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3422,6 +3607,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Join",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -3451,6 +3637,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Max",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3475,6 +3662,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Merge",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3534,6 +3722,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Min",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -3558,6 +3747,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Push",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3620,6 +3810,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Remove",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3651,6 +3842,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "RemoveAt",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3677,6 +3869,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "SelectRandom",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3702,6 +3895,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "SetAt",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3738,6 +3932,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Shuffle",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "args" : [
@@ -3768,6 +3963,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Sort",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "desc" : [
@@ -3783,6 +3979,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "SortDesc",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "array",                
                 "desc" : [
@@ -3798,6 +3995,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "StdDev",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : [
@@ -3819,6 +4017,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "StdDevEst",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : [
@@ -3840,6 +4039,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Sum",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "desc" : [
@@ -3859,6 +4059,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Convert an array to string",                
@@ -3879,6 +4080,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the type of the current object / variable",                
@@ -3893,10 +4095,12 @@ askiaScript.extend(askiaScript.lexical, {
     "snippets" : [
         {
             "name" : "elif",            
+            "ns" : "askialanguage",            
             "snippet" : "ElseIf _condition_ Then"
         },        
         {
             "name" : "for",            
+            "ns" : "askialanguage",            
             "snippet" : [
                 " For _initialValue_ To _endValue_",                
                 "",                
@@ -3905,6 +4109,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "fori",            
+            "ns" : "askialanguage",            
             "snippet" : [
                 " Dim i",                
                 " For i = 1 To _endValue_",                
@@ -3914,6 +4119,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "if",            
+            "ns" : "askialanguage",            
             "snippet" : [
                 " If _condition_ Then",                
                 "",                
@@ -3922,6 +4128,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ifel",            
+            "ns" : "askialanguage",            
             "snippet" : [
                 " If _condition_ Then",                
                 "",                
@@ -3933,4 +4140,4 @@ askiaScript.extend(askiaScript.lexical, {
     ]
 }, true);
 
-}());
+});

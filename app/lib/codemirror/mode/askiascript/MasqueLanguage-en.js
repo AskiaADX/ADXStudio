@@ -1,12 +1,16 @@
-﻿(function defineLexical() {
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"), require("../../mode/askiascript/askiascript"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror", "../../mode/askiascript/askiascript"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function defineLexical(CodeMirror) {
   "use strict";
 
 var askiaScript = CodeMirror.askiaScript;
 
 askiaScript.extend(askiaScript.types, {
-    "ADC" : "adc",    
-    "ADCCONTENT" : "adccontent",    
-    "ADCPROPERTY" : "adcproperty",    
     "ASSERT" : "assert",    
     "BROWSER" : "browser",    
     "INTERVIEW" : "interview",    
@@ -17,9 +21,6 @@ askiaScript.extend(askiaScript.types, {
 
 askiaScript.extend(askiaScript.i18n, {
     "types" : {
-        "adc" : "ADC",        
-        "adccontent" : "ADCContent",        
-        "adcproperty" : "ADCProperty",        
         "assert" : "Assert",        
         "browser" : "Browser",        
         "interview" : "Interview",        
@@ -28,42 +29,14 @@ askiaScript.extend(askiaScript.i18n, {
         "responses" : "Responses"
     },    
     "core" : {
-        "adc" : {
-            "desc" : [
-                "\tObject used to obtain information about the ADC (Askia Design Control).<br/>",                
-                "\tThis variable is on the ADC scope, so it's only available on the ADC itself.<br />",                
-                "",                
-                "\tIt is accessible through a local variable named CurrentADC<br />"
-            ],            
-            "alsoSee" : "CurrentADC",            
-            "version" : "5.3.3.0"
-        },        
-        "adccontent" : {
-            "desc" : [
-                "\tThis object represent a content defined in the ADC.",                
-                "",                
-                "\tObject mainly used in the ADC 2.0 to retrieves the &lt;content&gt; in the current &lt;output&gt;.",                
-                "",                
-                "\tThis object is accessible through the CurrentADC.Contents[ Index ] property or the CurrentADC.GetContent( Location ) method."
-            ],            
-            "version" : "5.3.3.0"
-        },        
-        "adcproperty" : {
-            "desc" : [
-                "\tThis object represent a property exposed by the ADC.",                
-                "",                
-                "\tIt's mainly used in the ADC 2.0 to retrieves information about a <property> defined in the ADC.",                
-                "",                
-                "\tThis object is accessible through the CurrentADC.Properties[ Index ] property or the CurrentADC.GetProperty( PropertyId ) method."
-            ],            
-            "version" : "5.3.3.0"
-        },        
         "assert" : {
+            "ns" : "masquelanguage",            
             "desc" : "Object used to validate the integrity of the interviews data.",            
             "remarks" : "Mainly used in AskiaTools.",            
             "version" : "5.3.5.0"
         },        
         "browser" : {
+            "ns" : "masquelanguage",            
             "desc" : "Object use to obtain information about the current browser identity, resolution and capabilities.",            
             "remarks" : [
                 " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
@@ -83,6 +56,7 @@ askiaScript.extend(askiaScript.i18n, {
             "version" : "5.3.3.0"
         },        
         "interview" : {
+            "ns" : "masquelanguage",            
             "desc" : "Object use to obtain information about the current interview.",            
             "remarks" : "This should be used during interview and encapsulates some properties that have been deprecated",            
             "examples" : [
@@ -93,6 +67,7 @@ askiaScript.extend(askiaScript.i18n, {
             "version" : "5.3.5.0"
         },        
         "question" : {
+            "ns" : "masquelanguage",            
             "creation" : "Create a question / chapter or loop in the survey structure.",            
             "desc" : [
                 " Variable which contains all information and action to execute on question / chapter / loop.",                
@@ -127,11 +102,13 @@ askiaScript.extend(askiaScript.i18n, {
             "version" : "5.3.2.0"
         },        
         "response" : {
+            "ns" : "masquelanguage",            
             "desc" : "Variable which contains all information and action to execute on response item.",            
             "alsoSee" : "Core.Responses",            
             "version" : "5.3.2.0"
         },        
         "responses" : {
+            "ns" : "masquelanguage",            
             "desc" : "Object which contains a collection of responses. It's like an array of responses.",            
             "alsoSee" : [
                 "Question.Responses",                
@@ -145,9 +122,19 @@ askiaScript.extend(askiaScript.i18n, {
 }, true);
 
 askiaScript.extend(askiaScript.lexical, {
+    "namespaces" : {
+        "masquelanguage" : {
+            "name" : "MasqueLanguage",            
+            "ns" : "masquelanguage",            
+            "dependencies" : [
+                "askialanguage"
+            ]
+        }
+    },    
     "builtin" : [
         {
             "name" : "AgentName",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "string",            
             "desc" : [
@@ -164,6 +151,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Alea",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "variant",            
             "deprecated" : true,            
@@ -177,6 +165,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Assert",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "assert",            
             "desc" : "Object used to validate the integrity of the interviews data.",            
@@ -185,6 +174,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "AvailableQuota",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -208,6 +198,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Browser",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "browser",            
             "desc" : "Object use to obtain information about the current browser identity, resolution and capabilities.",            
@@ -231,6 +222,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CallCount",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Retrieves the number of calls made for the Task running this *.QES file in askiavoice.",            
@@ -239,6 +231,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CallId",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Retrieves the current interview's Lister field's Call ID.",            
@@ -247,6 +240,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CI",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -289,18 +283,8 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
-            "name" : "CurrentADC",            
-            "base" : "const",            
-            "type" : "adc",            
-            "desc" : "\tReturn the current running ADC instance.",            
-            "examples" : [
-                "\tCurrentADC.InstanceId ' => 1",                
-                "\tCurrentADC.Name ' => \"my-adc\""
-            ],            
-            "version" : "5.3.3.0"
-        },        
-        {
             "name" : "CurrentItem",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -343,6 +327,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CurrentItemOrder",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -358,6 +343,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "CurrentQuestion",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "question",            
             "desc" : "Return the start question of the routing or the question attached to the inline script context.",            
@@ -366,6 +352,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "DebutInterview",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "date",            
             "deprecated" : true,            
@@ -373,6 +360,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "EC",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -390,6 +378,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ElementCourant",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -407,6 +396,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "EndInterview",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "date",            
             "desc" : "Returns date and time of when the current interview was finished as a string. This function is used on its own.",            
@@ -418,6 +408,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "EstQuotaAtteint",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "deprecated" : true,            
@@ -425,6 +416,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "EstQuotaPleinPour",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "deprecated" : true,            
@@ -438,6 +430,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "GUID",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "string",            
             "deprecated" : true,            
@@ -446,6 +439,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "HMacSHA1",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -499,6 +493,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Interview",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "interview",            
             "desc" : "Object used to get information about the current interview or trigger some routings",            
@@ -507,6 +502,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "InterviewTime",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -543,6 +539,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IntvwId",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : [
@@ -562,6 +559,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IpAddress",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "string",            
             "deprecated" : true,            
@@ -571,6 +569,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IsQuotaFullFor",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -601,6 +600,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "IsQuotaReached",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Indicates if at least one quota is reached",            
@@ -611,6 +611,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "LastResult",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Indicates the latest result code for the current interview",            
@@ -618,6 +619,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "LastSubResult",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Indicates the latest sub-result code for the current interview",            
@@ -625,6 +627,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "MaxQuotaToDo",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -667,12 +670,14 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Mode",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Retrieves the current data collection mode (0=Web, 1=CATI, 2=CAPI) OR mode of current ADC content !QUERY!"
         },        
         {
             "name" : "NomEnqueteur",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "date",            
             "deprecated" : true,            
@@ -680,6 +685,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "OrderOf",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "array",            
             "args" : [
@@ -701,12 +707,14 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Password",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "string",            
             "desc" : "Returns the hashcode (encrypted 16-length string) to retrieve an interview on the web. It's mostly used to resume an interview on the web."
         },        
         {
             "name" : "PrctDone",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "deprecated" : true,            
@@ -723,6 +731,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "PrctFait",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "deprecated" : true,            
@@ -730,6 +739,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "QuotaToDo",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -754,6 +764,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Random",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "variant",            
             "args" : [
@@ -775,6 +786,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "RC",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -807,6 +819,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "RCN",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -839,6 +852,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ReadBinaryFile",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -856,6 +870,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ReadTextFile",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -873,6 +888,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResolutionX",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Indicates the width of the CATI window in pixels",            
@@ -880,6 +896,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResolutionY",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Indicates the height of the CATI window in pixels",            
@@ -887,6 +904,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResPath",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "string",            
             "desc" : "Retrieves the Resource Path fieldwork.",            
@@ -894,6 +912,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResponseCode",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -926,6 +945,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResponseCodeN",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -958,6 +978,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResponseCount",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "number",            
             "args" : [
@@ -972,6 +993,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "ResponseText",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -998,6 +1020,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "RT",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "string",            
             "args" : [
@@ -1024,6 +1047,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "Seed",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "number",            
             "desc" : "Global seed number use by the random algorithm",            
@@ -1031,6 +1055,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "SelectAlea",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "array",            
             "deprecated" : true,            
@@ -1047,6 +1072,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "SelectRandom",            
+            "ns" : "masquelanguage",            
             "base" : "function",            
             "type" : "array",            
             "args" : [
@@ -1073,6 +1099,7 @@ askiaScript.extend(askiaScript.lexical, {
         },        
         {
             "name" : "StartInterview",            
+            "ns" : "masquelanguage",            
             "base" : "const",            
             "type" : "date",            
             "desc" : "Returns date and time of when the current interview was started as a string. This function is used on its own.",            
@@ -1087,6 +1114,7 @@ askiaScript.extend(askiaScript.lexical, {
         "question" : [
             {
                 "name" : "AllIterations",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : [
@@ -1107,6 +1135,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "AllValues",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : [
@@ -1150,6 +1179,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Answers",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "responses",                
                 "desc" : "Returns the list of selected responses in the selected order",                
@@ -1187,6 +1217,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "AvailableResponses",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "responses",                
                 "desc" : "Returns the list of available responses in the visible order",                
@@ -1224,6 +1255,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "CurrentIteration",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -1243,6 +1275,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Decimals",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "date",                
                 "desc" : [
@@ -1257,6 +1290,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "DKEntry",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Indicates special entry used to specify the \"Don't know\" answer.",                
@@ -1265,6 +1299,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "EntryCodeToIndex",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "variant",                
                 "args" : [
@@ -1288,6 +1323,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "HasDK",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the answer of the question is a \"Don't know\" answer",                
@@ -1296,6 +1332,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "HasNA",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the question is skipped",                
@@ -1304,6 +1341,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "HasNoData",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -1315,6 +1353,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "HasParentLoop",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates the question is into a loop.",                
@@ -1326,6 +1365,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "HasValidData",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -1337,6 +1377,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Id",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Internal unique identifier of the question",                
@@ -1348,6 +1389,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IndexToEntryCode",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "variant",                
                 "args" : [
@@ -1373,6 +1415,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IndexToEntryCodeStr",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "variant",                
                 "args" : [
@@ -1396,6 +1439,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "InputName",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -1450,6 +1494,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "InputValue",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -1499,6 +1544,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsAllowDK",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the question allow the \"Don't know\" answer.",                
@@ -1510,6 +1556,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsDateOnly",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the date question accept a date only without the time.",                
@@ -1521,6 +1568,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsLastIteration",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -1534,6 +1582,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsOrdered",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if a multi-coded question also record the order of response selections.",                
@@ -1545,6 +1594,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsTimeOnly",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the date question accept a time only without the date.",                
@@ -1556,6 +1606,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Iteration",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "question",                
                 "args" : [
@@ -1615,6 +1666,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "LongCaption",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the long caption of the question in the current language",                
@@ -1623,6 +1675,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "MaxDate",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "date",                
                 "desc" : [
@@ -1644,6 +1697,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "MaxValue",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -1672,6 +1726,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "MinDate",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "date",                
                 "desc" : [
@@ -1693,6 +1748,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "MinValue",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -1727,6 +1783,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ParentLoop",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "question",                
                 "desc" : [
@@ -1738,6 +1795,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Responses",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "responses",                
                 "desc" : "Returns the entire list of responses for a closed question",                
@@ -1775,6 +1833,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ShortCaption",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : [
@@ -1786,6 +1845,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Shortcut",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the shortcut of the question (name of the variable)",                
@@ -1797,6 +1857,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns a string which represent the question object (express in JSON format)",                
@@ -1825,6 +1886,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Type",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : [
@@ -1859,6 +1921,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the type of the current object / variable",                
@@ -1867,6 +1930,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Value",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "variant",                
                 "desc" : [
@@ -1892,39 +1956,10 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
-        "adcproperty" : [
-            {
-                "name" : "Id",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Return the id of the ADC Property",                
-                "examples" : "CurrentADC.Properties[1].Id  ' => \"tickColor\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the type of property, available types are:",                    
-                    "- \"number\" ",                    
-                    "- \"boolean\" ",                    
-                    "- \"string\" ",                    
-                    "- \"color\" ",                    
-                    "- \"file\" ",                    
-                    "- \"question\""
-                ],                
-                "examples" : [
-                    " CurrentADC.Properties[1].Type  ' => \"color\" ",                    
-                    " CurrentADC.Properties[2].Type  ' => \"string\" ",                    
-                    " CurrentADC.Properties[3].Type '  => \"question\""
-                ],                
-                "version" : "5.3.3.0"
-            }
-        ],        
         "response" : [
             {
                 "name" : "Caption",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the caption of the response",                
@@ -1933,6 +1968,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "EntryCode",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Entry-code of the response",                
@@ -1941,6 +1977,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "EntryCodeStr",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Entry-code of the response (as string)",                
@@ -1949,6 +1986,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Factor",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns a factor as their was entered in the value column of the scale responses",                
@@ -1960,6 +1998,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Id",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Internal unique identifier of the response",                
@@ -1971,6 +2010,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Index",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the index of response (based 1) as it was entered",                
@@ -1982,6 +2022,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "InputName",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -2024,6 +2065,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "InputValue",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -2063,6 +2105,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsExclusive",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -2074,6 +2117,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsIgnored",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the response is ignored",                
@@ -2082,6 +2126,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IsSelected",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
@@ -2095,6 +2140,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Order",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -2109,6 +2155,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Rank",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : [
@@ -2127,6 +2174,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the URL of resource for the response",                
@@ -2135,6 +2183,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns a string which represent the response (express in JSON format)",                
@@ -2154,6 +2203,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the type of the current object / variable",                
@@ -2161,162 +2211,14 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
-        "adc" : [
-            {
-                "name" : "Contents",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "\tList of contents in the current selected output.",                
-                "examples" : [
-                    "\tCurrentADC.Contents.Count ' => 2",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1]",                    
-                    "\t' => <ADCContent::dynamic:default.html>"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "GetContent",                
-                "base" : "method",                
-                "type" : "adccontent",                
-                "args" : [
-                    {
-                        "name" : "location",                        
-                        "type" : "string",                        
-                        "desc" : "Location of the content to obtain"
-                    }
-                ],                
-                "desc" : "\tReturns the ADC Content object with the specified location.",                
-                "examples" : [
-                    "\tCurrentADC.GetContent(\"share/jquery.js\")  ",                    
-                    "\t' => <ADCContent::share:jquery.js>",                    
-                    "",                    
-                    "\tCurrentADC.GetContent(\"static/styles.css\").Type ",                    
-                    "\t' => \"css\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "GetProperty",                
-                "base" : "method",                
-                "type" : "adcproperty",                
-                "args" : [
-                    {
-                        "name" : "propertyId",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to obtain"
-                    }
-                ],                
-                "desc" : "\tReturns the ADC Property object with the specified id.",                
-                "examples" : [
-                    "\tCurrentADC.GetProperty(\"tickColor\")  ",                    
-                    "\t' => <ADCProperty::tickColor>",                    
-                    "",                    
-                    "\tCurrentADC.GetProperty(\"tickColor\").Name ",                    
-                    "\t' => \"Tick color\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "InstanceId",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    "\tReturns the unique identifier of the ADC instance.",                    
-                    "\tThe same ADC could appears several times in the same page and each of it has it's own unique identifier that could be retrieve through this property."
-                ],                
-                "examples" : [
-                    "\tCurrentADC.InstanceId  ",                    
-                    "\t' => 1, for the first ADC instance ",                    
-                    "\t' available in the current page"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "OutputId",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the current output in use.",                
-                "examples" : "\tCurrentADC.OutputId ' => \"mobileHTMLOutput\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Properties",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "\tEntire collection of properties defined in the ADC.",                
-                "examples" : [
-                    "\tCurrentADC.Properties.Count ' => 2",                    
-                    "",                    
-                    "\tCurrentADC.Properties[1] ",                    
-                    "\t' => <ADCProperty::tickColor>"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "PropValue",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "propertyId",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to read"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturns the value of the property as a string.",                    
-                    "\tIf the value of the variable is an object (like a question), the system calls his ToString() method.",                    
-                    "\tIf you want to access the question object associated with the variable use the PropQuestion method instead.",                    
-                    "\t\t"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
-                    "\t' => \"FlashEnable\"",                    
-                    "",                    
-                    "\tCurrentADC.PropValue(\"tickColour\") ' => \"0,255,0\"",                    
-                    "",                    
-                    "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "URLTo",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "location",                        
-                        "type" : "string",                        
-                        "desc" : "Location of the content to obtain"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturns the relative URL path to content file at the specify location.",                    
-                    "\tFor dynamic file:",                    
-                    "\t- It returns the path to the pre-processor component such as AskiaExt.dll.",                    
-                    "\t- It's likely to be use in AJAX query. In that case, you could also post the data of current HTML form to obtain a live output.",                    
-                    "\t"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.URLTo(\"static/tick.png\") ",                    
-                    "\t' => \"../Resources/[Survey]/[ADC]/tick.png\"",                    
-                    "",                    
-                    "\tCurrentADC.URLTo(\"shared/jquery.js\") ",                    
-                    "\t' => \"../Resources/[Survey]/jquery.js\" ",                    
-                    "",                    
-                    "\tCurrentADC.URLTo(\"dynamic/default.js\")",                    
-                    "\t' => \"\" ' Not yet implemented"
-                ],                
-                "version" : "5.3.3.0"
-            }
-        ],        
         "responses" : [
             {
+                "ns" : "masquelanguage",                
                 "accessor" : "response"
             },            
             {
                 "name" : "Caption",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : "Returns an array with the caption of responses in the collection",                
@@ -2325,6 +2227,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Count",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the number of items in the collection",                
@@ -2333,6 +2236,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "EntryCode",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : "Returns an array with the entry code of responses in the collection",                
@@ -2341,6 +2245,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "EntryCodeStr",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
@@ -2352,6 +2257,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Index",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
@@ -2363,6 +2269,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
                 "desc" : "Returns an array with the URL of resources for the responses in the collection",                
@@ -2371,6 +2278,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns a string which represent the response collection (express in JSON format)",                
@@ -2395,6 +2303,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the type of the current object / variable",                
@@ -2405,6 +2314,7 @@ askiaScript.extend(askiaScript.lexical, {
         "assert" : [
             {
                 "name" : "AddContext",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "assert",                
                 "args" : [
@@ -2432,6 +2342,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Check",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "assert",                
                 "args" : [
@@ -2457,7 +2368,7 @@ askiaScript.extend(askiaScript.lexical, {
                     "     Assert.Check(Language has {1}, \"When country is 'UK', 'English' language should be selected, but was {%= Country.Answers[1].Caption%}\")",                    
                     " EndIf",                    
                     " ' Example output:",                    
-                    " ' \"When contry is 'UK', 'English' language should be selected, but was 'French\"",                    
+                    " ' \"When country is 'UK', 'English' language should be selected, but was 'French\"",                    
                     "",                    
                     " If Country has {1} Then",                    
                     "     Assert.Check(Q1.HasNA, \"If 'UK', Q1 must be skipped, but was ask\")",                    
@@ -2482,6 +2393,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ResetContext",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "assert",                
                 "desc" : [
@@ -2496,6 +2408,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the string representation of the object / variable",                
@@ -2504,6 +2417,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns \"assert\"",                
@@ -2514,6 +2428,7 @@ askiaScript.extend(askiaScript.lexical, {
         "browser" : [
             {
                 "name" : "Mobile",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "True if the browser is running on mobile device",                
@@ -2526,6 +2441,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Name",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Name of the browser",                
@@ -2550,6 +2466,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "OS",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Short name of the operating system",                
@@ -2572,6 +2489,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "PluginVersion",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "args" : [
@@ -2599,6 +2517,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ScreenAvailHeight",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the available height in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -2621,6 +2540,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ScreenAvailWidth",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the available width in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -2643,6 +2563,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ScreenColorDepth",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -2656,6 +2577,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ScreenHeight",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the height in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -2678,6 +2600,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ScreenWidth",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the width in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -2700,6 +2623,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Support",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "number",                
                 "args" : [
@@ -2952,6 +2876,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the string representation of the object / variable",                
@@ -2960,6 +2885,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns \"browser\"",                
@@ -2968,6 +2894,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "UserAgent",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "User-agent of the browser",                
@@ -2989,6 +2916,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Version",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Major version number of the browser",                
@@ -3004,6 +2932,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "WindowHeight",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -3026,6 +2955,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "WindowWidth",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "<blockquote>� Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
@@ -3047,102 +2977,10 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             }
         ],        
-        "adccontent" : [
-            {
-                "name" : "FileName",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the file name associated with the content",                
-                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Mode",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the mode of the content.",                    
-                    "\tAvailable modes are:",                    
-                    "\t- \"share\" ",                    
-                    "\t- \"static\" ",                    
-                    "\t- \"dynamic\""
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Position",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the position of the content.",                    
-                    "\tAvailable positions are:",                    
-                    "\t- \"none\" ",                    
-                    "\t- \"head\" ",                    
-                    "\t- \"placeholder\" ",                    
-                    "\t- \"foot\""
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToText",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the content of the file associated with the content. ",                    
-                    "",                    
-                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
-                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToURL",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the final relative URL path to the content file",                    
-                    "",                    
-                    "\tThis is a shorthand to the method:",                    
-                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.Contents[1].ToURL() ",                    
-                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1].ToURL()",                    
-                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1].ToURL()",                    
-                    "\t' => \"\" ' Not yet implemented"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the type of the content. Available types are:",                    
-                    "- \"text\" ",                    
-                    "-- \"html\" ",                    
-                    "-- \"css\" ",                    
-                    "-- \"javascript\" ",                    
-                    "- \"binary\" ",                    
-                    "-- \"image\" ",                    
-                    "-- \"audio\" ",                    
-                    "-- \"video\" ",                    
-                    "-- \"flash\""
-                ],                
-                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
-                "version" : "5.3.3.0"
-            }
-        ],        
         "interview" : [
             {
                 "name" : "Broker",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the Broker ID as received in askia web",                
@@ -3152,6 +2990,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "BrokerPanelID",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
@@ -3161,6 +3000,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "GUID",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
@@ -3170,6 +3010,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "IPAddress",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the IPAddress if available",                
@@ -3179,6 +3020,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Latitude",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the Latitude if available (0 otherwise)",                
@@ -3188,6 +3030,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Longitude",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the longitude if available (0 otherwise)",                
@@ -3197,6 +3040,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "PanelID",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
                 "desc" : "Returns the askia Panel ID as received in askia web when available",                
@@ -3206,6 +3050,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Progress",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the percentage value of progress through the questionnaire.",                
@@ -3214,6 +3059,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "Seed",                
+                "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
@@ -3223,6 +3069,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "ToString",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns the string representation of the object / variable",                
@@ -3231,6 +3078,7 @@ askiaScript.extend(askiaScript.lexical, {
             },            
             {
                 "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
                 "desc" : "Returns \"interview\"",                
@@ -3241,4 +3089,4 @@ askiaScript.extend(askiaScript.lexical, {
     }
 }, true);
 
-}());
+});

@@ -1,4 +1,11 @@
-(function() {
+(function(mod) {
+    if (typeof exports == "object" && typeof module == "object") // CommonJS
+        mod(require("../../lib/codemirror"), require("../../mode/askiascript/askiascript"));
+    else if (typeof define == "function" && define.amd) // AMD
+        define(["../../lib/codemirror", "../../mode/askiascript/askiascript"], mod);
+    else // Plain browser env
+        mod(CodeMirror);
+})(function(CodeMirror) {
     "use strict";
 
     var askiaScript  = CodeMirror.askiaScript,
@@ -497,6 +504,7 @@
     Description.prototype.listen = function listenEvents() {
         var self = this,
             instance = this.instance,
+            namespace = instance.options && instance.options.namespace,
             hasOverflow = false,
             buffer;
 
@@ -752,7 +760,7 @@
             // Filter the match items
             for (i = 0, l = collection.length; i < l; i += 1) {
                 item = collection[i];
-                if (shouldBeDisplay(item, rg) && !item.snippet) {
+                if (shouldBeDisplay(item, rg) && !item.snippet && askiaScript.availableInNS(item, namespace)) {
                     match = item;
                     if (!match.deprecated) {
                         break;
@@ -862,6 +870,7 @@
      */
     Description.prototype.buildToc = function buildToc() {
         var self       = this,
+            namespace  = self.instance.options && self.instance.options.namespace,
             dictionary = askiaScript.dictionary,
             builtin    = dictionary.builtin,
             members    = dictionary.members,
@@ -915,6 +924,9 @@
             if (data) {
                 innerList = document.createElement('ul');
                 forEach(data, function buildTocForEachItem(item) {
+                    if (!askiaScript.availableInNS(item, namespace)) {
+                        return;
+                    }
                     if (!item.name || item.deprecated || item.base === bases.SNIPPET) {
                         return;
                     }
@@ -963,7 +975,10 @@
         buildList('builtin', translate('types.builtin'), builtin);
         forEach(arrMembers, function buildListForEachMembers(name) {
             if (members[name]) {
-                buildList(name, translate('types.' + name), members[name]);
+                var memberItem = askiaScript.find(name, 'core');
+                if (!memberItem || askiaScript.availableInNS(memberItem, namespace)) {
+                    buildList(name, translate('types.' + name), members[name]);
+                }
             }
         });
     };
@@ -1538,6 +1553,7 @@
 
         // Instance of the code mirror
         var instance 	= this,
+            namespace   = instance.options && instance.options.namespace,
             snippets    = askiaScript.snippets,
 
             // DOM elements
@@ -1812,16 +1828,27 @@
          * @return {Boolean} Return true when the suggestions has been loaded, false otherwize
          */
         function loadSuggestions(suggestions, rg) {
-            if (!suggestions || !suggestions.length) {
+            if (!suggestions || (!suggestions.hints && !suggestions.length) ||
+                (suggestions.hints && (!suggestions.list || !suggestions.list.length))) {
                 close();
                 return false;
             }
 
-            var i, l, item, li, visible;
+            var list = suggestions.hints ? suggestions.list : suggestions,
+                isAsMode = !suggestions.hints, // Is Askia Mode
+                i, l, item, li, visible;
 
-            for (i = 0, l = suggestions.length; i < l; ++i) {
-                item = suggestions[i];
-                if (item && item.name && !item.deprecated) {
+            for (i = 0, l = list.length; i < l; ++i) {
+                item = list[i];
+                if (!isAsMode) {
+                    item = {
+                        name : list[i],
+                        base : 'const'
+                    };
+                    // For xml/html remove the first < or </
+                    item.name = item.name.replace(/^(<\/?)/, '');
+                }
+                if (!isAsMode || (item && item.name && !item.deprecated && askiaScript.availableInNS(item, namespace))) {
                     visible = shouldBeDisplay(item, rg);
                     li = createSuggestionElement(item, visible);
                     elSuggestList.appendChild(li);
@@ -1944,6 +1971,9 @@
          * @return {Boolean} Return true when a snippet has been inserted
          */
 		function autoComplete(cur) {
+            if (!instance.isAskiaScriptMode()) {
+                return false;
+            }
             (cur = cur || instance.getCursor());
 
 			var lineInfo = instance.lineInfo(cur.line),
@@ -2106,8 +2136,7 @@
 
         // Treat special key enter
         function treatSpecialCharacters(instance, event) {
-            // Be sure we are on ASkiaScript mode
-            if (instance.isAskiaScriptMode() && specialKey(event, instance.getCursor())) {
+            if (specialKey(event, instance.getCursor())) {
                 stopEvent(event);
                 return true;
             }
@@ -2137,20 +2166,54 @@
         }
 
         /**
+         * Fork from the show-hint
+         */
+        CodeMirror.registerHelper("hintSuggest", "auto", function(cm, options) {
+            var helpers = cm.getHelpers(cm.getCursor(), "hint"), words;
+            if (helpers.length) {
+                for (var i = 0; i < helpers.length; i++) {
+                    var cur = helpers[i](cm, options);
+                    if (cur && cur.list.length) return cur;
+                }
+            } else if (words = cm.getHelper(cm.getCursor(), "hintWords")) {
+                if (words) return CodeMirror.hintSuggest.fromList(cm, {words: words});
+            } else if (CodeMirror.hint.anyword) {
+                return CodeMirror.hint.anyword(cm, options);
+            }
+        });
+
+        /**
+         * Fork from the show-hint
+         */
+        CodeMirror.registerHelper("hintSuggest", "fromList", function(cm, options) {
+            var cur = cm.getCursor(), token = cm.getTokenAt(cur);
+            var to = CodeMirror.Pos(cur.line, token.end);
+            if (token.string && /\w/.test(token.string[token.string.length - 1])) {
+                var term = token.string, from = CodeMirror.Pos(cur.line, token.start);
+            } else {
+                var term = "", from = to;
+            }
+            var found = [];
+            for (var i = 0; i < options.words.length; i++) {
+                var word = options.words[i];
+                if (word.slice(0, term.length) == term)
+                    found.push(word);
+            }
+
+            if (found.length) return {list: found, from: from, to: to};
+        });
+
+
+        /**
          * Suggest
          * @param {CodeMirror} instance Instance of the CodeMirror editor
          * @param {Object} event Event
          * @return {Boolean} Return true to stop the event propagation or false for the normal flow
          */
         function suggest(instance, event) {
-            // Be sure we currently in AskiaScript mode
-            if (!instance.isAskiaScriptMode()) {
-                close();
-                return false;
-            }
-
             //noinspection JSUnresolvedFunction
-            var keyCode        = event.keyCode,
+            var isAsMode       = instance.isAskiaScriptMode(),
+                keyCode        = event.keyCode,
                 cur            = instance.getCursor(),
                 token          = instance.getTokenAt(cur),
                 navKey         = (keyCode === keyCodes.DOWN ||
@@ -2158,8 +2221,8 @@
                                     keyCode === keyCodes.PAGE_DOWN ||
                                     keyCode === keyCodes.PAGE_UP),
                 legalChar      = isLegalChar(event),
-                isOpenQuestion = (token.type === classNames.QUESTION_DELIMITER),
-                onQuestion     = (initialToken && initialToken.type === classNames.QUESTION_DELIMITER),
+                isOpenQuestion = (isAsMode && token.type === classNames.QUESTION_DELIMITER),
+                onQuestion     = (isAsMode && initialToken && initialToken.type === classNames.QUESTION_DELIMITER),
                 fixLength      = 0,
                 s, l, rg, isAnotherToken,
                 suggestions;
@@ -2238,10 +2301,20 @@
             range.to.ch = token.end + fixLength;
 
             // Regular expression to filter the search
-            rg = getTokenRegexp(s.replace(askiaScript.patterns.questionDelimiter, ''));
+            rg = (isAsMode) ?
+                        getTokenRegexp(s.replace(askiaScript.patterns.questionDelimiter, ''))
+                            : getTokenRegexp(s);
 
             if (!cache.length) {
-                suggestions = isOpenQuestion ? instance.options.dictionary.questions : askiascriptHint(instance);
+                if (isAsMode) {
+                    suggestions = isOpenQuestion ? instance.options.dictionary.questions : askiascriptHint(instance);
+                } else {
+                    suggestions = CodeMirror.hintSuggest.auto(instance);
+                    if (suggestions) {
+                        suggestions.hints = true;
+                    }
+                }
+
                 if (loadSuggestions(suggestions, rg)) {
                     initialToken = token;
                     open();
@@ -2332,4 +2405,4 @@
         return this.toTextArea();
     };
 
-})();
+});

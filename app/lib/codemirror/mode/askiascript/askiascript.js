@@ -266,6 +266,7 @@
     };
 
     askiaScript.lexical = {
+        namespaces : {},
         versions : [],
         builtin : [],
         members : {},
@@ -1313,6 +1314,47 @@
         };
 
         /**
+         * Indicates if the item is available in the specified ns
+         * @param {Object} item Item to test
+         * @param {String} ns Namespace
+         */
+        askiaScript.availableInNS = function availableInNamespace(item, ns) {
+            if (!ns || typeof ns !== 'string') {
+                return true;
+            }
+            ns = ns.toLocaleLowerCase();
+            if (!item.ns) {
+                return true;
+            }
+            // Check if the item is excluded in the specified namespace
+            if (item.excludeIn) {
+                if (isArray(item.excludeIn)) {
+                    if (item.excludeIn.indexOf(ns) !== -1) {
+                        return false;
+                    }
+                } else if (typeof item.excludeIn === 'string') {
+                    if (item.excludeIn === ns) {
+                        return false;
+                    }
+                }
+            }
+            var namespaces = askiaScript.dictionary.namespaces;
+            var namespaceItem = namespaces && namespaces[ns];
+            var deps = namespaceItem && namespaceItem.dependencies;
+            var i, l;
+            // Compare with namespace dependencies
+            if (deps) {
+                for (i = 0, l = deps.length; i < l; i += 1) {
+                    if (item.ns === deps[i]) {
+                        return true;
+                    }
+                }
+            }
+            // Compare the current specified namespace
+            return (item.ns === ns);
+        };
+
+        /**
          * Public dictionary already sort for the sense
          */
         askiaScript.dictionary = (function initDictionary() {
@@ -1321,7 +1363,10 @@
                 common      = lexMembers.common || [],
                 items, key,
                 builtin,
-                versions;
+                versions,
+                lexNamespaces = lexical.namespaces,
+                namespaces   = {},
+                nsItem;
 
             for (key in lexMembers) {
                 if (lexMembers.hasOwnProperty(key) && key !== COMMON) {
@@ -1335,11 +1380,44 @@
 
             versions = lexical.versions.slice();
 
+            // Expand the dependencies
+            function addRecursiveDependencies(outputObj, parentDeps) {
+                var i, l, name, item;
+                outputObj.cache = outputObj.cache || {};
+                for (i = 0, l = parentDeps.length; i < l; i += 1) {
+                    name = parentDeps[i];
+                    if (outputObj.cache[name]) { // Already treat
+                        continue;
+                    }
+                    outputObj.cache[name] = true; // Mark as treat
+                    if (outputObj.dependencies.indexOf(name) === -1) {
+                        outputObj.dependencies.push(name);
+                    }
+                    item = lexNamespaces[name];
+                    if (item && item.dependencies) {
+                        addRecursiveDependencies(outputObj, item.dependencies);
+                    }
+                }
+            }
+
+            // Rebuild/Expand the dependencies of the namespaces
+            for (key in lexNamespaces) {
+                if (lexNamespaces.hasOwnProperty(key)) {
+                    nsItem = extend({}, lexNamespaces[key]);
+                    if (nsItem.dependencies && isArray(nsItem.dependencies)) {
+                        addRecursiveDependencies(nsItem, nsItem.dependencies)
+                        delete nsItem.cache;
+                    }
+                    namespaces[key] = nsItem;
+                }
+            }
+
             return {
                 members : members,
                 builtin : builtin.sort(sortItems),
                 versions : versions,
                 core    : coreItems,
+                namespaces : namespaces,
                 toDictionary : function toDictionary() {
                     function stringifyArray(o) {
                         var out = [], val, i, l;
