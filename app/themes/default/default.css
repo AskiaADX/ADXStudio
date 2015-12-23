@@ -36,11 +36,12 @@ body.form-viewer a {
 h3 {
     font-size   : 14px;
     font-weight : bold;
+    color       : #007DC5;
 }
 
 fieldset {
     border-width: 0 0 1px 0;
-    border-color: #111;
+    border-color: #606979;
     margin-top  : 20px;
 }
 
@@ -237,13 +238,16 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll div    {
     margin          : 0;
-    padding         : 2px;
+    padding         : 10px 2px;
     vertical-align  : middle;
 }
 
-
 .tab:hover, .tabs-scroll div:hover {
     color: #DDDDDD;
+}
+
+.scroll-left, .scroll-right {
+    border: 0;
 }
 
 .tab-icon {
@@ -269,7 +273,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background: #21252B;
+    background      : #21252B;
 }
 
 .tab.active {
