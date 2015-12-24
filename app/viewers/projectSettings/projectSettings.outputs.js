@@ -260,6 +260,51 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
         }
 
+        // Display the select box
+        function displaySelect() {
+            span.style.display = 'none';
+            element.appendChild(select);
+            select.focus();
+
+            select.addEventListener('blur', function () {
+                if (propKey !== 'file') {
+                    content[propKey] = select.value;
+                } else {
+                    var splitResult = select.value.split('/');
+
+                    content.mode = splitResult[0];
+                    content.fileName = splitResult[1];
+
+                    // Implicitly set the type of the content
+                    if (/\.js$/i.test(content.fileName)) {
+                        content.type = 'javascript';
+                    } else if (/\.(css|hss|sass|less|ccss|pcss)$/i.test(content.fileName)) {
+                        content.type = 'css';
+                    } else if (/\.(html|htm|xhtm|xhtml)$/i.test(content.fileName)) {
+                        content.type = 'html';
+                    } else if (/\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i.test(content.fileName)) {
+                        content.type = 'image';
+                    } else if (/\.(aif|iff|m4a|mid|mp3|mpa|ra|wav|wma|ogg|oga|webma)$/i.test(content.fileName)) {
+                        content.type = 'audio';
+                    } else if (/\.(3g2|3gp|avi|flv|mov|mp4|mpg|rm|wmv|webm)$/i.test(content.fileName)) {
+                        content.type = 'video';
+                    } else if (/\.(xml|rss|atom|svg|md|txt|csv|json)$/i.test(content.fileName)) {
+                        content.type = 'text';
+                    } else if (/\.(swf)$/i.test(content.fileName)) {
+                        content.type = 'flash';
+                    }  else {
+                        content.type = 'binary';
+                    }
+                    element.parentNode.querySelector('.content-type span').innerHTML = content.type;
+                }
+
+                span.innerHTML = select.value;
+                element.removeChild(select);
+                span.style.display = 'block';
+                triggerChange();
+            });
+        }
+
         if (propKey !== 'file') {
             for (i = 0, l = options.length; i < l; i += 1) {
                 opt = document.createElement('option');
@@ -270,69 +315,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 select.appendChild(opt);
             }
+            displaySelect();
         } else {
-            for (structKey in tab.adcStructure) {
-                if (tab.adcStructure.hasOwnProperty(structKey)) {
-                    options = tab.adcStructure[structKey];
-                    groupOpt = document.createElement("optgroup");
-                    groupOpt.setAttribute("label", structKey);
+            viewer.getADCStructure(function (structure) {
+                for (structKey in structure) {
+                    if (structure.hasOwnProperty(structKey)) {
+                        options = structure[structKey];
+                        groupOpt = document.createElement("optgroup");
+                        groupOpt.setAttribute("label", structKey);
 
-                    for (i = 0, l = options.length; i < l; i += 1) {
-                        opt = document.createElement('option');
-                        opt.setAttribute("value", structKey + '/' + options[i]);
-                        opt.innerHTML = options[i];
-                        if (content.mode === structKey && content.fileName === options[i]) {
-                            opt.setAttribute("selected", "selected");
+                        for (i = 0, l = options.length; i < l; i += 1) {
+                            opt = document.createElement('option');
+                            opt.setAttribute("value", structKey + '/' + options[i]);
+                            opt.innerHTML = options[i];
+                            if (content.mode === structKey && content.fileName === options[i]) {
+                                opt.setAttribute("selected", "selected");
+                            }
+                            groupOpt.appendChild(opt);
                         }
-                        groupOpt.appendChild(opt);
+
+                        select.appendChild(groupOpt);
                     }
-
-                    select.appendChild(groupOpt);
                 }
-            }
+                displaySelect();
+            });
         }
-
-        span.style.display = 'none';
-        element.appendChild(select);
-        select.focus();
-
-        select.addEventListener('blur', function () {
-            if (propKey !== 'file') {
-                content[propKey] = select.value;
-            } else {
-                var splitResult = select.value.split('/');
-
-                content.mode = splitResult[0];
-                content.fileName = splitResult[1];
-
-                // Implicitly set the type of the content
-                if (/\.js$/i.test(content.fileName)) {
-                    content.type = 'javascript';
-                } else if (/\.(css|hss|sass|less|ccss|pcss)$/i.test(content.fileName)) {
-                    content.type = 'css';
-                } else if (/\.(html|htm|xhtm|xhtml)$/i.test(content.fileName)) {
-                    content.type = 'html';
-                } else if (/\.(gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur)$/i.test(content.fileName)) {
-                    content.type = 'image';
-                } else if (/\.(aif|iff|m4a|mid|mp3|mpa|ra|wav|wma|ogg|oga|webma)$/i.test(content.fileName)) {
-                    content.type = 'audio';
-                } else if (/\.(3g2|3gp|avi|flv|mov|mp4|mpg|rm|wmv|webm)$/i.test(content.fileName)) {
-                    content.type = 'video';
-                } else if (/\.(xml|rss|atom|svg|md|txt|csv|json)$/i.test(content.fileName)) {
-                    content.type = 'text';
-                } else if (/\.(swf)$/i.test(content.fileName)) {
-                    content.type = 'flash';
-                }  else {
-                    content.type = 'binary';
-                }
-                element.parentNode.querySelector('.content-type span').innerHTML = content.type;
-            }
-
-            span.innerHTML = select.value;
-            element.removeChild(select);
-            span.style.display = 'block';
-            triggerChange();
-        });
     }
 
     /**

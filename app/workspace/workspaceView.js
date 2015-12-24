@@ -9,6 +9,11 @@
 
     window.tabs  = {
         /**
+         * Expose the IPC object to the client iframe
+         */
+        ipc         : ipc,
+
+        /**
          * Id of the current active tab
          */
         currentTabId : null,

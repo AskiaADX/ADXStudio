@@ -338,6 +338,24 @@ function startPreview() {
 }
 
 /**
+ * Return the file structure of the ADC resources directory
+ * @param event
+ * @param {String} tabId Id of the tab that request the list of files
+ */
+function onGetAdcStructure(event, tabId) {
+    tryIfADC(function tryToOpenProjectSettings(adc) {
+        if (!adc || !adc.path) {
+            return;
+        }
+        getResourcesDirectoryStructure(function (structure) {
+            adc.load(function (err) {
+                workspaceView.send('workspace-update-adc-structure', err, tabId, structure);
+            });
+        });
+    });
+}
+
+/**
  * Set the current tab
  * @param event
  * @param {String} tabId Id of the tab
@@ -679,6 +697,9 @@ ipc.on('workspace-ready', function (event) {
 
     ipc.removeListener('workspace-move-tab', onMoveTab);
     ipc.on('workspace-move-tab', onMoveTab);
+
+    ipc.removeListener('workspace-get-adc-structure', onGetAdcStructure);
+    ipc.on('workspace-get-adc-structure', onGetAdcStructure);
 
     app.removeListener('menu-open-project', reloadWorkspace);
     app.on('menu-open-project', reloadWorkspace);

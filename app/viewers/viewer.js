@@ -43,6 +43,21 @@ var viewer = (function () {
          */
         saveContentAndClose : function () {/* Function that should be implemented in the viewer */},
         /**
+         * Request the list of file in the ADC resources directory
+         * @param {Function} callback With the structure of the file in args
+         */
+        getADCStructure : function (callback) {
+            var ipc = tabs.ipc;
+            if (tab.previousADCStructCb) {
+                ipc.removeListener('workspace-update-adc-structure', tab.previousADCStructCb);
+            }
+            tab.previousADCStructCb = function (event, err, tabId, structure) {
+                callback(structure);
+            };
+            ipc.on('workspace-update-adc-structure', tab.previousADCStructCb);
+            ipc.send('workspace-get-adc-structure', tab.id);
+        },
+        /**
          * Fire loaded event
          */
         fireReady : function fireReady() {

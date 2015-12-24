@@ -108,6 +108,15 @@ It's fire with the following arguments:
 * **event** Event object
 * **tabId** Id of the tab that hold the content
 * **content** The content to save
+
+### workspace-get-adc-structure
+
+The `workspace-get-adc-structure` event is fire when the user wants to obtain the list of files in the resources folder
+
+It's fire with the following arguments
+
+* **event** Event object
+* **tabId** Id of the tab that request the ADC Structure
      
 ## Events from Controller
 
@@ -228,5 +237,15 @@ It's fire with following arguments:
  * **err** Possible error that could occurred, null when everything is ok.
  * **tab** Tab object, with id/name/content/path etc...
  * **pane** Name of the pane where the tab is located 
+ 
+### workspace-update-adc-structure
+ 
+The  'workspace-update-adc-structure' event when a tab have previously request the ADC structure using `workspace-get-adc-structure` event 
+
+It's fire with following arguments:
+
+* **err** Possible error that could occurred, null when everything is ok.
+* **tabId** Id of the tab that has request the ADC structure
+* **structure** The ADC structure
  
  
