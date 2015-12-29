@@ -1,8 +1,11 @@
-var path = require('path');
-var fs = require('fs');
+"use strict";
 
-var PREF_FILENAME = "Prefs.json";
-var MRU_FILENAME = "MRU.json";
+const path = require('path');
+const fs = require('fs');
+const ADC = require('adcutil').ADC;
+
+const prefFileName = "Prefs.json";
+const mruFileName = "MRU.json";
 
 /**
  * Merge two object together (recursively)
@@ -11,8 +14,7 @@ var MRU_FILENAME = "MRU.json";
  * @return {Object} Merged object
  */
 function merge(destination, source) {
-    var k;
-    for (k in source) {
+    for (const k in source) {
         if (source.hasOwnProperty(k)) {
             if (!destination.hasOwnProperty(k)) {
                 if (Array.isArray(source[k])) {
@@ -53,26 +55,101 @@ AppDataSettings.prototype.getAppDataPath = function getAppDataPath() {
  * @param {Error} callback.err
  * @param {Object} callback.preferences
  * @param {String} callback.preferences.defaultProjectsLocation Default path to create projects
+ * @param {Boolean} callback.preferences.openLastProjectByDefault Open the last project by default
+ * @param {Object} [callback.preferences.author] Default ADC author (from ADCUtil)
+ * @param {String} [callback.preferences.author.name] Default Name of the ADC author (from ADCUtil)
+ * @param {String} [callback.preferences.author.email] Default Email of the ADC author (from ADCUtil)
+ * @param {String} [callback.preferences.author.company] Default Company of the ADC author (from ADCUtil)
+ * @param {String} [callback.preferences.author.webSite] Default WebSite of the ADC author (from ADCUtil)
  */
 AppDataSettings.prototype.getPreferences = function getPreferences(callback) {
     // No callback
     if (typeof callback !== 'function') {
         return;
     }
-    var filePath = path.join(this.rootPath, PREF_FILENAME);
-    var self = this;
-    var defaultPreferences = {
-        defaultProjectsLocation  : path.join(process.env.USERPROFILE, 'Documents')
+    const filePath = path.join(this.rootPath, prefFileName);
+    const defaultPreferences = {
+        defaultProjectsLocation  : path.join(process.env.USERPROFILE, 'Documents'),
+        openLastProjectByDefault : true
     };
 
     fs.readFile(filePath, function onReadPrefs(err, data) {
-        if (err) {
-            callback(err, defaultPreferences);
-            return;
+        // Read the ADCUtil preferences
+        ADC.preferences.read({silent: true}, function (adcprefs) {
+            let finalPrerences = adcprefs || {};
+
+            finalPrerences = merge(defaultPreferences, finalPrerences);
+
+            if (err) {
+                callback(err, finalPrerences);
+                return;
+            }
+
+            finalPrerences = merge(data ? JSON.parse(data) : {}, finalPrerences);
+            callback(null, finalPrerences);
+        });
+    });
+};
+
+/**
+ * Set the user application preferences
+ * @param {Object} preferences Preferences to set
+ * @param {String} [preferences.defaultProjectsLocation] Default path to create projects
+ * @param {Boolean} [preferences.openLastProjectByDefault] Open the last project by default
+ * @param {Object} [preferences.author] Default ADC author (from ADCUtil)
+ * @param {String} [preferences.author.name] Default Name of the ADC author (from ADCUtil)
+ * @param {String} [preferences.author.email] Default Email of the ADC author (from ADCUtil)
+ * @param {String} [preferences.author.company] Default Company of the ADC author (from ADCUtil)
+ * @param {String} [preferences.author.webSite] Default WebSite of the ADC author (from ADCUtil)
+ * @param {Function} callback
+ * @param {Error} callback.err
+ */
+AppDataSettings.prototype.setPreferences = function setPreferences(preferences, callback) {
+    const self = this;
+
+    // Read the current user preferences
+    this.getPreferences(function (err, currentPrefs) {
+        // Merge the current user preferences with the preferences in the args
+        let finalPreferences = merge({}, preferences);
+        finalPreferences = merge(finalPreferences, currentPrefs);
+
+        // Extract the preferences from ADCUtil to store it using ADCUtil
+        let adcUtilPref = null;
+        if (finalPreferences.author) {
+            // Author could come from currentPrefs
+            // If it's not define in the `preferences` in args, don't treat it
+            if (preferences.author) {
+                adcUtilPref = adcUtilPref || {};
+                adcUtilPref.author = finalPreferences.author;
+            }
+            delete finalPreferences.author;
         }
 
-        var prefs = merge(data ? JSON.parse(data) : {}, defaultPreferences);
-        callback(null, prefs);
+        // Save the merged preferences
+        // Make sure the directory exist
+        fs.mkdir(self.rootPath, function () {
+            fs.writeFile(path.join(self.rootPath, prefFileName),  JSON.stringify(finalPreferences), {encoding: 'utf8'}, function onWritePrefs(err) {
+                if (err) {
+                    if (typeof callback === 'function') {
+                        callback(err);
+                    }
+                    return;
+                }
+
+                if (!adcUtilPref) {
+                    if (typeof callback === 'function') {
+                        callback(null);
+                    }
+                    return;
+                }
+
+                ADC.preferences.write(adcUtilPref, function onADCUtilWritePref() {
+                    if (typeof callback === 'function') {
+                        callback(null);
+                    }
+                });
+            });
+        });
     });
 };
 
@@ -91,21 +168,19 @@ AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed(cal
         callback(null, this._cache.mru);
         return;
     }
-    var filePath = path.join(this.rootPath, MRU_FILENAME);
-    var self = this;
+    const self = this;
+    const filePath = path.join(this.rootPath, mruFileName);
     fs.readFile(filePath, function onReadMRU(err, data) {
         if (err) {
            callback(err, []);
            return;
         }
 
-        var directories = data ? JSON.parse(data) : [];
-        var stat;
-        var mru = [];
-        var i, l;
-        for (i = 0, l = directories.length; i < l; i += 1) {
+        const directories = data ? JSON.parse(data) : [];
+        const mru = [];
+        for (let i = 0, l = directories.length; i < l; i += 1) {
             try {
-                stat = fs.statSync(directories[i].path);
+                let stat = fs.statSync(directories[i].path);
                 if (stat.isDirectory()) {
                     mru.push(directories[i]);
                 }
@@ -136,11 +211,11 @@ AppDataSettings.prototype.clearCache = function clearCache() {
  * @param {Error} callback.err
  */
 AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(item, callback) {
-    var self = this;
+    const self = this;
     this.getMostRecentlyUsed(function onGetMRU(err, mru) {
-        var i, l, indexFound = -1;
+        let indexFound = -1;
 
-        for (i = 0, l = mru.length; i < l; i += 1) {
+        for (let i = 0, l = mru.length; i < l; i += 1) {
             if (mru[i].path === item.path) {
                 indexFound = i;
                 break;
@@ -154,7 +229,7 @@ AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(ite
         self._cache.mru = mru;
         // Make sure the directory exist
         fs.mkdir(self.rootPath, function () {
-            fs.writeFile(path.join(self.rootPath, MRU_FILENAME),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
+            fs.writeFile(path.join(self.rootPath, mruFileName),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
                 if (typeof callback === 'function') {
                     callback(err);
                 }
@@ -172,9 +247,18 @@ AppDataSettings.prototype.getInitialProject = function getInitialProject(callbac
     if (typeof callback !== 'function') {
         return;
     }
-    this.getMostRecentlyUsed(function onGetMRU(err, mru) {
-       callback((mru.length)  ? mru[0].path : '');
+    const self = this;
+    this.getPreferences(function (err, preferences) {
+        if (!preferences.openLastProjectByDefault) {
+            callback('');
+            return;
+        }
+
+        self.getMostRecentlyUsed(function onGetMRU(err, mru) {
+            callback((mru.length)  ? mru[0].path : '');
+        });
     });
+
 };
 
 module.exports = new AppDataSettings();

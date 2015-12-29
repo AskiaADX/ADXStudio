@@ -9,7 +9,8 @@
     margin-top  : 0;
 }
 
-.askia-modal-preferences-container {
+.askia-modal-preferences-container,
+.askia-modal-preferences-checkbox-container {
     padding: 15px 0 15px 20px;
 }
 
@@ -30,6 +31,7 @@
     width: 368px;
 }
 
+.askia-modal-preferences-checkbox-container input:focus,
 .askia-modal-preferences-container input:focus,
 .askia-modal-preferences-container textarea:focus,
 .askia-modal-preferences-container select:focus {

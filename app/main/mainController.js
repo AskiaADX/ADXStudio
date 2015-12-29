@@ -1,3 +1,5 @@
+"use strict";
+
 const electron = require('electron');
 const app = electron.app;
 const util = require('util');
@@ -8,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 const uuid = require('node-uuid');
 const packageJson = require('../../package.json');
-var mainView;
+let  mainView;
 
 const workspaceController = require('../workspace/workspaceController.js');
 require('../explorer/explorerController.js');
@@ -18,7 +20,7 @@ require('./menuController.js');
  * Enforce the quit of the application even if files are editing
  * @type {boolean}
  */
-var enforceQuit = false;
+let enforceQuit = false;
 
 /**
  * Write message in the output window
@@ -214,10 +216,10 @@ function buildProject() {
  * Open preferences
  */
 function openPreferences(){
-    ADC.preferences.read({silent : true},function onReadPreferences(preferences) {
+    appSettings.getPreferences(function onReadPreferences(err, preferences){
         showModalDialog({
             type : 'preferences',
-            author : (preferences && preferences.author) || null
+            preferences  : preferences
         }, 'main-save-preferences');
     });
 }
@@ -229,10 +231,10 @@ function savePreferences(event, button, options) {
     if (button !== 'ok' && button !== 'yes') {
         return;
     }
-    if (!options.author) {
+    if (!options.preferences) {
         return;
     }
-    ADC.preferences.write(options);
+    appSettings.setPreferences(options.preferences);
 }
 
 /**

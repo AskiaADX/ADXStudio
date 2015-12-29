@@ -2,7 +2,7 @@
 describe('appSettings', function () {
     var appSettings,  fs = require('fs'),  spies, fakeStats;
     var pathHelper = require('path');
-
+    var ADC = require('adcutil').ADC;
 
     beforeEach(function () {
         var cacheKey = require.resolve("../../app/appSettings/appSettingsModel.js");
@@ -13,6 +13,10 @@ describe('appSettings', function () {
         appSettings = require("../../app/appSettings/appSettingsModel.js");
 
         spies = {
+            ADCPref : {
+                read : spyOn(ADC.preferences, 'read'),
+                write : spyOn(ADC.preferences, 'write')
+            },
             fs: {
                 stat: spyOn(fs, 'stat'),
                 statSync: spyOn(fs, 'statSync'),
@@ -47,6 +51,21 @@ describe('appSettings', function () {
         
         spies.fs.mkdir.andCallFake(function (dir, cb) {
             cb(null);
+        });
+
+        spies.ADCPref.read.andCallFake(function (options, cb) {
+            cb({
+                author : {
+                    name : 'AuthName',
+                    email : 'AuthEmail@domain.ext',
+                    company : 'AuthCompany',
+                    webSite : 'AuthWebSite'
+                }
+            });
+        });
+
+        spies.ADCPref.write.andCallFake(function (prefs, cb) {
+            ADC.preferences.read({}, cb);
         });
     });
 
@@ -291,7 +310,7 @@ describe('appSettings', function () {
     });
 
     describe('#getPreferences', function () {
-        it("Should be a function", function () {
+        it("should be a function", function () {
             expect(typeof appSettings.getPreferences).toBe('function');
         });
 
@@ -302,6 +321,14 @@ describe('appSettings', function () {
             });
             appSettings.getPreferences(function () {});
             expect(readPath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'Prefs.json'));
+        });
+
+        it('should read the preferences of ADCUtil', function () {
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here"}');
+            });
+            appSettings.getPreferences(function () {});
+            expect(spies.ADCPref.read).toHaveBeenCalled();
         });
 
         it('should return an error when the Prefs.json could not be accessible', function () {
@@ -315,29 +342,40 @@ describe('appSettings', function () {
             expect(sendError).toBe(returnError);
         });
 
-        it('should return an the default preferences when the Prefs.json could not be accessible', function () {
+        it('should return the default preferences when the Prefs.json and the ADCUtil prefs are not accessible', function () {
             var result;
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(new Error("Error"));
             });
+            spies.ADCPref.read.andCallFake(function (options, cb) {
+                cb(null);
+            });
             appSettings.getPreferences(function (err, data) {
                 result = data;
             });
             expect(result).toEqual({
-                defaultProjectsLocation : pathHelper.join(process.env.USERPROFILE, 'Documents')
+                defaultProjectsLocation : pathHelper.join(process.env.USERPROFILE, 'Documents'),
+                openLastProjectByDefault : true
             });
         });
 
-        it('should return the preferences from the Prefs.json when it\'s accessible', function () {
+        it('should return the preferences from the Prefs.json and the ADCUtil when it\'s accessible', function () {
             var result;
             spies.fs.readFile.andCallFake(function (filePath, cb) {
-                cb(null, '{"defaultProjectsLocation": "Here"}');
+                cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
             appSettings.getPreferences(function (err, data) {
                 result = data;
             });
             expect(result).toEqual({
-                defaultProjectsLocation : "Here"
+                defaultProjectsLocation : "Here",
+                openLastProjectByDefault : false,
+                author : {
+                    name : 'AuthName',
+                    email : 'AuthEmail@domain.ext',
+                    company : 'AuthCompany',
+                    webSite : 'AuthWebSite'
+                }
             });
         });
 
@@ -351,14 +389,145 @@ describe('appSettings', function () {
             });
             expect(result).toEqual({
                 another_key : "Here",
-                defaultProjectsLocation : pathHelper.join(process.env.USERPROFILE, 'Documents')
+                defaultProjectsLocation : pathHelper.join(process.env.USERPROFILE, 'Documents'),
+                openLastProjectByDefault : true,
+                author : {
+                    name : 'AuthName',
+                    email : 'AuthEmail@domain.ext',
+                    company : 'AuthCompany',
+                    webSite : 'AuthWebSite'
+                }
             });
         });
 
     });
 
+    describe('#setPreferences', function () {
+        it("should be a function", function () {
+            expect(typeof appSettings.setPreferences).toBe('function');
+        });
+
+        it("should re-read the preferences from the file, merge it with the preferences in args and write the final prefs in the Prefs.json", function () {
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
+            });
+
+            runSync(function (done) {
+                spies.fs.writeFile.andCallFake(function (filePath,  data) {
+                    expect(filePath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'Prefs.json'));
+                    expect(data).toEqual(JSON.stringify({
+                        defaultProjectsLocation : "ElseWhere",
+                        openLastProjectByDefault : true
+                    }));
+                    done();
+                });
+
+                appSettings.setPreferences({
+                    defaultProjectsLocation : "ElseWhere",
+                    openLastProjectByDefault : true
+                });
+            });
+        });
+
+        it("should return an error via the callback when writing in the Prefs.json file failed", function () {
+            var throwError = new Error("Error");
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
+            });
+            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+               cb(throwError);
+            });
+
+            runSync(function (done) {
+                appSettings.setPreferences({
+                    defaultProjectsLocation : "ElseWhere",
+                    openLastProjectByDefault : true
+                }, function (err) {
+                    expect(err).toBe(throwError);
+                    done();
+                });
+            });
+        });
+
+        it("should write the ADCUtil preferences when it's defined and when writing in Prefs.json succeed", function () {
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
+            });
+            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+                cb(null);
+            });
+
+            runSync(function (done) {
+                spies.ADCPref.write.andCallFake(function (prefs) {
+                    expect(prefs).toEqual({
+                        author : {
+                            name : 'NewAuthName',
+                            email : 'NewAuthEmail@domain.ext',
+                            company : 'NwwAuthCompany',
+                            webSite : 'NewAuthWebSite'
+                        }
+                    });
+                    done();
+                });
+                appSettings.setPreferences({
+                    defaultProjectsLocation : "ElseWhere",
+                    openLastProjectByDefault : true,
+                    author : {
+                        name : 'NewAuthName',
+                        email : 'NewAuthEmail@domain.ext',
+                        company : 'NwwAuthCompany',
+                        webSite : 'NewAuthWebSite'
+                    }
+                });
+            });
+        });
+
+        it("should not write the ADCUtil preferences when it's not defined", function () {
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
+            });
+            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+                cb(null);
+            });
+
+            runSync(function (done) {
+                appSettings.setPreferences({
+                    defaultProjectsLocation : "ElseWhere",
+                    openLastProjectByDefault : true
+                }, function () {
+                    expect(spies.ADCPref.write).not.toHaveBeenCalled();
+                    done();
+                });
+            });
+        });
+
+        it("should not return an error when the prefs.json succeed and the ADCUtil.preferences.write succeed", function () {
+            spies.fs.readFile.andCallFake(function (filePath, cb) {
+                cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
+            });
+            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+                cb(null);
+            });
+
+            runSync(function (done) {
+                appSettings.setPreferences({
+                    defaultProjectsLocation : "ElseWhere",
+                    openLastProjectByDefault : true,
+                    author : {
+                        name : "NewName"
+                    }
+                }, function (err) {
+                    expect(err).toEqual(null);
+                    done();
+                });
+            });
+        });
+
+
+    });
+
     describe('#getInitialProject', function () {
-        it("Should be a function", function () {
+        it("should be a function", function () {
             expect(typeof appSettings.getInitialProject).toBe('function');
         });
 
@@ -368,9 +537,54 @@ describe('appSettings', function () {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
 
+            spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
+                cb(null, {
+                    openLastProjectByDefault : true
+                });
+            });
+
             runSync(function (done) {
                 appSettings.getInitialProject(function (projectPath) {
                     expect(projectPath).toBe('A');
+                    done();
+                });
+            });
+        });
+
+        it('should return an empty string when there is not most recently used project', function () {
+            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+                cb(null, []);
+            });
+
+            spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
+                cb(null, {
+                    openLastProjectByDefault : true
+                });
+            });
+
+            runSync(function (done) {
+                appSettings.getInitialProject(function (projectPath) {
+                    expect(projectPath).toEqual('');
+                    done();
+                });
+            });
+        });
+
+        it('should return an empty string when the `openLastProjectByDefault` preference is false', function () {
+
+            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+                cb(null, [{"path" : "A"}, {"path" : "B"}]);
+            });
+
+            spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
+                cb(null, {
+                    openLastProjectByDefault : false
+                });
+            });
+
+            runSync(function (done) {
+                appSettings.getInitialProject(function (projectPath) {
+                    expect(projectPath).toEqual('');
                     done();
                 });
             });

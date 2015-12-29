@@ -19,7 +19,9 @@
             modalDialog.elements.preferences = {};
             var root = modalDialog.elements.bodyContainer,
                 el   = modalDialog.elements.preferences,
-                author = (modalDialog.options && modalDialog.options.author) || {};
+                options = modalDialog.options || {},
+                preferences = options.preferences || {},
+                author = (preferences.author) || {};
 
             // Add extra class on the dialog box
             modalDialog.elements.dialog.classList.add('preferences');
@@ -101,6 +103,26 @@
 
             root.appendChild(el.website);
 
+            // Open the latest project by default
+            el.reopenLastProject = document.createElement('div');
+            el.reopenLastProject.className = 'askia-modal-preferences-checkbox-container';
+
+            el.reopenLastProjectInput = document.createElement('input');
+            el.reopenLastProjectInput.setAttribute('id', 'modal_preferences_reopenLastProject_' + autoIncrement);
+            el.reopenLastProjectInput.setAttribute('type', 'checkbox');
+            if (preferences.openLastProjectByDefault) {
+                el.reopenLastProjectInput.setAttribute('checked', 'checked');
+            }
+            el.reopenLastProject.appendChild(el.reopenLastProjectInput);
+
+            el.reopenLastProjectLabel = document.createElement('label');
+            el.reopenLastProjectLabel.setAttribute('for', 'modal_preferences_reopenLastProject_' + autoIncrement);
+            el.reopenLastProjectLabel.innerHTML = "Reopen last project on startup";
+            el.reopenLastProject.appendChild(el.reopenLastProjectLabel);
+
+            root.appendChild(el.reopenLastProject);
+
+
             // OK / Cancel button
 
             modalDialog.addOkButton();
@@ -115,11 +137,14 @@
         validate : function validate(modalDialog, retVal) {
             var el   = modalDialog.elements.preferences;
             retVal.value = {
-                author : {
-                    name : el.userNameInput.value,
-                    email : el.userEmailInput.value,
-                    company : el.companyInput.value,
-                    website : el.websiteInput.value
+                preferences : {
+                    author: {
+                        name: el.userNameInput.value,
+                        email: el.userEmailInput.value,
+                        company: el.companyInput.value,
+                        website: el.websiteInput.value
+                    },
+                    openLastProjectByDefault : el.reopenLastProjectInput.checked
                 }
             };
         }
