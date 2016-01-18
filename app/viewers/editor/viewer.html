@@ -21,6 +21,7 @@
   	<link rel="stylesheet" href="../../lib/codemirror/mode/askiascript/askiascript.css" />
     <script src="../../lib/codemirror/mode/askiascript/askiascript.js"></script>
     <script src="../../lib/codemirror/mode/askiascript/AskiaLanguage-en.js"></script>
+    <script src="../../lib/codemirror/mode/askiascript/ADCMasqueLanguage-en"></script>
     <script src="../../lib/codemirror/mode/askiascript/MasqueLanguage-en.js"></script>
   	<!-- AskiaScript Embedding -->
     <script src="../../lib/codemirror/mode/askiascripthtml/askiascripthtml.js"></script>
@@ -54,6 +55,10 @@
     <script src="../../lib/codemirror/addon/hint/xml-hint.js"></script>
     <script src="../../lib/codemirror/addon/hint/html-hint.js"></script>
     <script src="../../lib/codemirror/addon/hint/css-hint.js"></script>
+
+    <!-- XSD -->
+    <script src="../../lib/codemirror/addon/xsd/ADCSchemaConfig.js"></script>
+    <script src="../../lib/codemirror/addon/xsd/ADCSchemaUnitTests.js"></script>
 
   	<!-- Sense  -->
   	<link rel="stylesheet" href="../../lib/codemirror/addon/sense/sense.css" />
@@ -92,8 +97,8 @@
             var textarea = document.getElementById('code');
 
             var matchFileExt = /\.([^\.]+)$/.exec(tab.name);
-            var contentType = (matchFileExt && matchFileExt.length) ?
-                    contentTypeByFileExt[matchFileExt[1].toLocaleLowerCase()] : '';
+            var fileExt = (matchFileExt && matchFileExt.length) ? matchFileExt[1].toLocaleLowerCase() : '';
+            var contentType = (fileExt) ? contentTypeByFileExt[fileExt] : '';
 
             textarea.value = tab.content;
 
@@ -112,27 +117,121 @@
                 tabs.onSaveAndClose(tab.id, window.editor.getValue());
             };
 
-            tab.editor = window.editor = CodeMirror.fromTextArea(textarea, {
+            var editorOptions = {
                 lineNumbers     : true,
-              	indentUnit		: 4,
+                indentUnit		: 4,
                 gutters         : ["CodeMirror-lint-markers", "CodeMirror-foldgutter", "CodeMirror-linenumbers"],
                 mode            : contentType,
                 theme           : 'askia',
                 styleActiveLine	: true,
-              	extraKeys		: {
-					"Ctrl--"	: CodeMirror.commands.fold,
-                  	"Ctrl-="	: CodeMirror.commands.unfold,
-                  	"Shift-Ctrl--"	: CodeMirror.commands.foldAll,
-                  	"Shift-Ctrl-="	: CodeMirror.commands.unfoldAll
+                extraKeys		: {
+                    "Ctrl--"	: CodeMirror.commands.fold,
+                    "Ctrl-="	: CodeMirror.commands.unfold,
+                    "Shift-Ctrl--"	: CodeMirror.commands.foldAll,
+                    "Shift-Ctrl-="	: CodeMirror.commands.unfoldAll
                 },
-          		foldGutter		: true,
+                foldGutter		: true,
                 lint			: true,
                 questions       : []
-            }).suggest();
+            };
+
+            // Search the XSD schema to apply on the xml file
+            var xsdSchema = null;
+            if (fileExt === 'xml') {
+                var xmlNs = /xmlns="(.+?)"/i.exec(tab.content);
+                if (xmlNs && xmlNs.length > 1) {
+                    xmlNs = xmlNs[1];
+                }
+                if (CodeMirror.xsdSchemas[xmlNs]) {
+                    editorOptions.hintOptions = {
+                        schemaInfo : CodeMirror.xsdSchemas[xmlNs].hintSchemaInfo
+                    };
+                    xsdSchema = CodeMirror.xsdSchemas[xmlNs].schema;
+                }
+            }
+
+            tab.editor = window.editor = CodeMirror.fromTextArea(textarea, editorOptions).suggest();
 
             window.editor.on('change', function onChange(instance) {
                 tabs.onContentChange(tab.id, instance.getValue());
             });
+
+            /* -----
+             Add title on XML nodes when the XSD schema is defined
+             ----- */
+            var markXmlTimeout;
+            function searchAttrInSchema(text, tagName) {
+                for (var i = 0, l = xsdSchema.tags.length; i < l; i++) {
+                    var tag = xsdSchema.tags[i];
+                    if (!tag.attrs || tag.name !== tagName) {
+                        continue;
+                    }
+                    for (var j = 0, k = tag.attrs.length; j < k; j++) {
+                        if (tag.attrs[j].name === text) {
+                            return tag.attrs[j].desc;
+                        }
+                    }
+                }
+                return "";
+            }
+
+            function searchTagInSchema(text) {
+                for (var i = 0, l = xsdSchema.tags.length; i < l; i++) {
+                    if (xsdSchema.tags[i].name == text) {
+                        return xsdSchema.tags[i].desc;
+                    }
+                }
+                return "";
+            }
+
+            function markTags() {
+                editor = window.editor;
+                window.editor.eachLine(function (line) {
+                    var lineNo = line.lineNo();
+                    var tokens = editor.getLineTokens(lineNo);
+                    var from, to, token;
+                    for (var i = 0, l = tokens.length; i < l; i++) {
+                        token = tokens[i];
+                        if (!token.string.trim()) {
+                            continue;
+                        }
+                        if (token.type === "tag" || token.type === "attribute") {
+                            from = {
+                                line : lineNo,
+                                ch : token.start
+                            };
+                            to = {
+                                line : lineNo,
+                                ch : token.end
+                            };
+                            if (token.type == "tag") {
+                                editor.markText(from, to, {title : searchTagInSchema(token.string)});
+                            }
+                            else if (token.type == "attribute") {
+                                var tagName = token.state && token.state.outer && token.state.outer.tagName;
+                                if (tagName) {
+                                    editor.markText(from, to, {title : searchAttrInSchema(token.string, tagName)});
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            // Operation to mark tags
+            function markTagsOperation() {
+                window.editor.operation(markTags);
+            }
+            // Trigger the change (do the operation) using timer (thread)
+            function trigger() {
+                clearTimeout(markXmlTimeout);
+                markXmlTimeout   = setTimeout(markTagsOperation, 750);
+            }
+
+            if (xsdSchema) {
+                // Register the change event once for all
+                window.editor.on("change", trigger);
+                markTags();
+            }
 
             viewer.fireReady();
         }());

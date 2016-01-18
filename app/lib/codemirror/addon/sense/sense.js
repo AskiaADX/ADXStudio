@@ -18,7 +18,7 @@
         descClassNames    = classNames.description,
         translate   = askiaScript.translate,
         PERIOD      = '.',
-        // Browser support
+    // Browser support
         browserSupport = {
             selectstart     :  ("onselectstart" in document.createElement('div')),
             selectionEvent  : (window.selectstart) ? "selectstart" : "mousedown"
@@ -247,7 +247,12 @@
      */
     function getTokenRegexp(str, exactMatch) {
         str = trimRight(str);
-        var start = escapeRegExp(str).replace(/[.]/, '.?');
+        // var start = escapeRegExp(str).replace(/[.]/, '.?');
+        // Escape with all special characters that could trigger the suggestion
+        // but without to be part of the suggestion itself
+        // Do it for the two first characters to handle stuff like '</' => '<?/?'
+        // Be careful the . will be replace by \.
+        var start = escapeRegExp(str).replace(/^(\\\.|=|<|"|'|\/)/, '$1?').replace(/^(.\?)(\.|=|<|"|'|\/)/, '$1$2?');
         if (start === '') {
             start = ".*";
         }
@@ -537,12 +542,12 @@
                     return;
                 }
                 if (member === '__question__') {
-                      self.saveQuestionToHistory();
-                      searchAndDisplayDescription((instance.options &&
-                                                    instance.options.dictionary &&
-                                                            instance.options.dictionary.questions), {
-                          string  : keyword
-                      });
+                    self.saveQuestionToHistory();
+                    searchAndDisplayDescription((instance.options &&
+                    instance.options.dictionary &&
+                    instance.options.dictionary.questions), {
+                        string  : keyword
+                    });
                     return;
                 }
                 item = askiaScript.find(keyword, member);
@@ -724,10 +729,10 @@
             }
 
             if (prev.type && prev.type !== classNames.OPERATOR &&
-                    prev.type !== classNames.PUNCTUATION &&
-                    prev.type !== classNames.NUMBER &&
-                    prev.type !== classNames.STRING &&
-                    (prev.type || '').indexOf(classNames.MEMBER_PREFIX) === -1) {
+                prev.type !== classNames.PUNCTUATION &&
+                prev.type !== classNames.NUMBER &&
+                prev.type !== classNames.STRING &&
+                (prev.type || '').indexOf(classNames.MEMBER_PREFIX) === -1) {
                 this.currentToken = null;
                 return null;
             }
@@ -807,8 +812,8 @@
                     return;
                 }
                 searchAndDisplayDescription((instance.options &&
-                                                instance.options.dictionary &&
-                                                    instance.options.dictionary.questions), tokenInfo);
+                instance.options.dictionary &&
+                instance.options.dictionary.questions), tokenInfo);
                 return;
             }
 
@@ -854,8 +859,8 @@
                 addClass(parentList.parentNode, descClassNames.FOUND);
                 // li > p
                 toggler = (parentList.parentNode.childNodes[0].tagName.toLowerCase() ==='p') ?
-                                parentList.parentNode.childNodes[0].querySelector('a.' + descClassNames.TOGGLE)
-                                : null;
+                    parentList.parentNode.childNodes[0].querySelector('a.' + descClassNames.TOGGLE)
+                    : null;
                 if (toggler) {
                     addClass(toggler, descClassNames.TOGGLE_EXPAND);
                     parentList.style.display = 'block';
@@ -1360,13 +1365,21 @@
     };
 
     /**
+     * Indicates if the current innerMode is 'xml' or 'html'
+     */
+    CodeMirror.prototype.isXmlLikeMode = function () {
+        var mode = this.getModeAt(this.getCursor());
+        return (mode && (mode.name === 'xml' || mode.name === 'html'));
+    };
+
+    /**
      * Send message to the executatble application
      * For Design.exe only, because it create a fake of AJAX request
      * @chainable
      */
     CodeMirror.prototype.sendMessage = function sendMessage(message) {
         var instance = this;
-         // Only call it for the local exe
+        // Only call it for the local exe
         if (instance.options.localExe) {
             var encodedMessage = encodeURIComponent(message);
             window.navigate("admsg_" + encodedMessage);
@@ -1556,20 +1569,20 @@
             namespace   = instance.options && instance.options.namespace,
             snippets    = askiaScript.snippets,
 
-            // DOM elements
+        // DOM elements
             elEditor        = instance.getWrapperElement(),
             elSuggest 	    = document.createElement('div'),
             elSuggestList   = document.createElement('ul'),
 
-            // Status
+        // Status
             range	 	    = {},
             cache    	    = [],
-			displayed	    = [],
+            displayed	    = [],
             selectedIndex   = -1,
             initialToken    = null,
 
 
-            // Auto close some punctuation
+        // Auto close some punctuation
             closeChars        = {
                 'U+005B' : ']',
                 'U+007B' : '}',
@@ -1578,13 +1591,13 @@
                 '{'      : '}'
             },
 
-            // Latest event type
-            // Because in certain cases the keyup are triggered twice
+        // Latest event type
+        // Because in certain cases the keyup are triggered twice
             lastEventType,
             lastEventKey,
             lastEventSeed,
 
-            // Keycodes
+        // Keycodes
             keyCodes = {
                 BACKSPACE   : 8,
                 TAB         : 9,
@@ -1629,8 +1642,8 @@
                 elSuggestList.removeChild(elSuggestList.lastChild);
             }
             cache            = [];
-			displayed 	     = [];
-			range		     = {};
+            displayed 	     = [];
+            range		     = {};
             initialToken     = null;
         }
 
@@ -1653,9 +1666,9 @@
          * @param {Object} [coord] Coordinate to place the box
          */
         function updatePosition(coord) {
-            var pos = (coord) ? 
-						instance.charCoords(coord) :
-							instance.cursorCoords(false),
+            var pos = (coord) ?
+                    instance.charCoords(coord) :
+                    instance.cursorCoords(false),
                 wrapperLeft  = (pos.left - 35),
                 wrapperTop   = (pos.bottom + 5),
                 wrapperWidth = elSuggest.offsetWidth,
@@ -1806,8 +1819,8 @@
 
             li.onclick = function (e) {
                 /* e.stopPropagation();
-                itemClick(item);
-                instance.focus();*/
+                 itemClick(item);
+                 instance.focus();*/
                 e.stopPropagation();
                 insert(item);
                 close();
@@ -1845,8 +1858,6 @@
                         name : list[i],
                         base : 'const'
                     };
-                    // For xml/html remove the first < or </
-                    item.name = item.name.replace(/^(<\/?)/, '');
                 }
                 if (!isAsMode || (item && item.name && !item.deprecated && askiaScript.availableInNS(item, namespace))) {
                     visible = shouldBeDisplay(item, rg);
@@ -1895,18 +1906,18 @@
          */
         function filter(rg) {
             unselect();
-			displayed = [];
+            displayed = [];
             for (var i = 0, l = cache.length; i < l; ++i) {
                 var obj = cache[i],
                     item = obj.item,
                     element = obj.element,
-					visible = shouldBeDisplay(item, rg);
-				if (visible) {
-					displayed.push(obj);
-				} 
-				updateClass(visible, element, senseClassNames.VISIBLE);
+                    visible = shouldBeDisplay(item, rg);
+                if (visible) {
+                    displayed.push(obj);
+                }
+                updateClass(visible, element, senseClassNames.VISIBLE);
             }
-			elSuggest.style.display = displayed.length ? 'block' : 'none';
+            elSuggest.style.display = displayed.length ? 'block' : 'none';
             instance.isSuggesting = displayed.length ? true : false;
         }
 
@@ -1915,7 +1926,7 @@
          * @param {Object} item Suggestion item to insert
          */
         function insert(item) {
-			var isMethod   = item.base === bases.METHOD,
+            var isMethod   = item.base === bases.METHOD,
                 isFunction = (isMethod || item.base === bases.FUNCTION),
                 isQuestion = (item.base === bases.QUESTION),
                 initialTokenText = (initialToken && initialToken.className === classNames.QUESTION_DELIMITER && initialToken.string) || '',
@@ -1970,13 +1981,13 @@
          * @param {Object} [cur] Coordinate of the cursor in the editor
          * @return {Boolean} Return true when a snippet has been inserted
          */
-		function autoComplete(cur) {
+        function autoComplete(cur) {
             if (!instance.isAskiaScriptMode()) {
                 return false;
             }
             (cur = cur || instance.getCursor());
 
-			var lineInfo = instance.lineInfo(cur.line),
+            var lineInfo = instance.lineInfo(cur.line),
                 text     = lineInfo.handle.text,
                 length   = snippets.length,
                 snippet,
@@ -2049,7 +2060,7 @@
             }
 
             return false;
-		}
+        }
 
         /**
          * Close punctuation
@@ -2074,28 +2085,54 @@
          * @param {Object} cur Coordinates of the cursor
          * @return {Boolean} Return true when something was happen
          */
-		function specialKey(event, cur) {
-			var keyCode 	= event.keyCode,
-				eventType 	= event.type,
+        function specialKey(event, cur) {
+            var keyCode 	= event.keyCode,
+                eventType 	= event.type,
                 keyup       = (eventType === 'keyup'),
                 keydown     = (eventType === 'keydown');
 
-           switch(keyCode) {
-		      case keyCodes.TAB:
-				return pick() || autoComplete(cur);
-		      case keyCodes.DOWN:
-              case keyCodes.UP:
-              case keyCodes.PAGE_UP:
-              case keyCodes.PAGE_DOWN:
-                   return moveSelection(keyCode);
-		      case keyCodes.ENTER:
-		        if (~selectedIndex) {
-	            	return pick();
-	          	}
-             }
+            switch(keyCode) {
+                case keyCodes.TAB:
+                    return pick() || autoComplete(cur);
+                case keyCodes.DOWN:
+                case keyCodes.UP:
+                case keyCodes.PAGE_UP:
+                case keyCodes.PAGE_DOWN:
+                    return moveSelection(keyCode);
+                case keyCodes.ENTER:
+                    if (~selectedIndex) {
+                        return pick();
+                    }
+            }
 
-			return false;
-		}
+            return false;
+        }
+
+        /**
+         * Returns true when the character is allowed for XML/HTML suggestion
+         * @param {object} event DOM Event object
+         */
+        function isLegalXmlChar(event) {
+            var cur            = instance.getCursor(),
+                token              = instance.getTokenAt(cur),
+                text               = token.string;
+
+            // Yes suggest after '<' or '</'
+            if (/<\/?/.test(text)) {
+                return true;
+            }
+
+            // If the last char is '=' or space and when inside a tag
+            if (/(\s|=)$/.test(text)) {
+                if (token.type === "string" && (!/['"]/.test(text.charAt(text.length - 1)) || text.length == 1)) {
+                    return false;
+                }
+                var inner = CodeMirror.innerMode(instance.getMode(), token.state).state;
+                return (!!inner.tagName);
+            }
+
+            return false;
+        }
 
         /**
          * Returns true when the character allow suggestion
@@ -2104,10 +2141,15 @@
         function isLegalChar(event) {
             var keyCode = event.keyCode,
                 legalChar      = (keyCode >= keyCodes.A && keyCode <= keyCodes.Z) ||
-                        keyCode === keyCodes.PERIOD ||
-                        keyCode === keyCodes.BACKSPACE,
+                    keyCode === keyCodes.PERIOD ||
+                    keyCode === keyCodes.BACKSPACE,
                 unicode,
                 printableChar;
+
+            // Search legal characters for xml like mode
+            if (!instance.isAskiaScriptMode() && instance.isXmlLikeMode()) {
+                legalChar = legalChar || isLegalXmlChar(event);
+            }
 
             if (legalChar)  {
                 return legalChar;
@@ -2159,8 +2201,8 @@
                 clearTimeout(lastEventSeed);
             }
             lastEventSeed = setTimeout(function () {
-               lastEventType = null;
-               lastEventKey = null;
+                lastEventType = null;
+                lastEventKey = null;
             }, 10);
             return isDuplicate;
         }
@@ -2211,15 +2253,18 @@
          * @return {Boolean} Return true to stop the event propagation or false for the normal flow
          */
         function suggest(instance, event) {
+            if (event.ctrlKey) {
+                return false;
+            }
             //noinspection JSUnresolvedFunction
             var isAsMode       = instance.isAskiaScriptMode(),
                 keyCode        = event.keyCode,
                 cur            = instance.getCursor(),
                 token          = instance.getTokenAt(cur),
                 navKey         = (keyCode === keyCodes.DOWN ||
-                                    keyCode === keyCodes.UP ||
-                                    keyCode === keyCodes.PAGE_DOWN ||
-                                    keyCode === keyCodes.PAGE_UP),
+                keyCode === keyCodes.UP ||
+                keyCode === keyCodes.PAGE_DOWN ||
+                keyCode === keyCodes.PAGE_UP),
                 legalChar      = isLegalChar(event),
                 isOpenQuestion = (isAsMode && token.type === classNames.QUESTION_DELIMITER),
                 onQuestion     = (isAsMode && initialToken && initialToken.type === classNames.QUESTION_DELIMITER),
@@ -2229,7 +2274,7 @@
 
             // Meta key
             if (keyCode === keyCodes.CTRL || keyCode === keyCodes.SHIFT || keyCode === keyCodes.ALT ||
-                    keyCode === keyCodes.META_LEFT || keyCode === keyCodes.META_RIGHT) {
+                keyCode === keyCodes.META_LEFT || keyCode === keyCodes.META_RIGHT) {
                 return false;
             }
 
@@ -2267,9 +2312,9 @@
             isAnotherToken = (range && token && range.from && range.from.ch !== token.start);
             if (!onQuestion && (keyCode === keyCodes.PERIOD || isAnotherToken)) {
                 updatePosition({
-					line : cur.line,
-					ch	 : token.start
-				});
+                    line : cur.line,
+                    ch	 : token.start
+                });
                 clearList();
             }
 
@@ -2292,6 +2337,38 @@
                 s = instance.getRange(range.from, range.to);
             }
 
+            // If we are on xml like language
+            if (instance.isXmlLikeMode()) {
+
+                // If we are creating a tag
+                // get the previous token to know if characters before is '<' or '</'
+                // Then move the range to insert the suggestion at the right location
+                if (/\btag\b/.test(token.type) && !/^</.test(s)) {
+
+                    var previousChars = instance.getRange({
+                        line: range.from.line,
+                        ch: (range.from.ch > 2) ? range.from.ch - 2 : range.from.ch - 1
+                    }, {
+                        line: range.from.line,
+                        ch: range.from.ch
+                    });
+                    var match = /(<\/?)/.exec(previousChars);
+                    previousChars = (match && match.length) ? match[1] : '';
+
+                    s = previousChars + s;
+                    range.from.ch -= previousChars.length;
+                }
+
+                // If inside a tag and we see the equal sign '='
+                // we assuming we are assigning an attribute
+                // in that case move the range just after the equal sign
+                //
+                var inner = CodeMirror.innerMode(instance.getMode(), token.state);
+                if (inner && inner.state && inner.state.tagName && s === '=') {
+                    range.from.ch += 1;
+                }
+            }
+
             // Fix the length of token, when there is a space at the end
             l = s.length - 1;
             while(s.charAt(l) === ' ') {
@@ -2302,14 +2379,14 @@
 
             // Regular expression to filter the search
             rg = (isAsMode) ?
-                        getTokenRegexp(s.replace(askiaScript.patterns.questionDelimiter, ''))
-                            : getTokenRegexp(s);
+                getTokenRegexp(s.replace(askiaScript.patterns.questionDelimiter, ''))
+                : getTokenRegexp(s);
 
             if (!cache.length) {
                 if (isAsMode) {
                     suggestions = isOpenQuestion ? instance.options.dictionary.questions : askiascriptHint(instance);
                 } else {
-                    suggestions = CodeMirror.hintSuggest.auto(instance);
+                    suggestions = CodeMirror.hintSuggest.auto(instance, (instance.options && instance.options.hintOptions));
                     if (suggestions) {
                         suggestions.hints = true;
                     }
@@ -2346,8 +2423,8 @@
      */
     CodeMirror.prototype.closeSuggestion = function closeSuggestion() {
         /*
-            It's implemented in the instance of the suggest
-            See in CodeMirror.prototype.suggest
+         It's implemented in the instance of the suggest
+         See in CodeMirror.prototype.suggest
          */
     };
 
