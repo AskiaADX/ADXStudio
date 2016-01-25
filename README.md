@@ -50,7 +50,8 @@ Authors
 -------
 
 -	[Maxime Gasnier](https://github.com/Maximeesilv)
+-	[Vincent Tellier](https://github.com/VincentTel)
 -	[Mamadou Sy](https://github.com/MamadouSy)
 -	[Paul Nevin](https://github.com/uncleserb)
 -	[Jérôme Sopoçko](https://github.com/BadJerry)
--   [Mehdi Aït-Bachir](https://github.com/AskiaMehdi)
+- [Mehdi Aït-Bachir](https://github.com/AskiaMehdi)
