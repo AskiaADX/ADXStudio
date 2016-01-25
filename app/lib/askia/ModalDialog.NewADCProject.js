@@ -179,6 +179,13 @@
                 description : el.descriptionInput.value,
                 template : el.templateInput.value
             };
+            if (!retVal.value.name) {
+                askia.modalDialog.show({
+                    type : 'okOnly',
+                    message : 'The `name` parameter is require'
+                });
+                return false;
+            }
         }
     });
 
