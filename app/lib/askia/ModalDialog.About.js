@@ -30,7 +30,7 @@
                 '<h3>ADX Studio</h3>',
                 '<h4>Askia Design eXtension Studio</h4>',
                 '<p>version ' + appVersion + '</p>',
-                '<p>Maxime Gasnier, Mamadou Sy, Paul Nevin, Mehdi Ait Bachir, J&#233;r&#244;me Sopo&#231;ko.</p>',
+                '<p>Maxime Gasnier, Vincent Tellier, Mamadou Sy, Paul Nevin, Mehdi Ait Bachir, J&#233;r&#244;me Sopo&#231;ko.</p>',
                 '<p>Sections of this application use or are based upon third-party technologies: <a href="http://electron.atom.io/" target="_blank">Electron</a>, <a href="https://nodejs.org/en/" target="_blank">NodeJS</a>.</p>',
                 '<p>Made with <span style="color: #e74c3c">&hearts;</span> in Paris at <a href="http://www.askia.com/" target="_blank">Askia</a> &copy; 2015 all rights reserved.</p></div>',
                 '</div>',

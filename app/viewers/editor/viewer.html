@@ -41,7 +41,10 @@
   	<script src="../../lib/codemirror/addon/fold/xml-fold.js"></script>
   	<script src="../../lib/codemirror/addon/fold/markdown-fold.js"></script>
   	<script src="../../lib/codemirror/addon/fold/comment-fold.js"></script>
-    
+
+    <!-- Brackets -->
+    <script src="../../lib/codemirror/addon/edit/closebrackets.js"></script>
+
   	<!-- Linters -->
   	<!--link rel="stylesheet" href="../../lib/codemirror/addon/lint/lint.css"-->
     <!--script src="../../lib/linters/eslint.js"></script-->
@@ -124,6 +127,7 @@
                 mode            : contentType,
                 theme           : 'askia',
                 styleActiveLine	: true,
+                autoCloseBrackets: true,
                 extraKeys		: {
                     "Ctrl--"	: CodeMirror.commands.fold,
                     "Ctrl-="	: CodeMirror.commands.unfold,

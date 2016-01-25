@@ -49,6 +49,13 @@
         }
     });
 
+    /**
+     * Set the focus on the workspace by default
+     */
+    ipc.on('application-focus', function () {
+        wks.focus();
+    });
+
 
     /**
      * Show modal dialog from the controller

@@ -283,6 +283,13 @@ function toggleDevTools(view) {
     mainView.send('toggle-dev-tools', view);
 }
 
+/**
+ * When the application gain the focus
+ */
+function onAppFocus() {
+    mainView.send('application-focus');
+}
+
 
 /**
  * Fire when the main window is ready
@@ -292,6 +299,10 @@ ipc.on('main-ready', function (event) {
 
     app.removeListener('show-modal-dialog', showModalDialog);
     app.on('show-modal-dialog', showModalDialog);
+
+    // When focused on the app
+    app.removeListener('browser-window-focus', onAppFocus);
+    app.on('browser-window-focus', onAppFocus);
 
     // New project
     app.removeListener('menu-new-project', newProject);

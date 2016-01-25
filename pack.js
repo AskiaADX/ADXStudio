@@ -9,7 +9,7 @@ const opts = {
     "name" : "ADXStudio",
     "platform" : "win32",
     "arch" : "all",
-    "version" : "0.36.1",
+    "version" : "0.36.5",
     "out" : outputPath,
     "icon" : path.join(process.cwd(), "app/adx-studio_icon.ico"),
     "overwrite" : true,
