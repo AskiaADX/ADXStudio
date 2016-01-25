@@ -52,8 +52,10 @@ app.once('ready', function createAppMenu() {
 
                 fs.writeFile(filepath, '', { encoding : 'utf8'}, function (err) {
                     if (err) {
-                        console.log("TODO::MANAGE ERROR");
-                        console.log(err);
+                        app.emit('show-modal-dialog', {
+                            type : 'okOnly',
+                            message : err.message
+                        });
                         return;
                     }
                     app.emit('menu-new-file', filepath);

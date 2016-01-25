@@ -1,3 +1,4 @@
+
 "use strict";
 
 const electron = require('electron');
@@ -53,8 +54,10 @@ function addItem(event, dirPath, type, itemName) {
     if (type !== 'directory') {
         fs.writeFile(filePath, '', { encoding : 'utf8'}, function (err) {
             if (err) {
-                console.log("TODO::MANAGE ERROR");
-                console.log(err);
+                app.emit('show-modal-dialog', {
+                    type : 'okOnly',
+                    message : err.message
+                });
                 return;
             }
             app.emit('menu-new-file', filePath);
