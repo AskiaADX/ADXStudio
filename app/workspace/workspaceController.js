@@ -513,9 +513,10 @@ function onSaveContentAs(event, tabId, content) {
 
                 fs.writeFile(filePath, fileContent, { encoding : 'utf8'}, function (err) {
                     if (err) {
-                        console.log("TODO::MANAGE ERROR");
-                        console.log(err);
-                        return;
+                        app.emit('show-modal-dialog', {
+                            type : 'okOnly',
+                            message : err.message
+                        });
                     }
                     openFile(filePath);
                 });

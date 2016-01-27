@@ -301,7 +301,6 @@ ipc.on('main-ready', function (event) {
 
     app.removeListener('show-modal-dialog', showModalDialog);
     app.on('show-modal-dialog', showModalDialog);
-    //app.send('show-modal-dialog');
 
     // When focused on the app
     app.removeListener('browser-window-focus', onAppFocus);
