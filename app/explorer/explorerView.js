@@ -28,7 +28,7 @@ function selectWithShiftKey(firstItem, secondItem) {
         //if (!checkIfWeSelect && items[i].classList.add('selected')) {
         //    items[i].classList.remove('selected');
         //}
-        
+
         if (checkIfWeSelect) {
             items[i].classList.add('selected');
         }
@@ -46,7 +46,7 @@ function selectItem(e) {
     var itemInfo = this;
 
     if (e.shiftKey) {
-		if (!divGlobal) { 
+        if (!divGlobal) { 
             itemInfo.classList.add('selected');
             lastSelected = itemInfo;
         } else {
@@ -54,7 +54,7 @@ function selectItem(e) {
         }
         return;
     }
-    
+
     if (e.ctrlKey) {
         if (itemInfo == divGlobal) {
             divGlobal.classList.remove('selected');
@@ -63,9 +63,9 @@ function selectItem(e) {
         } else {
             itemInfo.classList.add('selected');
         }
-		return;
+        return;
     }
-    
+
     if (document.querySelector('.selected')) {
         divGlobal = document.querySelectorAll('.selected');
         for (var i = 0, l = divGlobal.length; i < l; i++) {
@@ -80,8 +80,16 @@ function selectItem(e) {
 function itemRightClick(e) {
     e.preventDefault();
 
+    var selectedElements = document.querySelectorAll('.selected');
+    var files = [];
+//    console.log(files);
+//    console.log(files[0].parentNode.file);
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        files.push(selectedElements[i].parentNode.file);
+    }
     var el = this.parentNode;
     var file = el.file;
+	console.log(file);
     selectItem.call(this, e);
 
     var contextualMenu = new Menu();
@@ -149,7 +157,7 @@ function itemRightClick(e) {
         contextualMenu.append(new MenuItem({
             label : 'Project settings',
             click : function () {
-               ipc.send('explorer-show-project-settings');
+                ipc.send('explorer-show-project-settings');
             }
         }));
     } else {
@@ -200,6 +208,22 @@ function itemRightClick(e) {
 
             }
         }));
+        
+        contextualMenu.append(new MenuItem({
+            label: 'Remove All',
+            click: function onClickRemoveAll() {
+
+                ipc.sendToHost('show-modal-dialog', {
+                    type: 'yesNo',
+                    message: 'Do you really want to remove these files ?',
+                    buttonText : {
+                        yes : "Remove",
+                        no : "Don't remove"
+                    }
+                }, 'explorer-remove-all', files);
+
+            }
+        }));
     }
 
     contextualMenu.popup(remote.getCurrentWindow());
@@ -214,12 +238,12 @@ function itemclick(e) {
     var toggle;
 
     selectItem.call(this, e);
-	if (e.ctrlKey) {
+    if (e.ctrlKey) {
         return;
     } else if (e.shiftKey) {
         return;
     }
-    
+
     // Folder system
     if (file.type === 'folder' || item.id === 'root') {
         toggle = itemInfo.querySelector('.toggle');

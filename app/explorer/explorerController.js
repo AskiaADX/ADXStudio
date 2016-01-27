@@ -71,6 +71,18 @@ function addItem(event, dirPath, type, itemName) {
         });
     }
 }
+/**
+ * Can remove files or folders from the explorer.
+ *
+ * @param event
+ * @param {String} files Path of the folder or the file selected.
+ */
+function removeAllFiles(event, files) {
+	for (var i = 0, l = files.length; i < l; i++) {
+        removeFile(event, files[i]);
+//        console.log(JSON.stringify(files));
+    }
+}
 
 /**
  * Can remove file or folder from the explorer.
@@ -153,6 +165,9 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
+    
+    ipc.removeListener('explorer-remove-all', removeAllFiles);
+    ipc.on('explorer-remove-all', removeAllFiles);
 
     ipc.removeListener('explorer-show-project-settings', showProjectSettings);
     ipc.on('explorer-show-project-settings', showProjectSettings);
