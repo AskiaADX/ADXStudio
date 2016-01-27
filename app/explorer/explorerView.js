@@ -5,16 +5,76 @@ var Menu 		= remote.Menu;
 var MenuItem 	= remote.MenuItem;
 var ipc 		= electron.ipcRenderer;
 var shell   	= electron.shell;
+var lastSelected;
 
-function selectItem() {
+
+function selectWithShiftKey(firstItem, secondItem) {
+    if (document.querySelector('.selected')) {
+        divGlobal = document.querySelectorAll('.selected');
+        for (var i = 0, l = divGlobal.length; i < l; i++) {
+            divGlobal[i].classList.remove('selected');
+        }
+    }
+    var firstItemPath = firstItem.parentNode.file.path;
+    var secondItemPath = secondItem.parentNode.file.path;
+    var checkIfWeSelect = false;
+
+    var items = document.getElementsByClassName('item-info');
+    for (var i = 0, l = items.length; i < l; i++) {
+        var itemsPath = items[i].parentNode.file.path;
+        if ((itemsPath == firstItemPath) || (itemsPath == secondItemPath)) {
+            checkIfWeSelect = (checkIfWeSelect == true)? false : true;
+        }
+        //if (!checkIfWeSelect && items[i].classList.add('selected')) {
+        //    items[i].classList.remove('selected');
+        //}
+        
+        if (checkIfWeSelect) {
+            items[i].classList.add('selected');
+        }
+    }
+    if (firstItem.classList.length != 2) {
+        firstItem.classList.add('selected');
+    }
+    if (secondItem.classList.length != 2) {
+        secondItem.classList.add('selected');
+    }
+}
+
+function selectItem(e) {
     var divGlobal = document.querySelector('.selected');
     var itemInfo = this;
 
-    if (divGlobal) {
-        divGlobal.classList.remove('selected');
+    if (e.shiftKey) {
+		if (!divGlobal) { 
+            itemInfo.classList.add('selected');
+            lastSelected = itemInfo;
+        } else {
+            selectWithShiftKey(lastSelected, itemInfo);
+        }
+        return;
+    }
+    
+    if (e.ctrlKey) {
+        if (itemInfo == divGlobal) {
+            divGlobal.classList.remove('selected');
+        } else if (itemInfo.classList.length == 2) {
+            itemInfo.classList.remove('selected');
+        } else {
+            itemInfo.classList.add('selected');
+        }
+		return;
+    }
+    
+    if (document.querySelector('.selected')) {
+        divGlobal = document.querySelectorAll('.selected');
+        for (var i = 0, l = divGlobal.length; i < l; i++) {
+            divGlobal[i].classList.remove('selected');
+        }
     }
 
     itemInfo.classList.add('selected');
+    lastSelected = itemInfo;
 }
 
 function itemRightClick(e) {
@@ -22,7 +82,7 @@ function itemRightClick(e) {
 
     var el = this.parentNode;
     var file = el.file;
-    selectItem.call(this);
+    selectItem.call(this, e);
 
     var contextualMenu = new Menu();
 
@@ -145,7 +205,7 @@ function itemRightClick(e) {
     contextualMenu.popup(remote.getCurrentWindow());
 }
 
-function itemclick() {
+function itemclick(e) {
 
     var itemInfo = this;
     var item = itemInfo.parentNode;
@@ -153,8 +213,13 @@ function itemclick() {
     var child = item.querySelector('.child');
     var toggle;
 
-    selectItem.call(this);
-
+    selectItem.call(this, e);
+	if (e.ctrlKey) {
+        return;
+    } else if (e.shiftKey) {
+        return;
+    }
+    
     // Folder system
     if (file.type === 'folder' || item.id === 'root') {
         toggle = itemInfo.querySelector('.toggle');
