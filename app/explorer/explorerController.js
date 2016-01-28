@@ -9,6 +9,7 @@ const appSettings = require('../appSettings/appSettingsModel.js');
 const path = require('path');
 const fs = require('fs');
 let  explorerView;
+var lastCopy;
 
 /**
  * Open the root folder
@@ -80,7 +81,6 @@ function addItem(event, dirPath, type, itemName) {
 function removeAllFiles(event, files) {
 	for (var i = 0, l = files.length; i < l; i++) {
         removeFile(event, files[i]);
-//        console.log(JSON.stringify(files));
     }
 }
 
@@ -144,6 +144,43 @@ function onChange(dir, files) {
     }
 }
 
+function copy(event, file) {
+	lastCopy = file;
+}
+
+function cut(event, file) {
+    lastCopy = file;
+    removeFile(file);
+}
+
+function paste(event, file) {
+    var filePath = file.path;
+    if (file.type === "file") {
+        filePath = path.join(filePath, "../");
+    }
+    if (file.type === "folder") {
+        filePath += "\\";
+    }
+    var fileToWrite = filePath + lastCopy.name;
+    //console.log(lastCopy);
+    //console.log(lastCopy.parentNode);
+    fs.readFile(lastCopy.path, 'utf-8',(err, data) => {
+        if (err) {
+            app.emit('show-modal-dialog', {
+                type : 'okOnly',
+                message : err.message
+            });
+        
+        fs.writeFile(fileToWrite, data, { encoding : 'utf8'}, function (err) {
+            if (err) {
+                app.emit('show-modal-dialog', {
+                    type : 'okOnly',
+                    message : err.message
+                });
+            }
+        });
+    });
+}
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
@@ -172,6 +209,15 @@ ipc.on('explorer-ready', function (event) {
     ipc.removeListener('explorer-show-project-settings', showProjectSettings);
     ipc.on('explorer-show-project-settings', showProjectSettings);
 
+    ipc.removeListener('cut-file', cut);
+    ipc.on('cut-file', cut);
+
+    ipc.removeListener('copy-file', copy);
+    ipc.on('copy-file', copy);
+
+    ipc.removeListener('paste-file', paste);
+    ipc.on('paste-file', paste);
+    
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
     explorer.on('change', onChange); // Add it back

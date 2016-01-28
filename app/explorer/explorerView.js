@@ -79,6 +79,8 @@ function selectItem(e) {
 
 function itemRightClick(e) {
     e.preventDefault();
+    selectItem.call(this, e);
+
 
     var selectedElements = document.querySelectorAll('.selected');
     var files = [];
@@ -87,7 +89,6 @@ function itemRightClick(e) {
     }
     var el = this.parentNode;
     var file = el.file;
-    selectItem.call(this, e);
 
     var contextualMenu = new Menu();
 
@@ -114,7 +115,6 @@ function itemRightClick(e) {
         }, 'explorer-add-item', filePath, menuItem.id);
     }
     if (files.length == 1) {
-        console.log(files.length + "SALUT");
         contextualMenu.append(new MenuItem({
             label : 'New',
             submenu : [
@@ -207,10 +207,36 @@ function itemRightClick(e) {
 
                 }
             }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+
+            /*cut file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Cut',
+                click: function onClickCut() {
+                    ipc.send('cut-file', file);
+                }
+
+            }));
+
+            /*copy file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Copy',
+                click: function onClickCopy() {
+                    ipc.send('copy-file', file);
+                }
+            }));
+
+            /*paste file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Paste',
+                click: function onClickPaste() {
+                    ipc.send('paste-file', file);
+                }
+            }));
         }
 
         if (files.length > 1) {
-            console.log("plus de deux items");
             contextualMenu.append(new MenuItem({
                 label: 'Remove All',
                 click: function onClickRemoveAll() {
