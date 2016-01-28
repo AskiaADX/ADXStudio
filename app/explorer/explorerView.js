@@ -79,7 +79,6 @@ function selectItem(e) {
 
 function itemRightClick(e) {
     e.preventDefault();
-    selectItem.call(this, e);
 
 
     var selectedElements = document.querySelectorAll('.selected');
@@ -89,6 +88,8 @@ function itemRightClick(e) {
     }
     var el = this.parentNode;
     var file = el.file;
+    selectItem.call(this, e);
+
 
     var contextualMenu = new Menu();
 
@@ -207,7 +208,8 @@ function itemRightClick(e) {
 
                 }
             }));
-
+            
+            
             contextualMenu.append(new MenuItem({type : 'separator'}));
 
             /*cut file*/
