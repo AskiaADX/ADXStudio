@@ -8,6 +8,7 @@ const explorer = require('./explorerModel.js');
 const appSettings = require('../appSettings/appSettingsModel.js');
 const path = require('path');
 const fs = require('fs');
+const fse = require('fs.extra');
 let  explorerView;
 var lastCopy;
 
@@ -66,8 +67,11 @@ function addItem(event, dirPath, type, itemName) {
     } else {
         fs.mkdir(filePath, function (err) {
             if (err) {
-                console.log("TODO::MANAGE ERROR");
-                console.log(err);
+                app.emit('show-modal-dialog', {
+                    type : 'okOnly',
+                    message : err.message
+                });
+                return;
             }
         });
     }
@@ -79,7 +83,7 @@ function addItem(event, dirPath, type, itemName) {
  * @param {String} files Path of the folder or the file selected.
  */
 function removeAllFiles(event, files) {
-	for (var i = 0, l = files.length; i < l; i++) {
+    for (var i = 0, l = files.length; i < l; i++) {
         removeFile(event, files[i]);
     }
 }
@@ -94,7 +98,11 @@ function removeFile(event, file) {
     const pathToRemove = file.path;
     explorer.remove(pathToRemove, function (err) {
         if (err) {
-            console.log(err.message);
+            app.emit('show-modal-dialog', {
+                type : 'okOnly',
+                message : err.message
+            });
+            return;
         }
     });
 }
@@ -113,7 +121,11 @@ function renameFile(event, file, newName) {
     app.emit('explorer-file-renaming', file.type, oldPath, newPath);
     explorer.rename(oldPath, newPath, function (err) {
         if (err) {
-            console.log(err.message);
+            app.emit('show-modal-dialog', {
+                type : 'okOnly',
+                message : err.message
+            });
+            return;
         }
         // Notify that a file has been renamed (also send the error just in case)
         app.emit('explorer-file-renamed', err, file.type, oldPath, newPath);
@@ -135,7 +147,7 @@ function showProjectSettings() {
  */
 function onChange(dir, files) {
     const rootPath = explorer.getRootPath(),
-        rg = new RegExp('^' + rootPath.replace(/\\/g, '\\\\') + '\\\\?$', 'i');
+          rg = new RegExp('^' + rootPath.replace(/\\/g, '\\\\') + '\\\\?$', 'i');
 
     if (rg.test(dir)) {
         openRootFolder(null, dir, files);
@@ -145,12 +157,17 @@ function onChange(dir, files) {
 }
 
 function copy(event, file) {
-	lastCopy = file;
+    lastCopy = {
+        file: file,
+        typeOfCopy : "copy"
+    };
 }
 
 function cut(event, file) {
-    lastCopy = file;
-    removeFile(file);
+    lastCopy = {
+        file: file,
+        typeOfCopy : "cut"
+    };
 }
 
 function paste(event, file) {
@@ -158,29 +175,33 @@ function paste(event, file) {
     if (file.type === "file") {
         filePath = path.join(filePath, "../");
     }
-    if (file.type === "folder") {
-        filePath += "\\";
-    }
-    var fileToWrite = filePath + lastCopy.name;
-    //console.log(lastCopy);
-    //console.log(lastCopy.parentNode);
-    fs.readFile(lastCopy.path, 'utf-8',(err, data) => {
-        if (err) {
-            app.emit('show-modal-dialog', {
-                type : 'okOnly',
-                message : err.message
-            });
-        }	
 
-        fs.writeFile(fileToWrite, data, { encoding : 'utf8'}, function (err) {
+    var fileToWrite = path.join(filePath, lastCopy.file.name);
+
+    if (lastCopy.typeOfCopy === "copy") {
+        console.log(lastCopy.file.path);
+        console.log(fileToWrite);
+        fse.copy(lastCopy.file.path, fileToWrite, function (err) {
             if (err) {
                 app.emit('show-modal-dialog', {
                     type : 'okOnly',
                     message : err.message
                 });
+                return;
             }
-        });
-    });
+        })
+    }
+    if (lastCopy.typeOfCopy === "cut") {
+        fse.move(lastCopy.file.path, fileToWrite, function (err) {
+            if (err) {
+                app.emit('show-modal-dialog', {
+                    type : 'okOnly',
+                    message : err.message
+                });
+                return;
+            }
+        })
+    }
 }
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
@@ -203,7 +224,7 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
-    
+
     ipc.removeListener('explorer-remove-all', removeAllFiles);
     ipc.on('explorer-remove-all', removeAllFiles);
 
@@ -218,7 +239,7 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('paste-file', paste);
     ipc.on('paste-file', paste);
-    
+
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
     explorer.on('change', onChange); // Add it back
