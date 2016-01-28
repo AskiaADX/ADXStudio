@@ -82,14 +82,11 @@ function itemRightClick(e) {
 
     var selectedElements = document.querySelectorAll('.selected');
     var files = [];
-//    console.log(files);
-//    console.log(files[0].parentNode.file);
     for (var i = 0, l = selectedElements.length; i < l; i++) {
         files.push(selectedElements[i].parentNode.file);
     }
     var el = this.parentNode;
     var file = el.file;
-	console.log(file);
     selectItem.call(this, e);
 
     var contextualMenu = new Menu();
@@ -116,43 +113,44 @@ function itemRightClick(e) {
             }
         }, 'explorer-add-item', filePath, menuItem.id);
     }
+    if (files.length == 1) {
+        console.log(files.length + "SALUT");
+        contextualMenu.append(new MenuItem({
+            label : 'New',
+            submenu : [
+                {
+                    id  : 'file',
+                    label : 'File',
+                    click : addNewFile
+                },
+                {
+                    id : 'directory',
+                    label : 'Directory',
+                    click : addNewFile
+                },
+                {
+                    type : 'separator'
+                },
+                {
+                    id : 'html',
+                    label : 'HTML file',
+                    click : addNewFile
+                },
+                {
+                    id : 'css',
+                    label : 'Stylesheet',
+                    click : addNewFile
+                },
+                {
+                    id : 'js',
+                    label : 'Javascript file',
+                    click : addNewFile
+                }
+            ]
+        }));
 
-    contextualMenu.append(new MenuItem({
-        label : 'New',
-        submenu : [
-            {
-                id  : 'file',
-                label : 'File',
-                click : addNewFile
-            },
-            {
-                id : 'directory',
-                label : 'Directory',
-                click : addNewFile
-            },
-            {
-                type : 'separator'
-            },
-            {
-                id : 'html',
-                label : 'HTML file',
-                click : addNewFile
-            },
-            {
-                id : 'css',
-                label : 'Stylesheet',
-                click : addNewFile
-            },
-            {
-                id : 'js',
-                label : 'Javascript file',
-                click : addNewFile
-            }
-        ]
-    }));
-
-    contextualMenu.append(new MenuItem({type : 'separator'}));
-
+        contextualMenu.append(new MenuItem({type : 'separator'}));
+    }
     if (file.root) {
         contextualMenu.append(new MenuItem({
             label : 'Project settings',
@@ -172,58 +170,63 @@ function itemRightClick(e) {
 
             contextualMenu.append(new MenuItem({type : 'separator'}));
         }
+        if (files.length == 1) {
 
-        /* Rename file */
-        contextualMenu.append(new MenuItem({
-            label: 'Rename',
-            click: function onClickRename() {
-                ipc.sendToHost('show-modal-dialog', {
-                    type: 'prompt',
-                    message : 'Rename:',
-                    buttonText : {
-                        ok : "Rename",
-                        cancel : "Don't rename"
-                    },
-                    value: file.name
-                }, 'explorer-rename', file);
+            /* Rename file */
+            contextualMenu.append(new MenuItem({
+                label: 'Rename',
+                click: function onClickRename() {
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'prompt',
+                        message : 'Rename:',
+                        buttonText : {
+                            ok : "Rename",
+                            cancel : "Don't rename"
+                        },
+                        value: file.name
+                    }, 'explorer-rename', file);
 
-            }
-        }));
+                }
+            }));
 
-        contextualMenu.append(new MenuItem({type : 'separator'}));
+            contextualMenu.append(new MenuItem({type : 'separator'}));
 
-        /* Remove file */
-        contextualMenu.append(new MenuItem({
-            label: 'Remove',
-            click: function onClickRemove() {
+            /* Remove file */
+            contextualMenu.append(new MenuItem({
+                label: 'Remove',
+                click: function onClickRemove() {
 
-                ipc.sendToHost('show-modal-dialog', {
-                    type: 'yesNo',
-                    message: 'Do you really want to remove `' + file.name + '`?',
-                    buttonText : {
-                        yes : "Remove",
-                        no : "Don't remove"
-                    }
-                }, 'explorer-remove', file);
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'yesNo',
+                        message: 'Do you really want to remove `' + file.name + '`?',
+                        buttonText : {
+                            yes : "Remove",
+                            no : "Don't remove"
+                        }
+                    }, 'explorer-remove', file);
 
-            }
-        }));
-        
-        contextualMenu.append(new MenuItem({
-            label: 'Remove All',
-            click: function onClickRemoveAll() {
+                }
+            }));
+        }
 
-                ipc.sendToHost('show-modal-dialog', {
-                    type: 'yesNo',
-                    message: 'Do you really want to remove these files ?',
-                    buttonText : {
-                        yes : "Remove",
-                        no : "Don't remove"
-                    }
-                }, 'explorer-remove-all', files);
+        if (files.length > 1) {
+            console.log("plus de deux items");
+            contextualMenu.append(new MenuItem({
+                label: 'Remove All',
+                click: function onClickRemoveAll() {
 
-            }
-        }));
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'yesNo',
+                        message: 'Do you really want to remove these files?',
+                        buttonText : {
+                            yes : "Remove",
+                            no : "Don't remove"
+                        }
+                    }, 'explorer-remove-all', files);
+
+                }
+            }));
+        }
     }
 
     contextualMenu.popup(remote.getCurrentWindow());
