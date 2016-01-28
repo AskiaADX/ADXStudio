@@ -170,7 +170,8 @@ function paste(event, file) {
                 type : 'okOnly',
                 message : err.message
             });
-        
+        }	
+
         fs.writeFile(fileToWrite, data, { encoding : 'utf8'}, function (err) {
             if (err) {
                 app.emit('show-modal-dialog', {
