@@ -209,7 +209,6 @@ function itemRightClick(e) {
                 }
             }));
             
-            
             contextualMenu.append(new MenuItem({type : 'separator'}));
 
             /*cut file*/
@@ -261,7 +260,6 @@ function itemRightClick(e) {
 }
 
 function itemclick(e) {
-
     var itemInfo = this;
     var item = itemInfo.parentNode;
     var file = item.file;
@@ -298,6 +296,53 @@ function itemclick(e) {
         ipc.send('explorer-load-file', file);
     }
 }
+
+function copy () {
+    var selectedElements = document.querySelectorAll('.selected');
+    var files = [];
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        files.push(selectedElements[i].parentNode.file);
+    }
+    if (files.length === 1) {
+        var file = files[0];
+        ipc.send('copy-file', file);
+    }
+}
+
+function cut() {
+    var selectedElements = document.querySelectorAll('.selected');
+    var files = [];
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        files.push(selectedElements[i].parentNode.file);
+    }
+    if (files.length === 1) {
+        var file = files[0];
+        ipc.send('cut-file', file);
+    }
+}
+
+function paste () {
+    var selectedElements = document.querySelectorAll('.selected');
+    var files = [];
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        files.push(selectedElements[i].parentNode.file);
+    }
+    if (files.length === 1) {
+        var file = files[0];
+        ipc.send('paste-file', file);
+    }
+}
+
+//Add shortcut to navigate in the explorer
+document.addEventListener('keydown', function (e) {
+    if ((e.keyCode === 67) && (e.ctrlKey)) {
+        copy();
+    } else if ((e.keyCode === 88) && (e.ctrlKey)) {
+        cut();
+    } else if ((e.keyCode === 86) && (e.ctrlKey)) {
+        paste();
+    }
+})
 
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -179,8 +179,6 @@ function paste(event, file) {
     var fileToWrite = path.join(filePath, lastCopy.file.name);
 
     if (lastCopy.typeOfCopy === "copy") {
-        console.log(lastCopy.file.path);
-        console.log(fileToWrite);
         fse.copy(lastCopy.file.path, fileToWrite, function (err) {
             if (err) {
                 app.emit('show-modal-dialog', {
