@@ -85,7 +85,11 @@ Tab.prototype.loadFile = function loadFile(callback) {
             self.edited   = false;
             if (type === 'text') {
                 fs.readFile(self.path, function (err, data) {
-                    self.content = data.toString();
+                    //RegExp in order to remove the unicode "EB EF ED" when the file is open.
+                    var bomChar = /^\uFEFF/;
+
+                    self.content = data.toString().replace(bomChar, '');
+
                     if (typeof  callback === 'function') {
                         callback();
                     }
