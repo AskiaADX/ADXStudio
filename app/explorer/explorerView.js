@@ -7,14 +7,19 @@ var ipc 		= electron.ipcRenderer;
 var shell   	= electron.shell;
 var lastSelected;
 var keyCodes = {
-    enter : 13,
-    up    : 38,
-    down  : 40,
-    plus  : 107,
-    less  : 109,
-    c     : 67,
-    x     : 88,
-    v     : 86
+    pageUp   : 33,
+    pageDown : 34,
+    enter    : 13,
+    suppr    : 46,
+    up       : 38,
+    down     : 40,
+    plus     : 107,
+    less     : 109,
+    c        : 67,
+    x        : 88,
+    v        : 86,
+    F2       : 113,
+    menu     : 93
 }
 
 
@@ -215,35 +220,7 @@ function itemRightClick(e) {
 
                 }
             }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
-
-            /*cut file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Cut',
-                click: function onClickCut() {
-                    ipc.send('cut-file', file);
-                }
-
-            }));
-
-            /*copy file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Copy',
-                click: function onClickCopy() {
-                    ipc.send('copy-file', file);
-                }
-            }));
-
-            /*paste file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Paste',
-                click: function onClickPaste() {
-                    ipc.send('paste-file', file);
-                }
-            }));
         }
-
         if (files.length > 1) {
             contextualMenu.append(new MenuItem({
                 label: 'Remove All',
@@ -263,6 +240,32 @@ function itemRightClick(e) {
         }
     }
 
+    contextualMenu.append(new MenuItem({type : 'separator'}));
+
+    /*cut file*/
+    contextualMenu.append(new MenuItem({
+        label: 'Cut',
+        click: function onClickCut() {
+            ipc.send('cut-file', file);
+        }
+
+    }));
+
+    /*copy file*/
+    contextualMenu.append(new MenuItem({
+        label: 'Copy',
+        click: function onClickCopy() {
+            ipc.send('copy-file', file);
+        }
+    }));
+
+    /*paste file*/
+    contextualMenu.append(new MenuItem({
+        label: 'Paste',
+        click: function onClickPaste() {
+            ipc.send('paste-file', file);
+        }
+    }));
     contextualMenu.popup(remote.getCurrentWindow());
 }
 
@@ -488,6 +491,240 @@ function keyNavigator(e) {
     }
 }
 
+function renameWithKeyboard () {
+    var file = document.querySelector('.selected').parentNode.file;
+    ipc.sendToHost('show-modal-dialog', {
+        type: 'prompt',
+        message : 'Rename:',
+        buttonText : {
+            ok : "Rename",
+            cancel : "Don't rename"
+        },
+        value: file.name
+    }, 'explorer-rename', file);
+}
+
+function supprWithKeyboard () {
+    var selectedElements = document.querySelectorAll('.selected');
+    var files = [];
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        files.push(selectedElements[i].parentNode.file);
+    }
+    if (files.length === 1) {
+        var file = document.querySelector('.selected').parentNode.file;
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'yesNo',
+            message: 'Do you really want to remove `' + file.name + '`?',
+            buttonText : {
+                yes : "Remove",
+                no : "Don't remove"
+            }
+        }, 'explorer-remove', file);
+    } else if (files.length > 1) {
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'yesNo',
+            message: 'Do you really want to remove these files?',
+            buttonText : {
+                yes : "Remove",
+                no : "Don't remove"
+            }
+        }, 'explorer-remove-all', files);
+    }
+    
+}
+
+function menuWithKeyboard () {
+    var selectedElements = document.querySelectorAll('.selected');
+    var files = [];
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        files.push(selectedElements[i].parentNode.file);
+    }
+    var el = document.querySelector('.selected').parentNode;
+    var file = el.file;
+    
+    var contextualMenu = new Menu();
+
+    /* Add file */
+    function addNewFile(menuItem) {
+        var messageByType = {
+            file : 'File name:',
+            directory : 'Directory name:',
+            html  : 'HTML file name:',
+            css : 'Stylesheet file name:',
+            js  : 'Javascript file name:'
+        };
+        var filePath = file.path;
+        if (file.type === 'file') { // Remove the file name
+            filePath = filePath.replace(file.name, '');
+        }
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'prompt',
+            message : messageByType[menuItem.id],
+            buttonText : {
+                ok : "Create",
+                cancel : "Don't create"
+            }
+        }, 'explorer-add-item', filePath, menuItem.id);
+    }
+    if (files.length == 1) {
+        contextualMenu.append(new MenuItem({
+            label : 'New',
+            submenu : [
+                {
+                    id  : 'file',
+                    label : 'File',
+                    click : addNewFile
+                },
+                {
+                    id : 'directory',
+                    label : 'Directory',
+                    click : addNewFile
+                },
+                {
+                    type : 'separator'
+                },
+                {
+                    id : 'html',
+                    label : 'HTML file',
+                    click : addNewFile
+                },
+                {
+                    id : 'css',
+                    label : 'Stylesheet',
+                    click : addNewFile
+                },
+                {
+                    id : 'js',
+                    label : 'Javascript file',
+                    click : addNewFile
+                }
+            ]
+        }));
+
+        contextualMenu.append(new MenuItem({type : 'separator'}));
+    }
+    if (file.root) {
+        contextualMenu.append(new MenuItem({
+            label : 'Project settings',
+            click : function () {
+                ipc.send('explorer-show-project-settings');
+            }
+        }));
+    } else {
+        /* Open file in the OS manner */
+        if (/\.html?$/i.test(file.name)) {
+            contextualMenu.append(new MenuItem({
+                label: 'Open in browser',
+                click: function onClickOpen() {
+                    shell.openItem(file.path);
+                }
+            }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+        }
+        if (files.length == 1) {
+            
+            /* Rename file */
+            contextualMenu.append(new MenuItem({
+                label: 'Rename',
+                click: function onClickRename() {
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'prompt',
+                        message : 'Rename:',
+                        buttonText : {
+                            ok : "Rename",
+                            cancel : "Don't rename"
+                        },
+                        value: file.name
+                    }, 'explorer-rename', file);
+
+                }
+            }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+
+            /* Remove file */
+            contextualMenu.append(new MenuItem({
+                label: 'Remove',
+                click: function onClickRemove() {
+
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'yesNo',
+                        message: 'Do you really want to remove `' + file.name + '`?',
+                        buttonText : {
+                            yes : "Remove",
+                            no : "Don't remove"
+                        }
+                    }, 'explorer-remove', file);
+
+                }
+            }));
+        }
+        if (files.length > 1) {
+            contextualMenu.append(new MenuItem({
+                label: 'Remove All',
+                click: function onClickRemoveAll() {
+
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'yesNo',
+                        message: 'Do you really want to remove these files?',
+                        buttonText : {
+                            yes : "Remove",
+                            no : "Don't remove"
+                        }
+                    }, 'explorer-remove-all', files);
+
+                }
+            }));
+        }
+    }
+    contextualMenu.append(new MenuItem({type : 'separator'}));
+
+    /*cut file*/
+    contextualMenu.append(new MenuItem({
+        label: 'Cut',
+        click: function onClickCut() {
+            ipc.send('cut-file', file);
+        }
+
+    }));
+
+    /*copy file*/
+    contextualMenu.append(new MenuItem({
+        label: 'Copy',
+        click: function onClickCopy() {
+            ipc.send('copy-file', file);
+        }
+    }));
+
+    /*paste file*/
+    contextualMenu.append(new MenuItem({
+        label: 'Paste',
+        click: function onClickPaste() {
+            ipc.send('paste-file', file);
+        }
+    }));
+
+    contextualMenu.popup(remote.getCurrentWindow());
+}
+
+function upExplorer () {
+    var selectedElement = document.querySelector('.selected');
+    var root = document.getElementById('root').getElementsByClassName('item-info')[0];
+    
+    selectedElement.classList.remove('selected');
+    root.classList.add('selected');
+}
+
+function downExplorer () {
+    var selectedElement = document.querySelector('.selected');
+    var rootChilds = document.getElementById('root').querySelector('.child').querySelectorAll('.item-info');
+    var lastChild = rootChilds[rootChilds.length - 1];
+    
+    selectedElement.classList.remove('selected');
+    lastChild.classList.add('selected');
+}
+
 //Add shortcut to navigate in the explorer
 document.addEventListener('keydown', function (e) {
     if ((e.keyCode === keyCodes.c) && (e.ctrlKey)) {
@@ -498,6 +735,16 @@ document.addEventListener('keydown', function (e) {
         paste();
     } else if ((e.keyCode === keyCodes.enter) || (e.keyCode === keyCodes.up) || (e.keyCode === keyCodes.less) || (e.keyCode === keyCodes.plus) || (e.keyCode === keyCodes.down)) {
         keyNavigator(e);
+    } else if (e.keyCode === keyCodes.F2) {
+        renameWithKeyboard();
+    } else if (e.keyCode === keyCodes.menu) {
+        menuWithKeyboard(e);
+    } else if (e.keyCode === keyCodes.suppr) {
+        supprWithKeyboard();
+    } else if (e.keyCode === keyCodes.pageUp) {
+        upExplorer();
+    } else if (e.keyCode === keyCodes.pageDown) {
+        downExplorer();
     }
 })
 
