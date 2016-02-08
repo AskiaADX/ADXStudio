@@ -6,6 +6,16 @@ var MenuItem 	= remote.MenuItem;
 var ipc 		= electron.ipcRenderer;
 var shell   	= electron.shell;
 var lastSelected;
+var keyCodes = {
+    enter : 13,
+    up    : 38,
+    down  : 40,
+    plus  : 107,
+    less  : 109,
+    c     : 67,
+    x     : 88,
+    v     : 86
+}
 
 
 function selectWithShiftKey(firstItem, secondItem) {
@@ -25,9 +35,6 @@ function selectWithShiftKey(firstItem, secondItem) {
         if ((itemsPath == firstItemPath) || (itemsPath == secondItemPath)) {
             checkIfWeSelect = (checkIfWeSelect == true)? false : true;
         }
-        //if (!checkIfWeSelect && items[i].classList.add('selected')) {
-        //    items[i].classList.remove('selected');
-        //}
 
         if (checkIfWeSelect) {
             items[i].classList.add('selected');
@@ -208,7 +215,7 @@ function itemRightClick(e) {
 
                 }
             }));
-            
+
             contextualMenu.append(new MenuItem({type : 'separator'}));
 
             /*cut file*/
@@ -277,13 +284,13 @@ function itemclick(e) {
     if (file.type === 'folder' || item.id === 'root') {
         toggle = itemInfo.querySelector('.toggle');
 
-        if (child.style.display === 'block') {
+        if (child.classList.contains('expand')) {
             //if it's open, then we close it on click
-            child.style.display = '';
+            child.classList.remove('expand');
             toggle.classList.remove('open');
         } else {
             // if it's close we open it on click
-            child.style.display = 'block';
+            child.classList.add('expand');
             toggle.classList.add('open');
         }
 
@@ -333,14 +340,164 @@ function paste () {
     }
 }
 
+function getPreviousItemInfo(el) {
+    var child = el.querySelector('.child');
+    if (child && child.classList.contains('expand')) {
+        var allChildren = child.parentNode.querySelectorAll(".child.expand > div > .item-info");
+        if (allChildren && allChildren.length) {
+            return allChildren[allChildren.length - 1];
+        }
+    }
+    return null;
+}
+
+function keyNavigator(e) {
+    var selectedElements = document.querySelectorAll('.selected');
+    var items = document.getElementsByClassName('item-info');
+    var root = document.getElementById('root').getElementsByClassName('item-info')[0];
+
+    if (selectedElements.length === 1) {
+        var selectedElement = selectedElements[0];
+        var file = selectedElement.parentNode.file || selectedElement.parentNode;
+
+        var nextEl = selectedElement.parentNode.nextSibling;
+        var prevEl = selectedElement.parentNode.previousSibling;
+
+
+        if (e.keyCode === keyCodes.up) {
+            var itemToSelect = null;
+            var findEl = null;
+
+            if (prevEl) {
+                // By default select the prev sibling
+                itemToSelect = prevEl.querySelector('.item-info');
+
+                // If the next sibling contains children and if open then pick it
+                findEl = getPreviousItemInfo(prevEl);
+                if (findEl) {
+                    itemToSelect = findEl;
+                }
+            }
+            // No previous sibling, so go up to the parent node
+            else {
+                itemToSelect = selectedElement.parentNode.parentNode.previousSibling;
+            }
+            if (itemToSelect.classList === undefined) {
+                selectedElement.classList.remove('selected');
+                root.classList.add('selected');
+                return;
+            }
+            // If there is an item to select
+            if (itemToSelect) {
+                selectedElement.classList.remove('selected');
+                itemToSelect.classList.add('selected');
+            }
+        } else if (e.keyCode === keyCodes.down) {
+            var itemToSelect = null;
+            var findEl = null;
+
+            if(selectedElement === root) {
+                itemToSelect = document.getElementById('root').querySelector('.child').querySelector('.item-info');
+
+                selectedElement.classList.remove('selected');
+                itemToSelect.classList.add('selected');
+                return;
+            }
+
+            if (nextEl) {
+                // By default select the next sibling
+                itemToSelect = nextEl.querySelector('.item-info');
+
+                var child = selectedElement.parentNode.querySelector('.child');
+                if (child && child.classList.contains('expand')) {
+                    findEl = child.children[0].querySelector('.item-info');
+                    if (findEl) {
+                        itemToSelect = findEl;
+                    }
+                }
+            }
+            if (!nextEl) {
+                itemToSelect = selectedElement.parentNode.parentNode.parentNode.nextSibling.querySelector('.item-info');
+            }
+
+            if (itemToSelect) {
+                selectedElement.classList.remove('selected');
+                itemToSelect.classList.add('selected');
+            }
+        } else if (e.keyCode === keyCodes.plus) {
+            if (selectedElement.parentNode.file.type === 'folder') {
+                var toggle = selectedElement.querySelector('.toggle');
+                var child = selectedElement.parentNode.querySelector('.child');
+                if (child.classList.contains('expand')) {
+                    return;
+                } else {
+                    // if it's close we open it on keydown
+                    child.classList.add('expand');
+                    toggle.classList.add('open');
+                }
+
+                if (!file.loaded) {
+                    ipc.send('explorer-load-folder', file.path);
+                    file.loaded = true;
+                }
+            }
+        } else if (e.keyCode === keyCodes.less) {
+            if (selectedElement.parentNode.file.type === 'folder') {
+                var toggle = selectedElement.querySelector('.toggle');
+                var child = selectedElement.parentNode.querySelector('.child');
+                if (child.classList.contains('expand')) {
+                    //if it's open, then we close it on keydown
+                    child.classList.remove('expand');
+                    toggle.classList.remove('open');
+                } else {
+                    return;
+                }
+
+                if (!file.loaded) {
+                    ipc.send('explorer-load-folder', file.path);
+                    file.loaded = true;
+                }
+            }
+        } else if (e.keyCode === keyCodes.enter) {
+            // Folder system
+            if (selectedElement.parentNode.file.type === 'folder') {
+                var toggle = selectedElement.querySelector('.toggle');
+                var child = selectedElement.parentNode.querySelector('.child');
+
+                if (child.classList.contains('expand')) {
+                    //if it's open, then we close it on keydown
+                    child.classList.remove('expand');
+                    toggle.classList.remove('open');
+                } else {
+                    // if it's close we open it on keydown
+                    child.classList.add('expand');
+                    toggle.classList.add('open');
+                }
+
+                if (!file.loaded) {
+                    ipc.send('explorer-load-folder', file.path);
+                    file.loaded = true;
+                }
+
+            } else {
+                ipc.send('explorer-load-file', file);
+            }
+        }
+    } else if (selectedElements.length === 0) {
+        root.classList.add('selected');
+    }
+}
+
 //Add shortcut to navigate in the explorer
 document.addEventListener('keydown', function (e) {
-    if ((e.keyCode === 67) && (e.ctrlKey)) {
+    if ((e.keyCode === keyCodes.c) && (e.ctrlKey)) {
         copy();
-    } else if ((e.keyCode === 88) && (e.ctrlKey)) {
+    } else if ((e.keyCode === keyCodes.x) && (e.ctrlKey)) {
         cut();
-    } else if ((e.keyCode === 86) && (e.ctrlKey)) {
+    } else if ((e.keyCode === keyCodes.v) && (e.ctrlKey)) {
         paste();
+    } else if ((e.keyCode === keyCodes.enter) || (e.keyCode === keyCodes.up) || (e.keyCode === keyCodes.less) || (e.keyCode === keyCodes.plus) || (e.keyCode === keyCodes.down)) {
+        keyNavigator(e);
     }
 })
 
@@ -372,7 +529,6 @@ document.addEventListener('DOMContentLoaded', function () {
             rootInfo.removeEventListener('contextmenu', itemRightClick);
             rootInfo.addEventListener('contextmenu', itemRightClick, false);
             root.parentNode.querySelector('.name').innerHTML = rootName;
-            root.parentNode.style.display = 'block';
         }
 
 

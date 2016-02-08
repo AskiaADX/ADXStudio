@@ -52,3 +52,7 @@ html, body {
 .child {
   display: none;
 }
+
+.child.expand {
+    display:block;
+}
