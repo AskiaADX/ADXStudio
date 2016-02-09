@@ -288,8 +288,8 @@ It's specially useful for the non-closed questions such as open-ended, numeric o
 *Remarks:*
 
 The additional "Don't know" answer could be accessible through the AskiaScript code:
-<code class="vb"><pre>Dim lastResponseIndex = CurrentQuestion.AvailableResponses.Count - 1
-CurrentQuestion.AvailableResponses[lastResponseIndex]</pre></code>
+<pre><code class="vb">Dim lastResponseIndex = CurrentQuestion.AvailableResponses.Count - 1
+CurrentQuestion.AvailableResponses[lastResponseIndex]</code></pre>
 
 The standard equivalent definition of this system property is:
 <pre><code class="xml"><property xsi:type="standardProperty" id="askia-addDK" name="Add &quot;Don't know&quot; input" type="boolean" mode="static">
