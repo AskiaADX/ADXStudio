@@ -1,0 +1,328 @@
+h1. &lt;properties&gt;
+
+Contains the list of properties accessible in the end user interface.
+
+* Optional
+* [0..1]
+* Parent node: "&lt;page&gt;":manifest_root.textile#page--control, "&lt;control&gt;":manifest_root.textile#page--control
+* Child nodes: "&lt;category&gt;":#category, "&lt;property&gt;":#property  ([[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]], [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]])
+
+<pre><code class="xml"><properties>
+  <category id="general" name="General">
+    <property xsi:type="standardProperty" id="renderingType" name="Rendering type" type="string">
+      <description>Type of rendering</description>
+      <value>classic</value>
+      <options>
+        <option value="classic" text="Classic"/>
+        <option value="image" text="Image"/>
+      </options>
+    </property>
+    <property xsi:type="standardProperty" id="singleImage" name="Image for single question" type="file" fileExtension=".png, .gif, .jpg">
+      <description>Image of single question when the rendering type is image</description>
+      <value>Single.png</value>
+    </property>
+    <property xsi:type="standardProperty" id="multipleImage" name="Image for multiple question" type="file" fileExtension=".png, .gif, .jpg">
+      <description>Image of multiple question when the rendering type is image</description>
+      <value>Multiple.png</value>
+    </property>
+    <property xsi:type="standardProperty" id="other" name="Open-ended question for semi-open" type="question">
+      <description>Additional open-ended question that could be use to emulate semi-open</description>
+    </property>
+  </category>
+</properties></code></pre>
+
+h2. &lt;category&gt;
+
+Category used to organize properties.
+
+* [0..n]
+* Parent node: "&lt;properties&gt;":#properties
+* Child nodes: "&lt;property&gt;":#property ([[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]], [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]])
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique id of the category.
+The id of the category could not be a reserved identifier.|
+|name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|User friendly name of the category to show on the end user interface|
+|collapsed *%{background:#444;color:white;padding:0 10px;}2.1.0%*|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Collapse this category by default (default: false)|
+
+h2. &lt;property&gt;
+
+Property exposed to the end-user in order to configure the ADX.
+
+*Remarks:*
+
+The &lt;property&gt; element is polymorphic, the usage of the _xsi:type_ attribute is require to make your XML file valid.
+According to the _xsi:type_ attributes could be optional or have different behaviour.
+
+Currently the &lt;property&gt; has 2 _xsi:type_:
+
+* standardProperty Free property where the id is not reserved identifier (askiaProperty id)
+[[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]]
+
+* askiaProperty Property with special meaning for the system.
+[[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]]
+
+h2. &lt;property xsi:type="standardProperty"&gt;
+
+* At least one require
+* [1..n]
+* Parent node: "&lt;category&gt;":#category
+* Child nodes: "&lt;description&gt;":#description, "&lt;value&gt;":#value, "&lt;option&gt;":#option
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|xsi:type|true|"xsd:QName":http://www.schemacentral.com/sc/xsd/t-xsd_QName.html|Must always be "standardProperty" for the standard property.
+Also see: [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]]|
+|id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique id of the property.
+It use to facilitate the access by the AskiaScript.
+The id of the property could not be a reserved identifier.
+Also see:  [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]]|
+|name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|User friendly name of the property to show on the end user interface|
+|type|true|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
+*_string_*
+Property as string.
+The string could be validate against a regular expression using the pattern attribute.
+*_number_*
+Property as number.
+The number could be restricted using the min/max/decimal attributes.
+*_boolean_*
+Property as boolean.
+The value must be true or false.
+*_color_*
+Property as color.
+The format of the color could be specify using the colorFormat attribute.
+*_file_*
+Property as string.
+Indicate the name of a resource file already register in the survey.
+This file must be on the survey and accessible in the ../Resources/[Survey name]/ path.
+*_question_*
+Property as question.
+Indicate other question that could be managed by the current ADC|Type of the property|
+|mode|false|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
+*_static_*
+Value which could not contains AskiaScript code.
+*_dynamic_*
+Value which could contains AskiaScript code.
+Using the dynamic value, the _min_, _max_, _decimal_, _pattern_, _fileExtension_ attributes will be verified at the runtime.
+If the AskiaScript code evaluated produce an invalid value then the default value will be used instead.|Indicates that the value of the property could embed AskiaScript code (default is 'static')|
+|visible|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicate if the property is visible by the user in the interface (private property, default it's true)|
+|require|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicate that a value is require for this property. (default true)|
+
+Additional attributes for the string property
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|pattern|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|The regular expression pattern will be use to validate the value entered.|
+
+Additional attributes for the number property
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|min|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicates the minimum allowed value. (default '*')|
+|max|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicates the maximum allowed value. (default '*')|
+|decimal|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicate the maximum number of decimal digits allowed. (default 0)|
+
+Additional attributes for the color property
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|colorFormat|false|Enumerator based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
+_rgb_
+_rgba_
+_hexa_|Indicates the format of the color (default 'rgb')|
+
+Additional attributes for the file property
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|fileExtension|false|"xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html with the following pattern
+<pre><code>((\.([a-zA-Z0-9]{1,10}|\*))+\s*,?\s*)+</code></pre>|Indicates the allowed extension(s) of the file separate with the coma. (default '.*')|
+
+Additional attributes for the question property
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|chapter|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the chapter is allowed (default false).|
+|single|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the single closed question is allowed  (default false).|
+|multiple|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the multi-coded question is allowed (default false).|
+|numeric|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the numeric question is allowed (default false).|
+|open|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the open-ended question is allowed (default false).|
+|date|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the date question is allowed  (default false).|
+
+h2. &lt;description&gt;
+
+Free form text to describes the aim of the property.
+The description could be used by the [[Design6_ADX_Definition#Definition|ABE]] as tooltip or help panel.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..n]
+* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertygt|<property>]]
+
+h2. <value>
+
+Default value of the property.
+This value will be cast according to the type of the property.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Reqiore
+* [1..n]
+* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertygt|<property>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|-_theme_-|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|*%{background:red;color:white;padding:0 10px;}Deprecated%*
+*This features will be drop in the next version. Please avoid it's usage*
+Indicates the theme associated with that value ("default" by default).
+A property must have a single value per theme.
+Take in account that when the theme is not specify the value "default" is used
+*Remarks:* This attribute is not allowed in askia property
+*Also see:* [[Design6_ADX_Generation_Rules#Property-default-value-rules|Property default value rules]] |
+
+h2. <options>
+
+Enumerates all allowed values.
+Will be appear as a drop-down in the user interface.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertygt|<property>]]
+* Child nodes: [[Design6_ADX_Manifest_Properties#ltoptiongt|<option>]]
+
+h2. <option>
+
+Allowed choice.
+
+* Self close node
+* Require
+* [2..n]
+* Parent node: [[Design6_ADX_Manifest_Properties#ltoptionsgt|<options>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|value|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Value of the option|
+|text|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|User friendly text of the option.|
+
+h1. <property xsi:type="askiaProperty">
+
+Predefined system property auto-managed by the system.
+All system properties id is a reserved identifier which could not be used in the standard [[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]].
+
+* Optional
+* [0..n]
+* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertiesgt|<properties>]], [[Design6_ADX_Manifest_Properties#ltcategorygt|<category>]]
+* Child nodes: [[Design6_ADX_Manifest_Properties#ltvaluegt|<value>]], [[Design6_ADX_Manifest_Properties#ltoptionsgt|<options>]]
+
+*Also see:*
+
+* [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaProperty-idaskia-addDKgt|<property xsi:type="askiaProperty" id="askia-addDK">]]
+* [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaProperty-idaskia-maxIterationsgt|<property xsi:type="askiaProperty" id="askia-maxIterations">]]
+
+{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|xsi:type|true|"xsd:QName":http://www.schemacentral.com/sc/xsd/t-xsd_QName.html|Must always be "askiaProperty" for the reserved askia property.
+Also see:[[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]]|
+|id|true|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
+*_askia-theme_*
+*%{background:red;color:white;padding:0 10px;}Deprecated%*
+*This features will be drop in the next version. Please avoid it's usage*
+List all possible themes.
+This system property require the usage of [[Design6_ADX_Manifest_Properties#ltoptionsgt|<options>]]
+*_askia-addDK_*
+*%{background:green;color:white;padding:0 10px;}ADC only%*
+Allows users to add an additional "Don't know" answer to enforce the respondent answer.
+Mostly used for open-ended, numeric and date questions.
+*_askia-maxIterations_*
+Allows users to indicates the max iterations they want to display for a question inside a loop.
+This property is automatically generated by the system when the question is inside a loop.
+It's not require to mention it into the manifest file.|Id of the system property to set.|
+|visible|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicate if the variable is visible by the user in the interface [[Design6_ADX_Definition#Definition|ABE]] (private property, default it's true)|
+
+h2. <property xsi:type="askiaProperty" id="askia-theme">
+
+*%{background:red;color:white;padding:0 10px;}Deprecated%*
+*This features will be drop in the next version. Please avoid it's usage*
+
+List the possible all themes.
+Allow properties to have default [[Design6_ADX_Manifest_Properties#ltvaluegt|<value>]] for each theme.
+If a property doesn't specify the theme, the theme named 'default' will be automatically associated with it.
+
+*Also see:*
+
+* [[Design6_ADX_Generation_Rules#Property-default-value-rules|Property default value rules]]
+
+*Remarks:*
+
+It require the usage of [[Design6_ADX_Manifest_Properties#ltoptionsgt|<options>]] to list all possible themes.
+
+The standard equivalent definition of this system property is:
+<pre><code class="xml"><property xsi:type="standardProperty" id="askia-theme" name="Theme" type="string" mode="dynamic">
+   <description>Predefined themes</description>
+   <value>default</value>
+   <options>
+       <option value="default" text="Default" />
+       <!-- + all other specified themes -->
+   </options>
+</property></code></pre>
+
+*Example:*
+
+<pre><code class="xml"><properties>
+  <property xsi:type="askiaProperty" id="askia-theme">
+       <options>
+           <option value="red-theme" text="Red" />
+           <option value="green-theme" text="Green" />
+           <option value="blue-theme" text="Blue" />
+      </options>
+   </property>
+   <property xsi:type="standardProperty" id="tickColor" name="Tick color" type="color">
+      <value>0,0,0</value>
+      <value theme="red-theme">255,0,0</value>
+      <value theme="green-theme">0,255,0</value>
+      <value theme="blue-theme">0,0,255</value>
+   </property>
+</properties></code></pre>
+
+h2. <property xsi:type="askiaProperty" id="askia-addDK">
+
+*%{background:green;color:white;padding:0 10px;}ADC only%*
+
+Once this system property is present in the config file, it allow user to generate an extra input for the "Don't know" answer.
+It's specially useful for the non-closed questions such as open-ended, numeric or date.
+
+*Remarks:*
+
+The additional "Don't know" answer could be accessible through the AskiaScript code:
+<code class="vb"><pre>Dim lastResponseIndex = CurrentQuestion.AvailableResponses.Count - 1
+CurrentQuestion.AvailableResponses[lastResponseIndex]</pre></code>
+
+The standard equivalent definition of this system property is:
+<pre><code class="xml"><property xsi:type="standardProperty" id="askia-addDK" name="Add &quot;Don't know&quot; input" type="boolean" mode="static">
+   <description>Add a "Don't know" input to enforce the answer</description>
+   <value>false</value>
+</property></code></pre>
+
+*Example:*
+
+<pre><code class="xml"><properties>
+   <property xsi:type="askiaProperty" id="askia-addDK" />
+</properties></code></pre>
+
+h2. <property xsi:type="askiaProperty" id="askia-maxIterations">
+
+This system property is automatically displayed in the interface when the question is in a loop.
+It allow user to indicates how many iterations he want to display.
+
+The value associated is used in conjunction of the _maxIterations_ attribute of the [[Design6_ADX_Manifest_Outputs#ltoutputgt;|<output>]] element.
+The system will use the minimal value of both.
+
+*Remarks:*
+
+It's not necessary to explicitly create this property, the system will automatically create it.
+
+*Also see:*
+
+[[Design6_ADX_Generation_Rules#Output-max-iterations-rules|Output max iterations rules]]
+
+The standard equivalent definition of this system property is:
+<pre><code class="xml"><property xsi:type="standardProperty" id="askia-maxIterations" name="Max. iterations" type="number" mode="dynamic">
+   <description>Indicates the maximum number of iterations to display</description>
+   <value>0</value>
+</property></code></pre>
+
+*[[Design6_ADX_Manifest_Outputs|<< Manifest - Outputs]]* | *[[Design6_ADX_Manifest_Functions|Manifest - Functions >>]]*
