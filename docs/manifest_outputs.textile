@@ -237,7 +237,7 @@ h3. Attributes
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
 |name|true|"xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html|Name of the attribute to add or overwrite|
 
-h2. &ltvalue&gt;
+h2. &lt;value&gt;
 
 Value of the attribute to add or overwrite.
 This value could embed AskiaScript code to make it dynamic.
