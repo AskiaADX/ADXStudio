@@ -205,8 +205,8 @@ Add or overwrite an attribute in the auto-generated HTML tags for the content ty
 * Self-close node
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Manifest_Outputs#ltcontentgt|<content>]]
-* Child nodes: [[Design6_ADX_Manifest_Outputs#ltvaluegt|<value>]]
+* Parent node: "&lt;content&gt;":#content
+* Child nodes: "&lt;value&gt;":#value
 
 *Also see*
 
@@ -237,15 +237,15 @@ h3. Attributes
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
 |name|true|"xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html|Name of the attribute to add or overwrite|
 
-h2. <value>
+h2. &ltvalue&gt;
 
 Value of the attribute to add or overwrite.
 This value could embed AskiaScript code to make it dynamic.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Manifest_Outputs#ltattributegt|<attribute>]]
+* [1 ]
+* Parent node: "&lt;attribute&gt;":#attribute
 
 <pre><code class="xml"><attribute name="autoplay">
    <value><![CDATA[ {%= CurrentADC.PropValue("autoplay") %} ]]></value>
@@ -254,7 +254,7 @@ This value could embed AskiaScript code to make it dynamic.
    <value>true</value>
 </attribute></code></pre>
 
-h2. <yield>
+h2. &lt;yield&gt;
 
 Overwrite the auto-generated HTML tags for the content type "css", "javascript", "image", "video", "audio", "flash".
 It could embed AskiaScript to make it dynamic, it gives much more control about the generation.
@@ -262,7 +262,7 @@ It could embed AskiaScript to make it dynamic, it gives much more control about 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Manifest_Outputs#ltcontentgt|<content>]]
+* Parent node: "&lt;content&gt;":#content
 
 <pre><code class="xml"><content fileName="HTML5Shim.js" type="javascript" mode="static" position="head">
    <yield>
@@ -274,4 +274,4 @@ It could embed AskiaScript to make it dynamic, it gives much more control about 
    </yield>
 </content></code></pre>
 
-*[[Design6_ADX_Manifest_Info|<< Manifest - Info]]* | *[[Design6_ADX_Manifest_Properties|Manifest - Properties >>]]*
+*"&lt;&lt; Manifest - Info":manifest_info.textile* | *"Manifest - Properties &gt;&gt;":manifest_properties.textile*
