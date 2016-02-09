@@ -5,8 +5,8 @@ Meta-information of the ADX.
 * Require
 * [1 ]
 * Parent node: "&lt;page&gt;":manifest_root.textile#page--control, "&lt;control&gt;":manifest_root.textile#page--control
-* Child nodes: "&lt;name&lt;":#name, "&lt;guid&lt;":#guid, "&lt;version&lt;":#version,
-"&lt;date&lt;":#date, "&lt;description&lt;":#description,
+* Child nodes: "&lt;name&gt;":#name, "&lt;guid&gt;":#guid, "&lt;version&gt;":#version,
+"&lt;date&gt;":#date, "&lt;description&gt;":#description,
 [[Design6_ADX_Manifest_Info#ltcompanygt|<company>]], [[Design6_ADX_Manifest_Info#ltauthorgt|<author>]],
 [[Design6_ADX_Manifest_Info#ltsitegt|<site>]], [[Design6_ADX_Manifest_Info#lthelpURLgt|<helpURL>]],
 [[Design6_ADX_Manifest_Info#ltstylegt|<style>]], [[Design6_ADX_Manifest_Info#ltcategoriesgt|<categories>]],
@@ -44,7 +44,7 @@ Meta-information of the ADX.
 </control>
 </code></pre>
 
-h1. &lt;name&lt;
+h2. &lt;name&lt;
 
 User friendly name of the ADX.
 
@@ -59,7 +59,7 @@ User friendly name of the ADX.
 <name>StatementList</name>
 <name>ShoppingShelves</name></code></pre>
 
-h1. &lt;guid&gt;
+h2. &lt;guid&gt;
 
 Global Unique IDentifier of the ADX.
 
