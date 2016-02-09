@@ -41,14 +41,14 @@ Meta-information of the ADX.
 </control>
 </code></pre>
 
-h2. &lt;name&lt;
+h2. &lt;name&gt;
 
 User friendly name of the ADX.
 
 * "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* [1 ]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code><name>DefaultPage</name>
 <name>SideBarPage</name>
@@ -67,95 +67,95 @@ Use a GUID generator in order to prevent a duplicate GUID between two ADX.
 
 * "xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* [1 ]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><guid>b5bbd863-1f6c-401d-9e8f-78c98c1ae7f2</guid>
 <guid>e451f7ac-0944-4ebe-9fae-4ab569126f53</guid>
 <guid>e63dd593-9d0b-468e-a6ac-a876ea2e3301</guid></code></pre>
 
-h1. &lt;version&gt;
+h2. &lt;version&gt;
 
 Version of the ADX.
 
-* [[Design6_ADX_Manifest#1-Legal-version-number|versionNumber]]
+* "Legal version number (1)":manifest.textile#1-legal-version-number
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* [1 ]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><version>1.0.0</version>
 <version>1.1.beta</version>
 <version>2.0.rc2</version></code></pre>
 
-h1. &lt;date&gt;
+h2. &lt;date&gt;
 
 Release date of the ADX.
 
 * "xsd:date":http://www.schemacentral.com/sc/xsd/t-xsd_date.html
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* [1 ]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><date>2013-02-26</date>
 <date>2012-01-04</date></code></pre>
 
-h1. &lt;description&gt;
+h2. &lt;description&gt;
 
 Description of the ADX.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><description>Star rating control which generate radio button list or clickable star images</description></code></pre>
 
-h1. &lt;company&gt;
+h2. &lt;company&gt;
 
 Name of the company who provide the ADX
 
 * "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><company>Askia SAS</company></code></pre>
 
-h1. &lt;author&gt;
+h2. &lt;author&gt;
 
 Author(s) of the ADX
 
 * "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><author>Jerome Duparc</author>
 <author>Michael Long, Jerome Sopocko</author></code></pre>
 
-h1. &lt;site&gt;
+h2. &lt;site&gt;
 
 Web site URL of the author(s)/company
 
 * "xsd:anyURI":http://www.schemacentral.com/sc/xsd/t-xsd_anyURI.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><site>http://www.askia.com</site></code></pre>
 
-h1. &lt;helpURL&gt;
+h2. &lt;helpURL&gt;
 
 URL to the help of the ADX.
 
 * "xsd:anyURI":http://www.schemacentral.com/sc/xsd/t-xsd_anyURI.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 
 <pre><code class="xml"><helpURL>http://dev.aska.com/adc/star-rating-tutorial.html</helpURL></code></pre>
 
-h1. &lt;style&gt;
+h2. &lt;style&gt;
 
 *%{background:green;color:white;padding:0 10px;}ADC only%*
 
@@ -169,7 +169,7 @@ We recommend the usage of a style-sheet to make the size adaptive.
 * Self-close node
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 
 h3. Attributes
 
@@ -179,15 +179,15 @@ h3. Attributes
 
 <pre><code class="xml"><style width="400" height="300" /></code></pre>
 
-h1. &lt;categories&gt;
+h2. &lt;categories&gt;
 
 List the categories of the ADX.
 
 * [[Design6_ADX_Manifest_Info#ltcategorygt|Collection of category]]
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
-* Child nodes: [[Design6_ADX_Manifest_Info#ltcategorygt|<category>]]
+* [1 ]
+* Parent node: "&lt;info&gt;":#info
+* Child nodes: "&lt;category&gt;":#category
 
 <pre><code class="xml"><categories>
   <category>Sliders</category>
@@ -202,21 +202,21 @@ This is used to sort and search an ADX in the ADXs library.
 * "xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html
 * At least one require
 * [1..n]
-* Parent node: [[Design6_ADX_Manifest_Info#ltcategoriesgt|<categories>]]
+* Parent node: "&lt;categories&gt;":#categories
 
 <pre><code class="xml"><category>Sliders</category></code></pre>
 
-h1. &lt;constraints&gt;
+h2. &lt;constraints&gt;
 
 *%{background:green;color:white;padding:0 10px;}ADC only%*
 
 Constraints to indicates the allowed context of the ADC.
 
-* [[Design6_ADX_Manifest_Info#ltconstraintgt|Collection of constraint]]
+* "Collection of &lt;constraint&gt;":#constraint
 * Require
-* [1]
+* [1 ]
 * Parent node: "&lt;info&gt;":#info
-* Child nodes: [[Design6_ADX_Manifest_Info#ltconstraintgt|<constraint>]]
+* Child nodes: "&lt;constraint&gt;":#constraint
 
 <pre><code class="xml"><constraints>
   <constraint on="questions" single="true" />
@@ -232,7 +232,7 @@ Define the constraint on a given context such as questions, responses, controls 
 * Self-close node
 * At least one require
 * [1..n]
-* Parent node: [[Design6_ADX_Manifest_Info#ltconstraintsgt|<constraints>]]
+* Parent node: "&lt;constraints&gt;":#constraints
 
 h3. Attributes
 
