@@ -44,7 +44,7 @@ If the browser supports Flash and Javascript, the "flash" output will be used.
 If the browser supports Javascript but not Flash, the "js" output will be used.
 If the browser doesn't support Javascript nor Flash, the "fallback" output will be used.
 
-<code class="xml"><pre><outputs defaultOutput="third">
+<pre><code class="xml"><outputs defaultOutput="third">
    <output id="first">
       <condition><![CDATA[ False ]]></condition>
       <!-- ... contents ... -->
@@ -57,7 +57,7 @@ If the browser doesn't support Javascript nor Flash, the "fallback" output will 
       <condition><![CDATA[ True ]]></condition>
       <!-- ... contents ... -->
    </output>
-</outputs></pre></code>
+</outputs></code></pre>
 
 The "first" output will not be used because it's condition is false.
 The "second" and "third" outputs return true, the "second" output will be used because it comes before the "third" output.
