@@ -1,0 +1,374 @@
+h1. Generation Rules
+
+This section describes the rules applied by the system to generate the ADX output and the behaviour of the local ADX properties.
+
+* "Output selection rules":#output-selection-rules
+* "Contents rules":#content-rules
+** "Text content rules":#text-content-rules
+*** "HTML content rules":#html-content-rules
+*** "Javascript content rules":#javascript-content-rules
+*** "CSS content rules":#css-content-rules
+** "Binary content rules":#binary-content-rules
+*** "Image content rules":#image-content-rules
+*** "Video content rules":#video-content-rules
+*** "Audio content rules":#audio-content-rules
+*** "Flash content rules":#flash-content-rules
+** "Content attributes rules":#content-attributes-rules
+* "Output max iterations rules":#output-max-iterations-rules
+
+h2. Output selection rules
+
+During the run-time, the system will evaluate the "&lt;condition&gt;":manifest_outputs.textile#condition for each "&lt;output&gt;":manifest_outputs.textile#output in the order it is defined.
+
+Once one "&lt;condition&gt;":manifest_outputs.textile#condition is evaluated to @True@, then the system break the evaluation and used the "&lt;output&gt;":manifest_outputs.textile#output associated with the  "&lt;condition&gt;":manifest_outputs.textile#condition.
+
+If none of the "&lt;condition&gt;":manifest_outputs.textile#condition is evaluated to @True@ then the system will use the "&lt;output&gt;":manifest_outputs.textile#output where the _id_ matches the _defaultOutput_ attribute of the "&lt;outputs&gt;":manifest_outputs.textile#outputs  root element.
+
+*Examples:*
+
+<pre><code class="xml"><outputs defaultOutput="fallback">
+  <output id="flash">
+     <condition><![CDATA[ Browser.Support("Flash") And Browser.Support("Javascript") ]]></condition>
+     <!-- ... contents ... -->
+  </output>
+  <output id="js">
+      <condition><![CDATA[ Browser.Support("Javascript") ]]></condition>
+      <!-- ... contents ... -->
+  </output>
+  <output id="fallback">
+     <!-- ... contents ... -->
+  </output>
+</outputs></code></pre>
+
+If the browser supports Flash and Javascript, the "flash" output will be used.
+If the browser supports Javascript but not Flash, the "js" output will be used.
+If the browser doesn't support Javascript nor Flash, the "fallback" output will be used.
+
+<code class="xml"><pre><outputs defaultOutput="third">
+   <output id="first">
+      <condition><![CDATA[ False ]]></condition>
+      <!-- ... contents ... -->
+   </output>
+   <output id="second">
+      <condition><![CDATA[ True ]]></condition>
+      <!-- ... contents ... -->
+   </output>
+   <output id="third">
+      <condition><![CDATA[ True ]]></condition>
+      <!-- ... contents ... -->
+   </output>
+</outputs></pre></code>
+
+The "first" output will not be used because it's condition is false.
+The "second" and "third" outputs return true, the "second" output will be used because it comes before the "third" output.
+
+h2. Contents rules
+
+There are mainly two types of contents in the ADX, the text-based content and the binary-based content.
+
+The text-based content is any kind of file which contains raw text without rich formatting.
+This type of file are editable in a text editor.
+Be careful, all  RTF-like documents are considered binary, this includes MS Word, WordPad documents, ...
+
+All other files are considered binary.
+
+The ADX engine has built-in routines to manage common web contents (JavaScript, CSS, images, video, audio, flash).
+All others non-managed contents require the usage of the "&lt;yield&gt;":manifest_outputs.textile#yield or must have the attribute _position_ set to _"none"_.
+
+h2. Text content rules
+
+"&lt;content type=&quot;text&quot;&gt;":manifest_outputs.textile#content
+
+Text based content which doesn't have a special insertion, it will be inserted as it is.
+It is commonly use with the file extension *.txt, *.xml, *.json etc ....
+
+*It:*
+
+* could be "static", "share" or "dynamic"
+* must be associated with a text file.
+* doesn't allow the usage of "&lt;attribute&gt;":manifest_outputs.textile#attribute
+
+h3. HTML content rules
+
+"&lt;content type=&quot;html&quot;&gt;":manifest_outputs.textile#content
+
+Text-based content which doesn't have a special insertion, it will be inserted as it is.
+
+*It:*
+
+* could be "static", "share" or "dynamic"
+* must be associated with text-based file
+* should be associated with an html file (*.html, *.htm).
+* doesn't allow the usage of "&lt;attribute&gt;":manifest_outputs.textile#attribute
+
+h3. Javascript content rules
+
+"&lt;content type=&quot;javascript&quot;&gt;":manifest_outputs.textile#content
+
+Text based content which have special insertions, according to his _mode_.
+We recommend to set his _position_ to _`head`_ or _`foot`_, other positions are legals but not recommended.
+
+*It:*
+
+* could be "static", "share" or "dynamic"
+* must be associated with text-based file
+* should be associated with a javascript file (*.js)
+* allow the usage of the "&lt;attribute&gt;":manifest_outputs.textile#attribute , when no "&lt;yield&gt;":manifest_outputs.textile#yield  is specified.
+
+When "static" or "share", it produces the following code:
+
+<pre><code class="html"><script type="text/javascript" src="[PATH]"></script></code></pre>
+
+When "dynamic", it produces the following code:
+
+<pre><code class="html"><script type="text/javascript">[CONTENT]</script></code></pre>
+
+h3. CSS content rules
+
+"&lt;content type=&quot;css&quot;&gt;":manifest_outputs.textile#content
+
+Text based content which have special insertions, according to his _mode_.
+We recommend to set his _position_ to _`head`_, other positions are authorised but not recommended.
+
+*It:*
+
+* could be "static", "share" or "dynamic"
+* must be associated with a text-based file
+* should be associated with a CSS file (*.css)
+* allow the usage of the "&lt;attribute&gt;":manifest_outputs.textile#attribute , when no "&lt;yield&gt;":manifest_outputs.textile#yield  is specified.
+
+When "static" or "share", it produces the following code:
+
+<pre><code class="html"><link type="text/css" rel="stylesheet" href="[PATH]" /></code></pre>
+
+When "dynamic", it produces the following code:
+
+<pre><code class="html"><style type="text/css">[CONTENT]</style></code></pre>
+
+h2. Binary content rules
+
+"&lt;content type=&quot;binary&quot;&gt;":manifest_outputs.textile#content
+
+Binary-based content which doesn't have a special insertion.
+
+*It:*
+
+* must be "static" or "share"
+* should be associated with a binary file.
+* doesn't allow the usage of [[Design6_ADX_Manifest_Outputs#ltattributegt|<attribute>]].
+* require the usage of the "&lt;yield&gt;":manifest_outputs.textile#yield or the _position_ set to "none".
+
+h3. Image content rules
+
+"&lt;content type=&quot;image&quot;&gt;":manifest_outputs.textile#content
+
+Binary-based content which have a special insertion.
+We recommend to set his _position_ to _`none`_, _`placeholder`_ or _`foot`_, other positions are legals but not recommended.
+
+*It:*
+
+* must be "static" or "share"
+* must be associated with an image file (*.jpg, *.jpeg, *.png, *.gif ...).
+* allow the usage of the "&lt;attribute&gt;":manifest_outputs.textile#attribute , when no "&lt;yield&gt;":manifest_outputs.textile#yield  is specified.
+
+It produces the following code:
+
+<pre><code><img src="[PATH]" alt="" /></code></pre>
+
+h3. Video content rules
+
+"&lt;content type=&quot;video&quot;&gt;":manifest_outputs.textile#content
+
+Binary-based content which have a special insertion.
+We recommend to set his _position_ to _`none`_, _`placeholder`_ or _`foot`_, other positions are legals but not recommended.
+
+*It:*
+
+* must be "static" or "share"
+* must be associated with a video file (*.ogv, *.ogg, *.mp4, *.webm ...)
+* allow the usage of the "&lt;attribute&gt;":manifest_outputs.textile#attribute , when no "&lt;yield&gt;":manifest_outputs.textile#yield  is specified.
+
+It produces the following code:
+
+<pre><code class="html"><video src="[PATH]"></video></code></pre>
+
+h3. Audio content rules
+
+"&lt;content type=&quot;audio&quot;&gt;":manifest_outputs.textile#content
+
+Binary-based content which have a special insertion.
+We recommend to set his _position_ to _`none`_, _`placeholder`_ or _`foot`_, other positions are legals but not recommended.
+
+*It:*
+
+* must be "static" or "share"
+* must be associated with an audio file (*.ogv, *.ogg, *.mp3, *.wav ...)
+* allow the usage of the "&lt;attribute&gt;":manifest_outputs.textile#attribute , when no "&lt;yield&gt;":manifest_outputs.textile#yield is specified.
+
+It produces the following code:
+
+<pre><code class="html"><audio src="[PATH]"></audio></code></pre>
+
+h3. Flash content rules
+
+"&lt;content type=&quot;flash&quot;&gt;":manifest_outputs.textile#content
+
+Binary-based content which have a special insertion. We recommend to set his _position_ to _`none`_, _`placeholder`_ or _`foot`_, other positions are legals but not recommended.
+
+*It:*
+
+* must be "static" or "share"
+* must be associated with a Adobe Flash file (*.swf)
+* doesn't allow the usage of "&lt;attribute&gt;":manifest_outputs.textile#attribute , prefer the usage of "&lt;yield&gt;":manifest_outputs.textile#yield instead.
+
+It produces the following code:
+
+<pre><code class="html">
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="[WIDTH]" height="[HEIGHT]">
+    <param name="movie" value="[PATH]"/>
+    <!--[if !IE]>-->
+    <object type="application/x-shockwave-flash" data="[PATH]" width="[WIDTH]" height="[HEIGHT]">
+        <param name="movie" value="[PATH]"/>
+    <!--<![endif]-->
+        <a href="http://www.adobe.com/go/getflash">
+            <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player"/>
+        </a>
+    <!--[if !IE]>-->
+    </object>
+    <!--<![endif]-->
+</object>
+</code></pre>
+
+h2. Content attributes rules
+
+Except for _"text"_, _"binary"_, _"html"_ and _"flash"_ content type, all other contents accept the overload of attributes of the auto-generated tag using the [[Design6_ADX_Manifest_Outputs#ltattributegt|<attribute> element]].
+
+If "&lt;yield&gt; element":manifest_outputs.textile#yield is present all "&lt;attribute&gt; element":manifest_outputs.textile#attribute are ignored.
+
+In most cases, the system allows the overwrite of auto-generated attributes expect the one which specified the target file.
+Below the table of the HTML attributes generated by the system with the indication about the ability to overwrite:
+
+{background:#007DC5; color:white}. |_. Content type|_. Mode |_. Attribute name|_. Over-writable|
+|/2. javascript| Static and share | src | Not over-writable |
+| All mode | type | Over-writable |
+|/3. css |/2. Static and share | href | Not over-writable |
+| rel | Over-writable |
+| All mode | type | Over-writable |
+|/2. image |/2. Static and share | src | Not over-writable |
+| alt | Over-writable |
+| video | Static and share | src | Not over-writable |
+| audio | Static and share | src | Not over-writable |
+
+h2. Output max iterations rules
+
+This rule is specific for questions in a loop.
+
+The ADC is responsible of the generation of controls, it may indicate to the rendering engine how many loop iterations it could managed for each output.
+For example the ADC could manage an infinite number of iterations on desktop device, a maximum of 10 iterations on tablets and only 1 iteration at a time on mobile devices.
+
+The user could also indicate the maximum number of iterations he wants to display on the page using the property _askia-maxIterations_ ("&lt;property xsi:type=&quot;askiaProperty&quot; id=&quot;askia-maxIterations&quot;&gt;":manifest_properties.textile#property-xsitypeaskiaproperty-askia-maxiterations).
+
+The system will take the minimum value between the attribute _maxIterations_ of the "&lt;output&gt;":manifest_outputs.textile#output and the value specified by the user through the property _askia-maxIterations_ ("&lt;property xsi:type=&quot;askiaProperty&quot; id=&quot;askia-maxIterations&quot;&gt;":manifest_properties.textile#property-xsitypeaskiaproperty-askia-maxiterations).
+
+Because several questions could be merged into the same page, the rendering engine will generate expected iterations and stop immediately.
+All following pages will generate all other expected iterations until the engine reaches the latest iteration, then it generates all remaining controls merged into the same page.
+
+Below schemas of the generation, all questions are merged into the same page:
+
+h3. Case 1. All iterations could be done in one page (maxIterations >= 5)
+
+*Survey structure:*
+
+* Q1
+* Q2
+* Loop (5 items)
+** QLoop
+
+*Results:*
+
+* Page 1:
+Q1 + Q2 + QLoop: All 5 iterations.
+
+h3. Case 2. Questions before the loop (maxIterations = 5)
+
+*Survey structure:*
+
+* Q1
+* Q2
+* Loop (15 items)
+** QLoop
+
+*Results:*
+
+* Page 1:
+Q1 + Q2 + QLoop: 5 first iterations
+
+* Page 2:
+QLoop: 5 next iterations
+
+* Page 3:
+QLoop: 5 last iterations
+
+h3. Case 3. Questions after the loop (maxIterations = 5)
+
+*Survey structure:*
+
+* Loop (15 items)
+** QLoop
+* Q1
+* Q2
+
+*Results:*
+
+* Page 1:
+QLoop: 5 first iterations
+
+* Page 2:
+QLoop: 5 next iterations
+
+* Page 3:
+QLoop: 5 last iterations + Q1 + Q2
+
+h3. Case 4. Questions before and after the loop (maxIterations = 5)
+
+*Survey structure:*
+
+* Q1
+* Q2
+* Loop (15 items)
+** QLoop
+* Q3
+* Q4
+
+*Results:*
+
+* Page 1:
+Q1 + Q2 + QLoop: 5 first iterations
+
+* Page 2:
+QLoop: 5 next iterations
+
+* Page 3:
+QLoop: 5 last iterations + Q3 + Q4
+
+h3. Case 5. Two loops on the same page (loop1: maxIterations = 5, loop2: maxIterations = 2)
+
+*Survey structure:*
+
+* Loop1 (8 items)
+** QLoop1
+* Loop2 (4 items)
+** QLoop2
+
+*Results:*
+
+* Page 1:
+QLoop1: 5 first iterations
+
+* Page 2:
+QLoop1: 3 last iterations + QLoop2: 2 first iterations
+
+* Page 3:
+QLoop2: 2 last iterations
+
+*"&lt;&lt; Theme":theme.textile* | *"Generate Askia HTML Inputs &gt;&gt;":askia_html_inputs.textile*
