@@ -1,4 +1,4 @@
-h1. <page> / <control>
+h1. &lt;page&gt; / &lt;control&gt;
 
 <page> is the root node of the *%{background:orange;color:#222;padding:0 10px;}ADP%* manifest.
 <control> is the root node of the *%{background:green;color:white;padding:0 10px;}ADC%* manifest.
