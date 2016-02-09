@@ -208,4 +208,4 @@ h2. Others files and directories
 
 All others files and directories are ignored by the rendering engine. Developers are free to add additional items such as: Help, Tools, Specs, ...
 
-"&lt;&lt; Definition":definition.textile | "Manifest &gt;&gt;":manifest.textile
+*"&lt;&lt; Definition":definition.textile* | *"Manifest &gt;&gt;":manifest.textile*

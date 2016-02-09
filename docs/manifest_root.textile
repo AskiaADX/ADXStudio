@@ -4,16 +4,16 @@ h1. &lt;page&gt; / &lt;control&gt;
 <control> is the root node of the *%{background:green;color:white;padding:0 10px;}ADC%* manifest.
 
 * Require
-* [1]
+* [1 ]
 * Child nodes: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]], [[Design6_ADX_Manifest_Outputs#ltoutputsgt|<outputs>]], [[Design6_ADX_Manifest_Properties#ltpropertiesgt|<properties>]], [[Design6_ADX_Manifest_Functions#ltFunctions#gt|<functions>]]
 
 h3. Attributes
 
-{background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
+|_. Attribute name|_. Require|_. Type|_. Description|
 |version|true|[[Design6_ADX_Manifest#(1)-Legal-version-number|Legal version number (1)]]|Version number of the ADX format definition.
 (Not the version of the control but the version of the ADX format)
 The current allowed values are 2.1.0 for ADC and 1.0.0 for ADP|
 |askiaCompat|false|[[Design6_ADX_Manifest#(1)-Legal-version-number|Legal version number (1)]]|Compatibility version with Askia product.
 The default value is 5.3.5, when the attribute is omit.|
 
-"&lt;&lt; Manifest":manifest.textile | "Manifest - Info &gt;&gt;":manifest_info.textile
+*"&lt;&lt; Manifest":manifest.textile* | *"Manifest - Info &gt;&gt;":manifest_info.textile*
