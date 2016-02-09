@@ -7,7 +7,7 @@ Meta-information of the ADX.
 * Parent node: "&lt;page&gt;":manifest_root.textile#page--control, "&lt;control&gt;":manifest_root.textile#page--control
 * Child nodes: "&lt;name&gt;":#name, "&lt;guid&gt;":#guid, "&lt;version&gt;":#version,
 "&lt;date&gt;":#date, "&lt;description&gt;":#description, "&lt;company&gt;":#company, "&lt;author&gt;":#author,
-"&lt;site&gt;":#site, "&lt;helpURL&gt;":#helpURL, "&lt;style&gt;":#style, "&lt;categories&gt;":#categories, "&lt;constraints&gt;":#constraints
+"&lt;site&gt;":#site, "&lt;helpURL&gt;":#helpurl, "&lt;style&gt;":#style, "&lt;categories&gt;":#categories, "&lt;constraints&gt;":#constraints
 
 <pre><code class="xml">
 <?xml version="1.0" encoding="utf-8"?>
