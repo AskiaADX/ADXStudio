@@ -57,7 +57,7 @@ Based on "xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html and re
 0.1
 123.456
 456
-* (unbounded number)
+"*" (unbounded number)
 </code></pre>
 
 "&lt;&lt; Structure":structure.textile | "Manifest Root &gt;&gt;":manifest_root.textile
