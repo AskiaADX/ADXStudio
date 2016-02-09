@@ -5,7 +5,7 @@ Contains the list of properties accessible in the end user interface.
 * Optional
 * [0..1]
 * Parent node: "&lt;page&gt;":manifest_root.textile#page--control, "&lt;control&gt;":manifest_root.textile#page--control
-* Child nodes: "&lt;category&gt;":#category, "&lt;property&gt;":#property  ([[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]], [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]])
+* Child nodes: "&lt;category&gt;":#category
 
 <pre><code class="xml"><properties>
   <category id="general" name="General">
@@ -37,7 +37,7 @@ Category used to organize properties.
 
 * [0..n]
 * Parent node: "&lt;properties&gt;":#properties
-* Child nodes: "&lt;property&gt;":#property ([[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]], [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]])
+* Child nodes: "&lt;property&gt;":#property ("&lt;property xsi:type="standardProperty"&gt;":#property-xsitypestandardproperty , "&lt;property xsi:type=&quotes;askiaProperty&quotes;&gt;":#property-xsitypeaskiaproperty)
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
 |id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique id of the category.
