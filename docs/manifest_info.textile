@@ -183,7 +183,7 @@ h2. &lt;categories&gt;
 
 List the categories of the ADX.
 
-* [[Design6_ADX_Manifest_Info#ltcategorygt|Collection of category]]
+* "Collection of &lt;category&gt;":#category
 * Require
 * [1 ]
 * Parent node: "&lt;info&gt;":#info
