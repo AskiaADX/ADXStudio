@@ -9,20 +9,20 @@ The schema of @manifest.xml@ is defined by the "ADCManifest.xsd":http://www.aski
 
 The root node of Manifest.xml is:
 
-[[Design6_ADX_Manifest_Root#ltpagegt-ltcontrolgt|*<page>*]] *%{background:orange;color:#222;padding:0 10px;}ADP only%*
+*"&lt;page&gt;":manifest_root.textile#page--control* *%{background:orange;color:#222;padding:0 10px;}ADP only%*
 !ADTSchemaOverview.png!
 
 ---
 
-[[Design6_ADX_Manifest_Root#ltpagegt-ltcontrolgt|*<control>*]] *%{background:green;color:white;padding:0 10px;}ADC only%*
+*"&lt;control&gt;":manifest_root.textile#page--control* *%{background:green;color:white;padding:0 10px;}ADC only%*
 !ADCSchemaOverview.png!
 
 Both manifest contains 4 parts:
 
-* [[Design6_ADX_Manifest_Info|The meta information: <info>]]
-* [[Design6_ADX_Manifest_Outputs|The available outputs: <outputs>]]
-* [[Design6_ADX_Manifest_Properties|The properties for the end-user configuration: <properties>]]
-* [[Design6_ADX_Manifest_Functions|List all available AskiaScript functions: <functions>]]
+* "The meta information: &lt;info&gt;":manifest_info.textile
+* "The available outputs: &lt;outputs&gt;":manifest_output.textile
+* "The properties for the end-user configuration: &lt;properties&gt;":manifest_properties.textile
+* "List all available AskiaScript functions: &lt;functions&gt;":manifest_functions.textile
 
 h2. Notes about the type format used in the XML
 
@@ -60,4 +60,4 @@ Based on "xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html and re
 "*" (unbounded number)
 </code></pre>
 
-"&lt;&lt; Structure":structure.textile | "Manifest Root &gt;&gt;":manifest_root.textile
+*"&lt;&lt; Structure":structure.textile* | *"Manifest Root &gt;&gt;":manifest_root.textile*
