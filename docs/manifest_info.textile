@@ -6,11 +6,8 @@ Meta-information of the ADX.
 * [1 ]
 * Parent node: "&lt;page&gt;":manifest_root.textile#page--control, "&lt;control&gt;":manifest_root.textile#page--control
 * Child nodes: "&lt;name&gt;":#name, "&lt;guid&gt;":#guid, "&lt;version&gt;":#version,
-"&lt;date&gt;":#date, "&lt;description&gt;":#description,
-[[Design6_ADX_Manifest_Info#ltcompanygt|<company>]], [[Design6_ADX_Manifest_Info#ltauthorgt|<author>]],
-[[Design6_ADX_Manifest_Info#ltsitegt|<site>]], [[Design6_ADX_Manifest_Info#lthelpURLgt|<helpURL>]],
-[[Design6_ADX_Manifest_Info#ltstylegt|<style>]], [[Design6_ADX_Manifest_Info#ltcategoriesgt|<categories>]],
-[[Design6_ADX_Manifest_Info#ltconstraintsgt|<constraints>]]
+"&lt;date&gt;":#date, "&lt;description&gt;":#description, "&lt;company&gt;":#company, "&lt;author&gt;":#author,
+"&lt;site&gt;":#site, "&lt;helpURL&gt;":#helpURL, "&lt;style&gt;":#style, "&lt;categories&gt;":#categories, "&lt;constraints&gt;":#constraints
 
 <pre><code class="xml">
 <?xml version="1.0" encoding="utf-8"?>
