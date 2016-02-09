@@ -1,0 +1,63 @@
+h1. Manifest
+
+The @Manifest.xml@ file (older Config.xml) is the main reference of the ADX.
+
+It contains all metadata, public/private properties and generation rules.
+It must be available at the root of the ADX file structure.
+
+The schema of @manifest.xml@ is defined by the "ADCManifest.xsd":http://www.askia.com/Downloads/dev/schemas/adc2.1/ADCManifest.xsd file for ADC and "ADPManifest.xsd":http://www.askia.com/Downloads/dev/schemas/adp1.0/ADPManifest.xsd file for ADP.
+
+The root node of Manifest.xml is:
+
+[[Design6_ADX_Manifest_Root#ltpagegt-ltcontrolgt|*<page>*]] *%{background:orange;color:#222;padding:0 10px;}ADP only%*
+!ADTSchemaOverview.png!
+
+---
+
+[[Design6_ADX_Manifest_Root#ltpagegt-ltcontrolgt|*<control>*]] *%{background:green;color:white;padding:0 10px;}ADC only%*
+!ADCSchemaOverview.png!
+
+Both manifest contains 4 parts:
+
+* [[Design6_ADX_Manifest_Info|The meta information: <info>]]
+* [[Design6_ADX_Manifest_Outputs|The available outputs: <outputs>]]
+* [[Design6_ADX_Manifest_Properties|The properties for the end-user configuration: <properties>]]
+* [[Design6_ADX_Manifest_Functions|List all available AskiaScript functions: <functions>]]
+
+h2. Notes about the type format used in the XML
+
+h3. (1) Legal version number
+
+Legal version number using maximum 3 digits and optional alpha, beta or rc version.
+
+*Pattern*
+<pre><code>^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(alpha|beta|rc)(\d*))?$</code></pre>
+
+*Examples*
+<pre><code>
+1
+1.0
+1.0.1
+1.0.1.alpha
+1.alpha1
+2.12.132.beta25
+0.2.rc3
+</code></pre>
+
+h3. (2) Number pattern
+
+Based on "xsd:token":http://www.schemacentral.com/sc/xsd/t-xsd_token.html and restricted to a number pattern, it allows the usage of star symbol (*) to indicates an unbounded number.
+
+*Pattern*
+<pre><code>^-?(\*|\d+(\.\d+)?)$</code></pre>
+
+*Examples*
+<pre><code>
+0
+0.1
+123.456
+456
+* (unbounded number)
+</code></pre>
+
+"&lt;&lt; Structure":structure.textile | "Manifest Root &gt;&gt;":manifest_root.textile
