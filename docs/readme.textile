@@ -59,11 +59,11 @@ Cardinality:
 h2. Table of contents
 
 # "Definition":definition.textile
-# [[Design6_ADX_Structure|Structure]]
-# [[Design6_ADX_Manifest|Manifest]]
-# [[Design6_ADX_Master_Page|Master Page]]
-# [[Design6_ADX_Theme|Theme]]
-# [[Design6_ADX_Generation_Rules|Generation Rules]]
-# [[Design6_ADX_Generate_Askia_HTML_Inputs|Generate Askia HTML Inputs]]
-# [[Design6_ADX_Unit_tests|Unit tests]]
-# [[Design6_ADX_SDK|SDK]]
+# "Structure":structure.textile
+# "Manifest":manifest.textile
+# "Master Page":master_page.textile
+# "Theme":theme.textile
+# "Generation Rules":generation_rules.textile
+# "Generate Askia HTML Inputs":askia_html_inputs.textile
+# "Unit tests":unit_tests.textile
+# "SDK":sdk.textile
