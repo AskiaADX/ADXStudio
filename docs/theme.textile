@@ -1,0 +1,241 @@
+h1. Theme
+
+*%{background:#444;color:white;padding:5px 10px;}2.2.0%* _(Dec, 2015)_
+
+After experimenting ADC 1.0 and 2.0, we've observed that most styling properties were pretty the same across such components.
+Users then have to specify their preferred styling over and over again across all their ADCs in the same survey to make the look'n feel consistent.
+
+In order to avoid this repetition, new ADXs (ADPs and/or ADCs) will come with a theming mechanism.
+
+Technically, a theme is not part of the ADX itself, it's an independent package defined out of the ADX. ADXs could however use it through the AskiaScript @Theme@ object.
+
+h2. List of theme variables
+
+Because themes can be shared between ADX components, they must have a consistent and predefined list of variables.
+
+{background:#007DC5; color:white}. |Variable name|Type|Default value|Description|
+{font-weight:bold;background: #EEE;}. |\4. Body |
+|body_bg| RGBA color | %{background:#fff;border: 1px solid #DDD;padding:0 10px;}255,255,255,1% | Background color of the page body|
+|body_font_color| RGBA color| %{background:#000;color:#fff;padding:0 10px;}0,0,0,1% | Font color of the page body|
+{font-weight:bold;background: #EEE;}. |\4. Typography |
+|font_family| String | Arial, Helvetica, sans-serif| Font stack of the page|
+|base_font_size| String[1] | 16px | Base font-size of the highest level parent element of the page (@:root@)|
+|question_font_size| String[2] | 1.5rem | Question caption font-size|
+|response_font_size| String[2] | 1rem | Response font-size|
+{font-weight:bold;background: #EEE;}. |\4. Borders |
+|border_width| String[3] | 0.0625em | Base width of the border|
+|border_radius| String[3] | 0.1875em | Base border radius |
+{font-weight:bold;background: #EEE;}. |\4. Paddings |
+|hpadding| String[3] | 0.5em | Base horizontal padding |
+|vpadding| String[3] | 1.2em | Base vertical padding |
+{font-weight:bold;background: #EEE;}. |\4. Colors |
+|primary_color| RGBA color | %{background:#007DC5;color:#fff;padding:0 10px;}0,125,197,1% | Primary color |
+|primary_dark_color| RGBA color | %{background:#006EAD;color:#fff;padding:0 10px;}0,110,173,1% | Primary dark color |
+|primary_light_color| RGBA color | %{background:#008BDB;color:#fff;padding:0 10px;}0,139,219,1% | Primary light color |
+|secondary_color|RGBA color| %{background:#F1C40F;padding:0 10px;}241,196,15,1% | Secondary color |
+|secondary_dark_color|RGBA color| %{background:#DEB40D;padding:0 10px;}222,180,13,1% | Secondary dark color |
+|secondary_light_color|RGBA color| %{background:#F2CA26;padding:0 10px;}242,202,38,1% | Secondary light color |
+|neutral_color| RGBA color | %{background:#DDDDDD;color:#000;padding:0 10px;}221,221,221,1% | Neutral color |
+|neutral_dark_color| RGBA color | %{background:#BBBBBB;color:#000;padding:0 10px;}187,187,187,1% | Neutral dark color |
+|neutral_light_color| RGBA color | %{background:#EEEEEE;color:#000;padding:0 10px;}238,238,238,1% | Neutral light color |
+|success_color|RGBA color| %{background:#27AE60;color:#fff;padding:0 10px;}39,174,96,1% | Success color |
+|error_color|RGBA color| %{background:#C0392B;color:#fff;padding:0 10px;}192, 57, 43,1% | Error color |
+
+Using the AskiaScript @Theme@ object, you can obtain and manipulate all of the above variables to easily style ADX components consistently. There are two ways to use a theme in an ADX:
+
+fn1. The unit of the size must be set by default in pixels @px@ for the @:root@ font size.
+
+fn2. The unit should preferably be set in @rem@ but we must allow users to use any unit they see fit. If no unit was specified, we must enforce @rem@.
+
+fn3. The unit should preferably be set in @em@ but we must allow users to use any unit they see fit. If no unit was specified, we must enforce @em@.
+
+h3. 1. Direct usage of theme variable
+
+<pre><code class="css">
+#adc_{%= CurrentADC.InstanceId %} .item {
+   color : rgba({%= Theme.Var("neutral_color") %});
+}</code></pre>
+
+h3. 2. Usage through ADX property
+
+<pre><code class="xml">
+<property id="itemFontColor" name="Item font color" type="color" colorFormat="rgba" mode="dynamic">
+   <description><![CDATA[Font color of item]]></description>
+   <value><![CDATA[{%= Theme.Var("neutral_color")%}]]>
+</property></code></pre>
+
+<pre><code class="css">
+#adc_{%= CurrentADC.InstanceId %} .item {
+   color : rgba({%= CurrentADC.PropValue("itemFontColor") %});
+}</code></pre>
+
+This second way allows the end-user to override the specified value for the current ADX component.
+
+h2.  Askia head theme code sample
+
+<pre><code class="css">
+/* General page layout
+    -------------------------- */
+:root {
+    font-size   : {%:= Theme.Var("base_font_size")%};
+    font-family : {%:= Theme.Var("font_family")%};
+
+    /* CSS Variables */
+    --primary_color: rgba({%:= Theme.Var("primary_color")%});
+    --primary_dark_color: rgba({%:= Theme.Var("primary_dark_color")%});
+    --primary_light_color: rgba({%:= Theme.Var("primary_light_color")%});
+    --secondary_color: rgba({%:= Theme.Var("secondary_color")%});
+    --secondary_dark_color: rgba({%:= Theme.Var("secondary_dark_color")%});
+    --secondary_light_color: rgba({%:= Theme.Var("secondary_light_color")%});
+    --neutral_color: rgba({%:= Theme.Var("neutral_color")%});
+    --neutral_dark_color: rgba({%:= Theme.Var("neutral_dark_color")%});
+    --neutral_light_color: rgba({%:= Theme.Var("neutral_light_color")%});
+    --success_color: rgba({%:= Theme.Var("success_color")%});
+    --error_color: rgba({%:= Theme.Var("error_color")%});
+}
+
+body {
+    background-color: rgba({%:= Theme.Var("body_bg")%});
+    color: rgba({%:= Theme.Var("body_font_color")%});
+    padding: {%:= Theme.Var("hpadding")%} {%:= Theme.Var("vpadding")%};
+}
+
+
+/* General questions layout
+    -------------------------- */
+
+/*  Label of the question  */
+.askia-question-label  {
+    font-size: {%:= Theme.Var("question_font_size")%};
+}
+
+/* Label of the question with error */
+.askia-question-label.askia-error {
+    color: rgba({%:= Theme.Var("error_color")%});
+}
+
+/* Container of responses */
+.askia-control {}
+
+/* Container of responses with error */
+.askia-control.askia-error {}
+
+/* Input element in the responses container
+    (when no .askia-response: Open-ended, numeric, date-time)*/
+.askia-control input[type=text],
+.askia-control input[type=number],
+.askia-control textarea {}
+
+/* Response container */
+.askia-response {
+    font-size: {%:= Theme.Var("response_font_size")%};
+}
+
+/* Label of repsonse */
+.askia-response span,
+.askia-response label {}
+
+/* Input element in the response container
+    (when no .askia-control: Classical responses layout) */
+.askia-response input[type=text],
+.askia-response input[type=number],
+.askia-response textarea {}
+
+/* Part below is used for question tables
+    ----------------------------------------- */
+
+/* Header row of the question table (first row of the table)
+  ┌─────────┬───────┬───────┐
+  │         │  YES  │   NO  │ <▬▬ Selector of this row
+  ├─────────┼───────┼───────┤
+  │ Item 1  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+  │ Item 2  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+  │ Item 3  │   Ø   │   Ø   │
+  └─────────┴───────┴───────┘
+*/
+.askia-grid-header {}
+
+/* Top / Left cell of the question table
+
+  Selector of this empty cell
+       V
+  ┌─────────┬───────┬───────┐
+> │         │  YES  │   NO  │
+  ├─────────┼───────┼───────┤
+  │ Item 1  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+  │ Item 2  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+  │ Item 3  │   Ø   │   Ø   │
+  └─────────┴───────┴───────┘
+*/
+.askia-grid-header td:nth-child(1) {}
+
+/* Column header cell of the question table
+
+         Selector of YES/NO cells
+                V       V
+  ┌─────────┬───────┬───────┐
+  │         │  YES  │   NO  │ <
+  ├─────────┼───────┼───────┤
+  │ Item 1  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+  │ Item 2  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+  │ Item 3  │   Ø   │   Ø   │
+  └─────────┴───────┴───────┘
+*/
+.askia-grid-header .askia-response {}
+
+/* Row of the question table
+
+  ┌─────────┬───────┬───────┐
+  │         │  YES  │   NO  │
+  ├─────────┼───────┼───────┤
+  │ Item 1  │   Ø   │   Ø   │   <▬▬ Selector
+  ├─────────┼───────┼───────┤
+  │ Item 2  │   Ø   │   Ø   │   <▬▬ of these
+  ├─────────┼───────┼───────┤
+  │ Item 3  │   Ø   │   Ø   │   <▬▬ rows
+  └─────────┴───────┴───────┘
+*/
+.askia-grid-row {}
+
+/* Row of the question table with error */
+.askia-grid-row.askia-error {}
+
+/* Row header cell of the question table
+
+  Selector of Item 1/ Item 2/ Item 3 cells
+      V
+  ┌─────────┬───────┬───────┐
+  │         │  YES  │   NO  │
+  ├─────────┼───────┼───────┤
+> │ Item 1  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+> │ Item 2  │   Ø   │   Ø   │
+  ├─────────┼───────┼───────┤
+> │ Item 3  │   Ø   │   Ø   │
+  └─────────┴───────┴───────┘
+*/
+.askia-grid-row .askia-question-label {}
+
+/* Response cell of the question table
+
+  ┌─────────┬───────┬───────┐
+  │         │  YES  │   NO  │
+  ├─────────┼───────┼───────┤
+  │ Item 1  │   Ø   │   Ø   │   <▬▬ Selector
+  ├─────────┼───────┼───────┤
+  │ Item 2  │   Ø   │   Ø   │   <▬▬ of responses
+  ├─────────┼───────┼───────┤
+  │ Item 3  │   Ø   │   Ø   │   <▬▬ items cells
+  └─────────┴───────┴───────┘
+                ^       ^
+*/
+.askia-grid-row .askia-response {}
+</code></pre>
+
+*"&lt;&lt; Master Page":manifest_master_page.textile* | *"Generation rules &gt;&gt;":generation_rules.textile*
