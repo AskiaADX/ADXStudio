@@ -93,7 +93,7 @@ It must only appear on element with class `askia-question-label` and `askia-cont
 It doesn't appear on element with the class `askia-response`|
 {font-weight:bold; background:#EEE}. |\2. For question tables |
 | askia-grid-header | Indicates the row header of question table; in &lt;TR&gt; of first row |
-| askia-grid-row    | Indicates a row of question table; in <TR> of other rows
+| askia-grid-row    | Indicates a row of question table; in &lt;TR&gt; of other rows
 Use it in conjunction with `askia-question-XXX` and `askia-error`|
 
 We recommend that ADP developers implement these CSS classes with @Theme@ variables. Below a descriptive scaffolding of the CSS:
