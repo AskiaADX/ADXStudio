@@ -1,7 +1,7 @@
 h1. &lt;page&gt; / &lt;control&gt;
 
-<page> is the root node of the *%{background:orange;color:#222;padding:0 10px;}ADP%* manifest.
-<control> is the root node of the *%{background:green;color:white;padding:0 10px;}ADC%* manifest.
+&lt;page&gt; is the root node of the *%{background:orange;color:#222;padding:0 10px;}ADP%* manifest.
+&lt;control&gt; is the root node of the *%{background:green;color:white;padding:0 10px;}ADC%* manifest.
 
 * Require
 * [1 ]
@@ -9,11 +9,36 @@ h1. &lt;page&gt; / &lt;control&gt;
 
 h3. Attributes
 
-|_. Attribute name|_. Require|_. Type|_. Description|
-|version|true|[[Design6_ADX_Manifest#(1)-Legal-version-number|Legal version number (1)]]|Version number of the ADX format definition.
-(Not the version of the control but the version of the ADX format)
-The current allowed values are 2.1.0 for ADC and 1.0.0 for ADP|
-|askiaCompat|false|[[Design6_ADX_Manifest#(1)-Legal-version-number|Legal version number (1)]]|Compatibility version with Askia product.
-The default value is 5.3.5, when the attribute is omit.|
+
+<table>
+<thead>
+<tr>
+    <th>Attribute name</th>
+    <th>Require</th>
+    <th>Type</th>
+    <th>Description/th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>version</td>
+    <td>true</td>
+    <td>"Legal version number (1)":manifest.textile#1-legal-version-number</td>
+    <td>Version number of the ADX format definition.<br/>
+        (Not the version of the control but the version of the ADX format)<br/>
+        The current allowed values are 2.1.0 for ADC and 1.0.0 for ADP
+    </td>
+</tr>
+<tr>
+    <td>askiaCompat</td>
+    <td>false</td>
+    <td>"Legal version number (1)":manifest.textile#1-legal-version-number</td>
+    <td>Compatibility version with Askia product.<br/>
+        The default value is 5.3.5, when the attribute is omit.
+    </td>
+</tr>
+</tbody>
+</table>
+
 
 *"&lt;&lt; Manifest":manifest.textile* | *"Manifest - Info &gt;&gt;":manifest_info.textile*
