@@ -31,8 +31,6 @@ The system is more open and more flexible (or kind of) but at the same it's less
 
 We have to move from that approach to a more convenient one.
 
-!{width:100px}tetris.jpg! *->* !{width:150px}legos.jpg!
-
 This is where the Askia Design Page (ADP) comes to the rescue.
 
 In addition of the ADP, we also wanted to ship a new version of the ADC (2.1) which fixes some misconceptions, adds some improvements, deprecates unnecessary features, ...
@@ -53,14 +51,14 @@ h2. How to read the documentation
 
 Cardinality:
 
-* [1] At least one and only one (mean required)
+* [1 ] At least one and only one (mean required)
 * [0..1] Zero or one (mean optional)
 * [0..n] Zero or more (mean optional)
 * [1..n] At least one or more (mean required)
 
 h2. Table of contents
 
-# [[Design6_ADX_Definition|Definition]]
+# "Definition":definition.textitle
 # [[Design6_ADX_Structure|Structure]]
 # [[Design6_ADX_Manifest|Manifest]]
 # [[Design6_ADX_Master_Page|Master Page]]
