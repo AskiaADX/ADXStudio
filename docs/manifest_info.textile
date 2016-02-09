@@ -4,8 +4,13 @@ Meta-information of the ADX.
 
 * Require
 * [1 ]
-* Parent node: [[Design6_ADX_Manifest_Root#ltpagegt-ltcontrolgt|<page>]], [[Design6_ADX_Manifest_Root#ltpagegt-ltcontrolgt|<control>]]
-* Child nodes: [[Design6_ADX_Manifest_Info#ltnamegt|<name>]], [[Design6_ADX_Manifest_Info#ltguidgt|<guid>]], [[Design6_ADX_Manifest_Info#ltversiongt|<version>]], [[Design6_ADX_Manifest_Info#ltdategt|<date>]], [[Design6_ADX_Manifest_Info#ltdescriptiongt|<description>]], [[Design6_ADX_Manifest_Info#ltcompanygt|<company>]], [[Design6_ADX_Manifest_Info#ltauthorgt|<author>]], [[Design6_ADX_Manifest_Info#ltsitegt|<site>]], [[Design6_ADX_Manifest_Info#lthelpURLgt|<helpURL>]], [[Design6_ADX_Manifest_Info#ltstylegt|<style>]], [[Design6_ADX_Manifest_Info#ltcategoriesgt|<categories>]], [[Design6_ADX_Manifest_Info#ltconstraintsgt|<constraints>]]
+* Parent node: "&lt;page&gt;":manifest_root.textile#page--control, "&lt;control&gt;":manifest_root.textile#page--control
+* Child nodes: "&lt;name&lt;":#name, "&lt;guid&lt;":#guid, "&lt;version&lt;":#version,
+"&lt;date&lt;":#date, "&lt;description&lt;":#description,
+[[Design6_ADX_Manifest_Info#ltcompanygt|<company>]], [[Design6_ADX_Manifest_Info#ltauthorgt|<author>]],
+[[Design6_ADX_Manifest_Info#ltsitegt|<site>]], [[Design6_ADX_Manifest_Info#lthelpURLgt|<helpURL>]],
+[[Design6_ADX_Manifest_Info#ltstylegt|<style>]], [[Design6_ADX_Manifest_Info#ltcategoriesgt|<categories>]],
+[[Design6_ADX_Manifest_Info#ltconstraintsgt|<constraints>]]
 
 <pre><code class="xml">
 <?xml version="1.0" encoding="utf-8"?>
@@ -36,7 +41,6 @@ Meta-information of the ADX.
       <constraint on="responses" min="2" max="2" />
     </constraints>
   </info>
-
 </control>
 </code></pre>
 
@@ -214,7 +218,7 @@ Constraints to indicates the allowed context of the ADC.
 * [[Design6_ADX_Manifest_Info#ltconstraintgt|Collection of constraint]]
 * Require
 * [1]
-* Parent node: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]]
+* Parent node: "&lt;info&gt;":#info
 * Child nodes: [[Design6_ADX_Manifest_Info#ltconstraintgt|<constraint>]]
 
 <pre><code class="xml"><constraints>

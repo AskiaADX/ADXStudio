@@ -5,7 +5,8 @@ h1. &lt;page&gt; / &lt;control&gt;
 
 * Require
 * [1 ]
-* Child nodes: [[Design6_ADX_Manifest_Info#ltinfogt|<info>]], [[Design6_ADX_Manifest_Outputs#ltoutputsgt|<outputs>]], [[Design6_ADX_Manifest_Properties#ltpropertiesgt|<properties>]], [[Design6_ADX_Manifest_Functions#ltFunctions#gt|<functions>]]
+* Child nodes: "&lt;info&gt;":manifest_info.textile#info, "&lt;outputs&gt;":manifest_outputs.textile#outputs,
+"&lt;properties&gt;":manifest_properties.textile#properties, "&lt;functions&gt;":manifest_functions.textile#functions
 
 h3. Attributes
 
