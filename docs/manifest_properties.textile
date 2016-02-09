@@ -37,7 +37,7 @@ Category used to organize properties.
 
 * [0..n]
 * Parent node: "&lt;properties&gt;":#properties
-* Child nodes: "&lt;property&gt;":#property ("&lt;property xsi:type="standardProperty"&gt;":#property-xsitypestandardproperty , "&lt;property xsi:type=&quotes;askiaProperty&quotes;&gt;":#property-xsitypeaskiaproperty)
+* Child nodes: "&lt;property&gt;":#property ("&lt;property xsi:type=&quot;standardProperty&quot;&gt;":#property-xsitypestandardproperty , "&lt;property xsi:type=&quot;askiaProperty&quot;&gt;":#property-xsitypeaskiaproperty)
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
 |id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique id of the category.
@@ -57,12 +57,12 @@ According to the _xsi:type_ attributes could be optional or have different behav
 Currently the &lt;property&gt; has 2 _xsi:type_:
 
 * standardProperty Free property where the id is not reserved identifier (askiaProperty id)
-[[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]]
+"&lt;property&gt;":#property ("&lt;property xsi:type=&quot;standardProperty&quot;&gt;":#property-xsitypestandardproperty
 
 * askiaProperty Property with special meaning for the system.
-[[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]]
+"&lt;property&gt;":#property ("&lt;property xsi:type=&quot;askiaProperty&quot;&gt;":#property-xsitypeaskiaproperty
 
-h2. &lt;property xsi:type="standardProperty"&gt;
+h2. &lt;property xsi:type=&quot;standardProperty&quot;&gt;
 
 * At least one require
 * [1..n]
@@ -71,11 +71,11 @@ h2. &lt;property xsi:type="standardProperty"&gt;
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
 |xsi:type|true|"xsd:QName":http://www.schemacentral.com/sc/xsd/t-xsd_QName.html|Must always be "standardProperty" for the standard property.
-Also see: [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]]|
+Also see: "&lt;property xsi:type=&quot;standardProperty&quot;&gt;":#property-xsitypestandardproperty |
 |id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique id of the property.
 It use to facilitate the access by the AskiaScript.
 The id of the property could not be a reserved identifier.
-Also see:  [[Design6_ADX_Manifest_Properties#ltproperty-xsitypeaskiaPropertygt|<property xsi:type="askiaProperty">]]|
+Also see:  "&lt;property xsi:type=&quot;askiaProperty&quot;&gt;":#property-xsitypeaskiaproperty|
 |name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|User friendly name of the property to show on the end user interface|
 |type|true|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
 *_string_*
@@ -115,9 +115,9 @@ Additional attributes for the string property
 Additional attributes for the number property
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
-|min|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicates the minimum allowed value. (default '*')|
-|max|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicates the maximum allowed value. (default '*')|
-|decimal|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicate the maximum number of decimal digits allowed. (default 0)|
+|min|false|"numberPattern":manifest.textile#2-number-pattern|Indicates the minimum allowed value. (default '*')|
+|max|false|"numberPattern":manifest.textile#2-number-pattern|Indicates the maximum allowed value. (default '*')|
+|decimal|false|"numberPattern":manifest.textile#2-number-pattern|Indicate the maximum number of decimal digits allowed. (default 0)|
 
 Additional attributes for the color property
 
@@ -151,17 +151,17 @@ The description could be used by the [[Design6_ADX_Definition#Definition|ABE]] a
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertygt|<property>]]
+* Parent node: "&lt;property&gt;":#property
 
-h2. <value>
+h2. &lt;value&gt;
 
 Default value of the property.
 This value will be cast according to the type of the property.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
-* Reqiore
+* Require
 * [1..n]
-* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertygt|<property>]]
+* Parent node: "&lt;property&gt;":#property
 
 h3. Attributes
 
@@ -174,24 +174,24 @@ Take in account that when the theme is not specify the value "default" is used
 *Remarks:* This attribute is not allowed in askia property
 *Also see:* [[Design6_ADX_Generation_Rules#Property-default-value-rules|Property default value rules]] |
 
-h2. <options>
+h2. &lt;options&gt;
 
 Enumerates all allowed values.
 Will be appear as a drop-down in the user interface.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertygt|<property>]]
-* Child nodes: [[Design6_ADX_Manifest_Properties#ltoptiongt|<option>]]
+* Parent node: "&lt;property&gt;":#property
+* Child nodes: "&lt;option&gt;":#option
 
-h2. <option>
+h2. &lt;option&gt;
 
 Allowed choice.
 
 * Self close node
 * Require
 * [2..n]
-* Parent node: [[Design6_ADX_Manifest_Properties#ltoptionsgt|<options>]]
+* Parent node: "&lt;options&gt;":#options
 
 h3. Attributes
 
@@ -199,15 +199,15 @@ h3. Attributes
 |value|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Value of the option|
 |text|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|User friendly text of the option.|
 
-h1. <property xsi:type="askiaProperty">
+h2. &lt;property xsi:type=&quot;askiaProperty&quot;&gt;
 
 Predefined system property auto-managed by the system.
 All system properties id is a reserved identifier which could not be used in the standard [[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]].
 
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Manifest_Properties#ltpropertiesgt|<properties>]], [[Design6_ADX_Manifest_Properties#ltcategorygt|<category>]]
-* Child nodes: [[Design6_ADX_Manifest_Properties#ltvaluegt|<value>]], [[Design6_ADX_Manifest_Properties#ltoptionsgt|<options>]]
+* Parent node: "&lt;category&gt;":#category
+* Child nodes: "&lt;value&gt;":#value, "&lt;options&gt;":#options
 
 *Also see:*
 
