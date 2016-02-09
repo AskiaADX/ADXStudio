@@ -251,6 +251,7 @@ If a property doesn't specify the theme, the theme named 'default' will be autom
 It require the usage of "&lt;options&gt;":#options to list all possible themes.
 
 The standard equivalent definition of this system property is:
+
 <pre><code class="xml"><property xsi:type="standardProperty" id="askia-theme" name="Theme" type="string" mode="dynamic">
    <description>Predefined themes</description>
    <value>default</value>
@@ -292,6 +293,7 @@ The additional "Don't know" answer could be accessible through the AskiaScript c
 CurrentQuestion.AvailableResponses[lastResponseIndex]</code></pre>
 
 The standard equivalent definition of this system property is:
+
 <pre><code class="xml"><property xsi:type="standardProperty" id="askia-addDK" name="Add &quot;Don't know&quot; input" type="boolean" mode="static">
    <description>Add a "Don't know" input to enforce the answer</description>
    <value>false</value>
@@ -320,6 +322,7 @@ It's not necessary to explicitly create this property, the system will automatic
 [[Design6_ADX_Generation_Rules#Output-max-iterations-rules|Output max iterations rules]]
 
 The standard equivalent definition of this system property is:
+
 <pre><code class="xml"><property xsi:type="standardProperty" id="askia-maxIterations" name="Max. iterations" type="number" mode="dynamic">
    <description>Indicates the maximum number of iterations to display</description>
    <value>0</value>
