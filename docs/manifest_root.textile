@@ -16,7 +16,7 @@ h3. Attributes
     <th>Attribute name</th>
     <th>Require</th>
     <th>Type</th>
-    <th>Description/th>
+    <th>Description</th>
 </tr>
 </thead>
 <tbody>
