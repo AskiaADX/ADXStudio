@@ -67,7 +67,7 @@ It's the root node of the test file.
 
 * Require
 * [1 ]
-* Child nodes: "&lt;units&gt;":#units, "&lt;testCases&gt;":#testCases
+* Child nodes: "&lt;units&gt;":#units, "&lt;testCases&gt;":#testcases
 
 <pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
 <tests xmlns="http://www.askia.com/ADCUnitTestSchema"
@@ -157,8 +157,8 @@ Fake the ADC context.
 
 * Optional
 * [0..1]
-* Parent node: "&lt;test&gt;"#test
-* Child nodes: "&lt;output&gt;"#output, "&lt;browser&gt;"#browser, "&lt;Survey&gt;"#survey, "&lt;properties&gt;"#properties
+* Parent node: "&lt;test&gt;":#test
+* Child nodes: "&lt;output&gt;":#output, "&lt;browser&gt;":#browser, "&lt;Survey&gt;":#survey, "&lt;properties&gt;":#properties
 
 "↑ Top of page ↑":#unit-tests
 
@@ -168,7 +168,7 @@ Simulate the selection of the specified output.
 
 * Optional
 * [0..1]
-* Parent node: "&lt;arrange&gt;"#arrange
+* Parent node: "&lt;arrange&gt;":#arrange
 
 "↑ Top of page ↑":#unit-tests
 
@@ -193,8 +193,8 @@ Fake the "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign
 
 * Optional
 * [0..1]
-* Parent node: "&lt;arrange&gt;"#arrange
-* Child nodes: "&lt;resolution&gt;"#resolution, "&lt;support&gt;"#support, "&lt;pluginVersion&gt;"#pluginVersion
+* Parent node: "&lt;arrange&gt;":#arrange
+* Child nodes: "&lt;resolution&gt;":#resolution, "&lt;support&gt;":#support, "&lt;pluginVersion&gt;":#pluginVersion
 
 "↑ Top of page ↑":#unit-tests
 
@@ -223,7 +223,7 @@ Fake the resolution of "AskiaScript Browser Object":https://dev.askia.com/projec
 
 * Optional
 * [0..1]
-* Parent node: "&lt;browser&gt;"#browser
+* Parent node: "&lt;browser&gt;":#browser
 
 "↑ Top of page ↑":#unit-tests
 
@@ -256,7 +256,7 @@ Fake the return value of Browser.Support() method. See also "AskiaScript Browser
 
 * Optional
 * [0..n]
-* Parent node: "&lt;browser&gt;"#browser
+* Parent node: "&lt;browser&gt;":#browser
 
 "↑ Top of page ↑":#unit-tests
 
@@ -286,7 +286,7 @@ Fake the return value of Browser.PluginVersion() method. See also "AskiaScript B
 
 * Optional
 * [0..n]
-* Parent node: "&lt;browser&gt;"#browser
+* Parent node: "&lt;browser&gt;":#browser
 
 "↑ Top of page ↑":#unit-tests
 
@@ -315,7 +315,7 @@ Emulate the survey structure. Create a survey in Design.exe and export it to "As
 
 * Optional
 * [0..1]
-* Parent node: "&lt;arrange&gt;"#arrange
+* Parent node: "&lt;arrange&gt;":#arrange
 * Child nodes: Any (relaxed)
 
 "↑ Top of page ↑":#unit-tests
@@ -353,8 +353,8 @@ Fake the value set on the ADC properties.
 
 * Optional
 * [0..1]
-* Parent node: "&lt;arrange&gt;"#arrange
-* Child nodes: "&lt;property&gt;"#property
+* Parent node: "&lt;arrange&gt;":#arrange
+* Child nodes: "&lt;property&gt;":#property
 
 "↑ Top of page ↑":#unit-tests
 
@@ -364,8 +364,8 @@ Fake the value set on an ADC property
 
 * Require
 * [1..n]
-* Parent node: "&lt;properties&gt;"#properties
-* Child nodes: "&lt;value&gt;"#value
+* Parent node: "&lt;properties&gt;":#properties
+* Child nodes: "&lt;value&gt;":#value
 
 "↑ Top of page ↑":#unit-tests
 
@@ -394,7 +394,7 @@ Value of the ADC Property to fake.
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Require
 * [1 ]
-* Parent node: "&lt;property&gt;"#property
+* Parent node: "&lt;property&gt;":#property
 
 "↑ Top of page ↑":#unit-tests
 
@@ -419,7 +419,7 @@ Root node of the fixture file.
 
 * Require
 * [1 ]
-* Child nodes: "&lt;arrange&gt;"#arrange
+* Child nodes: "&lt;arrange&gt;":#arrange
 
 <pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
 <fixture xmlns="http://www.askia.com/ADCUnitTestSchema"
@@ -467,8 +467,8 @@ Root node of the cases file.
 
 * Require / Optional when uses in the [[Design6_ADX_Unit_tests#lttestsgt|<tests>]] node
 * [1 ]
-* Parent node: _none_ or "&lt;tests&gt;"#tests
-* Child nodes: "&lt;cases&gt;"#cases
+* Parent node: _none_ or "&lt;tests&gt;":#tests
+* Child nodes: "&lt;cases&gt;":#cases
 
 <pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
 <testCases xmlns="http://www.askia.com/ADCUnitTestSchema"
@@ -524,8 +524,8 @@ h2. &lt;cases&gt;
 Define or/and aggregate cases.
 
 * [1..n]
-* Parent node: "&lt;testCases&gt;"#testCases
-* Child nodes: "&lt;cases&gt;"#cases
+* Parent node: "&lt;testCases&gt;":#testcases
+* Child nodes: "&lt;cases&gt;":#cases
 
 "↑ Top of page ↑":#unit-tests
 
@@ -545,8 +545,8 @@ Define a case.
 
 * Optional
 * [0..n]
-* Parent node: "&lt;cases&gt;"#cases
-* Child nodes: "&lt;arrange&gt;"#arrange,"&lt;asserts&gt;"#asserts
+* Parent node: "&lt;cases&gt;":#cases
+* Child nodes: "&lt;arrange&gt;":#arrange,"&lt;asserts&gt;":#asserts
 
 "↑ Top of page ↑":#unit-tests
 
@@ -580,8 +580,8 @@ It could be useful to document your expectations or to validate the correctness 
 
 * Optional
 * [0..1]
-* Parent node: "&lt;test&gt;"#test
-* Child nodes: "&lt;head&gt;"#head-fake-output, "&lt;placeholder&gt;"#placeholder-fake-output, "&lt;foot&gt;"#foot-fake-output
+* Parent node: "&lt;test&gt;":#test
+* Child nodes: "&lt;head&gt;":#head-fake-output, "&lt;placeholder&gt;":#placeholder-fake-output, "&lt;foot&gt;":#foot-fake-output
 
 "↑ Top of page ↑":#unit-tests
 
@@ -648,7 +648,7 @@ Simulate the head section generated by the ADC engine.
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Require
 * [1 ]
-* Parent node: "&lt;fake_output&gt;"#fake-output
+* Parent node: "&lt;fake_output&gt;":#fake_output
 
 "↑ Top of page ↑":#unit-tests
 
@@ -910,7 +910,7 @@ Asserts that the specified output, the selected nodes or the current section is 
       <asserts>
         <foot>
             <select_nodes xPath="//script">
-                <assert_equals><![CDATA[$("#adc_id").doSomething();]]></assert_equals>
+                <assert_equals><![CDATA[$(":#adc_id").doSomething();]]></assert_equals>
             </select_nodes>
         </foot>
       </asserts>
@@ -939,7 +939,7 @@ Asserts that the specified output, the selected nodes or the current section is 
       <asserts>
         <foot>
             <select_nodes xPath="//script">
-                <assert_not_equals><![CDATA[$("#adc_id").doSomething();]]></assert_not_equals>
+                <assert_not_equals><![CDATA[$(":#adc_id").doSomething();]]></assert_not_equals>
             </select_nodes>
         </foot>
       </asserts>
