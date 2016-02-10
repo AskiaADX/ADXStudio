@@ -27,9 +27,9 @@ In the sections below:
 * "Time question":#time-question
 * "Date/Time question":#datetime-question
 * "Single closed question":#single-closed-question
-* "Multi-coded question (classical)":#multi-coded-question-classical
-* "Multi-coded question (ranking)":multi-coded-question-ranking
-* "Multi-coded question (list)":#multi-coded-question-list
+* "Multi-coded question - classical":#multi-coded-question-classical
+* "Multi-coded question - ranking":multi-coded-question-ranking
+* "Multi-coded question - list":#multi-coded-question-list
 
 h2. Numeric question
 
@@ -46,6 +46,8 @@ h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pair *C1=5* that will be recognised on the server-side.
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as regular input text
 
 <pre><code class="html"><input type="text" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -53,6 +55,8 @@ h4. Render as regular input text
 Produce:
 
 <pre><code class="html"><input type="text" name="C1" value="5" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as HTML5 input number
 
@@ -62,6 +66,8 @@ h4. Render as HTML5 input number
 Produce:
 
 <pre><code class="html"><input type="number" name="C1" value="5" min="1" max="5" step="1" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input radio
 
@@ -82,6 +88,8 @@ Produce:
 <input type="radio" name="C1" id="C1_3" value="3" /><label for="C1_3">3</label>
 <input type="radio" name="C1" id="C1_4" value="4" /><label for="C1_4">4</label>
 <input type="radio" name="C1" id="C1_5" value="5" checked="checked" /><label for="C1_5">5</label></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as combo box
 
@@ -104,6 +112,8 @@ Produce:
  <option value="5" selected="selected">5</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not rendered but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -111,6 +121,8 @@ h4. Not rendered but updated by Javascript
 Produce:
 
 <pre><code class="html"><input type="hidden" name="C1" value="5" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h2. Open-ended question
 
@@ -123,9 +135,13 @@ Example:
 <pre><code class="javascript">S0=hello%20world
 // Decoded version: S0=Hello world!</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pair *S1=Hello world!* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as regular input text
 
@@ -135,6 +151,8 @@ Produce:
 
 <pre><code class="html"><input type="text" name="S1" value="Hello world!" /></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as textarea
 
 <pre><code class="html"><textarea name="{%= CurrentQuestion.InputName()%}">{%= CurrentQuestion.InputValue()%}</textarea></code></pre>
@@ -142,6 +160,8 @@ h4. Render as textarea
 Produce:
 
 <pre><code class="html"><textarea name="S1">Hellow world!</textarea></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input radio
 
@@ -160,6 +180,8 @@ Produce:
 <pre><code class="html"><input type="radio" name="S1" id="S1_1" value="Hello world!" checked="checked" /><label for="S1_1">Hello world!</label>
 <input type="radio" name="S1" id="S1_2" value="Good night!" /><label for="S1_2">Good night!</label></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as combo box
 
 <pre><code class="html"><select name="{%= CurrentQuestion.InputName()%}">
@@ -176,6 +198,8 @@ Produce:
  <option value="Good night!">Good night!</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as checkbox
 
 <pre><code class="html">{% dim checked = on(CurrentQuestion.Value = "Hello world!", "checked=\"checked\"", "") %}
@@ -185,6 +209,8 @@ Produce:
 
 <pre><code class="html"><input type="checkbox" name="S1" value="Hello world!" checked="checked" /></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not rendered but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.Name()%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -192,6 +218,8 @@ h4. Not rendered but updated by Javascript
 Produce:
 
 <pre><code class="html"><input type="hidden" name="S1" value="Hello world!" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h2. Date question
 
@@ -204,9 +232,13 @@ Example:
 <pre><code class="javascript">D1=25%2F12%2F2013
 // Decoded version: D1=25/12/2013</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pair *D1=12/01/2013* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as regular input text
 
@@ -216,6 +248,8 @@ Produce:
 
 <pre><code class="html"><input type="text" name="D1" value="12/01/2013" /></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as HTML5 input date
 
 <pre><code class="html"><input type="date" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" ↩
@@ -224,6 +258,8 @@ h4. Render as HTML5 input date
 Produce:
 
 <pre><code class="html"><input type="date" name="D1" value="12/01/2013" min="12/01/2013" max="14/01/2013"/></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input radio
 
@@ -247,6 +283,8 @@ Produce:
 <pre><code class="html"><input type="radio" name="D1" id="D1_1" value="12/01/2013" checked="checked" /><label for="D1_1">12/01/2013</label>
 <input type="radio" name="D1" id="D1_2" value="13/01/2013" /><label for="D1_2">13/01/2013</label>
 <input type="radio" name="D1" id="D1_3" value="14/01/2013" /><label for="D1_3">14/01/2013</label></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as combo box
 
@@ -272,6 +310,8 @@ Produce:
  <option value="14/01/2013" >14/01/2013</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not rendered but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -279,6 +319,8 @@ h4. Not rendered but updated by Javascript
 Produce:
 
 <pre><code class="html"><input type="hidden" name="D1" value="12/01/2013" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h2. Time question
 
@@ -291,9 +333,13 @@ Example
 <pre><code class="javascript">T0=13%3A50%3A00
 // Decoded version: T0=13:50:00</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pair *T1=13:25:00* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as regular input text
 
@@ -303,6 +349,8 @@ Produce:
 
 <pre><code class="html"><input type="text" name="T1" value="13:25:00" /></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as HTML5 input time
 
 <pre><code class="html"><input type="time" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" ↩
@@ -311,6 +359,8 @@ h4. Render as HTML5 input time
 Produce:
 
 <pre><code class="html"><input type="time" name="T1" value="13:25:00" min="13:25:00" max="14:00:00" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input radio
 
@@ -330,6 +380,8 @@ Produce:
 <pre><code class="html"><input type="radio" name="T1" id="T1_1" value="13:25:00" checked="checked" /><label for="D1_1">12/01/2013</label>
 <input type="radio" name="T1" id="T1_2" value="13:50:00" /><label for="T1_2">13:50:00</label>
 <input type="radio" name="T1" id="T1_3" value="14:00:00" /><label for="T1_2">14:00:00</label></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as combo box
 
@@ -352,6 +404,8 @@ Produce:
  <option value="14:00:00" >14:00:00</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not render but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -359,6 +413,8 @@ h4. Not render but updated by Javascript
 Produce:
 
 <pre><code class="html"><input type="hidden" name="T1" value="13:25:00" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h2. Date/Time question
 
@@ -375,6 +431,8 @@ h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pairs *D1=25/01/2013&T1=13:25:00* that will be recognised on the server-side.
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Render as regular input text
 
 <pre><code class="html"><input type="text" name="{%= CurrentQuestion.InputName("date")%}" value="{%= CurrentQuestion.InputValue("date")%}" />
@@ -384,6 +442,8 @@ Produce:
 
 <pre><code class="html"><input type="text" name="D1" value="25/01/2013" />
 <input type="text" name="T1" value="13:25:00" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as HTML5 input date and input time
 
@@ -396,6 +456,8 @@ Produce:
 
 <pre><code class="html"><input type="date" name="D1" value="25/01/2013" min="25/01/2013" max="27/01/2013" />
 <input type="time" name="T1" value="13:25:00" min="13:25:00" max="14:00:00" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as combo box
 
@@ -434,6 +496,8 @@ Produce:
  <option value="14:00:00" >14:00:00</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not render but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.InputName("date")%}" value="{%= CurrentQuestion.InputValue("date")%}" />
@@ -443,6 +507,8 @@ Produce:
 
 <pre><code class="html"><input type="hidden" name="D1" value="25/01/2013" />
 <input type="hidden" name="T1" value="13:25:00" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h2. Single closed question
 
@@ -455,9 +521,13 @@ Example
 <pre><code class="javascript">U0=256
 // The response with the id=256 is selected</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pair *U1=256* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input radio
 
@@ -477,6 +547,8 @@ Produce:
 <pre><code class="html"><input type="radio" name="U1" id="U1_1" value="256" checked="checked" /><label for="D1_1">Response A</label>
 <input type="radio" name="U1" id="U1_2" value="257" /><label for="U1_2">Response B</label>
 <input type="radio" name="U1" id="U1_3" value="258" /><label for="U1_3">Response C</label></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as combo box
 
@@ -499,6 +571,8 @@ Produce:
  <option value="258" >Response C</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not rendered but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.InputName()%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -506,6 +580,8 @@ h4. Not rendered but updated by Javascript
 Produce:
 
 <pre><code class="html"><input type="hidden" name="U1" value="256" /></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h2. Multi-coded question (classical)
 
@@ -519,9 +595,13 @@ Example
 // Decoded version: M25 256=on
 // The response with the id=256 is selected</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pairs *M1 256=on&M1 257=on* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input checkbox
 
@@ -541,6 +621,8 @@ Produce:
 <input type="checkbox" name="M1 257" id="M1_257" checked="checked"/><label for="M1_257">Response B</label>
 <input type="checkbox" name="M1 258" id="M1_258" /><label for="M1_258">Response C</label></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h2. Multi-coded question (ranking)
 
 The input name is the letter *R* (for Ranking) follow by the id of the question, followed by a space and the id of the response: *R*_XX_ _YY_. The value associated with that response is the order of selection (numeric). Because it's a ranking the values of the same XX question must be a sequence of successive numbers starting from 1 to the number of the selected answers.
@@ -553,9 +635,13 @@ Example
 // Decoded version: M25 256=2
 // The response with the id=256 is the second selected</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pairs *R1 256=2&R1 257=1* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as input text
 
@@ -573,6 +659,8 @@ Produce:
 <pre><code class="html"><label for="R1_256">Response A</label><input type="text" name="R1 256" id="R1_256" value="2"/>
 <label for="R1_256">Response B</label><input type="text" name="R1 257" id="R1_257" value="1"/>
 <label for="R1_256">Response C</label><input type="text" name="R1 258" id="R1_256" value=""/></code></pre>
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as HTML5 input number
 
@@ -592,6 +680,8 @@ Produce:
 <label for="R1_256">Response B</label><input type="number" name="R1 257" id="R1_257" value="1" min="1" max="3"/>
 <label for="R1_256">Response C</label><input type="number" name="R1 258" id="R1_256" value="" min="1" max="3"/></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h2. Multi-coded question (list)
 
 The input name is the letter *L* (for List) follow by the id of the question: *L*_XX_. The value associated are the ids of responses separated with the coma (YY,YY).
@@ -607,9 +697,13 @@ L1=256%2C257%2C258
 // Decoded version: L1=256,257,258
 // The responses with the id 256, 257 and 258 are selected</code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h3. Examples of inputs generations
 
 All of the following examples produce the same name/value pairs *L1=256,257* that will be recognised on the server-side.
+
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 h4. Render as select multiple
 
@@ -631,6 +725,8 @@ Produce:
   <option value="258">Response C</option>
 </select></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
+
 h4. Not render but updated by Javascript
 
 <pre><code class="html"><input type="hidden" name="{%= CurrentQuestion.InputName("list")%}" value="{%= CurrentQuestion.InputValue()%}" /></code></pre>
@@ -639,5 +735,6 @@ Produce:
 
 <pre><code class="html"><input type="hidden" name="L1" value="256,257" /></code></pre>
 
+"↑ Top of page ↑":##generate-askia-html-inputs
 
 *"&lt;&lt; Generation Rules":generation_rules.textile* | *"Unit tests &gt;&gt;":unit_tests.textile*
