@@ -238,4 +238,4 @@ body {
 .askia-grid-row .askia-response {}
 </code></pre>
 
-*"&lt;&lt; Master Page":manifest_master_page.textile* | *"Generation rules &gt;&gt;":generation_rules.textile*
+*"&lt;&lt; Master Page - Recommendations":master_page_recommendations.textile* | *"Generation rules &gt;&gt;":generation_rules.textile*

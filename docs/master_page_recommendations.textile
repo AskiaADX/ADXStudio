@@ -1,0 +1,125 @@
+h1. Master Page - Recommendations
+
+*%{background:#444;color:white;padding:0 10px;}0.1.0%* *%{background:orange;color:#222;padding:0 10px;}ADP only%*
+
+h2. Document head
+
+h3. Responsive meta elements
+
+h4. Setting viewport
+
+Use the meta viewport tag to control the width and scaling of the browser's viewport. Include @width=device-width@ to match the screen's width in device-independent pixels.
+Include @initial-scale=1@ to establish a 1:1 relationship between CSS pixels and device-independent pixels.
+
+<pre><code class="html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</code></pre>
+
+Optional
+
+In addition to setting an initial-scale, you can also set the following attributes on the viewport:
+
+* @minimum-scale@
+* @maximum-scale@
+* @user-scalable@
+
+When set, these can disable the user’s ability to zoom the viewport, potentially causing accessibility issues.
+
+<pre><code class="html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</code></pre>
+
+h3. Media queries
+
+h4. Introduction
+
+Media queries can be used to apply styles based on device characteristics. Use @min-width@ over @min-device-width@ to ensure the broadest experience. Use relative sizes for elements to avoid breaking layout (e.g. prefer @width= 100%@ or @width=80vw@ rather than @width:960px@).
+
+<pre><code class="css">
+:root {
+    font-size   : 24px;
+}
+
+@media only screen and (min-width: 800px) {
+    :root {
+        font-size: 16px;
+    }
+}
+</code></pre>
+
+Media queries could also be leveraged to provide our users with an elegant @Print survey@ feature by using:
+
+<pre><code class="html">
+<link rel="stylesheet" href="print.css" media="print">
+</code></pre>
+
+h4. Media query breakpoints
+
+Design the content to fit on a small screen size first, then expand the screen until a breakpoint becomes necessary. This allows you to optimize breakpoints based on content and maintain the fewest number of breakpoints possible.
+
+Generally speaking, one should not set breakpoints based on actual devices but rather add only the necessary breakpoints when a specific layout requires to be adapted to certain conditions (width, orientation, height, resolution, ...). However, as we need to provide a global solution for a wide range of use cases, we must provide a boilerplate on which our users can build responsive surveys.
+
+<pre><code class="css">
+@media only screen and (min-width: 320px) {
+
+/* ====================
+    Rules for small sized screens (legacy and small smartphones)
+   ==================== */
+}
+
+@media only screen and (min-width: 480px) {
+
+/* ====================
+    Rules for medium sized screens (mainly smartphones and tablets)
+   ==================== */
+}
+
+@media only screen and (min-width: 768px) {
+
+/* ====================
+    Rules for wide screens (large tablets, laptops and average desktops)
+   ==================== */
+}
+
+@media only screen and (min-width: 1140px) {
+
+/* ===============
+    Rules for large and extra-large screens (large desktops, TVs, ...)
+   =============== */
+}
+</code></pre>
+
+h2. Document body
+
+h3. Responsive images
+
+h4. <picture>
+
+"Browser support":http://caniuse.com/#feat=picture.
+
+Good general support except for MS IE, Edge and iOS Safari.
+
+<pre><code class="css">
+<picture alt="description">
+  <source src="small.jpg">
+  <source src="medium.jpg" media="(min-width: 40em)">
+  <source src="large.jpg" media="(min-width: 80em)">
+</picture>
+</code></pre>
+
+A good solution to serve images with a different shape, focal point or other feature beyond just resizing. However, you’ll have to resize all of the different images to be ready to go straight in the HTML. This solution also couples HTML with media queries, and we know that coupling CSS to HTML is bad for maintenance. This solution also doesn’t cover high-definition displays
+
+h4. <srcset>
+
+"Browser support":http://caniuse.com/#feat=srcset.
+
+Good general support except for MS IE and Edge.
+
+<pre><code class="css">
+<img src="fallback.jpg" srcset="small.jpg 640w 1x, small-hd.jpg 640w 2x, large.jpg 1x, large-hd.jpg 2x" alt="…">
+</code></pre>
+
+The snippet above shows srcset in use. Again, we see what essentially amounts to media queries embedded in HTML. We’d also need to create different image sizes before runtime, which means either setting up a script or manually doing it, a tiresome job.
+
+
+*"&lt;&lt; Master Page":master_page.textile* | *"Theme &gt;&gt;":theme.textile*

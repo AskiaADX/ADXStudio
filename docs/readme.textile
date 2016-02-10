@@ -62,6 +62,7 @@ h2. Table of contents
 # "Structure":structure.textile
 # "Manifest":manifest.textile
 # "Master Page":master_page.textile
+# "Master Page - Recommendations":master_page_recommendations.textile
 # "Theme":theme.textile
 # "Generation Rules":generation_rules.textile
 # "Generate Askia HTML Inputs":askia_html_inputs.textile

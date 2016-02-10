@@ -381,4 +381,4 @@ h3. Fixed generation with response block
     </table>
 </div></code></pre>
 
-*"&lt;&lt; Manifest - Functions":manifest_functions.textile* | *"Theme &gt;&gt;":theme.textile*
+*"&lt;&lt; Manifest - Functions":manifest_functions.textile* |  *"Master Page - Recommendations &gt;&gt;":master_page_recommendations.textile*

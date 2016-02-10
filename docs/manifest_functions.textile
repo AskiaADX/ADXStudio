@@ -82,4 +82,4 @@ Produce:
 }
 </code></pre>
 
-*"&lt;&lt; Manifest - Properties":manifest_properties.textile* | *"Master Page &gt;&gt;":manifest_master_page.textile*
+*"&lt;&lt; Manifest - Properties":manifest_properties.textile* | *"Master Page &gt;&gt;":master_page.textile*
