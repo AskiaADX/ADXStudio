@@ -22,18 +22,29 @@ var keyCodes = {
     menu     : 93
 }
 
+function checkIfRootIsSelected () {
+    var root = document.getElementById('root').querySelector('.item-info');
+    if (root.classList.contains('selected')) {
+        root.classList.remove('selected');
+    }
+}
 
 function selectWithShiftKey(firstItem, secondItem) {
     if (document.querySelector('.selected')) {
-        divGlobal = document.querySelectorAll('.selected');
+        var divGlobal = document.querySelectorAll('.selected');
         for (var i = 0, l = divGlobal.length; i < l; i++) {
             divGlobal[i].classList.remove('selected');
         }
     }
     var firstItemPath = firstItem.parentNode.file.path;
     var secondItemPath = secondItem.parentNode.file.path;
+    if (firstItemPath === secondItemPath) {
+        firstItem.classList.add('selected');
+        checkIfRootIsSelected();
+        return;
+    }
+    
     var checkIfWeSelect = false;
-
     var items = document.getElementsByClassName('item-info');
     for (var i = 0, l = items.length; i < l; i++) {
         var itemsPath = items[i].parentNode.file.path;
@@ -45,12 +56,13 @@ function selectWithShiftKey(firstItem, secondItem) {
             items[i].classList.add('selected');
         }
     }
-    if (firstItem.classList.length != 2) {
+    if (firstItem.classList !== undefined && firstItem.classList.length != 2) {
         firstItem.classList.add('selected');
     }
-    if (secondItem.classList.length != 2) {
+    if (secondItem.classList !== undefined && secondItem.classList.length != 2) {
         secondItem.classList.add('selected');
     }
+    checkIfRootIsSelected();
 }
 
 function selectItem(e) {
@@ -74,7 +86,9 @@ function selectItem(e) {
             itemInfo.classList.remove('selected');
         } else {
             itemInfo.classList.add('selected');
+            lastSelected = itemInfo;
         }
+        checkIfRootIsSelected();
         return;
     }
 
@@ -180,10 +194,34 @@ function itemRightClick(e) {
                     shell.openItem(file.path);
                 }
             }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
         }
         if (files.length == 1) {
+            /*cut file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Cut',
+                click: function onClickCut() {
+                    ipc.send('cut-file', file);
+                }
+
+            }));
+
+            /*copy file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Copy',
+                click: function onClickCopy() {
+                    ipc.send('copy-file', file);
+                }
+            }));
+
+            /*paste file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Paste',
+                click: function onClickPaste() {
+                    ipc.send('paste-file', file);
+                }
+            }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
 
             /* Rename file */
             contextualMenu.append(new MenuItem({
@@ -201,8 +239,6 @@ function itemRightClick(e) {
 
                 }
             }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
 
             /* Remove file */
             contextualMenu.append(new MenuItem({
@@ -240,32 +276,6 @@ function itemRightClick(e) {
         }
     }
 
-    contextualMenu.append(new MenuItem({type : 'separator'}));
-
-    /*cut file*/
-    contextualMenu.append(new MenuItem({
-        label: 'Cut',
-        click: function onClickCut() {
-            ipc.send('cut-file', file);
-        }
-
-    }));
-
-    /*copy file*/
-    contextualMenu.append(new MenuItem({
-        label: 'Copy',
-        click: function onClickCopy() {
-            ipc.send('copy-file', file);
-        }
-    }));
-
-    /*paste file*/
-    contextualMenu.append(new MenuItem({
-        label: 'Paste',
-        click: function onClickPaste() {
-            ipc.send('paste-file', file);
-        }
-    }));
     contextualMenu.popup(remote.getCurrentWindow());
 }
 
@@ -356,21 +366,42 @@ function getPreviousItemInfo(el) {
 
 function keyNavigator(e) {
     var selectedElements = document.querySelectorAll('.selected');
-    var items = document.getElementsByClassName('item-info');
-    var root = document.getElementById('root').getElementsByClassName('item-info')[0];
 
-    if (selectedElements.length === 1) {
-        var selectedElement = selectedElements[0];
+    var root = document.getElementById('root').getElementsByClassName('item-info')[0];
+    for (var i = 0, l = selectedElements.length; i < l; i++) {
+        selectedElements[i].classList.remove('selected');
+    }
+    
+    if (selectedElements.length !== 0) {
+        var items = document.getElementsByClassName('item-info');
+        var lastItem = items[items.length - 1];
+        var selectedElement;
+        if (!e.shiftKey) {
+            selectedElement = lastSelected;
+        } else {
+            selectedElement = (selectedElements[0] !== lastSelected)? selectedElements[0] : selectedElements[selectedElements.length - 1];
+        }
         var file = selectedElement.parentNode.file || selectedElement.parentNode;
 
         var nextEl = selectedElement.parentNode.nextSibling;
         var prevEl = selectedElement.parentNode.previousSibling;
-
-
+        
         if (e.keyCode === keyCodes.up) {
             var itemToSelect = null;
             var findEl = null;
-
+            
+            if(selectedElement === root) {
+                itemToSelect = lastItem;
+                if (!e.shiftKey) {
+                    lastSelected = itemToSelect;
+                    selectedElement.classList.remove('selected');
+                    itemToSelect.classList.add('selected');
+                } else {
+                    root.classList.add('selected');
+                }
+                return;
+            }
+            
             if (prevEl) {
                 // By default select the prev sibling
                 itemToSelect = prevEl.querySelector('.item-info');
@@ -385,25 +416,40 @@ function keyNavigator(e) {
             else {
                 itemToSelect = selectedElement.parentNode.parentNode.previousSibling;
             }
-            if (itemToSelect.classList === undefined) {
+            if (itemToSelect.classList === undefined && !e.shiftKey) {
                 selectedElement.classList.remove('selected');
                 root.classList.add('selected');
+                lastSelected = root;
                 return;
             }
             // If there is an item to select
             if (itemToSelect) {
-                selectedElement.classList.remove('selected');
+                if (!e.shiftKey || selectedElement === root) {
+                    selectedElement.classList.remove('selected');
+                } else {
+                    selectWithShiftKey(lastSelected, itemToSelect);
+                }
                 itemToSelect.classList.add('selected');
+                if (!e.shiftKey) {
+                    lastSelected = itemToSelect;
+                }
             }
         } else if (e.keyCode === keyCodes.down) {
             var itemToSelect = null;
             var findEl = null;
-
-            if(selectedElement === root) {
+            
+            if(selectedElement === root && !e.shiftKey) {
                 itemToSelect = document.getElementById('root').querySelector('.child').querySelector('.item-info');
-
-                selectedElement.classList.remove('selected');
                 itemToSelect.classList.add('selected');
+                if (!e.shiftKey) {
+                    lastSelected = itemToSelect;
+                    selectedElement.classList.remove('selected');
+                }  else {
+                    selectWithShiftKey(lastSelected, itemToSelect);
+                }
+                return;
+            } else if (selectedElement === root && e.shiftKey) {
+                root.classList.add('selected');
                 return;
             }
 
@@ -419,15 +465,36 @@ function keyNavigator(e) {
                     }
                 }
             }
-            if (!nextEl) {
-                itemToSelect = selectedElement.parentNode.parentNode.parentNode.nextSibling.querySelector('.item-info');
+            if (!nextEl && !e.shiftKey) {
+                if (selectedElement !== lastItem) {
+                    itemToSelect = selectedElement.parentNode.parentNode.parentNode.nextSibling.querySelector('.item-info');
+                } else {
+                    itemToSelect = root;
+                }
+            } else if (!nextEl && e.shiftKey) {
+                if (selectedElement !== lastItem) {
+                    itemToSelect = selectedElement.parentNode.parentNode.parentNode.nextSibling.querySelector('.item-info');
+                } else {
+                    itemToSelect = selectedElement;
+                }
+                selectWithShiftKey(lastSelected, itemToSelect);
+                return;
             }
 
             if (itemToSelect) {
-                selectedElement.classList.remove('selected');
+                if (!e.shiftKey) {
+                    selectedElement.classList.remove('selected');
+                }  else {
+                    selectWithShiftKey(lastSelected, itemToSelect);
+                    return;
+                }
                 itemToSelect.classList.add('selected');
+                if (!e.shiftKey) {
+                    lastSelected = itemToSelect;
+                }
             }
         } else if (e.keyCode === keyCodes.plus) {
+            selectedElement.classList.add('selected');
             if (selectedElement.parentNode.file.type === 'folder') {
                 var toggle = selectedElement.querySelector('.toggle');
                 var child = selectedElement.parentNode.querySelector('.child');
@@ -445,6 +512,7 @@ function keyNavigator(e) {
                 }
             }
         } else if (e.keyCode === keyCodes.less) {
+            selectedElement.classList.add('selected');
             if (selectedElement.parentNode.file.type === 'folder') {
                 var toggle = selectedElement.querySelector('.toggle');
                 var child = selectedElement.parentNode.querySelector('.child');
@@ -462,6 +530,7 @@ function keyNavigator(e) {
                 }
             }
         } else if (e.keyCode === keyCodes.enter) {
+            selectedElement.classList.add('selected');
             // Folder system
             if (selectedElement.parentNode.file.type === 'folder') {
                 var toggle = selectedElement.querySelector('.toggle');
@@ -481,13 +550,13 @@ function keyNavigator(e) {
                     ipc.send('explorer-load-folder', file.path);
                     file.loaded = true;
                 }
-
             } else {
                 ipc.send('explorer-load-file', file);
             }
         }
     } else if (selectedElements.length === 0) {
         root.classList.add('selected');
+        lastSelected = root;
     }
 }
 
@@ -600,7 +669,6 @@ function menuWithKeyboard () {
                 }
             ]
         }));
-
         contextualMenu.append(new MenuItem({type : 'separator'}));
     }
     if (file.root) {
@@ -619,10 +687,34 @@ function menuWithKeyboard () {
                     shell.openItem(file.path);
                 }
             }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
         }
         if (files.length == 1) {
+            /*cut file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Cut',
+                click: function onClickCut() {
+                    ipc.send('cut-file', file);
+                }
+
+            }));
+
+            /*copy file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Copy',
+                click: function onClickCopy() {
+                    ipc.send('copy-file', file);
+                }
+            }));
+
+            /*paste file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Paste',
+                click: function onClickPaste() {
+                    ipc.send('paste-file', file);
+                }
+            }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
             
             /* Rename file */
             contextualMenu.append(new MenuItem({
@@ -678,33 +770,6 @@ function menuWithKeyboard () {
             }));
         }
     }
-    contextualMenu.append(new MenuItem({type : 'separator'}));
-
-    /*cut file*/
-    contextualMenu.append(new MenuItem({
-        label: 'Cut',
-        click: function onClickCut() {
-            ipc.send('cut-file', file);
-        }
-
-    }));
-
-    /*copy file*/
-    contextualMenu.append(new MenuItem({
-        label: 'Copy',
-        click: function onClickCopy() {
-            ipc.send('copy-file', file);
-        }
-    }));
-
-    /*paste file*/
-    contextualMenu.append(new MenuItem({
-        label: 'Paste',
-        click: function onClickPaste() {
-            ipc.send('paste-file', file);
-        }
-    }));
-
     contextualMenu.popup(remote.getCurrentWindow());
 }
 
