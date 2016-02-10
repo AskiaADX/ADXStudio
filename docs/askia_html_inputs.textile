@@ -362,7 +362,7 @@ Produce:
 
 h2. Date/Time question
 
-The date/time question should generate two inputs, one for the date and one for the time. It uses the format of the [[Design6_ADX_Generate_Askia_HTML_Inputs#Date-question|Date question]] and the [[Design6_ADX_Generate_Askia_HTML_Inputs#Time-question|Time question]]: *D*_XX_ and *T*_XX_
+The date/time question should generate two inputs, one for the date and one for the time. It uses the format of the "Date question":#date-question and the "Time question":#time-question : *D*_XX_ and *T*_XX_
 
 <pre><code class="javascript">DXX=VAL&TXX=VAL</code></pre>
 
