@@ -28,7 +28,7 @@ In the sections below:
 * "Date/Time question":#datetime-question
 * "Single closed question":#single-closed-question
 * "Multi-coded question - classical":#multi-coded-question-classical
-* "Multi-coded question - ranking":multi-coded-question-ranking
+* "Multi-coded question - ranking":#multi-coded-question-ranking
 * "Multi-coded question - list":#multi-coded-question-list
 
 h2. Numeric question
