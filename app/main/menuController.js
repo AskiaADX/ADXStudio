@@ -265,6 +265,23 @@ app.once('ready', function createAppMenu() {
                     label: 'View',
                     submenu: [
                         {
+                            label: '&Next Tab',
+                            accelerator: 'Ctrl+Tab',
+                            click: function () {
+                                app.emit("menu-next-tab");
+                            }
+                        },
+                        {
+                            label: '&Previous Tab',
+                            accelerator: 'Ctrl+Shift+Tab',
+                            click: function () {
+                                app.emit("menu-previous-tab");
+                            }
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
                             label: '&Reload',
                             accelerator: 'Ctrl+R',
                             click: function() {

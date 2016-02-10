@@ -662,6 +662,14 @@ function explorerRenamedFile(err, fileType, oldPath, newPath) {
     });
 }
 
+function menuNextTab () {
+    workspaceView.send('next-tab');
+}
+
+function menuPrevTab () {
+    workspaceView.send('prev-tab');
+}
+
 ipc.on('workspace-ready', function (event) {
     
     // Keep the connection with the view
@@ -712,6 +720,12 @@ ipc.on('workspace-ready', function (event) {
     ipc.removeListener('workspace-get-adc-structure', onGetAdcStructure);
     ipc.on('workspace-get-adc-structure', onGetAdcStructure);
 
+    app.removeListener('menu-previous-tab', menuPrevTab);
+    app.on('menu-previous-tab', menuPrevTab);
+    
+    app.removeListener('menu-next-tab', menuNextTab);
+    app.on('menu-next-tab', menuNextTab);
+    
     app.removeListener('menu-open-project', reloadWorkspace);
     app.on('menu-open-project', reloadWorkspace);
 
