@@ -67,4 +67,3 @@ h2. Table of contents
 # "Generation Rules":generation_rules.textile
 # "Generate Askia HTML Inputs":askia_html_inputs.textile
 # "Unit tests":unit_tests.textile
-# "SDK":sdk.textile

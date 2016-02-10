@@ -1,0 +1,1266 @@
+h1. Unit tests
+
+ADX is provided with a unit-tests tool named ADXShell.
+This tool uses a native implementation of the Askia Rendering Engine (Design.exe's screen mode or AskiaExt.dll).
+
+The unit tests of the ADX are XML-based.
+The XML which defines a unit test should implements the "UnitTest.xsd":http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd schema.
+
+All tests should be placed in the @/tests/@ folder of the ADC.
+
+It could also auto-generate unit tests in memory to test each output on each questions and validate that it doesn't generate an error and that the final output is not empty.
+
+ADXShell is based on the "Test design pattern AAA (Arrange, Act, Assert)":http://www.arrangeactassert.com/why-and-what-is-arrange-act-assert/.
+
+# [[Design6_ADX_Unit_tests#Declaration|Declare unit tests cases]]
+** [[Design6_ADX_Unit_tests#lttestsgt|<tests>]]
+*** [[Design6_ADX_Unit_tests#ltunitsgt|<units>]]
+**** [[Design6_ADX_Unit_tests#lttestgt|<test>]]
+# [[Design6_ADX_Unit_tests#ArrangeSection|Arrange define a context]]
+** [[Design6_ADX_Unit_tests#ltSurveygt|<Survey>]]
+** [[Design6_ADX_Unit_tests#ltbrowsergt|<browser>]]
+*** [[Design6_ADX_Unit_tests#ltresolutiongt|<resolution>]]
+*** [[Design6_ADX_Unit_tests#ltsupportgt|<support>]]
+*** [[Design6_ADX_Unit_tests#ltpluginVersiongt|<pluginVersion>]]
+** [[Design6_ADX_Unit_tests#ltoutputgt|<output>]]
+** [[Design6_ADX_Unit_tests#ltpropertiesgt|<properties>]]
+*** [[Design6_ADX_Unit_tests#ltpropertygt|<property>]]
+**** [[Design6_ADX_Unit_tests#ltvaluegt|<value>]]
+# [[Design6_ADX_Unit_tests#FixturesSection|Fixtures define reusable arrange]]
+** [[Design6_ADX_Unit_tests#ltfixturegt|<fixture>]]
+# [[Design6_ADX_Unit_tests#Cases|Cases enumerates the list of cases to loop through]]
+** [[Design6_ADX_Unit_tests#lttestCasesgt|<testCases>]]
+*** [[Design6_ADX_Unit_tests#lttestCasesgt|<cases>]]
+**** [[Design6_ADX_Unit_tests#lttestCasesgt|<case>]]
+# [[Design6_ADX_Unit_tests#ActSection|Act execute an action with the specified context]]
+** [[Design6_ADX_Unit_tests#ltfake_outputgt|<fake_output>]]
+*** [[Design6_ADX_Unit_tests#ltheadgt-Fake-output|<head>]]
+*** [[Design6_ADX_Unit_tests#ltplaceholdergt-Fake-output|<placeholder>]]
+*** [[Design6_ADX_Unit_tests#ltfootgt-Fake-output|<foot>]]
+# [[Design6_ADX_Unit_tests#AssertSection|Assert test the result of the action]]
+** [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+*** [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]]
+*** [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]]
+*** [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]]
+*** [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]]
+*** [[Design6_ADX_Unit_tests#ltassert_equalsgt|<assert_equals>]]
+*** [[Design6_ADX_Unit_tests#ltassert_not_equalsgt|<assert_not_equals>]]
+*** [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]]
+*** [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]]
+*** [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]]
+**** [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+***** [[Design6_ADX_Unit_tests#ltassert_countgt|<assert_count>]]
+***** [[Design6_ADX_Unit_tests#ltassert_existgt|<assert_exist>]]
+***** [[Design6_ADX_Unit_tests#ltassert_not_existgt|<assert_not_exist>]]
+***** [[Design6_ADX_Unit_tests#ltassert_has_attrgt|<assert_has_attr>]]
+***** [[Design6_ADX_Unit_tests#ltassert_has_not_attrgt|<assert_has_not_attr>]]
+
+h1. Declaration
+
+All xml files under the @/tests/units/@ directory are considered as a set of tests cases. You can place several tests cases in a single file or split them into several files.
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;tests&gt;
+
+It's the root node of the test file.
+
+* Require
+* [1 ]
+* Child nodes: "&lt;units&gt;":#units, "&lt;testCases&gt;":#testCases
+
+<pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
+<tests xmlns="http://www.askia.com/ADCUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCUnitTestSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd">
+
+<!-- ... rest of the document ... -->
+
+</tests></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;units&gt;
+
+It's the root node for the unit tests.
+
+* Require
+* [1 ]
+* Parent node: "&lt;tests&gt;":#tests
+* Child nodes: "&lt;test&gt;":#test
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|fixture|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the fixture file that will be use across all tests|
+
+<pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
+<tests xmlns="http://www.askia.com/ADCUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCUnitTestSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd">
+
+  <units fixture="multiple.xml">
+      <!-- All tests -->
+  </units>
+</tests></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;test&gt;
+
+Define a test case.
+
+* Require
+* [1..n]
+* Parent node: "&lt;units&gt;":#units
+* Child nodes: "&lt;arrange&gt;":#arrange, "&lt;asserts&gt;":#asserts
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Identifier of the test case|
+|description|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Description of the test case|
+|fixture|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the fixture file to use in the test case|
+|cases|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Ids of cases separate with coma delimites on which the test should loop through.
+It will run the one test for each cases|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+     <!-- Arrange -->
+  </arrange>
+
+  <asserts>
+     <!-- Asserts -->
+  </asserts>
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h1. Arrange Section
+
+The arrange section provides the context of the ADC execution:
+
+* "&lt;Survey&gt;":#survey Fake the survey and the current question currently running (used the Askia Survey XML format)
+* "&lt;browser&gt;":#browser Fake the "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-object
+* "&lt;output&gt;":#output Fake the selection of the ADC output to use during the test
+* "&lt;properties&gt;":#properties Fake the value of the ADC properties
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;arrange&gt;
+
+Fake the ADC context.
+
+* Optional
+* [0..1]
+* Parent node: "&lt;test&gt;"#test
+* Child nodes: "&lt;output&gt;"#output, "&lt;browser&gt;"#browser, "&lt;Survey&gt;"#survey, "&lt;properties&gt;"#properties
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;output&gt;
+
+Simulate the selection of the specified output.
+
+* Optional
+* [0..1]
+* Parent node: "&lt;arrange&gt;"#arrange
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Identifier of output to select during the test case|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+    <output id="fallback"/>
+  </arrange>
+
+   <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;browser&gt;
+
+Fake the "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-object
+
+* Optional
+* [0..1]
+* Parent node: "&lt;arrange&gt;"#arrange
+* Child nodes: "&lt;resolution&gt;"#resolution, "&lt;support&gt;"#support, "&lt;pluginVersion&gt;"#pluginVersion
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|name|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the browser|
+|version|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Version of the browser|
+|os|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the Operating System|
+|userAgent|false|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|User-agent|
+|mobile|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|True to emulate mobile device|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+    <browser name="Internet Explorer" version="10" os="Windows" mobile="false"/>
+  </arrange>
+
+   <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;resolution&gt;
+
+Fake the resolution of "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-object
+
+* Optional
+* [0..1]
+* Parent node: "&lt;browser&gt;"#browser
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|screenAvailWidth|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Available screen width|
+|screenAvailHeight|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Available screen height|
+|screenWidth|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Screen width|
+|screenHeight|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Screen height|
+|screenColorDepth|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Color depth supported|
+|windowWidth|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Window width|
+|windowHeight|false|"xsd:positiveInteger":http://www.schemacentral.com/sc/xsd/t-xsd_positiveInteger.html|Window height|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+    <browser name="Internet Explorer" version="10" os="Windows" mobile="false">
+       <resolution windowWidth="900" windowHeight="700" />
+    </browser>
+  </arrange>
+
+   <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;support&gt;
+
+Fake the return value of Browser.Support() method. See also "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-object
+
+* Optional
+* [0..n]
+* Parent node: "&lt;browser&gt;"#browser
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the support feature.
+Also see: "Browser Feature keys":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-Feature-keys|
+|value|true|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Fake value associated with that support feature|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+    <browser name="Internet Explorer" version="10" os="Windows" mobile="false">
+       <support name="javascript" value="true" />
+       <support name="flash" value="false" />
+    </browser>
+  </arrange>
+
+   <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;pluginVersion&gt;
+
+Fake the return value of Browser.PluginVersion() method. See also "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-object
+
+* Optional
+* [0..n]
+* Parent node: "&lt;browser&gt;"#browser
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the plugin.
+Also see: "Browser Plugin keys":https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Predefined_objects#Browser-Plugin-keys|
+|value|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Fake version associated with that plugin|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+    <browser name="Internet Explorer" version="10" os="Windows" mobile="false">
+       <support name="Flash" value="11.2.202.235" />
+    </browser>
+  </arrange>
+
+   <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;Survey&gt;
+
+Emulate the survey structure. Create a survey in Design.exe and export it to "Askia XML" format then make sure to add all following required attributes.
+
+* Optional
+* [0..1]
+* Parent node: "&lt;arrange&gt;"#arrange
+* Child nodes: Any (relaxed)
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|Name|true|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|Name of the survey|
+|CurrentQuestion|true|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|Shortcut of the current question.
+The one that will be associated with the ADC|
+|{Any}|false|All any attributes are allowed (relaxed)||
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+      <Survey Name="DateSurvey" CurrentQuestion="datetime" Version="1.0" Full="1" MaxQuestionID="1" MaxResponseID="2">
+      <Languages>
+      <Language ID="2057" Abbr="ENG" Name="English (United Kingdom)" Default="1"/>
+      </Languages>
+      <Questions>
+      <Question ID="1" Shortcut="datetime" Order="1" ElementType="question" AllowDK="1" QuestionType="date" DateType="0" Translated="0">
+      <LongCaption>datetime</LongCaption>
+      </Question>
+      </Questions>
+    </Survey>
+  </arrange>
+
+  <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;properties&gt;
+
+Fake the value set on the ADC properties.
+
+* Optional
+* [0..1]
+* Parent node: "&lt;arrange&gt;"#arrange
+* Child nodes: "&lt;property&gt;"#property
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;property&gt;
+
+Fake the value set on an ADC property
+
+* Require
+* [1..n]
+* Parent node: "&lt;properties&gt;"#properties
+* Child nodes: "&lt;value&gt;"#value
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Id of the property to fake|
+
+<pre><code class="xml"><test id="not_empty" description="The placeholder section should not be empty">
+  <arrange>
+    <properties>
+       <property id="backgroundColor">
+          <value>#ffffff</value>
+    </properties>
+  </arrange>
+
+   <!-- asserts -->
+</test></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;value&gt;
+
+Value of the ADC Property to fake.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Require
+* [1 ]
+* Parent node: "&lt;property&gt;"#property
+
+"↑ Top of page ↑":#unit-tests
+
+h1. Fixtures Section
+
+Because sometimes tests use the same arrange, the fixture allow developers to partially arrange the test in a separate file and include that arrange in the unit test files. This type of shared context is call a fixture. The fixtures directory contains .xml files which implements the "UnitTests.xsd":http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd in order to create a shared arrange across tests.
+
+For examples:
+
+* Create a fixture file SurveyA.xml which contains the XML definition of the survey that will be use by several unit tests
+* Create a fixture file BrowserMobile.xml which fake a mobile browser
+* Create a fixture file Firefox.xml which fake a Firefox browser
+* ...
+
+All fixtures should be placed in the @/tests/fixtures/@ folder of the ADC.
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;fixture&gt;
+
+Root node of the fixture file.
+
+* Require
+* [1 ]
+* Child nodes: "&lt;arrange&gt;"#arrange
+
+<pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
+<fixture xmlns="http://www.askia.com/ADCUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCUnitTestSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd">
+  <arrange>
+      <Survey Name="DateSurvey" CurrentQuestion="datetime" Version="1.0" Full="1" MaxQuestionID="1" MaxResponseID="2">
+      <Languages>
+      <Language ID="2057" Abbr="ENG" Name="English (United Kingdom)" Default="1"/>
+      </Languages>
+      <Questions>
+      <Question ID="1" Shortcut="datetime" Order="1" ElementType="question" AllowDK="1" QuestionType="date" DateType="0" Translated="0">
+      <LongCaption>datetime</LongCaption>
+      </Question>
+      </Questions>
+    </Survey>
+  </arrange>
+</fixture>
+</code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h1. Cases Section
+
+Most of the time some tests are really equivalent, there are only few difference between them.
+Instead of copying tests over and over, which could be a pain to do and maintain, it is useful to loop through an enumeration of cases
+and apply the tests contained within the loop.
+The cases directory contains .xml files which implement the "UnitTests.xsd":http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd in order to declare all enumerations that could be used to loop through.
+
+For example, let's imagine an ADC with two outputs: `fallback` / `withJavascript` which could works with numeric and single closed questions, we can write all the following cases:
+
+* "fallback output with numeric question"
+* "fallback output with single question"
+* "standard output with numeric question"
+* "fallback output with single question"
+* "fallback outputs with all questions"
+* "standard outputs with all questions"
+* "all outputs with single question"
+* "all outputs with numeric question"
+* "all outputs with all questions"
+
+h2. &lt;testCases&gt;
+
+Root node of the cases file.
+
+* Require / Optional when uses in the [[Design6_ADX_Unit_tests#lttestsgt|<tests>]] node
+* [1 ]
+* Parent node: _none_ or "&lt;tests&gt;"#tests
+* Child nodes: "&lt;cases&gt;"#cases
+
+<pre><code class="xml"><?xml version="1.0" encoding="utf-8"?>
+<testCases xmlns="http://www.askia.com/ADCUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/ADCUnitTestSchema http://www.askia.com/Downloads/dev/schemas/adc2.0/UnitTests.xsd">
+
+  <cases id="fallback_numeroc">
+      <case description="fallback with numeric question" fixture="numeric.xml">
+          <arrange>
+               <output id="fallback" />
+          </arrange>
+      </case>
+  </cases>
+
+  <cases id="fallback_single">
+      <case description="fallback with single closed question" fixture="single.xml">
+          <arrange>
+               <output id="fallback" />
+          </arrange>
+      </case>
+  </cases>
+
+  <cases id="standard_numeric">
+      <case description="standard with numeric question" fixture="numeric.xml">
+          <arrange>
+               <output id="standard" />
+          </arrange>
+      </case>
+  </cases>
+
+  <cases id="standard_single">
+      <case description="standard with single closed question" fixture="single.xml">
+          <arrange>
+               <output id="standard" />
+          </arrange>
+      </case>
+  </cases>
+
+  <cases id="fallback" cases="fallback_numeric, fallback_single" />
+  <cases id="standard" cases="standard_numeric, standard_single" />
+
+  <cases id="numeric" cases="fallback_numeric, standard_numeric" />
+  <cases id="single" cases="fallback_single, standard_single" />
+
+  <cases id="all" cases="fallback, standard" />
+</testCases>
+</code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;cases&gt;
+
+Define or/and aggregate cases.
+
+* [1..n]
+* Parent node: "&lt;testCases&gt;"#testCases
+* Child nodes: "&lt;cases&gt;"#cases
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Id of the cases|
+|description|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Description of the cases|
+|cases|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Id(s) of cases, separate with coma delimiter, to aggregate with the current cases.
+All aggregated cases will run before the case defined in the current node|
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;case&gt;
+
+Define a case.
+
+* Optional
+* [0..n]
+* Parent node: "&lt;cases&gt;"#cases
+* Child nodes: "&lt;arrange&gt;"#arrange,"&lt;asserts&gt;"#asserts
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|description|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Description of the case, it will prefix the final test description|
+|fixture|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the fixture file to use, it will be extended by the final fixture defined in the [[Design6_ADX_Unit_tests#ltunitsgt|<units>]] or [[Design6_ADX_Unit_tests#lttestgt|<test>]] node|
+
+"↑ Top of page ↑":#unit-tests
+
+h1. Act Section
+
+The act is automatically done by the ADCUnit, it will run the ADC using the fake context (Arrange section) and then will provide a set of data to test against:
+
+* ID of the selected output
+* Content of  the `head` section generated
+* Content of the `placeholder` section generated
+* Content of the `foot` section generated
+* Error code
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;fake_output&gt;
+
+Emulate the output generated by the ADX engine.
+Because sometimes it's useful to validate that your assertions are correct, the &lt;fake_output&gt; node allows you to emulate the ADX engine results.
+It could be useful to document your expectations or to validate the correctness of your assertions.
+
+*Note*: running the tests against the &lt;fake_output&gt; doesn't mean that your tests really passed, it doesn't call the ADX Engine.
+
+* Optional
+* [0..1]
+* Parent node: "&lt;test&gt;"#test
+* Child nodes: "&lt;head&gt;"#head-fake-output, "&lt;placeholder&gt;"#placeholder-fake-output, "&lt;foot&gt;"#foot-fake-output
+
+"↑ Top of page ↑":#unit-tests
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|false|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Simulate the id of the selected output|
+|errorCode|false|Enumeration based on "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
+*_noError_*
+No error (code 0)
+*_noQuestionnaire_*
+No questionnaire defined (code -1)
+*_noControl_*
+No ADC control  (code -2)
+*_scriptingError_*
+AskiaScript error (code -3)
+*_missingProperty_*
+Missing property(code -4)
+*_missingContent_*
+Missing content (code -5)
+*_invalidZip_*
+ADC zip file is not valid (code 1)
+*_invalidXmlFile_*
+Invalid config.xml file (code 2)
+*_invalidSWFFile_*
+Invalid SWF file (code 3)
+*_missingFile_*
+Missing file (code 4)
+*_invalidXml_*
+Invalid xml string(code 5)
+*_missingCachedFile_*
+Missing cached file (code 6)
+*_noOutput_*
+No output (code 7)
+*_outputConditionError_*
+Output condition error (code 8)
+*_binaryNoDynamic_*
+Binary file could not be dynamic (code 9)
+*_binaryNeedsYield_*
+Binary file require the <yield> element (code 10)
+*_cannotCreateDirectory_*
+Cannot create the ADC directory (code 11)
+*_textNoStaticOrShare_*
+Text content could not be static or share (code 12)|Simulate the error code return by the ADC engine|
+
+<pre><code class="xml"><fake_output id="html5Video" errorCode="noError">
+  <head>
+     <![CDATA[<link type="text/css" rel="stylesheet" href="../Resources/Survey/my_adc_name/style.css" />]]>
+  </head>
+  <placeholder>
+     <![CDATA[<audio src="../Resources/Survey/my_adc_name/gizmo.ogv"></audio>]]>
+  </placeholder>
+  <foot>
+     <![CDATA[<script type="text/javascript" src="../Resources/Survey/my_adc_name/audioControl.js"></script>]]>
+  </foot>
+</fake_output></code></pre>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;head&gt; (Fake output)
+
+Simulate the head section generated by the ADC engine.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Require
+* [1 ]
+* Parent node: "&lt;fake_output&gt;"#fake-output
+
+"↑ Top of page ↑":#unit-tests
+
+h2. <placeholder> (Fake output)
+
+Simulate the placeholder section generated by the ADC engine.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Require
+* [1]
+* Parent node: [[Design6_ADX_Unit_tests#ltfake_outputgt|<fake_output>]]
+
+h2. <foot> (Fake output)
+
+Simulate the foot section generated by the ADC engine.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Require
+* [1]
+* Parent node: [[Design6_ADX_Unit_tests#ltfake_outputgt|<fake_output>]]
+
+h1. Assert
+
+The ADCUnit provides a set of assertions to execute against the data resulting of the Act section.
+
+h2. <asserts>
+
+Asserts against the result of the ADC Engine outputs.
+
+* Require
+* [1]
+* Parent node: [[Design6_ADX_Unit_tests#lttestgt|<test>]]
+* Child nodes: [[Design6_ADX_Unit_tests#ltassert_outputgt|<assert_output>]], [[Design6_ADX_Unit_tests#ltassert_not_outputgt|<assert_not_output>]], [[Design6_ADX_Unit_tests#ltassert_errorgt|<assert_error>]], [[Design6_ADX_Unit_tests#ltassert_not_errorgt|<assert_not_error>]], [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]]
+
+h2. <assert_output>
+
+Assert that the specified output has been used.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Id of the output to test|
+
+<pre><code class="xml">
+      <asserts>
+        <assert_output id="one_valid_condition" />
+      </asserts>
+</code></pre>
+
+h2. <assert_not_output>
+
+Asserts that the specified output has not been used.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|id|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Id of the output to test|
+
+<pre><code class="xml">
+      <asserts>
+        <assert_not_output id="one_valid_condition" />
+      </asserts>
+</code></pre>
+
+h2. <assert_error>
+
+Asserts that the ADC engine has produce an error.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|code|false|Enumeration based on "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
+*_noError_*
+No error (code 0)
+*_noQuestionnaire_*
+No questionnaire defined (code -1)
+*_noControl_*
+No ADC control  (code -2)
+*_scriptingError_*
+AskiaScript error (code -3)
+*_missingProperty_*
+Missing property(code -4)
+*_missingContent_*
+Missing content (code -5)
+*_invalidZip_*
+ADC zip file is not valid (code 1)
+*_invalidXmlFile_*
+Invalid config.xml file (code 2)
+*_invalidSWFFile_*
+Invalid SWF file (code 3)
+*_missingFile_*
+Missing file (code 4)
+*_invalidXml_*
+Invalid xml string(code 5)
+*_missingCachedFile_*
+Missing cached file (code 6)
+*_noOutput_*
+No output (code 7)
+*_outputConditionError_*
+Output condition error (code 8)
+*_binaryNoDynamic_*
+Binary file could not be dynamic (code 9)
+*_binaryNeedsYield_*
+Binary file require the <yield> element (code 10)
+*_cannotCreateDirectory_*
+Cannot create the ADC directory (code 11)
+*_textNoStaticOrShare_*
+Text content could not be static or share (code 12)|Error code to test against|
+
+<pre><code class="xml">
+      <asserts>
+        <assert_error code="textNoStaticOrShare"/>
+      </asserts>
+</code></pre>
+
+h2. <assert_not_error>
+
+Asserts that the ADC engine has not produce an error or the specified error code.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|code|false|Enumeration based on "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
+*_noError_*
+No error (code 0)
+*_noQuestionnaire_*
+No questionnaire defined (code -1)
+*_noControl_*
+No ADC control  (code -2)
+*_scriptingError_*
+AskiaScript error (code -3)
+*_missingProperty_*
+Missing property(code -4)
+*_missingContent_*
+Missing content (code -5)
+*_invalidZip_*
+ADC zip file is not valid (code 1)
+*_invalidXmlFile_*
+Invalid config.xml file (code 2)
+*_invalidSWFFile_*
+Invalid SWF file (code 3)
+*_missingFile_*
+Missing file (code 4)
+*_invalidXml_*
+Invalid xml string(code 5)
+*_missingCachedFile_*
+Missing cached file (code 6)
+*_noOutput_*
+No output (code 7)
+*_outputConditionError_*
+Output condition error (code 8)
+*_binaryNoDynamic_*
+Binary file could not be dynamic (code 9)
+*_binaryNeedsYield_*
+Binary file require the <yield> element (code 10)
+*_cannotCreateDirectory_*
+Cannot create the ADC directory (code 11)
+*_textNoStaticOrShare_*
+Text content could not be static or share (code 12)|Error code to test against|
+
+<pre><code class="xml">
+      <asserts>
+        <assert_not_error code="textNoStaticOrShare"/>
+      </asserts>
+</code></pre>
+
+h2. <assert_empty>
+
+Asserts that the specified output, the selected nodes or the current section is empty.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_empty />
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_empty />
+        </placeholder>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_empty />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_not_empty>
+
+Asserts that the specified output, the selected nodes or the current section is not empty.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_not_empty />
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_not_empty />
+        </placeholder>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_not_empty />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_equals>
+
+Asserts that the specified output, the selected nodes or the current section is equal to the specified string.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_equals>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <head>
+            <assert_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_equals>
+        </head>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <foot>
+            <select_nodes xPath="//script">
+                <assert_equals><![CDATA[$("#adc_id").doSomething();]]></assert_equals>
+            </select_nodes>
+        </foot>
+      </asserts>
+</code></pre>
+
+h2. <assert_not_equals>
+
+Asserts that the specified output, the selected nodes or the current section is not equal to the specified string.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_not_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_not_equals>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <head>
+            <assert_not_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_not_equals>
+        </head>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <foot>
+            <select_nodes xPath="//script">
+                <assert_not_equals><![CDATA[$("#adc_id").doSomething();]]></assert_not_equals>
+            </select_nodes>
+        </foot>
+      </asserts>
+</code></pre>
+
+h2. <assert_match>
+
+Asserts that the specified output, the selected nodes or the current section match the specified regular expression.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_match>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_match>
+        </placeholder>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//div">
+                <assert_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_match>
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_not_match>
+
+Asserts that the specified output, the selected nodes or the current section doesn't match the specified regular expression.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_not_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_not_match>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_not_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_not_match>
+        </placeholder>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//div">
+                <assert_not_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_not_match>
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <head>
+
+Container of the asserts to execute on the head section.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Child nodes: [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <head>
+            <assert_contains><![CDATA[default.js]]></assert_contains>
+        </head>
+      </asserts>
+</code></pre>
+
+h2. <placeholder>
+
+Container of the asserts to execute on the placeholder section.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Child nodes: [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_contains><![CDATA[default.js]]></assert_contains>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <foot>
+
+Container of the asserts to execute on the foot section.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Child nodes: [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <foot>
+            <assert_contains><![CDATA[default.js]]></assert_contains>
+        </foot>
+      </asserts>
+</code></pre>
+
+h2. <assert_contains>
+
+Asserts that the specified output, the selected nodes or the current section contains the specified string.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_contains><![CDATA[default.js]]></assert_contains>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_contains><![CDATA[default.js]]></assert_contains>
+        </placeholder>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_contains><![CDATA[default.js]]></assert_contains>
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_not_contains>
+
+Asserts that the specified output, the selected nodes or the current section doesn't contains the specified string.
+
+* "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <assert_not_contains><![CDATA[default.js]]></assert_contains>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <assert_not_contains><![CDATA[default.js]]></assert_contains>
+        </placeholder>
+      </asserts>
+</code></pre><pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_not_contains><![CDATA[default.js]]></assert_contains>
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <select_nodes>
+
+Container of assert to execute on HTML nodes in the current section.
+
+* Optional
+* [0..n]
+* Parent node: [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]]
+* Child nodes: [[Design6_ADX_Unit_tests#ltassert_countgt|<assert_count>]], [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_existgt|<assert_exist>]], [[Design6_ADX_Unit_tests#ltassert_not_existgt|<assert_not_exist>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltassert_has_attrgt|<assert_has_attr>]], [[Design6_ADX_Unit_tests#ltassert_has_not_attrgt|<assert_has_not_attr>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|xPath|true|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|"xPath expression":http://www.w3.org/TR/xpath/ to select HTML nodes|
+
+<pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_count is="equal" value="2" />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_count>
+
+Asserts against the number of selected HTML nodes.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|is|false|Enumeration based on "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html
+*_equal_* (by default)
+Equal to the specified value
+*_different_*
+Different than the specified value
+*_lowerThan_*
+Lower than the specified value
+*_lowerOrEqualThan_*
+Lower or equal than the specified value
+*_greatherThan_*
+Greather than the specified value
+*_greatherOrEqualThan_*
+Greather or equal than the specified value|Type of the comparison|
+|value|true|"xsd:integer":http://www.schemacentral.com/sc/xsd/t-xsd_integer.html|Comparison value|
+
+<pre><code class="xml">
+      <asserts>
+        <select_nodes xPath="//script[@src]">
+             <assert_count is="equal" value="3" />
+         </select_nodes>
+      </asserts>
+</code></pre>
+
+h2. <assert_exist>
+
+Asserts that the specified HTML nodes exist.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_exist />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_not_exist>
+
+Asserts that the specified HTML nodes doesn't exist.
+
+* Optional
+* [0..1]
+* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+<pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_not_exist />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_has_attr>
+
+Asserts that the specified HTML nodes has the specified attribute.
+
+* Optional
+* [0..n]
+* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the attribute to search|
+|value|false|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|Assert that the attribute has the specified value|
+|contains|false|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|Assert that the attribute contains the specified value|
+
+<pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_has_attr name="type" value="text/javascript" />
+                <assert_has_attr name="src" contains="default.js" />
+            </select_nodes>
+            <select_nodes xPath="//link">
+                <assert_has_attr name="rel" />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+h2. <assert_has_not_attr>
+
+Asserts that the specified HTML nodes has not the specified attribute.
+
+* Optional
+* [0..n]
+* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+
+h3. Attributes
+
+{background:#007dc5; color:white}. |_. Attribute name|_. Require|_. Type|_. Description|
+|name|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the attribute to search|
+|value|false|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|Assert that the attribute has not the specified value|
+|contains|false|"xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html|Assert that the attribute doesn't contains the specified value|
+
+<pre><code class="xml">
+      <asserts>
+        <placeholder>
+            <select_nodes xPath="//script">
+                <assert_has_not_attr name="src" />
+            </select_nodes>
+            <select_nodes xPath="//link">
+                <assert_has_not_attr name="href" contains="default.css" />
+            </select_nodes>
+        </placeholder>
+      </asserts>
+</code></pre>
+
+*[[Design6_ADX_Generate_Askia_HTML_Inputs|<< Generate Askia HTML Inputs]]* | *[[Design6_ADX_SDK|SDK >>]]*
