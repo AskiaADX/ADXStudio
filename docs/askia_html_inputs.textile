@@ -7,7 +7,7 @@ AskiaWeb usually uses the verbs `GET` and `POST`, both of them have mostly the s
 
 The parameters are sent as a collection of name/value pairs separate by the ampersand symbol like:
 
-<pre><code class="javascript"name1=value1&name2=value2&name3=value3</code></pre>
+<pre><code class="javascript">name1=value1&name2=value2&name3=value3</code></pre>
 
 All values are automatically encoded by the browser(URIEncode) while using HTML Form.
 
@@ -21,22 +21,21 @@ In the sections below:
 * *%2C* is the URIEncode for the coma character
 
 
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Numeric-question|Numeric question]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Open-ended-question|Open-ended question]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Date-question|Date question]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Time-question|Time question]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#DateTime-question|Date/Time question]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Single-closed-question|Single closed question]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Multi-coded-question-classical|Multi-coded question (classical)]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Multi-coded-question-ranking|Multi-coded question (ranking)]]
-* [[Design6_ADX_Generate_Askia_HTML_Inputs#Multi-coded-question-list|Multi-coded question (list)]]
-
+* "Numeric question":#numeric-question
+* "Open-ended question":#open-ended-question
+* "Date question":#date-question
+* "Time question":#time-question
+* "Date/Time question":#datetime-question
+* "Single closed question":#single-closed-question
+* "Multi-coded question (classical)":#multi-coded-question-classical
+* "Multi-coded question (ranking)":multi-coded-question-ranking
+* "Multi-coded question (list)":#multi-coded-question-list
 
 h2. Numeric question
 
 The input name is the letter *C* (for Continous) follow by the id of the question: *C*_XX_
 
-<pre><code class="javascript"CXX=VAL</code></pre>
+<pre><code class="javascript">CXX=VAL</code></pre>
 
 Example:
 
@@ -641,4 +640,4 @@ Produce:
 <pre><code class="html"><input type="hidden" name="L1" value="256,257" /></code></pre>
 
 
-*"&lt;&lt; Master Page - Recommendations":master_page_recommendations.textile* | *"Unit tests &gt;&gt;":unit_tests.textile*
+*"&lt;&lt; Generation Rules":generation_rules.textile* | *"Unit tests &gt;&gt;":unit_tests.textile*
