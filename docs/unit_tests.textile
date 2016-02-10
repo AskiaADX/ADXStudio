@@ -12,48 +12,48 @@ It could also auto-generate unit tests in memory to test each output on each que
 
 ADXShell is based on the "Test design pattern AAA (Arrange, Act, Assert)":http://www.arrangeactassert.com/why-and-what-is-arrange-act-assert/.
 
-# [[Design6_ADX_Unit_tests#Declaration|Declare unit tests cases]]
-** [[Design6_ADX_Unit_tests#lttestsgt|<tests>]]
-*** [[Design6_ADX_Unit_tests#ltunitsgt|<units>]]
-**** [[Design6_ADX_Unit_tests#lttestgt|<test>]]
-# [[Design6_ADX_Unit_tests#ArrangeSection|Arrange define a context]]
-** [[Design6_ADX_Unit_tests#ltSurveygt|<Survey>]]
-** [[Design6_ADX_Unit_tests#ltbrowsergt|<browser>]]
-*** [[Design6_ADX_Unit_tests#ltresolutiongt|<resolution>]]
-*** [[Design6_ADX_Unit_tests#ltsupportgt|<support>]]
-*** [[Design6_ADX_Unit_tests#ltpluginVersiongt|<pluginVersion>]]
-** [[Design6_ADX_Unit_tests#ltoutputgt|<output>]]
-** [[Design6_ADX_Unit_tests#ltpropertiesgt|<properties>]]
-*** [[Design6_ADX_Unit_tests#ltpropertygt|<property>]]
-**** [[Design6_ADX_Unit_tests#ltvaluegt|<value>]]
-# [[Design6_ADX_Unit_tests#FixturesSection|Fixtures define reusable arrange]]
-** [[Design6_ADX_Unit_tests#ltfixturegt|<fixture>]]
-# [[Design6_ADX_Unit_tests#Cases|Cases enumerates the list of cases to loop through]]
-** [[Design6_ADX_Unit_tests#lttestCasesgt|<testCases>]]
-*** [[Design6_ADX_Unit_tests#lttestCasesgt|<cases>]]
-**** [[Design6_ADX_Unit_tests#lttestCasesgt|<case>]]
-# [[Design6_ADX_Unit_tests#ActSection|Act execute an action with the specified context]]
-** [[Design6_ADX_Unit_tests#ltfake_outputgt|<fake_output>]]
-*** [[Design6_ADX_Unit_tests#ltheadgt-Fake-output|<head>]]
-*** [[Design6_ADX_Unit_tests#ltplaceholdergt-Fake-output|<placeholder>]]
-*** [[Design6_ADX_Unit_tests#ltfootgt-Fake-output|<foot>]]
-# [[Design6_ADX_Unit_tests#AssertSection|Assert test the result of the action]]
-** [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
-*** [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]]
-*** [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]]
-*** [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]]
-*** [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]]
-*** [[Design6_ADX_Unit_tests#ltassert_equalsgt|<assert_equals>]]
-*** [[Design6_ADX_Unit_tests#ltassert_not_equalsgt|<assert_not_equals>]]
-*** [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]]
-*** [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]]
-*** [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]]
-**** [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
-***** [[Design6_ADX_Unit_tests#ltassert_countgt|<assert_count>]]
-***** [[Design6_ADX_Unit_tests#ltassert_existgt|<assert_exist>]]
-***** [[Design6_ADX_Unit_tests#ltassert_not_existgt|<assert_not_exist>]]
-***** [[Design6_ADX_Unit_tests#ltassert_has_attrgt|<assert_has_attr>]]
-***** [[Design6_ADX_Unit_tests#ltassert_has_not_attrgt|<assert_has_not_attr>]]
+# "Declare unit tests cases":#declaration
+** "&lt;tests&gt;":#tests
+*** "&lt;units&gt;":#units
+**** "&lt;test&gt;":#test
+# "Arrange define a context":#arrange-section
+** "&lt;Survey&gt;":#survey
+** "&lt;browser&gt;":#browser
+*** "&lt;resolution&gt;":#resolution
+*** "&lt;support&gt;":#support
+*** "&lt;pluginVersion&gt;":#pluginversion
+** "&lt;output&gt;":#output
+** "&lt;properties&gt;":#properties
+*** "&lt;property&gt;":#property
+**** "&lt;value&gt;":#value
+# "Fixtures define reusable arrange":#fixtures-section
+** "&lt;fixture&gt;":#fixture
+# "Cases enumerates the list of cases to loop through":#cases-section
+** "&lt;testCases&gt;":#testcases
+*** "&lt;cases&gt;":#cases
+**** "&lt;case&gt;":#case
+# "Act execute an action with the specified context":#act-section
+** "&lt;fake_output&gt;":#fake_output
+*** "&lt;head&gt;":#head-fake-output
+*** "&lt;placeholder&gt;":#placeholder-fake-output
+*** "&lt;foot&gt;":#foot-fake-output
+# "Assert test the result of the action":#assert-sections
+** "&lt;asserts&gt;":#asserts
+*** "&lt;assert_empty&gt;":#assert_empty
+*** "&lt;assert_not_empty&gt;":#assert_not_empty
+*** "&lt;assert_contains&gt;":#assert_contains
+*** "&lt;assert_not_contains&gt;":#assert_not_contains
+*** "&lt;assert_equals&gt;":#assert_equals
+*** "&lt;assert_not_equals&gt;":#assert_not_equals
+*** "&lt;assert_match&gt;":#assert_match
+*** "&lt;assert_not_match&gt;":#assert_not_match
+*** "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot
+**** "&lt;select_nodes&gt;":#select_nodes
+***** "&lt;assert_count&gt;":#assert_count
+***** "&lt;assert_exist&gt;":#assert_exist
+***** "&lt;assert_not_exist&gt;":#assert_not_exist
+***** "&lt;assert_has_attr&gt;":#assert_has_attr
+***** "&lt;assert_has_not_attr&gt;":#assert_has_not_attr
 
 h1. Declaration
 
@@ -525,7 +525,7 @@ Define or/and aggregate cases.
 
 * [1..n]
 * Parent node: "&lt;testCases&gt;":#testcases
-* Child nodes: "&lt;cases&gt;":#cases
+* Child nodes: "&lt;case&gt;":#case
 
 "↑ Top of page ↑":#unit-tests
 
@@ -652,44 +652,56 @@ Simulate the head section generated by the ADC engine.
 
 "↑ Top of page ↑":#unit-tests
 
-h2. <placeholder> (Fake output)
+h2. &lt;placeholder&gt; (Fake output)
 
 Simulate the placeholder section generated by the ADC engine.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Unit_tests#ltfake_outputgt|<fake_output>]]
+* [1 ]
+* Parent node: "&lt;fake_output&gt;":#fake_output
 
-h2. <foot> (Fake output)
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;foot&gt; (Fake output)
 
 Simulate the foot section generated by the ADC engine.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Unit_tests#ltfake_outputgt|<fake_output>]]
+* [1 ]
+* Parent node: "&lt;fake_output&gt;":#fake_output
 
-h1. Assert
+"↑ Top of page ↑":#unit-tests
 
-The ADCUnit provides a set of assertions to execute against the data resulting of the Act section.
+h1. Assert Section
 
-h2. <asserts>
+The ADXShell provides a set of assertions to execute against the data resulting of the Act section.
+
+h2. &lt;asserts&gt;
 
 Asserts against the result of the ADC Engine outputs.
 
 * Require
-* [1]
-* Parent node: [[Design6_ADX_Unit_tests#lttestgt|<test>]]
-* Child nodes: [[Design6_ADX_Unit_tests#ltassert_outputgt|<assert_output>]], [[Design6_ADX_Unit_tests#ltassert_not_outputgt|<assert_not_output>]], [[Design6_ADX_Unit_tests#ltassert_errorgt|<assert_error>]], [[Design6_ADX_Unit_tests#ltassert_not_errorgt|<assert_not_error>]], [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]]
+* [1 ]
+* Parent node: "&lt;test&gt;":#test
+* Child nodes: "&lt;assert_output&gt;":#assert_output, "&lt;assert_not_output&gt;":#assert_not_output,,
+"&lt;assert_error&gt;":#assert_error, "&lt;assert_not_error&gt;":#assert_not_error,
+"&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
+"&lt;assert_head&gt;":#assert_head, "&lt;assert_placeholder&gt;":#assert_placeholder, "&lt;assert_foot&gt;":#assert_foot
 
-h2. <assert_output>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_output&gt;
 
 Assert that the specified output has been used.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -702,13 +714,17 @@ h3. Attributes
       </asserts>
 </code></pre>
 
-h2. <assert_not_output>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_not_output&gt;
 
 Asserts that the specified output has not been used.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -721,13 +737,17 @@ h3. Attributes
       </asserts>
 </code></pre>
 
-h2. <assert_error>
+"↑ Top of page ↑":#unit-tests
 
-Asserts that the ADC engine has produce an error.
+h2. &lt;assert_error&gt;
+
+Asserts that the ADX engine has produce an error.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -776,13 +796,17 @@ Text content could not be static or share (code 12)|Error code to test against|
       </asserts>
 </code></pre>
 
-h2. <assert_not_error>
+"↑ Top of page ↑":#unit-tests
 
-Asserts that the ADC engine has not produce an error or the specified error code.
+h2. &lt;assert_not_error&gt;
+
+Asserts that the ADX engine has not produce an error or the specified error code.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -831,25 +855,32 @@ Text content could not be static or share (code 12)|Error code to test against|
       </asserts>
 </code></pre>
 
-h2. <assert_empty>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_empty&gt;
 
 Asserts that the specified output, the selected nodes or the current section is empty.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts, "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
+
 
 <pre><code class="xml">
       <asserts>
         <assert_empty />
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <assert_empty />
         </placeholder>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <select_nodes xPath="//script">
@@ -859,25 +890,32 @@ Asserts that the specified output, the selected nodes or the current section is 
       </asserts>
 </code></pre>
 
-h2. <assert_not_empty>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_not_empty&gt;
 
 Asserts that the specified output, the selected nodes or the current section is not empty.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts, "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
+
 
 <pre><code class="xml">
       <asserts>
         <assert_not_empty />
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <assert_not_empty />
         </placeholder>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <select_nodes xPath="//script">
@@ -887,26 +925,32 @@ Asserts that the specified output, the selected nodes or the current section is 
       </asserts>
 </code></pre>
 
-h2. <assert_equals>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_equals&gt;
 
 Asserts that the specified output, the selected nodes or the current section is equal to the specified string.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts, "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
         <assert_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_equals>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <head>
             <assert_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_equals>
         </head>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <foot>
             <select_nodes xPath="//script">
@@ -916,26 +960,34 @@ Asserts that the specified output, the selected nodes or the current section is 
       </asserts>
 </code></pre>
 
-h2. <assert_not_equals>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_not_equals&gt;
 
 Asserts that the specified output, the selected nodes or the current section is not equal to the specified string.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts, "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
+
 
 <pre><code class="xml">
       <asserts>
         <assert_not_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_not_equals>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <head>
             <assert_not_equals><![CDATA[<script type="text/javascript" src="../Resources/Survey/default.js"></script>]]></assert_not_equals>
         </head>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <foot>
             <select_nodes xPath="//script">
@@ -945,26 +997,34 @@ Asserts that the specified output, the selected nodes or the current section is 
       </asserts>
 </code></pre>
 
-h2. <assert_match>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_match&gt;
 
 Asserts that the specified output, the selected nodes or the current section match the specified regular expression.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts, "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
+
+"↑ Top of page ↑":#unit-tests
 
 <pre><code class="xml">
       <asserts>
         <assert_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_match>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <assert_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_match>
         </placeholder>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <select_nodes xPath="//div">
@@ -974,26 +1034,35 @@ Asserts that the specified output, the selected nodes or the current section mat
       </asserts>
 </code></pre>
 
-h2. <assert_not_match>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_not_match&gt;
 
 Asserts that the specified output, the selected nodes or the current section doesn't match the specified regular expression.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]], [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts, "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
+
+
+"↑ Top of page ↑":#unit-tests
 
 <pre><code class="xml">
       <asserts>
         <assert_not_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_not_match>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <assert_not_match><![CDATA[<input type="(radio|checkbox)"(.*?)\/>]]></assert_not_match>
         </placeholder>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <select_nodes xPath="//div">
@@ -1003,14 +1072,17 @@ Asserts that the specified output, the selected nodes or the current section doe
       </asserts>
 </code></pre>
 
-h2. <head>
+h2. &lt;head&gt;
 
 Container of the asserts to execute on the head section.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
-* Child nodes: [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+* Child nodes: "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
+"&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
+"&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
@@ -1020,14 +1092,20 @@ Container of the asserts to execute on the head section.
       </asserts>
 </code></pre>
 
-h2. <placeholder>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;placeholder&gt;
 
 Container of the asserts to execute on the placeholder section.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
-* Child nodes: [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+* Child nodes: "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
+"&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
+"&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
@@ -1037,14 +1115,20 @@ Container of the asserts to execute on the placeholder section.
       </asserts>
 </code></pre>
 
-h2. <foot>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;foot&gt;
 
 Container of the asserts to execute on the foot section.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltassertsgt|<asserts>]]
-* Child nodes: [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;asserts&gt;":#asserts
+* Child nodes: "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
+"&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
+"&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
@@ -1054,26 +1138,33 @@ Container of the asserts to execute on the foot section.
       </asserts>
 </code></pre>
 
-h2. <assert_contains>
+
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_contains&gt;
 
 Asserts that the specified output, the selected nodes or the current section contains the specified string.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
         <assert_contains><![CDATA[default.js]]></assert_contains>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <assert_contains><![CDATA[default.js]]></assert_contains>
         </placeholder>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <select_nodes xPath="//script">
@@ -1083,26 +1174,32 @@ Asserts that the specified output, the selected nodes or the current section con
       </asserts>
 </code></pre>
 
-h2. <assert_not_contains>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_not_contains&gt;
 
 Asserts that the specified output, the selected nodes or the current section doesn't contains the specified string.
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]], [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot, "&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
         <assert_not_contains><![CDATA[default.js]]></assert_contains>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <assert_not_contains><![CDATA[default.js]]></assert_contains>
         </placeholder>
       </asserts>
-</code></pre><pre><code class="xml">
+</code></pre>
+
+<pre><code class="xml">
       <asserts>
         <placeholder>
             <select_nodes xPath="//script">
@@ -1112,14 +1209,23 @@ Asserts that the specified output, the selected nodes or the current section doe
       </asserts>
 </code></pre>
 
-h2. <select_nodes>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;select_nodes&gt;
 
 Container of assert to execute on HTML nodes in the current section.
 
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Unit_tests#ltheadgt|<head>]], [[Design6_ADX_Unit_tests#ltplaceholdergt|<placeholder>]], [[Design6_ADX_Unit_tests#ltfootgt|<foot>]]
-* Child nodes: [[Design6_ADX_Unit_tests#ltassert_countgt|<assert_count>]], [[Design6_ADX_Unit_tests#ltassert_emptygt|<assert_empty>]], [[Design6_ADX_Unit_tests#ltassert_not_emptygt|<assert_not_empty>]], [[Design6_ADX_Unit_tests#ltassert_existgt|<assert_exist>]], [[Design6_ADX_Unit_tests#ltassert_not_existgt|<assert_not_exist>]], [[Design6_ADX_Unit_tests#ltassert_containsgt|<assert_contains>]], [[Design6_ADX_Unit_tests#ltassert_not_containsgt|<assert_not_contains>]], [[Design6_ADX_Unit_tests#ltassert_matchgt|<assert_match>]], [[Design6_ADX_Unit_tests#ltassert_not_matchgt|<assert_not_match>]], [[Design6_ADX_Unit_tests#ltassert_has_attrgt|<assert_has_attr>]], [[Design6_ADX_Unit_tests#ltassert_has_not_attrgt|<assert_has_not_attr>]]
+* Parent node: "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot
+* Child nodes: "&lt;assert_count&gt;":#assert_count,
+"&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_exist&gt;":#assert_exist, "&lt;assert_not_exist&gt;":#assert_not_exist,
+"&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
+"&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
+"&lt;assert_has_attr&gt;":#assert_has_attr, "&lt;assert_has_not_attr&gt;":#assert_has_not_attr
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -1136,13 +1242,17 @@ h3. Attributes
       </asserts>
 </code></pre>
 
-h2. <assert_count>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_count&gt;
 
 Asserts against the number of selected HTML nodes.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;select_nodes&gt;":#select_nodes
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -1170,13 +1280,15 @@ Greather or equal than the specified value|Type of the comparison|
       </asserts>
 </code></pre>
 
-h2. <assert_exist>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_exist&gt;
 
 Asserts that the specified HTML nodes exist.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;select_nodes&gt;":#select_nodes
 
 <pre><code class="xml">
       <asserts>
@@ -1188,13 +1300,16 @@ Asserts that the specified HTML nodes exist.
       </asserts>
 </code></pre>
 
-h2. <assert_not_exist>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_not_exist&gt;
 
 Asserts that the specified HTML nodes doesn't exist.
 
 * Optional
 * [0..1]
-* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;select_nodes&gt;":#select_nodes
+
 
 <pre><code class="xml">
       <asserts>
@@ -1206,13 +1321,17 @@ Asserts that the specified HTML nodes doesn't exist.
       </asserts>
 </code></pre>
 
-h2. <assert_has_attr>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_has_attr&gt;
 
 Asserts that the specified HTML nodes has the specified attribute.
 
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;select_nodes&gt;":#select_nodes
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -1235,13 +1354,17 @@ h3. Attributes
       </asserts>
 </code></pre>
 
-h2. <assert_has_not_attr>
+"↑ Top of page ↑":#unit-tests
+
+h2. &lt;assert_has_not_attr&gt;
 
 Asserts that the specified HTML nodes has not the specified attribute.
 
 * Optional
 * [0..n]
-* Parent node: [[Design6_ADX_Unit_tests#ltselect_nodesgt|<select_nodes>]]
+* Parent node: "&lt;select_nodes&gt;":#select_nodes
+
+"↑ Top of page ↑":#unit-tests
 
 h3. Attributes
 
@@ -1263,4 +1386,4 @@ h3. Attributes
       </asserts>
 </code></pre>
 
-*[[Design6_ADX_Generate_Askia_HTML_Inputs|<< Generate Askia HTML Inputs]]* | *[[Design6_ADX_SDK|SDK >>]]*
+*"&lt;&lt; Generate Askia HTML Inputs":askia_html_inputs.textile*
