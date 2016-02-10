@@ -1,4 +1,3 @@
-
 "use strict";
 
 const electron = require('electron');
@@ -156,6 +155,26 @@ function onChange(dir, files) {
     }
 }
 
+function copyAll(event, files) {
+    lastCopy = {
+        file: files,
+        typeOfCopy : "copyAll"
+    };
+}
+
+function cutAll(event, files) {
+    lastCopy = {
+        file: files,
+        typeOfCopy : "cut"
+    };
+}
+
+function pasteAll(event, files) {
+    for (var i = 0, l = files.length; i < l; i++) {
+        paste(event, files[i]);
+    }
+}
+
 function copy(event, file) {
     lastCopy = {
         file: file,
@@ -201,6 +220,7 @@ function paste(event, file) {
         })
     }
 }
+
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
@@ -237,7 +257,15 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('paste-file', paste);
     ipc.on('paste-file', paste);
+    
+    ipc.removeListener('cut-all-file', cutAll);
+    ipc.on('cut-file', cut);
 
+    ipc.removeListener('copy-all-file', copyAll);
+    ipc.on('copy-file', copy);
+
+    ipc.removeListener('paste-all-file', pasteAll);
+    ipc.on('paste-file', paste);
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
     explorer.on('change', onChange); // Add it back

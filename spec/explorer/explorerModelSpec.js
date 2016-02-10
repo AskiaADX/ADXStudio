@@ -274,6 +274,12 @@ describe('explorer', function () {
             })
         });
     });
+    
+    describe('#copy', function () {
+        it("Should be a function", function () {
+            expect(typeof explorer.copy).toBe('function');
+        });
+    });
 
     describe('#remove', function () {
         it("Should be a function", function () {

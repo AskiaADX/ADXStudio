@@ -186,16 +186,16 @@ function itemRightClick(e) {
             }
         }));
     } else {
-        /* Open file in the OS manner */
-        if (/\.html?$/i.test(file.name)) {
-            contextualMenu.append(new MenuItem({
-                label: 'Open in browser',
-                click: function onClickOpen() {
-                    shell.openItem(file.path);
-                }
-            }));
-        }
         if (files.length == 1) {
+            /* Open file in the OS manner */
+            if (/\.html?$/i.test(file.name)) {
+                contextualMenu.append(new MenuItem({
+                    label: 'Open in browser',
+                    click: function onClickOpen() {
+                        shell.openItem(file.path);
+                    }
+                }));
+            }
             /*cut file*/
             contextualMenu.append(new MenuItem({
                 label: 'Cut',
@@ -258,6 +258,33 @@ function itemRightClick(e) {
             }));
         }
         if (files.length > 1) {
+            /*cut file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Cut All',
+                click: function onClickCut() {
+                    ipc.send('cut-all-file', files);
+                }
+
+            }));
+
+            /*copy file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Copy All',
+                click: function onClickCopy() {
+                    ipc.send('copy-all-file', files);
+                }
+            }));
+
+            /*paste file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Paste All',
+                click: function onClickPaste() {
+                    ipc.send('paste-all-file', files);
+                }
+            }));
+            
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+            
             contextualMenu.append(new MenuItem({
                 label: 'Remove All',
                 click: function onClickRemoveAll() {
@@ -841,6 +868,7 @@ document.addEventListener('DOMContentLoaded', function () {
             rootInfo.removeEventListener('contextmenu', itemRightClick);
             rootInfo.addEventListener('contextmenu', itemRightClick, false);
             root.parentNode.querySelector('.name').innerHTML = rootName;
+            root.parentNode.setAttribute('title', path);
         }
 
 
