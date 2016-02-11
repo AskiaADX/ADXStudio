@@ -44,21 +44,18 @@ End Function
 
 *Example usage in dynamic CSS content*
 
-<pre><code class="css">
-#adc_{%= CurrentADC.InstanceId%} .item {
+<pre><code class="css">#adc_{%= CurrentADC.InstanceId%} .item {
    color : rgb({%:= GetPropRGB("font-color")%});
    {%:= BackgroundGradient("color1", "color2") %}
 }
 #adc_{%= CurrentADC.InstanceId%} .item.selected {
    color : rgb({%:= GetPropRGB("font-color-selected")%});
    {%:= BackgroundGradient("color1-selected", "color2-selected") %}
-}
-</code></pre>
+}</code></pre>
 
 Produce:
 
-<pre><code class="css">
-#adc_{%= CurrentADC.InstanceId%} .item {
+<pre><code class="css">#adc_1 .item {
    color : rgb(0,0,0);
    background: #ffffff; /* Old browsers */
    background: -moz-linear-gradient(-45deg,#ffffff 100%,#dddddd 100%); /* FF3.6+ */
@@ -69,7 +66,7 @@ Produce:
    background: linear-gradient(-45deg, #ffffff 100%,#dddddd 100%); /* W3C */
    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
-#adc_{%= CurrentADC.InstanceId%} .item.selected {
+#adc_1 .item.selected {
    color : rgb(255,255,255);
    background: #0000ff; /* Old browsers */
    background: -moz-linear-gradient(-45deg,#0000ff 100%,#dddddd 100%); /* FF3.6+ */
@@ -79,7 +76,6 @@ Produce:
    background: -ms-linear-gradient(-45deg,#0000ff 100%,#dddddd 100%); /* IE10+ */
    background: linear-gradient(-45deg, #0000ff 100%,#dddddd 100%); /* W3C */
    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000ff', endColorstr='#dddddd',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-}
-</code></pre>
+}</code></pre>
 
 *"&lt;&lt; Manifest - Properties":manifest_properties.textile* | *"Master Page &gt;&gt;":master_page.textile*
