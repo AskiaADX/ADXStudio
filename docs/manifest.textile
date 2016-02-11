@@ -20,7 +20,7 @@ The root node of Manifest.xml is:
 Both manifest contains 4 parts:
 
 * "The meta information: &lt;info&gt;":manifest_info.textile
-* "The available outputs: &lt;outputs&gt;":manifest_output.textile
+* "The available outputs: &lt;outputs&gt;":manifest_outputs.textile
 * "The properties for the end-user configuration: &lt;properties&gt;":manifest_properties.textile
 * "List all available AskiaScript functions: &lt;functions&gt;":manifest_functions.textile
 
