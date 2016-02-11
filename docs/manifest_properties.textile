@@ -210,7 +210,7 @@ All system properties id is a reserved identifier which could not be used in the
 *Also see:*
 
 * "&lt;property xsi:type=&quot;askiaProperty&quot; id=&quot;askia-addDK&quot;&gt;":#property-xsitypeaskiaproperty-idaskia-adddk
-* "&lt;property xsi:type=&quot;askiaProperty&quot; id=&quot;askia-maxIterations&quot;&gt;":#property-xsitypeaskiaproperty-askia-maxiterations
+* "&lt;property xsi:type=&quot;askiaProperty&quot; id=&quot;askia-maxIterations&quot;&gt;":#property-xsitypeaskiaproperty-idaskia-maxiterations
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
 |xsi:type|true|"xsd:QName":http://www.schemacentral.com/sc/xsd/t-xsd_QName.html|Must always be "askiaProperty" for the reserved askia property.
