@@ -57,7 +57,7 @@ We recommend to place the fall-back output in the last position.
 *Also see*
 
 "Output Selection Rules":generation_rules.textile#output-selection-rules
-"Output Max. iterations Rules":generation_rules.textile#output-selection-rules
+"Output Max. iterations Rules":generation_rules.textile#output-max-iterations-rules
 
 h3. Attributes
 
@@ -123,38 +123,38 @@ h3. Attributes
 |type|true|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
 *_text_*
 Arbitrary text based content. Will be inserted as it is when static and interpreted when dynamic.
-Also see "Text content rules"generation_rules.textile#text-content-rules
+Also see "Text content rules":generation_rules.textile#text-content-rules
 *_binary_*
 Arbitrary binary content. Will not be inserted at all, expect if the &lt;yield&gt; node indicates how to insert it in the page.
 The content must always be static or external.
-Also see "Binary content rules"generation_rules.textile#binary-content-rules
+Also see "Binary content rules":generation_rules.textile#binary-content-rules
 *_html_*
 HTML content. Will be inserted as it is when static, and interpreted when dynamic.
-Also see "HTML content rules"generation_rules.textile#html-content-rules
+Also see "HTML content rules":generation_rules.textile#html-content-rules
 *_javascript_*
 Javascript content. Will be inserted using the &lt;script src /&gt;  tag when static or external
 or using &lt;script&gt;&lt;/script&gt; tag when dynamic.
-Also see "Javascript content rules"generation_rules.textile#javascript-content-rules
+Also see "Javascript content rules":generation_rules.textile#javascript-content-rules
 *_css_*
 CSS content. Will be inserted using &lt;link href /&gt; tag when static or share
 or using the &lt;style&lt;&gt;/style&gt; tag when dynamic.
-Also see "CSS content rules"generation_rules.textile#css-content-rules
+Also see "CSS content rules":generation_rules.textile#css-content-rules
 *_image_*
 Image content. Will be inserted using the &lt;img src /&gt; tag.
 The content must always be static or external.
-Also see "Image content rules"generation_rules.textile#image-content-rules
+Also see "Image content rules":generation_rules.textile#image-content-rules
 *_video_*
 Video content. Will be inserted using the &lt;video src/&gt; tag. (HTML5)
 The content must always be static or external.
-Also see "Video content rules"generation_rules.textile#video-content-rules
+Also see "Video content rules":generation_rules.textile#video-content-rules
 *_audio_*
 Audio content. Will be inserted using the &lt;audio src/&gt; tag. (HTML5)
 The content must always be static or share.
-Also see "Audio content rules"generation_rules.textile#audio-content-rules
+Also see "Audio content rules":generation_rules.textile#audio-content-rules
 *_flash_*
 Flash content. Will be inserted using the &lt;object /&gt; tag.
 The content must always be static or external.
-Also see "Flash content rules"generation_rules.textile#flash-content-rules | Indicates the type of the file, useful for the auto-generated HTML tags.|
+Also see "Flash content rules":generation_rules.textile#flash-content-rules | Indicates the type of the file, useful for the auto-generated HTML tags.|
 |fileName|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the file use to generate the content.|
 |mode|false|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
 *_share_*
