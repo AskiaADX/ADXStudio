@@ -200,7 +200,7 @@ h3. Attributes
 h2. &lt;property xsi:type=&quot;askiaProperty&quot;&gt;
 
 Predefined system property auto-managed by the system.
-All system properties id is a reserved identifier which could not be used in the standard [[Design6_ADX_Manifest_Properties#ltproperty-xsitypestandardPropertygt|<property xsi:type="standardProperty">]].
+All system properties id is a reserved identifier which could not be used in the standard &lt;property xsi:type="standardProperty"&gt;.
 
 * Optional
 * [0..n]
