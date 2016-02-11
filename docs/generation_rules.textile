@@ -167,7 +167,7 @@ Binary-based content which doesn't have a special insertion.
 
 * must be "static" or "share"
 * should be associated with a binary file.
-* doesn't allow the usage of [[Design6_ADX_Manifest_Outputs#ltattributegt|<attribute>]].
+* doesn't allow the usage of "&lt;attribute&gt;":manifest_outputs.textile#attribute.
 * require the usage of the "&lt;yield&gt;":manifest_outputs.textile#yield or the _position_ set to "none".
 
 "↑ Top of page ↑":#generation-rules
@@ -263,7 +263,7 @@ It produces the following code:
 
 h2. Content attributes rules
 
-Except for _"text"_, _"binary"_, _"html"_ and _"flash"_ content type, all other contents accept the overload of attributes of the auto-generated tag using the [[Design6_ADX_Manifest_Outputs#ltattributegt|<attribute> element]].
+Except for _"text"_, _"binary"_, _"html"_ and _"flash"_ content type, all other contents accept the overload of attributes of the auto-generated tag using the "&lt;attribute&gt; element":manifest_outputs.textile#attribute.
 
 If "&lt;yield&gt; element":manifest_outputs.textile#yield is present all "&lt;attribute&gt; element":manifest_outputs.textile#attribute are ignored.
 
