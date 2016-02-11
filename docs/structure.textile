@@ -129,7 +129,7 @@ This directory should indeed contain any demo files! This is an optional folder 
 @ADX-Developers:
 
 bq. Please use that folder to demonstrate your expectations!
-bq. Be ingenious and used relative paths to the `Resources/` folders to also use your demos as a debugging system.
+Be ingenious and used relative paths to the `Resources/` folders to also use your demos as a debugging system.
 
 h2. Examples directory
 
