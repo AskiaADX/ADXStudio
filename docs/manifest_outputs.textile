@@ -56,8 +56,8 @@ We recommend to place the fall-back output in the last position.
 
 *Also see*
 
-[[Design6_ADX_Generation_Rules#Output-selection-rules|Output selection rules]]
-[[Design6_ADX_Generation_Rules#Output-max-iterations-rules|Output max iterations rules]]
+"Output Selection Rules":generation_rules.textile#output-selection-rules
+"Output Max. iterations Rules":generation_rules.textile#output-selection-rules
 
 h3. Attributes
 
@@ -65,7 +65,7 @@ h3. Attributes
 |id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique identifier of the current output.|
 |masterPage *%{background:orange;color:#222;padding:0 10px;}ADP only%*|true| "xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html| Indicates the name of the file in the dynamic folder that will be used as a master page. |
 |defaultGeneration|false|"xsd:boolean":http://www.schemacentral.com/sc/xsd/t-xsd_boolean.html|Indicates if the system must generate or not the default controls. (default false)|
-|maxIterations *%{background:green;color:white;padding:0 10px;}ADC only%*|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Only take in account for question(s) inside a loop.
+|maxIterations *%{background:green;color:white;padding:0 10px;}ADC only%*|false|"numberPattern":manifest.textile#2-number-pattern|Only take in account for question(s) inside a loop.
 Indicates the maximum of iterations that could be managed by the ADC.
 If a finite bound value is set, the engine will produce all expected iterations and stop immediately.
 The next page will generate all other expected iterations until the engine reach the latest iteration, then it generate all remain controls merged into the same page|
@@ -76,7 +76,7 @@ Full free text to describes the aim of the output
 
 * "xsd:string":http://www.schemacentral.com/sc/xsd/t-xsd_string.html
 * Optional
-* [0..n]
+* [0..1]
 * Parent node: "&lt;output&gt;":#output
 
 <pre><code class="xml"><output id="html">
@@ -96,7 +96,7 @@ The AskiaScript should return a boolean value
 
 *Also see*
 
-[[Design6_ADX_Generation_Rules#Output-selection-rules|Output selection rules]]
+"Output Selection Rules":generation_rules.textile#output-selection-rules
 
 <pre><code class="xml"><output id="flash">
    <description>Use this output when Flash and Javascript is available</description>
@@ -115,7 +115,7 @@ Content used by the current output.
 
 *Also see*
 
-[[Design6_ADX_Generation_Rules#Contents-rules|Contents rules]]
+"Contents rules":generation_rules.textile#contents-rules
 
 h3. Attributes
 
@@ -123,47 +123,47 @@ h3. Attributes
 |type|true|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
 *_text_*
 Arbitrary text based content. Will be inserted as it is when static and interpreted when dynamic.
-Also see [[Design6_ADX_Generation_Rules#Text-content-rules|Text content rules]]
+Also see "Text content rules"generation_rules.textile#text-content-rules
 *_binary_*
-Arbitrary binary content. Will not be inserted at all, expect if the <yield> node indicates how to insert it in the page.
+Arbitrary binary content. Will not be inserted at all, expect if the &lt;yield&gt; node indicates how to insert it in the page.
 The content must always be static or external.
-Also see [[Design6_ADX_Generation_Rules#Binary-content-rules|Binary content rules]]
+Also see "Binary content rules"generation_rules.textile#binary-content-rules
 *_html_*
 HTML content. Will be inserted as it is when static, and interpreted when dynamic.
-Also see [[Design6_ADX_Generation_Rules#HTML-content-rules|HTML content rules]]
+Also see "HTML content rules"generation_rules.textile#html-content-rules
 *_javascript_*
-Javascript content. Will be inserted using the <script src /> tag when static or external
-or using <script></script> tag when dynamic.
-Also see [[Design6_ADX_Generation_Rules#Javascript-content-rules|Javascript content rules]]
+Javascript content. Will be inserted using the &lt;script src /&gt;  tag when static or external
+or using &lt;script&gt;&lt;/script&gt; tag when dynamic.
+Also see "Javascript content rules"generation_rules.textile#javascript-content-rules
 *_css_*
-CSS content. Will be inserted using <link href /> tag when static or share
-or using the <style></style> tag when dynamic.
-Also see [[Design6_ADX_Generation_Rules#CSS-content-rules|CSS content rules]]
+CSS content. Will be inserted using &lt;link href /&gt; tag when static or share
+or using the &lt;style&lt;&gt;/style&gt; tag when dynamic.
+Also see "CSS content rules"generation_rules.textile#css-content-rules
 *_image_*
-Image content. Will be inserted using the <img src /> tag.
+Image content. Will be inserted using the &lt;img src /&gt; tag.
 The content must always be static or external.
-Also see [[Design6_ADX_Generation_Rules#Image-content-rules|Image content rules]]
+Also see "Image content rules"generation_rules.textile#image-content-rules
 *_video_*
-Video content. Will be inserted using the <video src/> tag. (new in HTML5)
+Video content. Will be inserted using the &lt;video src/&gt; tag. (HTML5)
 The content must always be static or external.
-Also see [[Design6_ADX_Generation_Rules#Video-content-rules|Video content rules]]
+Also see "Video content rules"generation_rules.textile#video-content-rules
 *_audio_*
-Audio content. Will be inserted using the <audio src/> tag. (new in HTML5)
+Audio content. Will be inserted using the &lt;audio src/&gt; tag. (HTML5)
 The content must always be static or share.
-Also see [[Design6_ADX_Generation_Rules#Audio-content-rules|Audio content rules]]
+Also see "Audio content rules"generation_rules.textile#audio-content-rules
 *_flash_*
-Flash content. Will be inserted using the <object /> tag.
+Flash content. Will be inserted using the &lt;object /&gt; tag.
 The content must always be static or external.
-Also see [[Design6_ADX_Generation_Rules#Flash-content-rules|Flash content rules]]|Indicates the type of the file, useful for the auto-generated HTML tags.|
+Also see "Flash content rules"generation_rules.textile#flash-content-rules | Indicates the type of the file, useful for the auto-generated HTML tags.|
 |fileName|true|"xsd:normalizedString":http://www.schemacentral.com/sc/xsd/t-xsd_normalizedString.html|Name of the file use to generate the content.|
 |mode|false|Enumeration based on "xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html
 *_share_*
-The share content is always associated with a file and must be place in the /Resources/Share/ folder of the ADX.
-The share content will be extract in the resources folder of the survey /Resources/SurveyName/.
-This kind of content, could be share accross ADXs and will not be overrides when it already exist in the folder.
+The share content is always associated with a file and must be place in the @/Resources/Share/@ folder of the ADX.
+The share content will be extract in the resources folder of the survey @/Resources/SurveyName/@.
+This kind of content, could be share across ADXs and will not be overrides when it already exist in the folder.
 *_static_*
-The static content is always associated with a file and must be place in the /Resources/Static/ folder of the ADX.
-The static content will be extract in the resources folder of the ADX /Resources/SurveyName/ADXname/.
+The static content is always associated with a file and must be place in the @/Resources/Static/@ folder of the ADX.
+The static content will be extract in the resources folder of the ADX @/Resources/SurveyName/ADXname/@.
 *_dynamic_*
 The dynamic content could be file (text based) or in-line code define in the definition of the content.
 It could embed AskiaScript to execute.
@@ -174,13 +174,13 @@ The dynamic content will not be extract but load in memory.|Indicate how the con
 The resource will not be rendered.
 But it's still available through HTTP request.
 *_head_*
-The resource will be inserted in the head section of the HTML document (*%{background:#c0392b; color: #FFF;}<askia-head />%*).
+The resource will be inserted in the head section of the HTML document (*%{background:#c0392b; color: #FFF;}&lt;askia-head /&gt;%*).
 Mostly use for CSS stylesheet.
 *_placeholder_* *%{background:green;color:white;padding:0 10px;}ADC only%*
 The resource will be inserted at the position of the ADC control.
 Mostly use for the HTML injection.
 *_foot_*
-The resource will be inserted at the end of the document, just before the end of the closed body tag (*%{background:#c0392b; color: #FFF;}<askia-foot />%*).
+The resource will be inserted at the end of the document, just before the end of the closed body tag (*%{background:#c0392b; color: #FFF;}&lt;askia-foot /&gt;%*).
 Mostly use for javascript insertion|Indicates how and where the system must render the current content. (default 'none')|
 
 <pre><code class="xml"><content fileName="jQuery.ui.css" mode="share" position="head" type="css" />
@@ -210,7 +210,7 @@ Add or overwrite an attribute in the auto-generated HTML tags for the content ty
 
 *Also see*
 
-[[Design6_ADX_Generation_Rules#Content-attributes-rules|Content attributes rules]]
+"Content attributes rules":generation_rules.textile#content-attributes-rules
 
 <pre><code class="xml"><content type="video" fileName="mymovie.ogv" type="static" position="placeholder">
    <attribute name="autoplay">

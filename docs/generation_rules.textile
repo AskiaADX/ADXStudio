@@ -3,7 +3,7 @@ h1. Generation Rules
 This section describes the rules applied by the system to generate the ADX output and the behaviour of the local ADX properties.
 
 * "Output selection rules":#output-selection-rules
-* "Contents rules":#content-rules
+* "Contents rules":#contents-rules
 ** "Text content rules":#text-content-rules
 *** "HTML content rules":#html-content-rules
 *** "Javascript content rules":#javascript-content-rules
