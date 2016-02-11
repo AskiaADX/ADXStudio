@@ -259,8 +259,8 @@ Using constraint on questions:
 Using constraint on responses:
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
-|min|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicates the minimum of allowed responses. (default '*').|
-|max|false|[[Design6_ADX_Manifest#2-Number-pattern|numberPattern]]|Indicates the maximum of allowed responses. (default '*').|
+|min|false|"numberPattern":manifest.textile#2-number-pattern|Indicates the minimum of allowed responses. (default '*').|
+|max|false|"numberPattern":manifest.textile#2-number-pattern|Indicates the maximum of allowed responses. (default '*').|
 
 Using constraint on controls:
 
