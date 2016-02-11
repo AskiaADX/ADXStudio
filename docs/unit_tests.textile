@@ -44,10 +44,10 @@ ADXShell is based on the "Test design pattern AAA (Arrange, Act, Assert)":http:/
 *** "&lt;assert_match&gt;":#assert_match
 *** "&lt;assert_not_match&gt;":#assert_not_match
 *** "&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot
-*** "&lt;assert_contains&gt;":#assert_contains
-*** "&lt;assert_not_contains&gt;":#assert_not_contains
-*** "&lt;assert_equals&gt;":#assert_equals
-*** "&lt;assert_not_equals&gt;":#assert_not_equals
+**** "&lt;assert_contains&gt;":#assert_contains
+**** "&lt;assert_not_contains&gt;":#assert_not_contains
+**** "&lt;assert_equals&gt;":#assert_equals
+**** "&lt;assert_not_equals&gt;":#assert_not_equals
 **** "&lt;select_nodes&gt;":#select_nodes
 ***** "&lt;assert_count&gt;":#assert_count
 ***** "&lt;assert_exist&gt;":#assert_exist
