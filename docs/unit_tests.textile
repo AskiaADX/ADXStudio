@@ -37,7 +37,7 @@ ADXShell is based on the "Test design pattern AAA (Arrange, Act, Assert)":http:/
 *** "&lt;head&gt;":#head-fake-output
 *** "&lt;placeholder&gt;":#placeholder-fake-output
 *** "&lt;foot&gt;":#foot-fake-output
-# "Assert test the result of the action":#assert-sections
+# "Assert test the result of the action":#assert-section
 ** "&lt;asserts&gt;":#asserts
 *** "&lt;assert_empty&gt;":#assert_empty
 *** "&lt;assert_not_empty&gt;":#assert_not_empty
@@ -115,7 +115,7 @@ Define a test case.
 * Require
 * [1..n]
 * Parent node: "&lt;units&gt;":#units
-* Child nodes: "&lt;arrange&gt;":#arrange, "&lt;asserts&gt;":#asserts
+* Child nodes: "&lt;arrange&gt;":#arrange, "&lt;asserts&gt;":#asserts, "&lt;fake_output&gt;":#fake_output
 
 "↑ Top of page ↑":#unit-tests
 
@@ -157,7 +157,7 @@ Fake the ADC context.
 
 * Optional
 * [0..1]
-* Parent node: "&lt;test&gt;":#test
+* Parent node: "&lt;test&gt;":#test, "&lt;fixture&gt;":#fixture, "&lt;case&gt;":#case
 * Child nodes: "&lt;output&gt;":#output, "&lt;browser&gt;":#browser, "&lt;Survey&gt;":#survey, "&lt;properties&gt;":#properties
 
 "↑ Top of page ↑":#unit-tests
@@ -194,7 +194,7 @@ Fake the "AskiaScript Browser Object":https://dev.askia.com/projects/askiadesign
 * Optional
 * [0..1]
 * Parent node: "&lt;arrange&gt;":#arrange
-* Child nodes: "&lt;resolution&gt;":#resolution, "&lt;support&gt;":#support, "&lt;pluginVersion&gt;":#pluginVersion
+* Child nodes: "&lt;resolution&gt;":#resolution, "&lt;support&gt;":#support, "&lt;pluginVersion&gt;":#pluginversion
 
 "↑ Top of page ↑":#unit-tests
 
@@ -461,6 +461,8 @@ For example, let's imagine an ADC with two outputs: `fallback` / `withJavascript
 * "all outputs with numeric question"
 * "all outputs with all questions"
 
+"↑ Top of page ↑":#unit-tests
+
 h2. &lt;testCases&gt;
 
 Root node of the cases file.
@@ -560,7 +562,7 @@ h3. Attributes
 
 h1. Act Section
 
-The act is automatically done by the ADCUnit, it will run the ADC using the fake context (Arrange section) and then will provide a set of data to test against:
+The act is automatically done by the ADXShell, it will run the ADC using the fake context (Arrange section) and then will provide a set of data to test against:
 
 * ID of the selected output
 * Content of  the `head` section generated
@@ -684,12 +686,12 @@ Asserts against the result of the ADC Engine outputs.
 
 * Require
 * [1 ]
-* Parent node: "&lt;test&gt;":#test
-* Child nodes: "&lt;assert_output&gt;":#assert_output, "&lt;assert_not_output&gt;":#assert_not_output,,
+* Parent node: "&lt;test&gt;":#test, "&lt;case&gt;":#case
+* Child nodes: "&lt;assert_output&gt;":#assert_output, "&lt;assert_not_output&gt;":#assert_not_output,
 "&lt;assert_error&gt;":#assert_error, "&lt;assert_not_error&gt;":#assert_not_error,
 "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
 "&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
-"&lt;assert_head&gt;":#assert_head, "&lt;assert_placeholder&gt;":#assert_placeholder, "&lt;assert_foot&gt;":#assert_foot
+"&lt;head&gt;":#head, "&lt;placeholder&gt;":#placeholder, "&lt;foot&gt;":#foot
 
 "↑ Top of page ↑":#unit-tests
 
