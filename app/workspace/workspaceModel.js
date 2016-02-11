@@ -74,6 +74,10 @@ function Workspace(){
      */
     this.tabs = [];
 
+    /**
+     * List all loaded tabs (the key is the id of the tabs)
+     */
+    this._wasLoaded = {};
 
     this._initWatcher();
 }
@@ -266,6 +270,7 @@ Workspace.prototype.createTab = function createTab(config, pane, callback) {
         if (self._unwatched[tab.id]) {
             return;
         }
+        self._wasLoaded[tab.id] = true;
         self._watcher.add(tab.path);
     }
 
@@ -531,6 +536,84 @@ Workspace.prototype.find = function find(criteria, callback) {
         callback(null, tab, pane);
     }
 };
+
+
+
+/**
+ * Unwatch all tabs where the files are contains in specified path
+ *
+ *      workspace.unwatchTabsIn("/my/path/", function (err) {
+ *          if (err) throw err;
+ *			console.log('ok unwatched!');
+ *      });
+ *
+ * @param {String} parentDir Path to unwatch (recursively)
+ * @param {Function} callback Callback
+ * @param {Error} callback.err Error
+ */
+Workspace.prototype.unwatchTabsIn = function unwatchTabsIn(parentDir, callback) {
+    const self = this;
+    const lowerCaseDir = parentDir.toLowerCase();
+	// Iterate through all tabs
+    self.tabs.forEach(function (tab) {
+        if (tab.path.toLowerCase().indexOf(lowerCaseDir) === 0) {
+             self._watcher.remove(tab.path);
+        }
+    });
+};
+
+/**
+ * Re-watch all tabs where the files are contains in specified path
+ *
+ *      workspace.rewatchTabsIn("/my/path/", function (err) {
+ *          if (err) throw err;
+ *			console.log('ok re-watched!');
+ *      });
+ *
+ * @param {String} parentDir Path to re-watch (recursively)
+ * @param {Function} callback Callback
+ * @param {Error} callback.err Error
+ */
+Workspace.prototype.rewatchTabsIn = function rewatchTabsIn(parentDir, callback) {
+    const self = this;
+    const lowerCaseDir = parentDir.toLowerCase();
+	// Iterate through all tabs
+    self.tabs.forEach(function (tab) {
+        if (tab.path.toLowerCase().indexOf(lowerCaseDir) === 0 && self._wasLoaded[tab.id]) {
+             self._watcher.add(tab.path);
+        }
+    });
+};
+
+/**
+ * Find all tabs that could be re-watched and where the path contains specified path
+ *
+ *      workspace.findRewatchableTabsIn("/my/path/", function (err, tabs) {
+ *          if (err) throw err;
+ *			console.log(tabs);
+ *      });
+ *
+ * @param {String} parentDir Path to re-watch (recursively)
+ * @param {Function} callback Callback
+ * @param {Error} callback.err Error
+ * @param {Tab[]} callback.tabs Array or re-watchable tabs
+ */
+Workspace.prototype.findRewatchableTabsIn = function findRewatchableTabsIn(parentDir, callback) {
+    if (typeof callback !== 'function') {
+        return;
+    }
+    const self = this;
+    const lowerCaseDir = parentDir.toLowerCase();
+    const tabs = [];
+	// Iterate through all tabs
+    self.tabs.forEach(function (tab) {
+        if (tab.path.toLowerCase().indexOf(lowerCaseDir) === 0 && self._wasLoaded[tab.id]) {
+            tabs.push(tab);
+        }
+    });
+    callback(null, tabs);
+};
+
 
 /**
  * Get or set the current tab

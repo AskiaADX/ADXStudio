@@ -120,14 +120,21 @@ Watcher.prototype.add = function add(pattern, options) {
 
 /**
  * Remove a watcher at the specified pattern
+ * Do it recursively to also unwatch all sub-folders if any
  *
  * @param {String} pattern Path to unwatch
  */
 Watcher.prototype.remove = function remove(pattern) {
     const key = pattern.toLocaleLowerCase();
-    if (this._watchers[key]) {
-        this._watchers[key].close();
-        delete this._watchers[key];
+    // Looks to all keys that start with the specified pattern
+    // this is done to unwatch recursively all sub-folders
+    for (const k in this._watchers) {
+        if (this._watchers.hasOwnProperty(k)) {
+            if (k.indexOf(key) === 0) { // Start with
+                this._watchers[k].close();
+                delete this._watchers[k];     
+            }
+        }
     }
 };
 

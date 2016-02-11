@@ -200,29 +200,6 @@ Explorer.prototype.rename = function (oldPath, newPath, callback) {
 
 };
 
-
-/**
- * Copy the file(s) or directories (recursively) to the specified destination
- *
- *    var explorer=require('ADXStudio/src/explorer/explorer.js');
- *    explorer.copy('source/path', 'dest/path', function(err) {
- *       console.log(err);
- *    });
- *
- *    explorer.copy(['source/path', 'source/path2'], 'dest/path', function(err) {
- *       console.log(err);
- *    });
- *
- * @param {String|Array} source Path of file(s) or folder to copy
- * @param {String} dest Destination folder (it must exist)
- * @param {Function} callback
- * @param {Error} callback.err Error
- */
-Explorer.prototype.copy = function (source, dest, callback) {
-    
-};
-
-
 /**
  * Remove the file or folder.
  *
@@ -243,8 +220,13 @@ Explorer.prototype.remove = function(pathToRemove, callback) {
 
     callback = callback || function () {};
 
+    // Remove watcher before to remove the directory
+    const stats = fs.statSync(pathToRemove);
+    if (stats.isDirectory() && this._watcher && this._watcher.remove) {
+        this._watcher.remove(pathToRemove);
+    }
+    
     fsExtra.rmrf(pathToRemove, function(err) {
-
         if (err) {
             callback(err);
             return;

@@ -279,7 +279,7 @@ function itemRightClick(e) {
             contextualMenu.append(new MenuItem({
                 label: 'Paste All',
                 click: function onClickPaste() {
-                    ipc.send('paste-all-file', files);
+                    ipc.send('paste-all-file', file);
                 }
             }));
             
@@ -353,6 +353,8 @@ function copy () {
     if (files.length === 1) {
         var file = files[0];
         ipc.send('copy-file', file);
+    } else if (files.length > 1) {
+        ipc.send('copy-all-file', files);
     }
 }
 
@@ -365,6 +367,8 @@ function cut() {
     if (files.length === 1) {
         var file = files[0];
         ipc.send('cut-file', file);
+    } else if (files.length > 1) {
+        ipc.send('cut-all-file', files);
     }
 }
 
@@ -377,6 +381,8 @@ function paste () {
     if (files.length === 1) {
         var file = files[0];
         ipc.send('paste-file', file);
+    } else if (files.length > 1) {
+        ipc.send('paste-all-file', files);
     }
 }
 
@@ -706,16 +712,16 @@ function menuWithKeyboard () {
             }
         }));
     } else {
-        /* Open file in the OS manner */
-        if (/\.html?$/i.test(file.name)) {
-            contextualMenu.append(new MenuItem({
-                label: 'Open in browser',
-                click: function onClickOpen() {
-                    shell.openItem(file.path);
-                }
-            }));
-        }
         if (files.length == 1) {
+            /* Open file in the OS manner */
+            if (/\.html?$/i.test(file.name)) {
+                contextualMenu.append(new MenuItem({
+                    label: 'Open in browser',
+                    click: function onClickOpen() {
+                        shell.openItem(file.path);
+                    }
+                }));
+            }
             /*cut file*/
             contextualMenu.append(new MenuItem({
                 label: 'Cut',
@@ -766,7 +772,6 @@ function menuWithKeyboard () {
             contextualMenu.append(new MenuItem({
                 label: 'Remove',
                 click: function onClickRemove() {
-
                     ipc.sendToHost('show-modal-dialog', {
                         type: 'yesNo',
                         message: 'Do you really want to remove `' + file.name + '`?',
@@ -780,6 +785,33 @@ function menuWithKeyboard () {
             }));
         }
         if (files.length > 1) {
+            /*cut file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Cut All',
+                click: function onClickCut() {
+                    ipc.send('cut-all-file', files);
+                }
+
+            }));
+
+            /*copy file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Copy All',
+                click: function onClickCopy() {
+                    ipc.send('copy-all-file', files);
+                }
+            }));
+
+            /*paste file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Paste All',
+                click: function onClickPaste() {
+                    ipc.send('paste-all-file', file);
+                }
+            }));
+            
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+            
             contextualMenu.append(new MenuItem({
                 label: 'Remove All',
                 click: function onClickRemoveAll() {

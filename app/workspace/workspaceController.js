@@ -662,6 +662,64 @@ function explorerRenamedFile(err, fileType, oldPath, newPath) {
     });
 }
 
+/**
+ * A file is gonna to be remove in the explorer
+ *
+ * @param {String|'file'|'folder'} fileType Type of item (file or folder)
+ * @param {String} filePath Path of file to remove
+ */
+function explorerRemovingFile(fileType, filePath) {
+    switch (fileType) {
+        case 'file':
+            workspace.find(filePath, function (err, tab) {
+                if (err || !tab) {
+                    return;
+                }
+                tab.unwatch();
+            });
+            break;
+        case 'folder' :
+            workspace.unwatchTabsIn(filePath);
+            break;
+    }
+}
+
+/**
+ * A file should has been renamed in the explorer
+ *
+ * @param {Error}  err Error
+ * @param {String|'file'|'folder'} fileType Type of item (file or folder)
+ * @param {String} filePath Path of file to remove
+ */
+function explorerRemovedFile(err, fileType, filePath) {
+    switch (fileType) {
+        case 'file':
+            workspace.find(filePath, function (errFind, tab, pane) {                
+                // Rewatch the tab on error
+                if (err) {
+                    (tab && tab.watch());
+                    return;
+                }
+                if (tab) {
+                	onFileRemoved(tab);    
+                }
+            });
+            break;
+        case 'folder':
+            if (err) {
+                workspace.rewatchTabsIn(filePath);   
+                return;
+            }
+            workspace.findRewatchableTabsIn(filePath, function (err1, tabs) {
+                if (err1) {
+                    return;
+                }
+            	tabs.forEach(onFileRemoved);
+            });
+            break;
+    }
+}
+
 function menuNextTab () {
     workspaceView.send('next-tab');
 }
@@ -750,6 +808,14 @@ ipc.on('workspace-ready', function (event) {
     app.removeListener('menu-preview', startPreview);
     app.on('menu-preview', startPreview);
 
+    // A file is gonna to be remove in the explorer
+    app.removeListener('explorer-file-removing', explorerRemovingFile);
+    app.on('explorer-file-removing', explorerRemovingFile);
+    
+    // A file has been removed in the explorer
+    app.removeListener('explorer-file-removed', explorerRemovedFile);
+    app.on('explorer-file-removed', explorerRemovedFile);
+    
     // A file is gonna to be rename in the explorer
     app.removeListener('explorer-file-renaming', explorerRenamingFile);
     app.on('explorer-file-renaming', explorerRenamingFile);
