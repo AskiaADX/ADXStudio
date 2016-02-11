@@ -2,8 +2,7 @@ h1. Structure
 
 The directory structure of ADX looks like this:
 
-<pre><code>
-Demo\
+<pre><code>Demo\
 Examples\
 Resources\
    |_ Dynamic\
@@ -16,8 +15,7 @@ Tests\
 CHANGELOG.txt
 Manifest.xml
 Preview.png
-Readme.md
-</code></pre>
+Readme.md</code></pre>
 
 *NOTA:* *%{background:#444;color:white;padding:0 10px;}2.1.0%*
 
@@ -66,45 +64,35 @@ The AskiaScript used in dynamic files have a specific context:
 
 File: TextNumber.html
 
-<pre><code class="html">
-{% If CurrentQuestion.Type = "numeric" Then %}
+<pre><code class="html">{% If CurrentQuestion.Type = "numeric" Then %}
       <input type="number" name="{%=CurrentQuestion.InputName()%}" value="{%=CurrentQuestion.InputValue()%}" min="{%= CurrentQuestion.MinValue%}" max="{%= CurrentQuestion.MaxValue%}" />
 {% Else If CurrentQuestion.Type = "open" Then %}
       <input type="text" name="{%=CurrentQuestion.InputName()%}" value="{%=CurrentQuestion.InputValue()%}" />
-{% EndIf %}
-</code></pre>
+{% EndIf %}</code></pre>
 
 Context: CurrentQuestion -> Age_Of_Respondent
 
-<pre><code class="html">
-      <input type="number" name="C1" value="" min="18" max="99" />
-</code></pre>
+<pre><code class="html"><input type="number" name="C1" value="" min="18" max="99" /></code></pre>
 
 Context: CurrentQuestion -> Comments
 
-<pre><code class="html">
-      <input type="text" name="S1" value="" />
-</code></pre>
+<pre><code class="html"><input type="text" name="S1" value="" /></code></pre>
 
 * Generate style according to the ADX Properties
 
 File: Styles.css
 
-<pre><code class="css">
-.tickColor : {
+<pre><code class="css">.tickColor : {
     background : {%= CurrentADC.PropValue("tickColor").ToHexa() %}
-}
-</code></pre>
+}</code></pre>
 
 Context: tickColor -> #d4d4d4;
 
-<pre><code class="html">
-<style id="adx_name_styles_css" type="text/css">
+<pre><code class="html"><style id="adx_name_styles_css" type="text/css">
 .tickColor : {
     background : #d4d4d4;
 }
-</style>
-</code></pre>
+</style></code></pre>
 
 h3. Master page
 
@@ -114,7 +102,7 @@ For ADPs, at least one master page is required under the @Resources@/@Dynamic@ f
 
 A master page is a regular HTML page with custom Askia tags and AskiaScript to make it dynamic.
 
-Also see: [[Design6_ADX_Generation_Rules#Master-Page|Master page - Generation Rule]]
+Also see: "Master page":master_page.textile
 
 h3. Static directory
 
@@ -139,8 +127,9 @@ h2. Demo directory
 This directory should indeed contain any demo files! This is an optional folder that will not be used by the rendering engine. It's only there for curious people who want to see the possibilities of the ADX.
 
 @ADX-Developers:
-> Please use that folder to demonstrate your expectations!
-> Be ingenious and used relative paths to the `Resources/` folders to also use your demos as a debugging system.
+
+bq. Please use that folder to demonstrate your expectations!
+bq. Be ingenious and used relative paths to the `Resources/` folders to also use your demos as a debugging system.
 
 h2. Examples directory
 
@@ -154,16 +143,18 @@ It contains files necessary to test the ADX.
 
 h3. Units directory
 
-This directory is use by the [[Design6_ADC_2_0_SDK#ADCUnit|ADCUnit application]].
+This directory is use by the ADX unit test engine (ADXShell).
 
-It should contains [[Design6_ADC_2_0_Unit_tests|unit tests xml files]].
+It should contains "unit tests xml files":unit_tests.textile.
 
-The [[Design6_ADC_2_0_SDK#ADCUnit|unit test tool]] allows developers to fake a context (survey, properties, browser), run the rendering engine and assert against output.
+The ADX unit test engine allows developers to fake a context (survey, properties, browser), run the rendering engine and assert against output.
 
 It's useful for developers to maintain the ADX, test non-regression but also to document the expected behaviour.
 This unit-test tool implements the "Test design pattern AAA (Arrange, Act, Assert)":http://www.arrangeactassert.com/why-and-what-is-arrange-act-assert/
 
-Also see: [[Design6_ADC_2_0_Unit_tests|Unit tests topics]], [[Design6_ADC_2_0_SDK#ADCUnit|ADCUnit application]]
+The unit tests could also be run in ADXStudio trough the menu @Tools &gt; Validation@
+
+Also see: "Unit tests":unit_tests.textile
 
 h3. Fixtures directory
 
@@ -176,7 +167,7 @@ For examples:
 * Create a fixture file Firefox.xml which fake a Firefox browser
 * ...
 
-Also see: [[Design6_ADC_2_0_Unit_tests|Unit tests topics]], [[Design6_ADC_2_0_SDK#ADCUnit|ADCUnit application]]
+Also see: "Unit tests":unit_tests.textile, "Unit tests - Fixtures Section":unit_tests.textile#fixtures-section
 
 h3. Cases directory
 
@@ -194,11 +185,11 @@ For example, let's imagine an ADC with two outputs: @fallback@ / @withJavascript
 * "all outputs with numeric question"
 * "all outputs with all questions"
 
-Also see: [[Design6_ADC_2_0_Unit_tests|Unit tests topics]], [[Design6_ADC_2_0_SDK#ADCUnit|ADCUnit application]]
+Also see: "Unit tests":unit_tests.textile, "Unit tests - Cases Section":unit_tests.textile#cases-section
 
 h2. Preview.png
 
-Screenshot of the ADX.
+Screen-shot of the ADX output.
 
 h2. Readme.md and CHANGELOG.txt
 
