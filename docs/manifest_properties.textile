@@ -70,8 +70,7 @@ h2. &lt;property xsi:type=&quot;standardProperty&quot;&gt;
 * Child nodes: "&lt;description&gt;":#description, "&lt;value&gt;":#value, "&lt;options&gt;":#options
 
 {background:#007dc5; color:white}. |Attribute name|Require|Type|Description|
-|xsi:type|true|"xsd:QName":http://www.schemacentral.com/sc/xsd/t-xsd_QName.html|Must always be "standardProperty" for the standard property.
-Also see: "&lt;property xsi:type=&quot;standardProperty&quot;&gt;":#property-xsitypestandardproperty |
+|xsi:type|true|"xsd:QName":http://www.schemacentral.com/sc/xsd/t-xsd_QName.html|Must always be "standardProperty" for the standard property.|
 |id|true|"xsd:NCName":http://www.schemacentral.com/sc/xsd/t-xsd_NCName.html|Unique id of the property.
 It use to facilitate the access by the AskiaScript.
 The id of the property could not be a reserved identifier.
@@ -171,8 +170,7 @@ h3. Attributes
 Indicates the theme associated with that value ("default" by default).
 A property must have a single value per theme.
 Take in account that when the theme is not specify the value "default" is used
-*Remarks:* This attribute is not allowed in askia property
-*Also see:* [[Design6_ADX_Generation_Rules#Property-default-value-rules|Property default value rules]] |
+*Remarks:* This attribute is not allowed in askia property |
 
 h2. &lt;options&gt;
 
@@ -242,9 +240,6 @@ List the possible all themes.
 Allow properties to have default "&lt;value&gt;":#value for each theme.
 If a property doesn't specify the theme, the theme named 'default' will be automatically associated with it.
 
-*Also see:*
-
-* [[Design6_ADX_Generation_Rules#Property-default-value-rules|Property default value rules]]
 
 *Remarks:*
 
@@ -289,6 +284,7 @@ It's specially useful for the non-closed questions such as open-ended, numeric o
 *Remarks:*
 
 The additional "Don't know" answer could be accessible through the AskiaScript code:
+
 <pre><code class="vb">Dim lastResponseIndex = CurrentQuestion.AvailableResponses.Count - 1
 CurrentQuestion.AvailableResponses[lastResponseIndex]</code></pre>
 
@@ -319,7 +315,7 @@ It's not necessary to explicitly create this property, the system will automatic
 
 *Also see:*
 
-[[Design6_ADX_Generation_Rules#Output-max-iterations-rules|Output max iterations rules]]
+"Output max iterations rules":generation_rules.textile#output-max-iterations-rules
 
 The standard equivalent definition of this system property is:
 
