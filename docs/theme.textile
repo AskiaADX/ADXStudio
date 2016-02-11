@@ -7,7 +7,8 @@ Users then have to specify their preferred styling over and over again across al
 
 In order to avoid this repetition, new ADXs (ADPs and/or ADCs) will come with a theming mechanism.
 
-Technically, a theme is not part of the ADX itself, it's an independent package defined out of the ADX. ADXs could however use it through the AskiaScript @Theme@ object.
+Technically, a theme is not part of the ADX itself, it's an independent package defined out of the ADX.
+ADXs could however use it through the AskiaScript @Theme@ object.
 
 h2. List of theme variables
 
