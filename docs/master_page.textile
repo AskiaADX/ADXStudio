@@ -2,15 +2,18 @@ h1. Master Page
 
 *%{background:#444;color:white;padding:0 10px;}2.1.0%* *%{background:orange;color:#222;padding:0 10px;}ADP only%*
 
-The master page is an HTML page which defines the global layout of the survey page. It must contain special Askia tags that will be replaced by relevant content by the server-side application.
+The master page is an HTML page which defines the global layout of the survey page.
+It must contain special Askia tags that will be replaced by relevant content by the server-side application.
 
 There are few Askia tags but all of them are required and must appear only once!
 
-The @Head@ and @Foot@ content of the ADP will be placed before the @Head@ and @Foot@ content of ADCs. This will allow overrides by the ADCs.
+The @Head@ and @Foot@ content of the ADP will be placed before the @Head@ and @Foot@ content of ADCs.
+This will allow overrides by the ADCs.
 
 h2. &lt;askia-head /&gt; and &lt;askia-foot /&gt;
 
-Both self-closed tags indicate the head and the foot sections of your page. All ADP and ADCs content in @Head@ and @Foot@ position will be placed there (generally JavaScript and CSS content).
+Both self-closed tags indicate the head and the foot sections of your page.
+All ADP and ADCs content in @Head@ and @Foot@ position will be placed there (generally JavaScript and CSS content).
 
 h2. &lt;askia-form&gt;&lt;/askia-form&gt; and &lt;askia-questions /&gt;
 
@@ -21,7 +24,9 @@ All inputs are part of the HTML forms. For that reason, the survey content &lt;a
 
 The &lt;askia-questions /&gt; is a self-closed tag that will be replaced by the elements (Caption, ADC ....) defined in the askiadesign's Screen mode
 
-*%{color:#c0392b;}Note for ADX developers:be careful and place submits button in &lt;askia-form&gt; or use the "HTML5 form attribute":http://w3c.github.io/html-reference/button.submit.html#button.submit.attrs.form%*
+@ADXDevelopers
+
+bq. Be careful and place submits button in &lt;askia-form&gt; or use the "HTML5 form attribute":http://w3c.github.io/html-reference/button.submit.html#button.submit.attrs.form%*
 
 *Example*
 
@@ -98,8 +103,7 @@ Use it in conjunction with `askia-question-XXX` and `askia-error`|
 
 We recommend that ADP developers implement these CSS classes with @Theme@ variables. Below a descriptive scaffolding of the CSS:
 
-<pre><code class="css">
-/* General questions layout
+<pre><code class="css">/* General questions layout
     -------------------------- */
 
 /*  Label of the question  */
@@ -227,8 +231,7 @@ We recommend that ADP developers implement these CSS classes with @Theme@ variab
   └─────────┴───────┴───────┘
                 ^       ^
 */
-.askia-grid-row .askia-response {}
-</code></pre>
+.askia-grid-row .askia-response {}</code></pre>
 
 The below examples are mainly based on the Design 5 HTML generation:
 
