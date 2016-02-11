@@ -1082,6 +1082,7 @@ Container of the asserts to execute on the head section.
 * [0..1]
 * Parent node: "&lt;asserts&gt;":#asserts
 * Child nodes: "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_equals&gt;":#assert_equals, "&lt;assert_not_equals&gt;":#assert_not_equals,
 "&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
 "&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
 "&lt;select_nodes&gt;":#select_nodes
@@ -1105,6 +1106,7 @@ Container of the asserts to execute on the placeholder section.
 * [0..1]
 * Parent node: "&lt;asserts&gt;":#asserts
 * Child nodes: "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_equals&gt;":#assert_equals, "&lt;assert_not_equals&gt;":#assert_not_equals,
 "&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
 "&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
 "&lt;select_nodes&gt;":#select_nodes
@@ -1128,6 +1130,7 @@ Container of the asserts to execute on the foot section.
 * [0..1]
 * Parent node: "&lt;asserts&gt;":#asserts
 * Child nodes: "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
+"&lt;assert_equals&gt;":#assert_equals, "&lt;assert_not_equals&gt;":#assert_not_equals,
 "&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
 "&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
 "&lt;select_nodes&gt;":#select_nodes
@@ -1223,6 +1226,7 @@ Container of assert to execute on HTML nodes in the current section.
 * Child nodes: "&lt;assert_count&gt;":#assert_count,
 "&lt;assert_empty&gt;":#assert_empty, "&lt;assert_not_empty&gt;":#assert_not_empty,
 "&lt;assert_exist&gt;":#assert_exist, "&lt;assert_not_exist&gt;":#assert_not_exist,
+"&lt;assert_equals&gt;":#assert_equals, "&lt;assert_not_equals&gt;":#assert_not_equals,
 "&lt;assert_contains&gt;":#assert_contains, "&lt;assert_not_contains&gt;":#assert_not_contains,
 "&lt;assert_match&gt;":#assert_match, "&lt;assert_not_match&gt;":#assert_not_match,
 "&lt;assert_has_attr&gt;":#assert_has_attr, "&lt;assert_has_not_attr&gt;":#assert_has_not_attr
