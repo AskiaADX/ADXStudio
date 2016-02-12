@@ -207,14 +207,27 @@ function cut(event, file) {
 function paste(event, file) {
     fileToPaste = file;
 
-    app.emit('show-modal-dialog', {
-        type: 'yesNo',
-        message: 'Do you want to overwrite existing files ?',
-        buttonText : {
-            yes : "Yes",
-            no : "No"
+    fs.readdir(file.path, function (err, files) {
+        if (err) {
+            console.log(err.message);
         }
-    }, 'explorer-copy-override');
+        if (files.length >= 1) {
+            for (var i = 0, l = files.length; i < l; i++) {
+                if (files[i] === lastCopy.file.name) {
+                    app.emit('show-modal-dialog', {
+                        type: 'yesNo',
+                        message: 'Do you want to overwrite existing files ?',
+                        buttonText : {
+                            yes : "Yes",
+                            no : "No"
+                        }
+                    }, 'explorer-copy-override');
+                    return;
+                }
+            }
+        }
+        finalPaste(event, false);
+    });
 }
 
 function copyFolder(src, dest, forceDel, event) {
@@ -239,7 +252,7 @@ function copyFile(src, dest, forceDel, event) {
     });
 }
 
-ipc.on('explorer-copy-override', function (event, button) {
+function finalPaste(event, button) {
     const override = (button === 'yes');
     let filePath = fileToPaste.path;
     if (fileToPaste.type === "file") {
@@ -265,7 +278,9 @@ ipc.on('explorer-copy-override', function (event, button) {
             copyFile(lastCopy.file, fileToWrite, override, event);
         }
     }	
-});
+}
+
+ipc.on('explorer-copy-override', finalPaste);
 
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
