@@ -336,9 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (property.value !== property.defaultValue) {
                 if (property.defaultValue.substr(0, 1) !== '#' && property.value !== null && property.value.substr(0, 1) === '#' && property.type === "color") {
                     tempValue = property.defaultValue.toString().split(",");
-                    console.log(property);
                     property.value = hexToRgb(property.value);
-                    console.log(property.value);
                     if (tempValue.length > 3) {
                         property.value = property.value + "," + tempValue[3];
                     }
