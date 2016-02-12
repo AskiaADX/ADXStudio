@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
             action : 'getConfig'
         }));
     };
-    toto;
 
     wsConnection.onmessage = function onWsMessage(event) {
         var data = JSON.parse(event.data);
@@ -30,6 +29,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + componentToHex(parseFloat(r)) + componentToHex(parseFloat(g)) + componentToHex(parseFloat(b));
+    }
+
+
+    function hexToRgb(hex) {
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? "" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) : null;
+    }
 
     /**
      * Build the form using the ADC info
@@ -222,7 +241,13 @@ document.addEventListener('DOMContentLoaded', function () {
         var html = [],
             type = property.type,
             value = property.value.toString(),
-            attrs = [];
+            attrs = [],
+            tempValue;
+
+        if (value.substr(0, 1) !== '#' && (type === "color")) {
+            tempValue = value.replace(" ", "").split(",");
+            value = rgbToHex(tempValue[0],tempValue[1],tempValue[2]);
+        }
 
         if (this._backup && this._backup.props && (property.id in this._backup.props)) {
             value = this._backup.props[property.id];
@@ -235,7 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
         this.form.properties.push({
             id           : property.id,
             defaultValue : property.value.toString(),
-            value        : value
+            value        : value,
+            type : type
         });
         // Pointer to the item in the array
         this.form.propertyById[property.id] = this.form.properties[this.form.properties.length - 1];
@@ -302,11 +328,21 @@ document.addEventListener('DOMContentLoaded', function () {
             output  = this.form.output,
             fixture = this.form.fixture,
             url     = "http://localhost:" + tab.ports.http + "/output/",
-            i, l;
+            i, l,
+            tempValue;
 
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
             if (property.value !== property.defaultValue) {
+                if (property.defaultValue.substr(0, 1) !== '#' && property.value !== null && property.value.substr(0, 1) === '#' && property.type === "color") {
+                    tempValue = property.defaultValue.toString().split(",");
+                    console.log(property);
+                    property.value = hexToRgb(property.value);
+                    console.log(property.value);
+                    if (tempValue.length > 3) {
+                        property.value = property.value + "," + tempValue[3];
+                    }
+                }
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }
