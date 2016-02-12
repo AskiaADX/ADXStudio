@@ -62,6 +62,19 @@ describe("workspace", function () {
         });
     }
 
+    describe('#watchers', function () {
+        it("Should be a function", function () {
+            expect(typeof workspace.unwatchTabsIn).toBe("function");
+        });
+        
+        it("Should be a function", function () {
+            expect(typeof workspace.rewatchTabsIn).toBe("function");
+        });
+        
+        it("Should be a function", function () {
+            expect(typeof workspace.findRewatchableTabsIn).toBe("function");
+        });
+    });
 
     describe("#panes", function () {
 

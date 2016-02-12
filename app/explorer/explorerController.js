@@ -188,10 +188,6 @@ function cutAll(event, files) {
     };
 }
 
-function pasteAll(event, file) {
-    paste(event, file)
-}
-
 function copy(event, file) {
     lastCopy = {
         file: file,
@@ -209,8 +205,8 @@ function cut(event, file) {
 }
 
 function paste(event, file) {
-   fileToPaste = file;
-    
+    fileToPaste = file;
+
     app.emit('show-modal-dialog', {
         type: 'yesNo',
         message: 'Do you want to overwrite existing files ?',
@@ -219,6 +215,28 @@ function paste(event, file) {
             no : "No"
         }
     }, 'explorer-copy-override');
+}
+
+function copyFolder(src, dest, forceDel, event) {
+    wrench.copyDirRecursive(src.path, dest, {forceDelete : forceDel}, function (err) {
+        if (err) {
+            console.log(err.message);
+        }
+        if (lastCopy.typeOfCopy === 'cut') {
+            removeFile(event, src);
+        }
+    });
+}
+
+function copyFile(src, dest, forceDel, event) {
+    fse.copy(src.path, dest, {replace: forceDel}, function (err) {
+        if (err) {
+            console.log(err.message);
+        }
+        if (lastCopy.typeOfCopy === 'cut') {
+            removeFile(event, src);
+        }
+    });
 }
 
 ipc.on('explorer-copy-override', function (event, button) {
@@ -231,60 +249,22 @@ ipc.on('explorer-copy-override', function (event, button) {
     if (lastCopy.type === 'multiple') {
         for (var i = 0, l = lastCopy.file.length; i < l; i++) {
             fileToWrite = path.join(filePath, lastCopy.file[i].name);
-            console.log(lastCopy.file[i]);
-            if (lastCopy.typeOfCopy === "copy" && lastCopy.file[i].type === "folder") {
-                wrench.copyDirRecursive(lastCopy.file[i].path, fileToWrite, {forceDelete: override}, function (err) {
-                    if (err) {
-                        console.log(err.message);
-                    }
-                });
-            } else if (lastCopy.typeOfCopy === "cut" && lastCopy.file[i].type === "folder") {
-                wrench.copyDirRecursive(lastCopy.file[i].path, fileToWrite, {forceDelete: override}, function (err) {
-                    if (err) {
-                        console.log(err.message);
-                    }
-                    removeAllFiles(event, lastCopy.file);
-                });
-            } else if (lastCopy.typeOfCopy === "cut" && lastCopy.file[i].type === "file") {
-                fse.copy(lastCopy.file[i].path, fileToWrite, {replace: override}, function (err) {
-                    if (err) {
-                        console.log(err.message);
-                    }
-                    removeAllFiles(event, lastCopy.file);
-                });
-            } else if (lastCopy.typeOfCopy === "copy" && lastCopy.file[i].type === "file") {
-                fse.copy(lastCopy.file[i].path, fileToWrite, {replace: override}, function (err) {
-                    if (err) {
-                        console.log(err.message);
-                    }
-                });
+            if (lastCopy.file[i].type === "folder") {
+                copyFolder(lastCopy.file[i], fileToWrite, override, event);
+            }
+            if (lastCopy.file[i].type === "file") {
+                copyFile(lastCopy.file[i], fileToWrite, override, event);
             }
         }
     } else {
         fileToWrite = path.join(filePath, lastCopy.file.name);
-        if (lastCopy.typeOfCopy === "copy" && lastCopy.file.type === "folder") {
-            wrench.copyDirRecursive(lastCopy.file.path, fileToWrite, {forceDelete: override}, function (err) {
-
-            });    
-        } else if (lastCopy.typeOfCopy === "cut" && lastCopy.file.type === "folder") {
-            wrench.copyDirRecursive(lastCopy.file.path, fileToWrite, {forceDelete: override}, function (err) {
-                removeFile(event, lastCopy.file);
-            });
-        } else if (lastCopy.typeOfCopy === "cut" && lastCopy.file.type === "file") {
-            fse.copy(lastCopy.file.path, fileToWrite, {replace: override}, function (err) {
-                if (err) {
-                    console.log(err.message);
-                }
-                removeAllFiles(event, lastCopy.file);
-            });
-        } else if (lastCopy.typeOfCopy === "copy" && lastCopy.file.type === "file") {
-            fse.copy(lastCopy.file.path, fileToWrite, {replace: override}, function (err) {
-                if (err) {
-                    console.log(err.message);
-                }
-            });
+        if (lastCopy.file.type === "folder") {
+            copyFolder(lastCopy.file, fileToWrite, override, event);
         }
-    }
+        if (lastCopy.file.type === "file") {
+            copyFile(lastCopy.file, fileToWrite, override, event);
+        }
+    }	
 });
 
 ipc.on('explorer-ready', function (event) {
@@ -329,9 +309,6 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('copy-all-file', copyAll);
     ipc.on('copy-all-file', copyAll);
-
-    ipc.removeListener('paste-all-file', pasteAll);
-    ipc.on('paste-all-file', pasteAll);
     
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first

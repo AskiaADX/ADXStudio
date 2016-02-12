@@ -22,6 +22,199 @@ var keyCodes = {
     menu     : 93
 }
 
+function removeMenu(files) {
+    var file = files[0];
+    if (files.length == 1) {
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'yesNo',
+            message: 'Do you really want to remove `' + file.name + '`?',
+            buttonText : {
+                yes : "Remove",
+                no : "Don't remove"
+            }
+        }, 'explorer-remove', file);
+    } else {
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'yesNo',
+            message: 'Do you really want to remove these files?',
+            buttonText : {
+                yes : "Remove",
+                no : "Don't remove"
+            }
+        }, 'explorer-remove-all', files);
+    }
+}
+
+function displayMenu(files, contextualMenu) {
+    var file = files[0];
+
+    /* Add file */
+    function addNewFile(menuItem) {
+        var messageByType = {
+            file : 'File name:',
+            directory : 'Directory name:',
+            html  : 'HTML file name:',
+            css : 'Stylesheet file name:',
+            js  : 'Javascript file name:'
+        };
+        var filePath = file.path;
+        if (file.type === 'file') { // Remove the file name
+            filePath = filePath.replace(file.name, '');
+        }
+        ipc.sendToHost('show-modal-dialog', {
+            type: 'prompt',
+            message : messageByType[menuItem.id],
+            buttonText : {
+                ok : "Create",
+                cancel : "Don't create"
+            }
+        }, 'explorer-add-item', filePath, menuItem.id);
+    }
+    if (files.length == 1) {
+        contextualMenu.append(new MenuItem({
+            label : 'New',
+            submenu : [
+                {
+                    id  : 'file',
+                    label : 'File',
+                    click : addNewFile
+                },
+                {
+                    id : 'directory',
+                    label : 'Directory',
+                    click : addNewFile
+                },
+                {
+                    type : 'separator'
+                },
+                {
+                    id : 'html',
+                    label : 'HTML file',
+                    click : addNewFile
+                },
+                {
+                    id : 'css',
+                    label : 'Stylesheet',
+                    click : addNewFile
+                },
+                {
+                    id : 'js',
+                    label : 'Javascript file',
+                    click : addNewFile
+                }
+            ]
+        }));
+
+        contextualMenu.append(new MenuItem({type : 'separator'}));
+
+        if (!file.root) {
+            /* Open file in the OS manner */
+            if (/\.html?$/i.test(file.name)) {
+                contextualMenu.append(new MenuItem({
+                    label: 'Open in browser',
+                    click: function onClickOpen() {
+                        shell.openItem(file.path);
+                    }
+                }));
+            }
+
+            /*cut file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Cut',
+                click: function onClickCut() {
+                    ipc.send('cut-file', file);
+                }
+
+            }));
+
+            /*copy file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Copy',
+                click: function onClickCopy() {
+                    ipc.send('copy-file', file);
+                }
+            }));
+
+            /*paste file*/
+            contextualMenu.append(new MenuItem({
+                label: 'Paste',
+                click: function onClickPaste() {
+                    ipc.send('paste-file', file);
+                }
+            }));
+
+            contextualMenu.append(new MenuItem({type : 'separator'}));
+
+            /* Rename file */
+            contextualMenu.append(new MenuItem({
+                label: 'Rename',
+                click: function onClickRename() {
+                    ipc.sendToHost('show-modal-dialog', {
+                        type: 'prompt',
+                        message : 'Rename:',
+                        buttonText : {
+                            ok : "Rename",
+                            cancel : "Don't rename"
+                        },
+                        value: file.name
+                    }, 'explorer-rename', file);
+
+                }
+            }));
+
+            /* Remove file */
+            contextualMenu.append(new MenuItem({
+                label: 'Remove',
+                click: function () {
+                    removeMenu(files);
+                }
+            }));
+        } else {
+            contextualMenu.append(new MenuItem({
+                label : 'Project settings',
+                click : function () {
+                    ipc.send('explorer-show-project-settings');
+                }
+            }));
+        }
+    }
+    if (files.length > 1) {
+        /*cut file*/
+        contextualMenu.append(new MenuItem({
+            label: 'Cut All',
+            click: function onClickCut() {
+                ipc.send('cut-all-file', files);
+            }
+
+        }));
+
+        /*copy file*/
+        contextualMenu.append(new MenuItem({
+            label: 'Copy All',
+            click: function onClickCopy() {
+                ipc.send('copy-all-file', files);
+            }
+        }));
+
+        /*paste file*/
+        contextualMenu.append(new MenuItem({
+            label: 'Paste All',
+            click: function onClickPaste() {
+                ipc.send('paste-file', file);
+            }
+        }));
+
+        contextualMenu.append(new MenuItem({type : 'separator'}));
+
+        contextualMenu.append(new MenuItem({
+            label: 'Remove All',
+            click: function () {
+                removeMenu(files);
+            }
+        }));
+    }
+}
+
 function checkIfRootIsSelected () {
     var root = document.getElementById('root').querySelector('.item-info');
     if (root.classList.contains('selected')) {
@@ -43,7 +236,7 @@ function selectWithShiftKey(firstItem, secondItem) {
         checkIfRootIsSelected();
         return;
     }
-    
+
     var checkIfWeSelect = false;
     var items = document.getElementsByClassName('item-info');
     for (var i = 0, l = items.length; i < l; i++) {
@@ -106,202 +299,20 @@ function selectItem(e) {
 function itemRightClick(e) {
     e.preventDefault();
 
-
     var selectedElements = document.querySelectorAll('.selected');
     var files = [];
+    var filesParent = [];
     for (var i = 0, l = selectedElements.length; i < l; i++) {
         files.push(selectedElements[i].parentNode.file);
+        filesParent.push(selectedElements[i].parentNode);
     }
     var el = this.parentNode;
     var file = el.file;
     selectItem.call(this, e);
 
-
     var contextualMenu = new Menu();
-
-    /* Add file */
-    function addNewFile(menuItem) {
-        var messageByType = {
-            file : 'File name:',
-            directory : 'Directory name:',
-            html  : 'HTML file name:',
-            css : 'Stylesheet file name:',
-            js  : 'Javascript file name:'
-        };
-        var filePath = file.path;
-        if (file.type === 'file') { // Remove the file name
-            filePath = filePath.replace(file.name, '');
-        }
-        ipc.sendToHost('show-modal-dialog', {
-            type: 'prompt',
-            message : messageByType[menuItem.id],
-            buttonText : {
-                ok : "Create",
-                cancel : "Don't create"
-            }
-        }, 'explorer-add-item', filePath, menuItem.id);
-    }
-    if (files.length == 1) {
-        contextualMenu.append(new MenuItem({
-            label : 'New',
-            submenu : [
-                {
-                    id  : 'file',
-                    label : 'File',
-                    click : addNewFile
-                },
-                {
-                    id : 'directory',
-                    label : 'Directory',
-                    click : addNewFile
-                },
-                {
-                    type : 'separator'
-                },
-                {
-                    id : 'html',
-                    label : 'HTML file',
-                    click : addNewFile
-                },
-                {
-                    id : 'css',
-                    label : 'Stylesheet',
-                    click : addNewFile
-                },
-                {
-                    id : 'js',
-                    label : 'Javascript file',
-                    click : addNewFile
-                }
-            ]
-        }));
-
-        contextualMenu.append(new MenuItem({type : 'separator'}));
-    }
-    if (file.root) {
-        contextualMenu.append(new MenuItem({
-            label : 'Project settings',
-            click : function () {
-                ipc.send('explorer-show-project-settings');
-            }
-        }));
-    } else {
-        if (files.length == 1) {
-            /* Open file in the OS manner */
-            if (/\.html?$/i.test(file.name)) {
-                contextualMenu.append(new MenuItem({
-                    label: 'Open in browser',
-                    click: function onClickOpen() {
-                        shell.openItem(file.path);
-                    }
-                }));
-            }
-            /*cut file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Cut',
-                click: function onClickCut() {
-                    ipc.send('cut-file', file);
-                }
-
-            }));
-
-            /*copy file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Copy',
-                click: function onClickCopy() {
-                    ipc.send('copy-file', file);
-                }
-            }));
-
-            /*paste file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Paste',
-                click: function onClickPaste() {
-                    ipc.send('paste-file', file);
-                }
-            }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
-
-            /* Rename file */
-            contextualMenu.append(new MenuItem({
-                label: 'Rename',
-                click: function onClickRename() {
-                    ipc.sendToHost('show-modal-dialog', {
-                        type: 'prompt',
-                        message : 'Rename:',
-                        buttonText : {
-                            ok : "Rename",
-                            cancel : "Don't rename"
-                        },
-                        value: file.name
-                    }, 'explorer-rename', file);
-
-                }
-            }));
-
-            /* Remove file */
-            contextualMenu.append(new MenuItem({
-                label: 'Remove',
-                click: function onClickRemove() {
-
-                    ipc.sendToHost('show-modal-dialog', {
-                        type: 'yesNo',
-                        message: 'Do you really want to remove `' + file.name + '`?',
-                        buttonText : {
-                            yes : "Remove",
-                            no : "Don't remove"
-                        }
-                    }, 'explorer-remove', file);
-
-                }
-            }));
-        }
-        if (files.length > 1) {
-            /*cut file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Cut All',
-                click: function onClickCut() {
-                    ipc.send('cut-all-file', files);
-                }
-
-            }));
-
-            /*copy file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Copy All',
-                click: function onClickCopy() {
-                    ipc.send('copy-all-file', files);
-                }
-            }));
-
-            /*paste file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Paste All',
-                click: function onClickPaste() {
-                    ipc.send('paste-all-file', file);
-                }
-            }));
-            
-            contextualMenu.append(new MenuItem({type : 'separator'}));
-            
-            contextualMenu.append(new MenuItem({
-                label: 'Remove All',
-                click: function onClickRemoveAll() {
-
-                    ipc.sendToHost('show-modal-dialog', {
-                        type: 'yesNo',
-                        message: 'Do you really want to remove these files?',
-                        buttonText : {
-                            yes : "Remove",
-                            no : "Don't remove"
-                        }
-                    }, 'explorer-remove-all', files);
-
-                }
-            }));
-        }
-    }
+    
+    displayMenu(files, contextualMenu, filesParent);
 
     contextualMenu.popup(remote.getCurrentWindow());
 }
@@ -382,7 +393,7 @@ function paste () {
         var file = files[0];
         ipc.send('paste-file', file);
     } else if (files.length > 1) {
-        ipc.send('paste-all-file', files);
+        ipc.send('paste-file', files);
     }
 }
 
@@ -404,7 +415,7 @@ function keyNavigator(e) {
     for (var i = 0, l = selectedElements.length; i < l; i++) {
         selectedElements[i].classList.remove('selected');
     }
-    
+
     if (selectedElements.length !== 0) {
         var items = document.getElementsByClassName('item-info');
         var lastItem = items[items.length - 1];
@@ -418,11 +429,11 @@ function keyNavigator(e) {
 
         var nextEl = selectedElement.parentNode.nextSibling;
         var prevEl = selectedElement.parentNode.previousSibling;
-        
+
         if (e.keyCode === keyCodes.up) {
             var itemToSelect = null;
             var findEl = null;
-            
+
             if(selectedElement === root) {
                 itemToSelect = lastItem;
                 if (!e.shiftKey) {
@@ -434,7 +445,7 @@ function keyNavigator(e) {
                 }
                 return;
             }
-            
+
             if (prevEl) {
                 // By default select the prev sibling
                 itemToSelect = prevEl.querySelector('.item-info');
@@ -470,7 +481,7 @@ function keyNavigator(e) {
         } else if (e.keyCode === keyCodes.down) {
             var itemToSelect = null;
             var findEl = null;
-            
+
             if(selectedElement === root && !e.shiftKey) {
                 itemToSelect = document.getElementById('root').querySelector('.child').querySelector('.item-info');
                 itemToSelect.classList.add('selected');
@@ -612,230 +623,31 @@ function supprWithKeyboard () {
     for (var i = 0, l = selectedElements.length; i < l; i++) {
         files.push(selectedElements[i].parentNode.file);
     }
-    if (files.length === 1) {
-        var file = document.querySelector('.selected').parentNode.file;
-        ipc.sendToHost('show-modal-dialog', {
-            type: 'yesNo',
-            message: 'Do you really want to remove `' + file.name + '`?',
-            buttonText : {
-                yes : "Remove",
-                no : "Don't remove"
-            }
-        }, 'explorer-remove', file);
-    } else if (files.length > 1) {
-        ipc.sendToHost('show-modal-dialog', {
-            type: 'yesNo',
-            message: 'Do you really want to remove these files?',
-            buttonText : {
-                yes : "Remove",
-                no : "Don't remove"
-            }
-        }, 'explorer-remove-all', files);
-    }
-    
+	removeMenu(files);
 }
 
 function menuWithKeyboard () {
     var selectedElements = document.querySelectorAll('.selected');
     var files = [];
+    var filesParent = [];
     for (var i = 0, l = selectedElements.length; i < l; i++) {
         files.push(selectedElements[i].parentNode.file);
+        filesParent.push(selectedElements[i].parentNode);
     }
     var el = document.querySelector('.selected').parentNode;
     var file = el.file;
-    
+
     var contextualMenu = new Menu();
 
-    /* Add file */
-    function addNewFile(menuItem) {
-        var messageByType = {
-            file : 'File name:',
-            directory : 'Directory name:',
-            html  : 'HTML file name:',
-            css : 'Stylesheet file name:',
-            js  : 'Javascript file name:'
-        };
-        var filePath = file.path;
-        if (file.type === 'file') { // Remove the file name
-            filePath = filePath.replace(file.name, '');
-        }
-        ipc.sendToHost('show-modal-dialog', {
-            type: 'prompt',
-            message : messageByType[menuItem.id],
-            buttonText : {
-                ok : "Create",
-                cancel : "Don't create"
-            }
-        }, 'explorer-add-item', filePath, menuItem.id);
-    }
-    if (files.length == 1) {
-        contextualMenu.append(new MenuItem({
-            label : 'New',
-            submenu : [
-                {
-                    id  : 'file',
-                    label : 'File',
-                    click : addNewFile
-                },
-                {
-                    id : 'directory',
-                    label : 'Directory',
-                    click : addNewFile
-                },
-                {
-                    type : 'separator'
-                },
-                {
-                    id : 'html',
-                    label : 'HTML file',
-                    click : addNewFile
-                },
-                {
-                    id : 'css',
-                    label : 'Stylesheet',
-                    click : addNewFile
-                },
-                {
-                    id : 'js',
-                    label : 'Javascript file',
-                    click : addNewFile
-                }
-            ]
-        }));
-        contextualMenu.append(new MenuItem({type : 'separator'}));
-    }
-    if (file.root) {
-        contextualMenu.append(new MenuItem({
-            label : 'Project settings',
-            click : function () {
-                ipc.send('explorer-show-project-settings');
-            }
-        }));
-    } else {
-        if (files.length == 1) {
-            /* Open file in the OS manner */
-            if (/\.html?$/i.test(file.name)) {
-                contextualMenu.append(new MenuItem({
-                    label: 'Open in browser',
-                    click: function onClickOpen() {
-                        shell.openItem(file.path);
-                    }
-                }));
-            }
-            /*cut file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Cut',
-                click: function onClickCut() {
-                    ipc.send('cut-file', file);
-                }
+    displayMenu(files, contextualMenu, filesParent);
 
-            }));
-
-            /*copy file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Copy',
-                click: function onClickCopy() {
-                    ipc.send('copy-file', file);
-                }
-            }));
-
-            /*paste file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Paste',
-                click: function onClickPaste() {
-                    ipc.send('paste-file', file);
-                }
-            }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
-            
-            /* Rename file */
-            contextualMenu.append(new MenuItem({
-                label: 'Rename',
-                click: function onClickRename() {
-                    ipc.sendToHost('show-modal-dialog', {
-                        type: 'prompt',
-                        message : 'Rename:',
-                        buttonText : {
-                            ok : "Rename",
-                            cancel : "Don't rename"
-                        },
-                        value: file.name
-                    }, 'explorer-rename', file);
-
-                }
-            }));
-
-            contextualMenu.append(new MenuItem({type : 'separator'}));
-
-            /* Remove file */
-            contextualMenu.append(new MenuItem({
-                label: 'Remove',
-                click: function onClickRemove() {
-                    ipc.sendToHost('show-modal-dialog', {
-                        type: 'yesNo',
-                        message: 'Do you really want to remove `' + file.name + '`?',
-                        buttonText : {
-                            yes : "Remove",
-                            no : "Don't remove"
-                        }
-                    }, 'explorer-remove', file);
-
-                }
-            }));
-        }
-        if (files.length > 1) {
-            /*cut file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Cut All',
-                click: function onClickCut() {
-                    ipc.send('cut-all-file', files);
-                }
-
-            }));
-
-            /*copy file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Copy All',
-                click: function onClickCopy() {
-                    ipc.send('copy-all-file', files);
-                }
-            }));
-
-            /*paste file*/
-            contextualMenu.append(new MenuItem({
-                label: 'Paste All',
-                click: function onClickPaste() {
-                    ipc.send('paste-all-file', file);
-                }
-            }));
-            
-            contextualMenu.append(new MenuItem({type : 'separator'}));
-            
-            contextualMenu.append(new MenuItem({
-                label: 'Remove All',
-                click: function onClickRemoveAll() {
-
-                    ipc.sendToHost('show-modal-dialog', {
-                        type: 'yesNo',
-                        message: 'Do you really want to remove these files?',
-                        buttonText : {
-                            yes : "Remove",
-                            no : "Don't remove"
-                        }
-                    }, 'explorer-remove-all', files);
-
-                }
-            }));
-        }
-    }
     contextualMenu.popup(remote.getCurrentWindow());
 }
 
 function upExplorer () {
     var selectedElement = document.querySelector('.selected');
     var root = document.getElementById('root').getElementsByClassName('item-info')[0];
-    
+
     selectedElement.classList.remove('selected');
     root.classList.add('selected');
 }
@@ -844,7 +656,7 @@ function downExplorer () {
     var selectedElement = document.querySelector('.selected');
     var rootChilds = document.getElementById('root').querySelector('.child').querySelectorAll('.item-info');
     var lastChild = rootChilds[rootChilds.length - 1];
-    
+
     selectedElement.classList.remove('selected');
     lastChild.classList.add('selected');
 }
