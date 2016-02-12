@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
             action : 'getConfig'
         }));
     };
+    toto;
 
     wsConnection.onmessage = function onWsMessage(event) {
         var data = JSON.parse(event.data);
