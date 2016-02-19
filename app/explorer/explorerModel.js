@@ -85,18 +85,16 @@ Explorer.prototype.initWatcher = function initWatcher() {
 };
 
 
-
-
 /**
  * load the specified directory and return all files and folders
  *
  *    var explorer=require('ADXStudio/src/explorer/explorer.js');
  *    explorer.load('C:/', true, function(err,files){
-*       console.log(files); // [
-*                               {name:"documents and settings", type:"folder", path:"C:/Document and settings/"}
-*                               {name:"desktop.ini", type:"file", path:'C:/Desktop.ini/'}
-*                              ]
-*    });
+ *       console.log(files); // [
+ *                               {name:"documents and settings", type:"folder", path:"C:/Document and settings/"}
+ *                               {name:"desktop.ini", type:"file", path:'C:/Desktop.ini/'}
+ *                              ]
+ *    });
  *
  * @param {String} dir The SpecifiedDirectory to load.
  * @param {Boolean} [isRoot=false] Indicates if the directory to load is a root directory

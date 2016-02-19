@@ -538,7 +538,6 @@ Workspace.prototype.find = function find(criteria, callback) {
 };
 
 
-
 /**
  * Unwatch all tabs where the files are contains in specified path
  *

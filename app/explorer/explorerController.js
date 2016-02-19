@@ -10,7 +10,7 @@ const fs = require('fs');
 const fse = require('fs.extra');
 const wrench = require('wrench');
 let  explorerView;
-var lastCopy;
+let lastCopy;
 let fileToPaste;
 
 /**
@@ -96,7 +96,7 @@ function sortFiles(a, b) {
  */
 function removeAllFiles(event, files) {
     files = files.sort(sortFiles).reverse();
-    for (var i = 0, l = files.length; i < l; i++) {
+    for (let i = 0, l = files.length; i < l; i++) {
         removeFile(event, files[i]);
     }
 }
@@ -212,7 +212,7 @@ function paste(event, file) {
             console.log(err.message);
         }
         if (files.length >= 1) {
-            for (var i = 0, l = files.length; i < l; i++) {
+            for (let i = 0, l = files.length; i < l; i++) {
                 if (files[i] === lastCopy.file.name) {
                     app.emit('show-modal-dialog', {
                         type: 'yesNo',
@@ -258,9 +258,9 @@ function finalPaste(event, button) {
     if (fileToPaste.type === "file") {
         filePath = path.join(filePath, "../");
     }
-    var fileToWrite;
+    let fileToWrite;
     if (lastCopy.type === 'multiple') {
-        for (var i = 0, l = lastCopy.file.length; i < l; i++) {
+        for (let i = 0, l = lastCopy.file.length; i < l; i++) {
             fileToWrite = path.join(filePath, lastCopy.file[i].name);
             if (lastCopy.file[i].type === "folder") {
                 copyFolder(lastCopy.file[i], fileToWrite, override, event);
@@ -279,8 +279,6 @@ function finalPaste(event, button) {
         }
     }	
 }
-
-ipc.on('explorer-copy-override', finalPaste);
 
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
@@ -324,6 +322,9 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('copy-all-file', copyAll);
     ipc.on('copy-all-file', copyAll);
+
+    ipc.removeListener('explorer-copy-override', finalPaste);
+    ipc.on('explorer-copy-override', finalPaste);
     
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
