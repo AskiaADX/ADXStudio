@@ -329,15 +329,15 @@ app.once('ready', function createAppMenu() {
                             type: 'separator'
                         },
                         {
-                        	label : 'ADC 2.0',
+                        	label : 'ADX Specifications',
                             click : function () { 
-                                shell.openExternal('https://support.askia.com/hc/en-us/articles/200003261-Specification-of-the-adc-2-0-controls-since-5-3-3-');
+                                shell.openExternal('https://github.com/AskiaADX/ADXStudio/wiki');
                             }
                         },
                         {
-                            label: 'AskiaScript 2.0',
+                            label: 'AskiaScript Documentation',
                             click: function() { 
-                                shell.openExternal('https://support.askia.com/hc/en-us/articles/200003251-AskiaScript-2-0-specification');
+                                shell.openExternal('http://designhelp.askia.com/askiascript2_introduction_to_askiascript_2');
                             }
                         },
                         {

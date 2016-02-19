@@ -54,3 +54,4 @@ Authors
 -  [Paul Nevin](https://github.com/uncleserb)
 -  [Jérôme Sopoçko](https://github.com/BadJerry)
 -  [Mehdi Aït-Bachir](https://github.com/AskiaMehdi)
+-  [Jérôme Duparc](https://github.com/Djedj)
