@@ -7,6 +7,7 @@ const dialog = electron.dialog;
 const ADCConfigurator = require('adcutil').Configurator;
 const workspace = require('./workspaceModel.js');
 const servers   = require('../modules/servers/adxServers.js');
+const globalShortcut = electron.globalShortcut;
 var workspaceView;
 
 /**
@@ -513,9 +514,10 @@ function onSaveContentAs(event, tabId, content) {
 
                 fs.writeFile(filePath, fileContent, { encoding : 'utf8'}, function (err) {
                     if (err) {
-                        console.log("TODO::MANAGE ERROR");
-                        console.log(err);
-                        return;
+                        app.emit('show-modal-dialog', {
+                            type : 'okOnly',
+                            message : err.message
+                        });
                     }
                     openFile(filePath);
                 });
@@ -660,11 +662,86 @@ function explorerRenamedFile(err, fileType, oldPath, newPath) {
     });
 }
 
+/**
+ * A file is gonna to be remove in the explorer
+ *
+ * @param {String|'file'|'folder'} fileType Type of item (file or folder)
+ * @param {String} filePath Path of file to remove
+ */
+function explorerRemovingFile(fileType, filePath) {
+    switch (fileType) {
+        case 'file':
+            workspace.find(filePath, function (err, tab) {
+                if (err || !tab) {
+                    return;
+                }
+                tab.unwatch();
+            });
+            break;
+        case 'folder' :
+            workspace.unwatchTabsIn(filePath);
+            break;
+    }
+}
+
+/**
+ * A file should has been renamed in the explorer
+ *
+ * @param {Error}  err Error
+ * @param {String|'file'|'folder'} fileType Type of item (file or folder)
+ * @param {String} filePath Path of file to remove
+ */
+function explorerRemovedFile(err, fileType, filePath) {
+    switch (fileType) {
+        case 'file':
+            workspace.find(filePath, function (errFind, tab, pane) {                
+                // Rewatch the tab on error
+                if (err) {
+                    (tab && tab.watch());
+                    return;
+                }
+                if (tab) {
+                	onFileRemoved(tab);    
+                }
+            });
+            break;
+        case 'folder':
+            if (err) {
+                workspace.rewatchTabsIn(filePath);   
+                return;
+            }
+            workspace.findRewatchableTabsIn(filePath, function (err1, tabs) {
+                if (err1) {
+                    return;
+                }
+            	tabs.forEach(onFileRemoved);
+            });
+            break;
+    }
+}
+
+function menuNextTab () {
+    workspaceView.send('next-tab');
+}
+
+function menuPrevTab () {
+    workspaceView.send('prev-tab');
+}
+
 ipc.on('workspace-ready', function (event) {
     
     // Keep the connection with the view
     workspaceView = event.sender;
         
+    globalShortcut.register ('ctrl+tab', function () {
+        workspaceView.send('next-tab');
+    })
+
+    globalShortcut.register ('ctrl+shift+tab', function () {
+        workspaceView.send('prev-tab');
+    })
+
+
     // Initialize the workspace
     openProject();
 
@@ -701,6 +778,12 @@ ipc.on('workspace-ready', function (event) {
     ipc.removeListener('workspace-get-adc-structure', onGetAdcStructure);
     ipc.on('workspace-get-adc-structure', onGetAdcStructure);
 
+    app.removeListener('menu-previous-tab', menuPrevTab);
+    app.on('menu-previous-tab', menuPrevTab);
+    
+    app.removeListener('menu-next-tab', menuNextTab);
+    app.on('menu-next-tab', menuNextTab);
+    
     app.removeListener('menu-open-project', reloadWorkspace);
     app.on('menu-open-project', reloadWorkspace);
 
@@ -725,6 +808,14 @@ ipc.on('workspace-ready', function (event) {
     app.removeListener('menu-preview', startPreview);
     app.on('menu-preview', startPreview);
 
+    // A file is gonna to be remove in the explorer
+    app.removeListener('explorer-file-removing', explorerRemovingFile);
+    app.on('explorer-file-removing', explorerRemovingFile);
+    
+    // A file has been removed in the explorer
+    app.removeListener('explorer-file-removed', explorerRemovedFile);
+    app.on('explorer-file-removed', explorerRemovedFile);
+    
     // A file is gonna to be rename in the explorer
     app.removeListener('explorer-file-renaming', explorerRenamingFile);
     app.on('explorer-file-renaming', explorerRenamingFile);
@@ -738,7 +829,6 @@ ipc.on('workspace-ready', function (event) {
 
     workspace.removeListener('file-removed', onFileRemoved);
     workspace.on('file-removed', onFileRemoved);
-
 
     ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
     ipc.on('workspace-reload-or-not-reload', onConfirmReload);

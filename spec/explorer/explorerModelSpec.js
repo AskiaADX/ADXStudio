@@ -1,7 +1,7 @@
 /* global describe, it, beforeEach, afterEach, spyOn, expect, runs, waitsFor */
 describe('explorer', function () {
     "use strict";
-    
+
     var explorer, watcher, fs, fsExtra,  spies, fakeStats;
     var util        = require("util");
     var EventEmitter = require("events").EventEmitter;
@@ -62,6 +62,9 @@ describe('explorer', function () {
             return {
                 isFile: function () {
                     return value;
+                },
+                isDirectory : function () {
+                    return !value;
                 }
             };
         });
@@ -83,7 +86,6 @@ describe('explorer', function () {
             return wasCalled;
         });
     }
-
 
     describe('#getRootPath', function () {
         it("Should be a function", function () {
@@ -286,6 +288,23 @@ describe('explorer', function () {
             }).toThrow(new Error('Invalid argument'));
         });
 
+        it("Should remove the watcher on directory to remove", function () {
+            runSync(function (done) {
+
+                spies.fsExtra.rmrf.andCallFake(function (path, callback) {
+                    callback();
+                });
+                explorer.load('path', true, function () {
+                    var removeSpy = spyOn(explorer._watcher, 'remove');
+                    explorer.remove('path/to/remove', function () {
+                        expect(fs.statSync).toHaveBeenCalledWith('path/to/remove');
+                        expect(removeSpy).toHaveBeenCalledWith('path/to/remove');
+                        done();
+                    });
+                });
+            });
+        });
+
         it("Should remove a file or a directory recursively", function () {
             runSync(function (done) {
                 var pathReceived;
@@ -298,7 +317,7 @@ describe('explorer', function () {
                     expect(pathReceived).toBe('path/to/remove');
                     done();
                 });
-            })
+            });
         });
 
     });

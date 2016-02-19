@@ -62,6 +62,19 @@ describe("workspace", function () {
         });
     }
 
+    describe('#watchers', function () {
+        it("Should be a function", function () {
+            expect(typeof workspace.unwatchTabsIn).toBe("function");
+        });
+        
+        it("Should be a function", function () {
+            expect(typeof workspace.rewatchTabsIn).toBe("function");
+        });
+        
+        it("Should be a function", function () {
+            expect(typeof workspace.findRewatchableTabsIn).toBe("function");
+        });
+    });
 
     describe("#panes", function () {
 
@@ -808,6 +821,24 @@ describe("workspace", function () {
             });
         });
 
+    });
+
+    describe("#unwatchTabsIn", function () {
+       it("must be tested!", function () {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe("#rewatchTabsIn", function () {
+        it("must be tested!", function () {
+            expect(true).toBe(false);
+        });
+    });
+
+    describe("#findRewatchableTabsIn", function () {
+        it("must be tested!", function () {
+            expect(true).toBe(false);
+        });
     });
 
     describe('events', function () {

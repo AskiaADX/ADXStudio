@@ -7,7 +7,11 @@ const explorer = require('./explorerModel.js');
 const appSettings = require('../appSettings/appSettingsModel.js');
 const path = require('path');
 const fs = require('fs');
+const fse = require('fs.extra');
+const wrench = require('wrench');
 let  explorerView;
+let lastCopy;
+let fileToPaste;
 
 /**
  * Open the root folder
@@ -53,8 +57,10 @@ function addItem(event, dirPath, type, itemName) {
     if (type !== 'directory') {
         fs.writeFile(filePath, '', { encoding : 'utf8'}, function (err) {
             if (err) {
-                console.log("TODO::MANAGE ERROR");
-                console.log(err);
+                app.emit('show-modal-dialog', {
+                    type : 'okOnly',
+                    message : err.message
+                });
                 return;
             }
             app.emit('menu-new-file', filePath);
@@ -62,10 +68,36 @@ function addItem(event, dirPath, type, itemName) {
     } else {
         fs.mkdir(filePath, function (err) {
             if (err) {
-                console.log("TODO::MANAGE ERROR");
-                console.log(err);
+                app.emit('show-modal-dialog', {
+                    type : 'okOnly',
+                    message : err.message
+                });
+                return;
             }
         });
+    }
+}
+
+/**
+ * Sort the files with folder first
+ * @param a
+ * @param b
+ * @returns {number}
+ */
+function sortFiles(a, b) {
+    return a.path.localeCompare(b.path);
+}
+
+/**
+ * Can remove files or folders from the explorer.
+ *
+ * @param event
+ * @param {Array} files Array of tabs.
+ */
+function removeAllFiles(event, files) {
+    files = files.sort(sortFiles).reverse();
+    for (let i = 0, l = files.length; i < l; i++) {
+        removeFile(event, files[i]);
     }
 }
 
@@ -73,13 +105,20 @@ function addItem(event, dirPath, type, itemName) {
  * Can remove file or folder from the explorer.
  *
  * @param event
- * @param {String} file Path of the folder or the file selected.
+ * @param {Tab} file Path of the folder or the file selected.
  */
 function removeFile(event, file) {
     const pathToRemove = file.path;
+    // Notify that a file will be remove
+    app.emit('explorer-file-removing', file.type, file.path);
     explorer.remove(pathToRemove, function (err) {
+        app.emit('explorer-file-removed', err, file.type, file.path);
         if (err) {
-            console.log(err.message);
+            app.emit('show-modal-dialog', {
+                type : 'okOnly',
+                message : err.message
+            });
+            return;
         }
     });
 }
@@ -98,7 +137,11 @@ function renameFile(event, file, newName) {
     app.emit('explorer-file-renaming', file.type, oldPath, newPath);
     explorer.rename(oldPath, newPath, function (err) {
         if (err) {
-            console.log(err.message);
+            app.emit('show-modal-dialog', {
+                type : 'okOnly',
+                message : err.message
+            });
+            return;
         }
         // Notify that a file has been renamed (also send the error just in case)
         app.emit('explorer-file-renamed', err, file.type, oldPath, newPath);
@@ -120,13 +163,121 @@ function showProjectSettings() {
  */
 function onChange(dir, files) {
     const rootPath = explorer.getRootPath(),
-        rg = new RegExp('^' + rootPath.replace(/\\/g, '\\\\') + '\\\\?$', 'i');
+          rg = new RegExp('^' + rootPath.replace(/\\/g, '\\\\') + '\\\\?$', 'i');
 
     if (rg.test(dir)) {
         openRootFolder(null, dir, files);
     } else {
         explorerView.send('explorer-expand-folder', null, dir, files);
     }
+}
+
+function copyAll(event, files) {
+    lastCopy = {
+        file: files,
+        type: 'multiple',
+        typeOfCopy : "copy"
+    };
+}
+
+function cutAll(event, files) {
+    lastCopy = {
+        file: files,
+        type: 'multiple',
+        typeOfCopy : "cut"
+    };
+}
+
+function copy(event, file) {
+    lastCopy = {
+        file: file,
+        type: 'simple',
+        typeOfCopy : "copy"
+    };
+}
+
+function cut(event, file) {
+    lastCopy = {
+        file: file,
+        type: 'simple',
+        typeOfCopy : "cut"
+    };
+}
+
+function paste(event, file) {
+    fileToPaste = file;
+
+    fs.readdir(file.path, function (err, files) {
+        if (err) {
+            console.log(err.message);
+        }
+        if (files.length >= 1) {
+            for (let i = 0, l = files.length; i < l; i++) {
+                if (files[i] === lastCopy.file.name) {
+                    app.emit('show-modal-dialog', {
+                        type: 'yesNo',
+                        message: 'Do you want to overwrite existing files ?',
+                        buttonText : {
+                            yes : "Yes",
+                            no : "No"
+                        }
+                    }, 'explorer-copy-override');
+                    return;
+                }
+            }
+        }
+        finalPaste(event, false);
+    });
+}
+
+function copyFolder(src, dest, forceDel, event) {
+    wrench.copyDirRecursive(src.path, dest, {forceDelete : forceDel}, function (err) {
+        if (err) {
+            console.log(err.message);
+        }
+        if (lastCopy.typeOfCopy === 'cut') {
+            removeFile(event, src);
+        }
+    });
+}
+
+function copyFile(src, dest, forceDel, event) {
+    fse.copy(src.path, dest, {replace: forceDel}, function (err) {
+        if (err) {
+            console.log(err.message);
+        }
+        if (lastCopy.typeOfCopy === 'cut') {
+            removeFile(event, src);
+        }
+    });
+}
+
+function finalPaste(event, button) {
+    const override = (button === 'yes');
+    let filePath = fileToPaste.path;
+    if (fileToPaste.type === "file") {
+        filePath = path.join(filePath, "../");
+    }
+    let fileToWrite;
+    if (lastCopy.type === 'multiple') {
+        for (let i = 0, l = lastCopy.file.length; i < l; i++) {
+            fileToWrite = path.join(filePath, lastCopy.file[i].name);
+            if (lastCopy.file[i].type === "folder") {
+                copyFolder(lastCopy.file[i], fileToWrite, override, event);
+            }
+            if (lastCopy.file[i].type === "file") {
+                copyFile(lastCopy.file[i], fileToWrite, override, event);
+            }
+        }
+    } else {
+        fileToWrite = path.join(filePath, lastCopy.file.name);
+        if (lastCopy.file.type === "folder") {
+            copyFolder(lastCopy.file, fileToWrite, override, event);
+        }
+        if (lastCopy.file.type === "file") {
+            copyFile(lastCopy.file, fileToWrite, override, event);
+        }
+    }	
 }
 
 ipc.on('explorer-ready', function (event) {
@@ -151,9 +302,30 @@ ipc.on('explorer-ready', function (event) {
     ipc.removeListener('explorer-remove', removeFile);
     ipc.on('explorer-remove', removeFile);
 
+    ipc.removeListener('explorer-remove-all', removeAllFiles);
+    ipc.on('explorer-remove-all', removeAllFiles);
+
     ipc.removeListener('explorer-show-project-settings', showProjectSettings);
     ipc.on('explorer-show-project-settings', showProjectSettings);
 
+    ipc.removeListener('cut-file', cut);
+    ipc.on('cut-file', cut);
+
+    ipc.removeListener('copy-file', copy);
+    ipc.on('copy-file', copy);
+
+    ipc.removeListener('paste-file', paste);
+    ipc.on('paste-file', paste);
+
+    ipc.removeListener('cut-all-file', cutAll);
+    ipc.on('cut-all-file', cutAll);
+
+    ipc.removeListener('copy-all-file', copyAll);
+    ipc.on('copy-all-file', copyAll);
+
+    ipc.removeListener('explorer-copy-override', finalPaste);
+    ipc.on('explorer-copy-override', finalPaste);
+    
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
     explorer.on('change', onChange); // Add it back

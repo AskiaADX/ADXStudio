@@ -315,7 +315,10 @@ window.askia.modalDialog = (function () {
         }
 
         if (this.plugin && typeof this.plugin.validate === 'function') {
-            this.plugin.validate(this, retVal);
+            var pluginRetVal = this.plugin.validate(this, retVal);
+        	if (typeof pluginRetVal == "boolean" && !pluginRetVal) {
+             	   return;
+            }
         }
 
         if (typeof this.callback === 'function') {
@@ -341,7 +344,8 @@ window.askia.modalDialog = (function () {
      * Close the modal
      */
     ModalDialog.prototype.close  = function close() {
-        currentInstance = modalStack.pop(); // Unstack
+        modalStack.pop(); // Unstack
+        currentInstance = modalStack[modalStack.length - 1]; // Unstack
         this.removeListeners();
         document.body.removeChild(this.elements.wrapper);
         document.body.removeChild(this.elements.lightbox);

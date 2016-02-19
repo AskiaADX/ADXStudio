@@ -143,8 +143,10 @@ function createNewProject(event, button, options) {
     ADC.generate(options.name, project, function (err, adc) {
         closeModalDialog();
         if (err) {
-            console.log('TODO::Manage error');
-            console.log(err);
+            showModalDialog({
+                type : 'okOnly',
+                message : err.message      
+            });
             return;
         }
         global.project.path = adc.path;

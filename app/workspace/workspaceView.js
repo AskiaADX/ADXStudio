@@ -7,6 +7,7 @@
         MenuItem = remote.MenuItem,
         shell	= remote.shell;
 
+
     window.tabs  = {
         /**
          * Expose the IPC object to the client iframe
@@ -300,7 +301,6 @@
             return prevTab;
         }
     };
-
 
     document.addEventListener('DOMContentLoaded', function () {
         var tabs = window.tabs,
@@ -787,6 +787,31 @@
             }
         }
 
+        function nextTab() {
+            var currentTab = getActiveTab();
+            var nextTab = currentTab.next;
+            if (nextTab == null) {
+                while (currentTab.previous != null) {
+                    currentTab = currentTab.previous;
+                }
+                nextTab = currentTab;
+            }
+            var pane = tabs.getPaneName(nextTab.id);
+            setActiveTab(nextTab, pane);
+        }
+
+        function prevTab() {
+            var currentTab = getActiveTab();
+            var previousTab = currentTab.previous;
+            if (previousTab == null) {
+                while (currentTab.next != null) {
+                    currentTab = currentTab.next;
+                }
+                previousTab = currentTab;
+            }
+            var pane = tabs.getPaneName(previousTab.id);
+            setActiveTab(previousTab, pane);
+        }
 
         (function initTabEvents() {
             var i, l,
@@ -1217,7 +1242,12 @@
 
         }());
 
+
         /* --- LISTEN EVENTS EMIT FROM THE SERVER SIDE CONTROLLER  --- */
+
+        ipc.on('next-tab', nextTab);
+
+        ipc.on('prev-tab', prevTab);
 
         ipc.on('workspace-create-tab', function (event, err, tab, pane) {
             if (err) {

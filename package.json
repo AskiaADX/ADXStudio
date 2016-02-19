@@ -30,10 +30,11 @@
     "glob": "^6.0.1",
     "mime-types": "^2.1.8",
     "node-uuid": "^1.4.7",
-    "nodejs-websocket": "^1.4.1"
+    "nodejs-websocket": "^1.4.1",
+    "wrench": "^1.5.8"
   },
   "devDependencies": {
-    "electron-packager" : "^5.2.1",
+    "electron-packager": "^5.2.1",
     "electron-prebuilt": "^0.36.5",
     "jasmine-node": "^1.14.5"
   }
