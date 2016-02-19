@@ -29,16 +29,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    /**
+     * Convert a number to his base 16
+     * @param {Number} c Number to convert
+     * @returns {string} Representation of number in base 16
+     */
     function componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     }
 
+    /**
+     * Convert RGB color to hexadecimal color
+     *
+     * @param {Number} r Red color (0-255)
+     * @param {Number} g Green color (0-255)
+     * @param {Number} b Blue color (0-255)
+     * @returns {string} Hexadecimal representation with the '#'
+     */
     function rgbToHex(r, g, b) {
         return "#" + componentToHex(parseFloat(r)) + componentToHex(parseFloat(g)) + componentToHex(parseFloat(b));
     }
 
-
+    /**
+     * Concert hexadecimal to RGB color as string "RED, GREEN, BLUE"
+     * The hexadecimal could be in shorthand form (#03f for #0033ff)
+     *
+     * @param {String} hex Color in hexadecimal format (with or without '#')
+     * @returns {String|Null} RGB color separate with ','
+     */
     function hexToRgb(hex) {
         // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
         var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -48,6 +67,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? "" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) : null;
+    }
+
+    /**
+     * Indicates if the value of the property has changed according to it's default value
+     * @param property
+     * @return {Boolean} True if the property has changed
+     */
+    function hasPropertyChanged(property) {
+        if (property.type !== 'color') {
+            return (property.value !== property.defaultValue);
+        }
+
+        // Convert the color to the original format
+        var value = property.value;
+        var isHexa = (value.substr(0, 1) === '#');
+        if (property.colorFormat === 'hexa' && !isHexa) {
+            value = rgbToHex.apply(null, value.split(','));
+        } else if (property.colorFormat === 'rgb' && isHexa) {
+            value = hexToRgb(value);
+            if (property.colorAlpha !== null ) {
+                value += ',' + property.colorAlpha;
+            }
+        }
+
+        return property.defaultValue !== value;
     }
 
     /**
@@ -105,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
-            if (property.value !== property.defaultValue) {
+            if (hasPropertyChanged(property)) {
                 this._backup.props[property.id] = property.value;
             }
         }
@@ -240,17 +284,49 @@ document.addEventListener('DOMContentLoaded', function () {
     FormBuilder.prototype.propertyToHtml =  function propertyToHtml(property) {
         var html = [],
             type = property.type,
-            value = property.value.toString(),
+            value = property.value.toString(),  // The value for color will preserve his original format
+            defaultValue = value,               // The default value for a color is on the original format
+            displayValue = value,               // The value to display for a color is always hexa
             attrs = [],
-            tempValue;
+            colorFormat = null,
+            colorAlpha = null,
+            rgba, isHexa;
 
-        if (value.substr(0, 1) !== '#' && (type === "color")) {
-            tempValue = value.replace(" ", "").split(",");
-            value = rgbToHex(tempValue[0],tempValue[1],tempValue[2]);
+        // Determine the format of color using the default value
+        if (type === 'color') {
+            value        = value.replace(/\s/g, ""); // Remove spaces
+            defaultValue = value;
+            displayValue = value;
+            colorFormat = (defaultValue.substr(0, 1) !== '#') ? 'rgb'  : 'hexa';
+
+            // Get the RGB components and set the display value
+            if (colorFormat === 'rgb') {
+                rgba = defaultValue.split(",");
+                if (rgba.length === 4) {
+                    colorAlpha = rgba[3];
+                }
+                displayValue = rgbToHex(rgba[0], rgba[1], rgba[2]);
+            }
         }
 
         if (this._backup && this._backup.props && (property.id in this._backup.props)) {
             value = this._backup.props[property.id];
+            displayValue = value;
+
+            // Make sure the format in the backup value is still correct
+            // and convert the value accordingly
+            if (type === 'color') {
+                isHexa = (value.substr(0, 1) === '#');
+                if (!isHexa) {
+                    rgba = value.split(",");
+                    displayValue = rgbToHex(rgba[0], rgba[1], rgba[2]);
+                }
+                if (colorFormat === 'hexa' && !isHexa) {
+                    value = displayValue;
+                } else if (colorFormat === 'rgb' && isHexa) {
+                    value = hexToRgb(value);
+                }
+            }
         }
 
         html.push('<tr>');
@@ -259,12 +335,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         this.form.properties.push({
             id           : property.id,
-            defaultValue : property.value.toString(),
+            defaultValue : defaultValue,
             value        : value,
-            type : type
+            type         : type,
+            colorFormat  : colorFormat,
+            colorAlpha   : colorAlpha
         });
         // Pointer to the item in the array
         this.form.propertyById[property.id] = this.form.properties[this.form.properties.length - 1];
+
+        if (type === 'color') {
+            console.log(this.form.properties[this.form.properties.length - 1]);
+            console.log(displayValue);
+        }
 
         if (type === 'string' || type === 'question') {
             type = 'text';
@@ -290,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             html.push('</select>');
         } else {
-            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + value + '" ' + attrs.join(' ') + '/>');
+            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
         }
         html.push('</td>');
         html.push('</tr>');
@@ -305,11 +388,22 @@ document.addEventListener('DOMContentLoaded', function () {
         var self = this;
 
         self.ongridChange = function ongridChange(event) {
-            var el = event.target || event.srcElement;
+            var el = event.target || event.srcElement,
+                property,
+                value = el.value;
+
             if (el.id === 'output' || el.id === 'fixture') {
-                self.form[el.id] = el.value;
+                self.form[el.id] = value;
             } else {
-                self.form.propertyById[el.id.replace(/^property_/i, '')].value = el.value;
+                property = self.form.propertyById[el.id.replace(/^property_/i, '')];
+                if (property.colorFormat === 'rgb') {
+                    value = hexToRgb(value);
+                    // Add the original alpha value
+                    if (property.colorAlpha !== null) {
+                        value += ',' + property.colorAlpha;
+                    }
+                }
+                property.value = value;
             }
             self.reloadPreview();
         };
@@ -334,13 +428,6 @@ document.addEventListener('DOMContentLoaded', function () {
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
             if (property.value !== property.defaultValue) {
-                if (property.defaultValue.substr(0, 1) !== '#' && property.value !== null && property.value.substr(0, 1) === '#' && property.type === "color") {
-                    tempValue = property.defaultValue.toString().split(",");
-                    property.value = hexToRgb(property.value);
-                    if (tempValue.length > 3) {
-                        property.value = property.value + "," + tempValue[3];
-                    }
-                }
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }
