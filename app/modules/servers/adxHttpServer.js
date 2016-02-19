@@ -1,13 +1,13 @@
 "use strict";
 
-var fs      = require('fs');
-var http    = require("http");
-var url     = require("url");
-var path    = require('path');
-var mime    = require('mime-types');
-var serverUtil  = require('./adxServerUtil.js');
-var getFixtures = serverUtil.getFixtures;
-var Server      = serverUtil.Server;
+const fs      = require('fs');
+const http    = require("http");
+const url     = require("url");
+const path    = require('path');
+const mime    = require('mime-types');
+const serverUtil  = require('./adxServerUtil.js');
+const getFixtures = serverUtil.getFixtures;
+const Server      = serverUtil.Server;
 
 /**
  * Throw an HTTP error
@@ -34,7 +34,7 @@ function throwError(err, response) {
  * @param {Object} fixtures Fixtures
  */
 function serveADCOutput(err, request, response, fixtures) {
-    var adc = global.project.adc;
+    const adc = global.project.adc;
     if (err) {
         throwError(err, response);
         return;
@@ -45,16 +45,16 @@ function serveADCOutput(err, request, response, fixtures) {
     // The url should look like that:
     // "/output/[output-name]/[fixture-name]/
     // The [fixture-name] is optional
-    var uriParse = url.parse(request.url);
-    var uri   = decodeURIComponent(uriParse.pathname);
-    var outputName = adc.configurator.outputs.defaultOutput();
-    var fixtureName = fixtures.defaultFixture;
-    var properties = uriParse.query || '';
-    var arg = {
+    const uriParse = url.parse(request.url);
+    const uri   = decodeURIComponent(uriParse.pathname);
+    let outputName = adc.configurator.outputs.defaultOutput();
+    let fixtureName = fixtures.defaultFixture;
+    const properties = uriParse.query || '';
+    const arg = {
         silent : true
     };
 
-    var match = /\/output\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
+    const match = /\/output\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
     if (match) {
         outputName = match[1];
         if (match.length > 1 && match[2]) {
@@ -81,9 +81,14 @@ function serveADCOutput(err, request, response, fixtures) {
             throwError(err, response);
         } else {
             // Fix paths inside output:
-            var rg = new RegExp("File:\\\\\\\\\\\\" + global.project.path.replace(/\\/g, "/"), "g");
-            var html = output.replace(rg, "../Resources/Survey/");
-            response.writeHead(200, {"Content-Type": "text/html"});
+            const rg = new RegExp("File:\\\\\\\\\\\\" + global.project.path.replace(/\\/g, "/"), "g");
+            const html = output.replace(rg, "../Resources/Survey/");
+            response.writeHead(200, {
+                "Content-Type": "text/html",
+                'Cache-Control' : 'no-cache, no-store, must-revalidate',
+                'Pragma' : 'no-cache',
+                'Expires': '0'
+            });
             response.write(html);
             response.end();
         }
@@ -99,13 +104,18 @@ function serveADCOutput(err, request, response, fixtures) {
  * @param {Object} fixtures Fixtures
  */
 function serveADCConfig(err, request, response, fixtures) {
-    var adc = global.project.adc;
+    const adc = global.project.adc;
 
     if (err) {
         throwError(err, response);
         return;
     }
-    response.writeHead(200, {"Content-Type": "application/json"});
+    response.writeHead(200, {
+        "Content-Type": "application/json",
+        'Cache-Control' : 'no-cache, no-store, must-revalidate',
+        'Pragma' : 'no-cache',
+        'Expires': '0'
+    });
     response.write(JSON.stringify({
         config    : adc.configurator.get(),
         fixtures  : fixtures
@@ -118,9 +128,9 @@ function serveADCConfig(err, request, response, fixtures) {
  */
 function reply(request, response) {
     // Always reload to obtain the up-to-date info
-    var adc = global.project.adc;
+    const adc = global.project.adc;
     adc.load(function (err) {
-        var uri = decodeURIComponent(url.parse(request.url).pathname);
+        const uri = decodeURIComponent(url.parse(request.url).pathname);
 
         if (/^\/output\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
             getFixtures(function (fixtures) {
@@ -136,16 +146,16 @@ function reply(request, response) {
             return;
         }
 
-        var adcname = adc.configurator.info.name();
-        var pattern = new RegExp("\/survey\/" + adcname.toLocaleLowerCase() + "\/", "i");
-        var uriRewrite = uri.replace(pattern, "/static/").replace(/\/survey\//i, "/share/");
-        var match     = /(resources\/(?:.*))/i.exec(uriRewrite);
+        const adcname = adc.configurator.info.name();
+        const pattern = new RegExp("\/survey\/" + adcname.toLocaleLowerCase() + "\/", "i");
+        let uriRewrite = uri.replace(pattern, "/static/").replace(/\/survey\//i, "/share/");
+        const match     = /(resources\/(?:.*))/i.exec(uriRewrite);
         if (match && match.length === 2) {
             uriRewrite = match[1];
         }
 
-        var filename = path.join(adc.path, uriRewrite);
-        var stats;
+        const filename = path.join(adc.path, uriRewrite);
+        let stats;
 
         try {
             stats = fs.lstatSync(filename); // throws if path doesn't exist
@@ -159,8 +169,13 @@ function reply(request, response) {
         if (stats.isFile()) {
             // path exists, is a file
 
-            response.writeHead(200, {'Content-Type': mime.lookup(filename)});
-            var fileStream = fs.createReadStream(filename);
+            response.writeHead(200, {
+                'Content-Type': mime.lookup(filename),
+                'Cache-Control' : 'no-cache, no-store, must-revalidate',
+                'Pragma' : 'no-cache',
+                'Expires': '0'
+            });
+            const fileStream = fs.createReadStream(filename);
             fileStream.pipe(response);
 
         } else if (stats.isDirectory()) {

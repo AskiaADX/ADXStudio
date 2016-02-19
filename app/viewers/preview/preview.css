@@ -30,7 +30,10 @@ h3 {
     border: 1px solid #151515;
 }
 
-#reloadPreview, #openPreview {
+.reset-cell {
+    text-align:right;
+}
+#reloadPreview, #openPreview, #reset {
     padding         : 1px 17px;
     background-color: #21252B;
     color           : #DDD;
@@ -46,12 +49,12 @@ h3 {
     box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, -1px 0 0 rgba(255,255,255,.1) inset;
 }
 
-#reloadPreview:hover, #openPreview:hover {
+#reloadPreview:hover, #openPreview:hover, #reset:hover {
     color           : #FFF;
     background-color: #31363E;
 }
 
-#reloadPreview:active, #openPreview:active {
+#reloadPreview:active, #openPreview:active, #reset:active {
     color           : #FFF;
     background-color: #21252B;
     box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;

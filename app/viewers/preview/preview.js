@@ -156,6 +156,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     /**
+     * Reset all default values
+     */
+    FormBuilder.prototype.reset = function reset() {
+        this.form = null;
+        this._backup = null;
+        return this.update(this.adcInfo);
+    };
+
+    /**
      * Initialize the form builder with the ADC information
      * #chainable
      */
@@ -164,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         this.backup();
 
+        this.adcInfo       = adcInfo;
         this.config        = adcInfo.config;
         this.fixtures      = adcInfo.fixtures;
         this.categories    = this.config.properties.categories;
@@ -222,6 +232,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         this.grid.innerHTML = html.join('');
 
+        var self = this;
+        document.getElementById("reset").addEventListener('click', function onReset() {
+            self.reset();
+        });
+
         return this;
     };
 
@@ -239,7 +254,10 @@ document.addEventListener('DOMContentLoaded', function () {
             defaultFixture = this.form.fixture.replace(/\.xml$/i, ''),
             fixture;
 
-        html.push('<h2>ADC Properties</h2>');
+        html.push('<table><tr>');
+        html.push('<td><h2>ADC Properties</h2></td>');
+        html.push('<td class="reset-cell"><button id="reset">Reset</button></td>');
+        html.push('</tr></table>');
         html.push('<table>');
         html.push('<tr><td><label for="output">Output:</label></td>');
         html.push('<td><select id="output">');
@@ -344,11 +362,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Pointer to the item in the array
         this.form.propertyById[property.id] = this.form.properties[this.form.properties.length - 1];
 
-        if (type === 'color') {
-            console.log(this.form.properties[this.form.properties.length - 1]);
-            console.log(displayValue);
-        }
-
         if (type === 'string' || type === 'question') {
             type = 'text';
         }
@@ -408,6 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
             self.reloadPreview();
         };
         this.grid.addEventListener('change', self.ongridChange);
+
         return this;
     };
 
