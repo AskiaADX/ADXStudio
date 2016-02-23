@@ -12,7 +12,7 @@
         /**
          * Create form
          * @param  modalDialog
-         */
+         */        
         createButtons : function (modalDialog) {
             var dialogEl = modalDialog.elements.dialog;
             var options = modalDialog.options;

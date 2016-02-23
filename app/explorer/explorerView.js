@@ -323,14 +323,20 @@ function itemclick(e) {
     var file = item.file;
     var child = item.querySelector('.child');
     var toggle;
-
+	var isSelected = false;
+    
+    if (this === lastSelected) {
+        isSelected = true;
+    }
+    
+    
     selectItem.call(this, e);
     if (e.ctrlKey) {
         return;
     } else if (e.shiftKey) {
         return;
     }
-
+    
     // Folder system
     if (file.type === 'folder' || item.id === 'root') {
         toggle = itemInfo.querySelector('.toggle');
@@ -350,7 +356,7 @@ function itemclick(e) {
             file.loaded = true;
         }
 
-    } else {
+    } else if (isSelected) {
         ipc.send('explorer-load-file', file);
     }
 }

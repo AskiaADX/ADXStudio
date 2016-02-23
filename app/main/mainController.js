@@ -106,6 +106,12 @@ function showAbout() {
     });
 }
 
+function showKeyboardShortcuts() {
+    showModalDialog({
+        type : 'Keyboard-Shortcuts'
+    });
+}
+
 /**
  * Show the modal dialog to create a new project
  */
@@ -330,6 +336,9 @@ ipc.on('main-ready', function (event) {
     // About ADXStudio
     app.removeListener('menu-about-adxstudio', showAbout);
     app.on('menu-about-adxstudio', showAbout);
+    
+    app.removeListener('menu-shortcuts', showKeyboardShortcuts);
+    app.on('menu-shortcuts', showKeyboardShortcuts);
     
     // Preferences
     app.removeListener('menu-open-preferences', openPreferences);
