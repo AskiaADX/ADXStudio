@@ -23,6 +23,7 @@
             dialogEl.classList.add("Keyboard-Shortcuts");
 
             dialogEl.innerHTML = [
+                '<h1>Keyboard Shortcuts Summary</h1>',
                 '<section class="main">',
                 '<div class="left">',
                 '<a href="#general">General</a><br/>',
@@ -31,7 +32,6 @@
                 '<a href="#code">Code Editor</a><br/>',
                 '</div>',
                 '<div class="right">',
-                '<h1>Shortcuts Summary</h1>',
                 '<h2 id="general">General</h2>',
                 '<dl>',
                 '<dt>Ctrl + S</dt>',

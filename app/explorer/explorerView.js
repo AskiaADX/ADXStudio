@@ -296,6 +296,42 @@ function selectItem(e) {
     lastSelected = itemInfo;
 }
 
+function itemDoubleClick(e) {
+    var itemInfo = this;
+    var item = itemInfo.parentNode;
+    var file = item.file;
+    var child = item.querySelector('.child');
+    var toggle;
+    
+    selectItem.call(this, e);
+    if (e.ctrlKey) {
+        return;
+    } else if (e.shiftKey) {
+        return;
+    }
+    
+    if (file.type === 'folder' || item.id === 'root') {
+        toggle = itemInfo.querySelector('.toggle');
+
+        if (child.classList.contains('expand')) {
+            //if it's open, then we close it on click
+            child.classList.remove('expand');
+            toggle.classList.remove('open');
+        } else {
+            // if it's close we open it on click
+            child.classList.add('expand');
+            toggle.classList.add('open');
+        }
+
+        if (!file.loaded) {
+            ipc.send('explorer-load-folder', file.path);
+            file.loaded = true;
+        }
+    } else {    
+        ipc.send('explorer-load-file', file);
+    }
+}
+
 function itemRightClick(e) {
     e.preventDefault();
 
@@ -323,12 +359,6 @@ function itemclick(e) {
     var file = item.file;
     var child = item.querySelector('.child');
     var toggle;
-	var isSelected = false;
-    
-    if (this === lastSelected) {
-        isSelected = true;
-    }
-    
     
     selectItem.call(this, e);
     if (e.ctrlKey) {
@@ -355,9 +385,6 @@ function itemclick(e) {
             ipc.send('explorer-load-folder', file.path);
             file.loaded = true;
         }
-
-    } else if (isSelected) {
-        ipc.send('explorer-load-file', file);
     }
 }
 
@@ -734,6 +761,7 @@ document.addEventListener('DOMContentLoaded', function () {
             itemInfo.className = 'item-info';
 
             //The function when someone click on a div itemInfo
+            itemInfo.addEventListener('dblclick', itemDoubleClick, false);
             itemInfo.addEventListener('click', itemclick, false);
             itemInfo.addEventListener('contextmenu', itemRightClick, false);
 
