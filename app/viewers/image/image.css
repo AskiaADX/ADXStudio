@@ -12,7 +12,8 @@ html, body {
   flex-wrap     : nowrap;
   align-self    : flex-start;
   order         : 1;
-  background    : #CCC;
+  background    : #282C34;
+  border-bottom: 1px solid #151505;
   width         : 100%;
   height        : 40px;
 }
@@ -22,6 +23,22 @@ html, body {
   height        : 34px;
   margin-top    : 3px;
   margin-left   : 8px;
+  background-color: #282C34;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+.tool:hover {
+  background-color: #343A44;
+  border: 1px solid #151505;
+}
+.tool:active {
+  background-color: #343A44;
+  border: 1px inset #151505;
+  outline:none;
+}
+.tool:focus {
+  outline:none;
 }
 
 #container {
