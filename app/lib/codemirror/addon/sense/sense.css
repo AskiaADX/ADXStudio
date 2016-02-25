@@ -28,6 +28,7 @@
     overflow-x : hidden;
     white-space: nowrap;
     box-shadow : 0 1px 4px #222222;
+    font-family: 'Source Sans Pro', monospace;
 }
 
 .cms-sense li {
