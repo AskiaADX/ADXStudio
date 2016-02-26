@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (property.type !== 'color') {
             return (property.value !== property.defaultValue);
         }
-
         // Convert the color to the original format
         var value = property.value;
         var isHexa = (value.substr(0, 1) === '#');
@@ -386,6 +385,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             html.push('</select>');
         } else {
+            if (type === "color") {
+                html.push('<input type="text" id="' + property.id + '" value="' + property.value + attrs.join(' ') + '">')
+            }
             html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
         }
         html.push('</td>');
@@ -404,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var el = event.target || event.srcElement,
                 property,
                 value = el.value;
-
+            
             if (el.id === 'output' || el.id === 'fixture') {
                 self.form[el.id] = value;
             } else {
@@ -442,6 +444,16 @@ document.addEventListener('DOMContentLoaded', function () {
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
             if (property.value !== property.defaultValue) {
+                if (property.value === null) {
+                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    var inputText = document.querySelectorAll('#' + property.id + '')[0];
+                    var rgb = inputText.value.split(',');
+                    property.value = inputText.value;
+                    inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
+               } else if (property.type === "color") {
+                   var inputText = document.querySelectorAll('#' + property.id + '')[0];
+                   inputText.value =property.value;
+               }
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }

@@ -327,7 +327,7 @@ function itemDoubleClick(e) {
             ipc.send('explorer-load-folder', file.path);
             file.loaded = true;
         }
-    } else {    
+    } else {
         ipc.send('explorer-load-file', file);
     }
 }

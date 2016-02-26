@@ -28,7 +28,7 @@
                 '<div class="left">',
                 '<a href="#general">General</a><br/>',
                 '<a href="#workspaceSection">Workspace section</a><br/>',
-                '<a href="#explorerSection">explorer section</a><br/>',
+                '<a href="#explorerSection">Explorer section</a><br/>',
                 '<a href="#code">Code Editor</a><br/>',
                 '</div>',
                 '<div class="right">',
