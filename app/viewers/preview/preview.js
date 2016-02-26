@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var el = event.target || event.srcElement,
                 property,
                 value = el.value;
-            
+
             if (el.id === 'output' || el.id === 'fixture') {
                 self.form[el.id] = value;
             } else {
@@ -450,10 +450,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     var rgb = inputText.value.split(',');
                     property.value = inputText.value;
                     inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
-               } else if (property.type === "color") {
-                   var inputText = document.querySelectorAll('#' + property.id + '')[0];
-                   inputText.value =property.value;
-               }
+                } else if (property.type === "color") {
+                    var inputText = document.querySelectorAll('#' + property.id + '')[0];
+                    inputText.value = property.value;
+                }
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }
