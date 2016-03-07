@@ -249,14 +249,17 @@ app.once('ready', function createAppMenu() {
                     label: 'Tools',
                     submenu: [
                         {
-                            label : '&Validate',
-                            accelerator: 'Ctrl+Shift+T',
-                            click : validateClick
-                        },
-                        {
                             label: '&Preview',
                             accelerator: 'F5',
                             click : previewClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Validate',
+                            accelerator: 'Ctrl+Shift+T',
+                            click : validateClick
                         },
                         {
                             label: '&Build',
