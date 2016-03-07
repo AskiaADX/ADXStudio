@@ -453,7 +453,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (property.type === "color") {
                     var inputText = document.querySelectorAll('#' + property.id + '')[0];
                     var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
-                    inputColor.value = property.value;
+                    var rgb = property.value.split(',');
+                    inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
                     inputText.value = property.value;
                 }
                 

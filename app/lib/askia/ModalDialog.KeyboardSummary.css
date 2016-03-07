@@ -1,13 +1,33 @@
 .askia-modal-dialog.Keyboard-Shortcuts {
     width           : 666px;
-    height          : 266px;
+    height          : 350px;
     padding         : 0;
     margin          : 0;
     border-radius   : 2px !important;
     background-color: #CBCBCB;
     background-image: linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
     box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 17px 4px rgba(0, 0, 0, .4);
-    overflow        : auto;
+    display         : flex;
+    flex-direction  : column;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts dt {
+    padding-top : 10px;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts h1 {
+    color      : #222;
+    text-align : center;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts ul {
+    padding-left : 20px;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts li {
+    list-style     : none;
+    font-size      : 1rem;
+    padding-bottom : 15px;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts h1,
@@ -17,17 +37,21 @@
     padding: 0;
 }
 
+.askia-modal-dialog.Keyboard-Shortcuts .main {
+    display : flex;
+    flex    : 1;
+}
+
 .askia-modal-dialog.Keyboard-Shortcuts .left {
-    float       : left;
-    width       : 250px;
-    height      : 266px;
+    width: 200px;
+    background-color : #DDD;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts .right {
-    float   : right;
-    width   : 60%;
+    flex    : 1;
     padding : 10px 8px;
     color   : #222;
+    overflow: auto;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts .right p {

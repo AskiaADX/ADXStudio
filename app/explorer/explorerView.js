@@ -309,25 +309,7 @@ function itemDoubleClick(e) {
     } else if (e.shiftKey) {
         return;
     }
-    
-    if (file.type === 'folder' || item.id === 'root') {
-        toggle = itemInfo.querySelector('.toggle');
-
-        if (child.classList.contains('expand')) {
-            //if it's open, then we close it on click
-            child.classList.remove('expand');
-            toggle.classList.remove('open');
-        } else {
-            // if it's close we open it on click
-            child.classList.add('expand');
-            toggle.classList.add('open');
-        }
-
-        if (!file.loaded) {
-            ipc.send('explorer-load-folder', file.path);
-            file.loaded = true;
-        }
-    } else {
+    if (file.type === "file") {
         ipc.send('explorer-load-file', file);
     }
 }
