@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
             html.push('</select>');
         } else {
             if (type === "color") {
-                html.push('<input type="text" id="' + property.id + '" value="' + property.value + attrs.join(' ') + '">')
+                html.push('<input type="text" id="color_' + property.id + '" value="' + property.value +'"' + attrs.join(' ') + '/>')
             }
             html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
         }
@@ -446,12 +446,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (property.value !== property.defaultValue) {
                 if (property.value === null) {
                     var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
-                    var inputText = document.querySelectorAll('#' + property.id + '')[0];
+                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
                     var rgb = inputText.value.split(',');
                     property.value = inputText.value;
                     inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
                 } else if (property.type === "color") {
-                    var inputText = document.querySelectorAll('#' + property.id + '')[0];
+                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
                     var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
                     if (property.value.substr(0, 1) !== '#') {
                     var rgb = property.value.split(',');
