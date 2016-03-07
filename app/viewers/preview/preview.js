@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
             html.push('</select>');
         } else {
             if (type === "color") {
-                html.push('<input type="text" id="' + property.id + '" value="' + property.value + attrs.join(' ') + '">')
+                html.push('<input type="text" id="' + property.id + '" value="' + property.value + attrs.join(' ') + '" class="color_text">')
             }
             html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
         }
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     inputText.value = property.value;
                 }
-                
+
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }
