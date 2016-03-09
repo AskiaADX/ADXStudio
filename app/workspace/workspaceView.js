@@ -411,17 +411,50 @@
             contentEl.classList.add(pane);
             contentEl.setAttribute('id', 'content-' + tab.id);
 
-            var div = document.createElement('div');
+            var iFrameWrapper = document.createElement('div');
+            iFrameWrapper.className = "iframe-wrapper";
             var viewer = document.createElement('iframe');
             viewer.setAttribute('frameborder', 'no');
             viewer.setAttribute('scrolling', 'no');
             tabs.addTab(tab);
             viewer.src = getViewerUrl(tab);
-            div.appendChild(viewer);
+            iFrameWrapper.appendChild(viewer);
             // While waiting the iframe load, hide the content to avoid the white flash
-            div.style.visibility = "hidden";
+            iFrameWrapper.style.visibility = "hidden";
 
-            contentEl.appendChild(div);
+            if (tab.type === "projectSettings") {
+                iFrameWrapper.classList.add('multi-iframes');
+                var viewer2 = document.createElement('iframe');
+                console.log(tab);
+                viewer2.style.display = "none";
+                viewer2.setAttribute('frameborder', 'no');
+                viewer2.setAttribute('scrolling', 'no');
+                tabs.addTab(tab);
+                viewer2.src = getViewerUrl(tab, true);
+                iFrameWrapper.appendChild(viewer2);
+                
+                var toggleWrapper = document.createElement('div');
+                toggleWrapper.className = "toggle-wrapper";
+                iFrameWrapper.appendChild(toggleWrapper);
+                var buttonCode = document.createElement('button');
+                var buttonForm = document.createElement('button');
+                buttonForm.textContent = "Form";
+                buttonCode.textContent = "Code";
+                toggleWrapper.appendChild(buttonForm);
+                toggleWrapper.appendChild(buttonCode);
+                
+                buttonForm.addEventListener('click', function() {
+                    viewer.style.display = "block";
+                    viewer2.style.display = "none";
+                });
+                
+                buttonCode.addEventListener('click', function() {
+                    viewer2.style.display = "block";
+                    viewer.style.display = "none";
+                });
+            }
+            
+            contentEl.appendChild(iFrameWrapper);
 
             var paneEl = document.getElementById(pane + '_pane');
 
@@ -451,12 +484,15 @@
          * Get the viewer's URL for the specicied tab
          *
          * @param {Tab} tab
+         * @param {boolean} [altContent=false] Alternative containt for toggle tab
          */
-        function getViewerUrl(tab) {
+        function getViewerUrl(tab, altContent) {
             var viewerSubFolderName = 'editor';
             switch(tab.type) {
                 case 'projectSettings':
-                    viewerSubFolderName = 'projectSettings';
+                    if (!altContent) {
+                        viewerSubFolderName = 'projectSettings';
+                    }
                     break;
                 case 'preview':
                     viewerSubFolderName = 'preview';

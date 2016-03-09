@@ -98,10 +98,12 @@ function openProject() {
                     case 'projectSettings':
                         if (adc) {
                             getResourcesDirectoryStructure(function (structure) {
-                                adc.load(function (er) {
-                                    tab.adcConfig = (!er)  ? adc.configurator.get() : {};
-                                    tab.adcStructure = structure;
-                                    workspaceView.send(action, er, tab, pane);
+                                tab.loadFile(function (er) {
+                                    adc.load(function (er) {
+                                        tab.adcConfig = (!er)  ? adc.configurator.get() : {};
+                                        tab.adcStructure = structure;
+                                        workspaceView.send(action, er, tab, pane);
+                                    });
                                 });
                             });
                         }
@@ -261,10 +263,10 @@ function openProjectSettings() {
                 workspaceView.send('workspace-focus-tab', err, tab, pane);
                 return;
             }
-
+            
             // When the tab doesn't exist, create it
             workspace.createTab({
-                path : adc.path,
+                path : path.join(adc.path, "config.xml"),
                 type : 'projectSettings'
             }, function (err, tab, pane) {
                 // TODO::Don't throw the error but send it to the view
@@ -272,11 +274,13 @@ function openProjectSettings() {
                     throw err;
                 }
                 getResourcesDirectoryStructure(function (structure) {
-                    adc.load(function (err) {
-                        tab.adcConfig = (!err)  ? adc.configurator.get() : {};
-                        tab.adcStructure = structure;
-
-                        workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+                    tab.loadFile(function(err) {
+                        adc.load(function (err) {
+                            tab.adcConfig = (!err)  ? adc.configurator.get() : {};
+                            tab.adcStructure = structure;
+                            
+                            workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+                        });                        
                     });
                 });
             });
