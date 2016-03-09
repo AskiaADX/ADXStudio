@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
             html.push('</select>');
         } else {
             if (type === "color") {
-                html.push('<input type="text" id="color_' + property.id + '" value="' + property.value +'"' + attrs.join(' ') + '/>')
+                html.push('<input type="text" id="color_' + property.id + '" value="' + property.value + '" class="color_text"'  + attrs.join(' ') + '/>');
             }
             html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
         }
@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (el.id === 'output' || el.id === 'fixture') {
                 self.form[el.id] = value;
             } else {
-                property = self.form.propertyById[el.id.replace(/^property_/i, '')];
+                property = self.form.propertyById[el.id.replace(/^(property_|color_)/i, '')];
                 if (property.colorFormat === 'rgb') {
                     value = hexToRgb(value);
                     // Add the original alpha value
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     inputText.value = property.value;
                 }
-                
+
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }
