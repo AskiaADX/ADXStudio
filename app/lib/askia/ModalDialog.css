@@ -6,7 +6,6 @@
     width           : 100vw;
     height          : 100vh;
     justify-content : center;
-    background-color: rgba(66, 66, 66, 0.4);
 }
 .askia-modal-wrapper {
     /* Center it in the middle of then page */
@@ -22,16 +21,13 @@
 .askia-modal-dialog {
     font-family     : "Lucida Grande", Helvetica, Arial, sans-serif;
     line-height     : 1.5;
-    color           : #DDD;
     font-size       : 14px;
     font-weight     : normal;
     padding         : 40px 60px 40px 40px;
     width           : 500px;
     opacity         : 1;
-    background      : #282C34;
     border          : 1px solid #181818;
     border-radius   : 2px;
-    box-shadow      : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
 }
 
 .askia-modal-body-container {
@@ -50,27 +46,10 @@
     height          : 34px;
     margin-right    : 10px;
     cursor          : pointer;
-    background-color: #007dc5;
     border-radius   : 2px;
-    border          : 1px solid rgba(0,0,0,.8);
-    box-shadow      : 0 1px 0 rgba(255,255,255,.25) inset;
-    color           : #DDD;
     font-size       : 14px;
     outline         : none;
     transition      : background-color ease-in .2s, color ease-in .2s;
-}
-
-.askia-modal-button-ok:hover,
-.askia-modal-button-yes:hover {
-    color           : #FFF;
-    background-color: #028EDE;
-}
-
-.askia-modal-button-ok:active,
-.askia-modal-button-yes:active {
-    color           : #FFF;
-    background-color: #007DC5;
-    box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
 }
 
 .askia-modal-button-cancel,
@@ -78,11 +57,7 @@
     width           : 115px;
     height          : 34px;
     cursor          : pointer;
-    background-color: #BBBBBB;
     border-radius   : 2px;
-    border          : 1px solid rgba(0,0,0,1);
-    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
-    color           : #222;
     font-size       : 14px;
     outline         : none;
     transition      : background-color ease-in .2s, color ease-in .2s;
@@ -92,29 +67,12 @@
     margin-left: 10px;
 }
 
-.askia-modal-button-cancel:hover,
-.askia-modal-button-no:hover {
-    color           : #111111;
-    background-color: #CCCCCC;
-}
-
-.askia-modal-button-cancel:active,
-.askia-modal-button-no:active {
-    color           : #111111;
-    background-color: #BBBBBB;
-    box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
-}
-
 .askia-modal-input-prompt {
     width           : 100%;
     padding         : 15px;
     border-radius   : 2px;
-    border          : 1px solid #151515;
-    background-color: #21252B;
-    color           : #BBB;
     font-size       : 14px;
 }
 .askia-modal-input-prompt:focus {
-    border  : 1px solid #007DC5;
     outline : none;
 }

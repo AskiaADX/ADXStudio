@@ -425,7 +425,6 @@
             if (tab.type === "projectSettings") {
                 iFrameWrapper.classList.add('multi-iframes');
                 var viewer2 = document.createElement('iframe');
-                console.log(tab);
                 viewer2.style.display = "none";
                 viewer2.setAttribute('frameborder', 'no');
                 viewer2.setAttribute('scrolling', 'no');

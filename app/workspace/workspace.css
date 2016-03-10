@@ -157,10 +157,7 @@ html, body {
     display 		:flex;
     flex-direction  : column;
 }
-.toggle-wrapper {
-    height 		: 20px;
-    background  : red;
-}
+
 .content .iframe-wrapper.multi-iframes iframe {
 	flex   		: 1;
     position	: relative;
