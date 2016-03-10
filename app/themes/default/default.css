@@ -331,16 +331,40 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 /* Sub tab bar that appear for project settings */
 .toggle-wrapper {
-    background  : green;
+    background  : #21252B;
+    border-top  : 1px solid #111111;
+    padding     : 8px 18px 8px 8px;
+    text-align  : right;
+}
+
+.toggle-wrapper button:first-of-type {
+    border-color: #111;
+    border-width: 1px 0 1px 1px;
+    border-style: solid;
 }
 
 .toggle-wrapper button {
-    background : pink;
-    color : white;
+    outline     : none;
+    cursor      : pointer;
+    background  : #444;
+    color       : #EEE;
+    border      : 1px solid #111;
+    box-shadow  : 0 1px 0 rgba(255,255,255,.2) inset;
+    padding     : 6px 20px;
+    font-family : "Lucida Grande", Helvetica, Arial, sans-serif;
+    transition  : color ease-in .2s, background ease-in .2s;
 }
-.toggle-wrapper button.active-sub-tab {
-    background : blue;
-    color : yellow;
+
+.toggle-wrapper button:hover {
+    color: #FFF;
+    background: #555;
+}
+
+.toggle-wrapper button.active-sub-tab,
+.toggle-wrapper button.active-sub-tab:hover {
+    background  : #007DC5;
+    color       : #FFF;
+    box-shadow  : 0 0 4px rgba(22,22,22,.6) inset;
 }
 /* End of sub tab bar */
 
@@ -537,7 +561,7 @@ button#new_category:active {
 #contents th,
 #contents td {
     border-bottom   : 1px solid #111;
-}		
+}
 
 #contents th,
 #properties_table th {
