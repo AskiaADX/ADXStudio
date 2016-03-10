@@ -23,8 +23,8 @@ body.grey {
 }
 
 body.form-viewer {
-    background  : #282C34;
-    color       : #BBB;
+    background  : #FAFAFA;
+    color       : #444;
     line-height : 1.7;
     font-size   : 14px;
 }
@@ -266,17 +266,17 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tab, .tabs-scroll div {
-    background      : #21252B;
-    border-right    : 1px solid #111;
-    border-bottom   : 1px solid #111;
+    background      : #E5E5E6;
+    border-right    : 1px solid #AAA;
+    border-bottom   : 1px solid #AAA;
     cursor          : pointer;
     font-size       : 14px;
-    color           : #B0B0B0;
+    color           : #444;
     padding         : 10px;
     position        : relative;
     height          : 24px;
     line-height     : 23px;
-    transition      : color ease-in .3s;
+    transition      : color ease-in .2s;
 }
 
 .tabs-scroll div    {
@@ -316,12 +316,12 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background      : #21252B;
+    background: #E5E5E6;
 }
 
 .tab.active {
-    background          : #282C34;
-    color               : #FFF;
+    background          : #FAFAFA;
+    color               : #222;
     border-bottom-color : transparent;
 }
 
@@ -380,7 +380,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .pane {
-    background-color: #21252B;
+    background-color: #E5E5E6;
 }
 
 .pane .placeholder {
@@ -459,17 +459,17 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    Viewer Part - Project Settings
    ======================================== */
 .viewer-project-settings nav {
-    background-color: #21252B;
-    border-right    : 1px solid #111;
+    background-color: #FAFAFA;
+    border-right    : 1px solid #CCC;
 }
 
 .viewer-project-settings nav a {
-    color           : #BBB;
-    background-color: #282C34;
+    color           : #444;
+    background-color: #E5E5E6;
     text-decoration : none;
     cursor          : pointer;
-    border-bottom   : 1px solid #151515;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.05) inset;
+    border-bottom   : 1px solid #CCC;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.5) inset;
     transition      : background-color ease-in .2s, color ease-in .2s;
 }
 
@@ -484,8 +484,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .viewer-project-settings nav a:hover {
-    background-color: #30343E;
-    color           : #DDD;
+    background-color: #F1F1F1;
+    color           : #222;
 }
 
 .viewer-project-settings #properties_table tbody tr,
