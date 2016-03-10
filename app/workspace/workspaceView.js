@@ -64,7 +64,12 @@
                 }
             }
 
-            this.dispatchEvent('tabcontentchange', originalTab.id, (originalTab.type !== 'projectSettings') ? originalTab.content : null);
+            // Update the editor code when we are in form
+            if (originalTab.type === 'projectSettings' && originalTab.displayAltViewer) {
+                originalTab.editor.setValue(originalTab.content);
+            }
+
+            this.dispatchEvent('tabcontentchange', originalTab.id, originalTab.content);
         },
 
         /**
@@ -142,9 +147,18 @@
             var wasModified = false;
             if (typeof content === 'boolean') {
                 wasModified =  content;
+
+                // Special case for the project settings
+                // the modification could happen on both form or editor
+                if (tab.type === 'projectSettings') {
+                    content = tab.editor.getValue();
+                    wasModified = wasModified || (content !== undefined && tab.content !== content);
+                }
+
             } else {
                 wasModified = (content !== undefined && tab.content !== content);
             }
+
 
             var event = new CustomEvent(eventName, {
                 'detail': {
@@ -384,6 +398,8 @@
             // Open the pane
             openPane(pane);
 
+            tabs.addTab(tab);
+
             // Create the tab
             var tabEl = document.createElement('li');
             tabEl.setAttribute('title', tab.path);
@@ -413,44 +429,72 @@
 
             var iFrameWrapper = document.createElement('div');
             iFrameWrapper.className = "iframe-wrapper";
-            var viewer = document.createElement('iframe');
-            viewer.setAttribute('frameborder', 'no');
-            viewer.setAttribute('scrolling', 'no');
-            tabs.addTab(tab);
-            viewer.src = getViewerUrl(tab);
-            iFrameWrapper.appendChild(viewer);
+            var iFrame = document.createElement('iframe');
+            iFrame.setAttribute('frameborder', 'no');
+            iFrame.setAttribute('scrolling', 'no');
+            iFrame.src = getViewerUrl(tab);
+            iFrameWrapper.appendChild(iFrame);
             // While waiting the iframe load, hide the content to avoid the white flash
             iFrameWrapper.style.visibility = "hidden";
 
             if (tab.type === "projectSettings") {
+                iFrame.style.display = "none";
+                tab.displayAltViewer = true;
+
                 iFrameWrapper.classList.add('multi-iframes');
-                var viewer2 = document.createElement('iframe');
-                console.log(tab);
-                viewer2.style.display = "none";
-                viewer2.setAttribute('frameborder', 'no');
-                viewer2.setAttribute('scrolling', 'no');
-                tabs.addTab(tab);
-                viewer2.src = getViewerUrl(tab, true);
-                iFrameWrapper.appendChild(viewer2);
+                var altIFrame = document.createElement('iframe');
+                altIFrame.setAttribute('frameborder', 'no');
+                altIFrame.setAttribute('scrolling', 'no');
+                altIFrame.src = getViewerUrl(tab, true);
+                iFrameWrapper.appendChild(altIFrame);
                 
                 var toggleWrapper = document.createElement('div');
                 toggleWrapper.className = "toggle-wrapper";
                 iFrameWrapper.appendChild(toggleWrapper);
-                var buttonCode = document.createElement('button');
                 var buttonForm = document.createElement('button');
                 buttonForm.textContent = "Form";
-                buttonCode.textContent = "Code";
+                buttonForm.className = "active-sub-tab";
                 toggleWrapper.appendChild(buttonForm);
+
+                var buttonCode = document.createElement('button');
+                buttonCode.textContent = "Code";
                 toggleWrapper.appendChild(buttonCode);
-                
+
                 buttonForm.addEventListener('click', function() {
-                    viewer.style.display = "block";
-                    viewer2.style.display = "none";
+                    if (tab.displayAltViewer) { // Already displayed
+                        return;
+                    }
+                    // ask the conversion of the config object to xml
+                    ipc.once('workspace-xml-to-config', function (event, err, config) {
+                        // Reload the content using the new config
+                        tab.adcConfig = config;
+                        tab.projectSettings.reloadForm();
+                        // Toggle iframes
+                        tab.displayAltViewer = true;
+                        iFrame.style.display = "none";
+                        altIFrame.style.display = "";
+                        buttonForm.classList.add("active-sub-tab");
+                        buttonCode.classList.remove("active-sub-tab");
+                    });
+                    ipc.send('workspace-convert-xml-to-config', tab.editor.getValue());
                 });
-                
+
                 buttonCode.addEventListener('click', function() {
-                    viewer2.style.display = "block";
-                    viewer.style.display = "none";
+                    if (!tab.displayAltViewer) { // Already displayed
+                        return;
+                    }
+                    // ask the conversion of the config object to xml
+                    ipc.once('workspace-config-to-xml', function (event, err, xml) {
+                        // Reload the content using the new xml
+                        tab.editor.setValue(xml);
+                        // Toggle iframes
+                        tab.displayAltViewer = false;
+                        altIFrame.style.display = "none";
+                        iFrame.style.display = "";
+                        buttonForm.classList.remove("active-sub-tab");
+                        buttonCode.classList.add("active-sub-tab");
+                    });
+                    ipc.send('workspace-convert-config-to-xml', tab.projectSettings.getCurrentConfig());
                 });
             }
             
@@ -488,9 +532,10 @@
          */
         function getViewerUrl(tab, altContent) {
             var viewerSubFolderName = 'editor';
+            var params = [];
             switch(tab.type) {
                 case 'projectSettings':
-                    if (!altContent) {
+                    if (altContent) {
                         viewerSubFolderName = 'projectSettings';
                     }
                     break;
@@ -503,7 +548,22 @@
                     }
                     break;
             }
-            return '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id;
+            if (altContent) {
+                params.push('altFrame=1');
+            }
+            return '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + tab.id + '&' + params.join('&');
+        }
+
+        /**
+         * Return the current tab viewer
+         * @param {Tab} tab
+         */
+        function getCurrentTabViewer(tab) {
+            var currentViewer = tab.viewer;
+            if (tab.altViewer && tab.displayAltViewer) {
+                currentViewer = tab.altViewer;
+            }
+            return currentViewer;
         }
 
         /**
@@ -769,11 +829,12 @@
          */
         function save() {
             var currentTab = getActiveTab();
-            if (!currentTab || !currentTab.viewer) {
+            var currentTabViewer = getCurrentTabViewer(currentTab);
+            if (!currentTab || !currentTabViewer) {
                 return;
             }
-            if (typeof currentTab.viewer.saveContent === 'function') {
-                currentTab.viewer.saveContent();
+            if (typeof currentTabViewer.saveContent === 'function') {
+                currentTabViewer.saveContent();
             }
         }
 
@@ -782,11 +843,12 @@
          */
         function saveAs() {
             var currentTab = getActiveTab();
-            if (!currentTab || !currentTab.viewer) {
+            var currentTabViewer = getCurrentTabViewer(currentTab);
+            if (!currentTab || !currentTabViewer) {
                 return;
             }
-            if (typeof currentTab.viewer.saveContentAs === 'function') {
-                currentTab.viewer.saveContentAs();
+            if (typeof currentTabViewer.saveContentAs === 'function') {
+                currentTabViewer.saveContentAs();
             }
         }
 
@@ -800,7 +862,7 @@
             var editedTabs = document.querySelectorAll('.tab.edit'),
                 i, l,
                 ids = [],
-                tab;
+                tab, tabViewer;
             if (!editedTabs) {
                 return;
             }
@@ -814,11 +876,12 @@
             // Call save on each tabs
             for (i = 0, l = ids.length; i < l; i += 1) {
                 tab = tabs[ids[i]];
-                if (!tab || !tab.viewer) {
+                tabViewer = getCurrentTabViewer(tab);
+                if (!tab || !tabViewer) {
                     continue;
                 }
-                if (typeof tab.viewer.saveContent === 'function') {
-                    tab.viewer.saveContent();
+                if (typeof tabViewer.saveContent === 'function') {
+                    tabViewer.saveContent();
                 }
             }
         }
@@ -832,6 +895,9 @@
                 }
                 nextTab = currentTab;
             }
+            if (!nextTab) {
+                return;
+            }
             var pane = tabs.getPaneName(nextTab.id);
             setActiveTab(nextTab, pane);
         }
@@ -844,6 +910,9 @@
                     currentTab = currentTab.next;
                 }
                 previousTab = currentTab;
+            }
+            if (!previousTab) {
+                return;
             }
             var pane = tabs.getPaneName(previousTab.id);
             setActiveTab(previousTab, pane);
@@ -890,7 +959,8 @@
                 }, function (retVal) {
                     switch(retVal.button) {
                         case 'yes':
-                            tab.viewer.saveContentAndClose();
+                            var tabViewer = getCurrentTabViewer(tab);
+                            tabViewer.saveContentAndClose();
                             break;
                         case 'no':
                             // Close it

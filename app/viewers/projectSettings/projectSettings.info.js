@@ -5,55 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var tab = viewer.currentTab;
     var infoChanges = null;
 
-    (function init() {
-        var info = tab.adcConfig.info;
-        var i, l, key, constraints;
-        var responses = document.getElementById('responses');
-
-        // Set the textual-information
-        var infoText = ['name', 'guid', 'date', 'version', 'description', 'helpURL', 'author', 'company', 'site'];
-        for (i = 0, l = infoText.length; i < l; i++) {
-            document.getElementById(infoText[i]).value = (info[infoText[i]] || '').trim();
-        }
-
-        // Special case for the style which uses 2 data (width and height)
-        if (info.style) {
-            if (typeof info.style.width === 'number') {
-                document.getElementById("style_width").value = info.style.width;
-            }
-            if (typeof info.style.height === 'number') {
-                document.getElementById("style_height").value = info.style.height;
-            }
-        }
-
-        // Set the categories in the textbox
-        if (Array.isArray(info.categories)) {
-            document.getElementById('categories').value = info.categories.join(', ');
-        }
-
-        // Set the constraints information
-        var infoConstraints = {
-            questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop'],
-            responses: ['min', 'max'],
-            controls: ['responseblock', 'label', 'textbox', 'listbox', 'checkbox', 'radiobutton']
-        };
-
-        for (key in infoConstraints) {
-            if (infoConstraints.hasOwnProperty(key)) {
-                constraints = infoConstraints[key];
-                for (i = 0, l = constraints.length; i < l; i++) {
-                    if (key === 'responses') {
-                        document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] &&
-                            info.constraints[key][constraints[i]]) || '';
-                    } else {
-                        document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] &&
-                            info.constraints[key][constraints[i]]) || false;
-                    }
-
-                }
-            }
-        }
-    }());
 
     document.getElementById('info').addEventListener('change', function onFormChange(event) {
         var info = tab.adcConfig.info;
@@ -153,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 delete infoChanges[topKey];
             }
 
-            if (!Object.keys(infoChanges).length) {
+            if (infoChanges && !Object.keys(infoChanges).length) {
                 infoChanges = null;
             }
         }
@@ -161,6 +112,60 @@ document.addEventListener('DOMContentLoaded', function () {
         window.projectSettings.onchange();
     });
 
+    /**
+     * Initialize the info
+     */
+    window.projectSettings.initInfo = function initInfo() {
+        infoChanges = null;
+
+        var info = tab.adcConfig.info;
+        var i, l, key, constraints;
+        var responses = document.getElementById('responses');
+
+        // Set the textual-information
+        var infoText = ['name', 'guid', 'date', 'version', 'description', 'helpURL', 'author', 'company', 'site'];
+        for (i = 0, l = infoText.length; i < l; i++) {
+            document.getElementById(infoText[i]).value = (info[infoText[i]] || '').trim();
+        }
+
+        // Special case for the style which uses 2 data (width and height)
+        if (info.style) {
+            if (typeof info.style.width === 'number') {
+                document.getElementById("style_width").value = info.style.width;
+            }
+            if (typeof info.style.height === 'number') {
+                document.getElementById("style_height").value = info.style.height;
+            }
+        }
+
+        // Set the categories in the textbox
+        if (Array.isArray(info.categories)) {
+            document.getElementById('categories').value = info.categories.join(', ');
+        }
+
+        // Set the constraints information
+        var infoConstraints = {
+            questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop'],
+            responses: ['min', 'max'],
+            controls: ['responseblock', 'label', 'textbox', 'listbox', 'checkbox', 'radiobutton']
+        };
+
+        for (key in infoConstraints) {
+            if (infoConstraints.hasOwnProperty(key)) {
+                constraints = infoConstraints[key];
+                for (i = 0, l = constraints.length; i < l; i++) {
+                    if (key === 'responses') {
+                        document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] &&
+                            info.constraints[key][constraints[i]]) || '';
+                    } else {
+                        document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] &&
+                            info.constraints[key][constraints[i]]) || false;
+                    }
+
+                }
+            }
+        }
+    };
 
     /**
      * Return the current info object
@@ -219,5 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.projectSettings.hasInfoChanged = function hasInfoChanged() {
         return !!infoChanges;
     };
+
+    window.projectSettings.initInfo();
 
 });

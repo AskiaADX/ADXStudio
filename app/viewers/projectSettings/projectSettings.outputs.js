@@ -6,24 +6,41 @@ document.addEventListener('DOMContentLoaded', function () {
     var outputsListEl = document.getElementById('outputs_list');
     var contentsEl = document.getElementById("contents");
     var contentsBodyEl = contentsEl.querySelector("tbody");
-    var currentSelectedOutputIndex = -1;
-    var originalOutputs = tab.adcConfig.outputs || {};
-    if (!originalOutputs.outputs) {
-        originalOutputs.outputs = [];
-    }
-    if (!originalOutputs.defaultOutput) {
-        originalOutputs.defaultOutput = '';
-    }
-    // Copy of the object
-    var currentOutputs = JSON.parse(JSON.stringify(originalOutputs));
-    var newIncrement = originalOutputs.outputs.length;
-    var muteChange = false;
+    var currentSelectedOutputIndex;
+    var originalOutputs;
+    var currentOutputs;
+    var newIncrement;
+    var muteChange;
 
-    (function init() {
+    /**
+     * Reset the global variables
+     */
+    function reset() {
+        currentSelectedOutputIndex = -1;
+        originalOutputs = tab.adcConfig.outputs || {};
+        if (!originalOutputs.outputs) {
+            originalOutputs.outputs = [];
+        }
+        if (!originalOutputs.defaultOutput) {
+            originalOutputs.defaultOutput = '';
+        }
+        // Copy of the object
+        currentOutputs = JSON.parse(JSON.stringify(originalOutputs));
+        newIncrement = originalOutputs.outputs.length;
+        muteChange = false;
+    }
+
+    /**
+     * Initialize outputs
+     */
+    window.projectSettings.initOutputs = function initOutputs() {
+        reset();
+
         var i, l, opt;
         var list = currentOutputs.outputs;
         var defaultOutput = currentOutputs.defaultOutput;
 
+        outputsListEl.innerHTML = '';
         for (i = 0, l = list.length; i < l; i += 1) {
             opt = document.createElement("option");
             opt.setAttribute("value", list[i].id);
@@ -39,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         loadOutput();
-    }());
+    };
+
 
     /**
      * Trigger the change
@@ -495,4 +513,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * @returns {boolean}
      */
     window.projectSettings.hasOutputsChanged = hasChanged;
+
+    // Init now
+    window.projectSettings.initOutputs();
 });

@@ -135,6 +135,12 @@ html, body {
     position : relative;
 }
 
+.content .iframe-wrapper.multi-iframes {
+    display 		: flex;
+    flex-direction  : column;
+    overflow        : hidden;
+}
+
 .content.active {
     display : block;
 }
@@ -153,15 +159,20 @@ html, body {
     right   : 0;
 }
 
-.content .iframe-wrapper.multi-iframes {
-    display 		:flex;
-    flex-direction  : column;
-}
-.toggle-wrapper {
-    height 		: 20px;
-    background  : red;
-}
 .content .iframe-wrapper.multi-iframes iframe {
 	flex   		: 1;
     position	: relative;
+}
+
+.toggle-wrapper {
+    background  : green;
+}
+
+.toggle-wrapper button {
+    background : pink;
+    color : white;
+}
+.toggle-wrapper button.active-sub-tab {
+    background : blue;
+    color : yellow;
 }

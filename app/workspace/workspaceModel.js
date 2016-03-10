@@ -161,9 +161,11 @@ Workspace.prototype.init = function init(config, callback) {
     const self = this;
     if (config) {
         if (Array.isArray(config.tabs)) {
+            const createdTabsByPath = {};
             config.tabs.forEach(function (tab) {
                 if (tab.id && tab.pane) {
                     const tabConfig = {};
+                    let lowerPathKey;
                     if (tab.path || (tab.config && tab.config.path)) { // Backwards compatibility
                         tabConfig.path = tab.path || (tab.config && tab.config.path);
                     }
@@ -173,6 +175,27 @@ Workspace.prototype.init = function init(config, callback) {
                     if (tab.name) { // Don't manage the backwards compatibility
                         tabConfig.name = tab.name;
                     }
+
+                    // Now this is forbidden to have two tabs for projectSettings & config.xml
+                    // For backwards compatibility, make sure the projectSettings have a good path
+                    // and make sure there is no duplicate tab
+                    if (tabConfig.type === 'projectSettings') {
+                        if (!/config\.xml$/gi.test(tabConfig.path)) {
+                            tabConfig.path = nodePath.join(tabConfig.path, 'config.xml');
+                        }
+                    }
+
+
+                    // Avoid duplicate tab open on the same file
+                    if (tabConfig.path) {
+                        lowerPathKey = nodePath.resolve(tabConfig.path).toLowerCase();
+                        if (createdTabsByPath[lowerPathKey]) {
+                            return;
+                        }
+
+                        createdTabsByPath[lowerPathKey] = true;
+                    }
+
                     self.createTab(tabConfig, tab.pane, function (err, tabCreated) {
                         if (tab.current) {
                             self.panes[tab.pane].currentTabId = tabCreated.id;
