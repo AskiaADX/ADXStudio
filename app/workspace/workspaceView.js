@@ -442,12 +442,13 @@
                 tab.displayAltViewer = true;
 
                 iFrameWrapper.classList.add('multi-iframes');
+
                 var altIFrame = document.createElement('iframe');
                 altIFrame.setAttribute('frameborder', 'no');
                 altIFrame.setAttribute('scrolling', 'no');
                 altIFrame.src = getViewerUrl(tab, true);
                 iFrameWrapper.appendChild(altIFrame);
-                
+
                 var toggleWrapper = document.createElement('div');
                 toggleWrapper.className = "toggle-wrapper";
                 iFrameWrapper.appendChild(toggleWrapper);

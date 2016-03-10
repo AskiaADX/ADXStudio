@@ -5,15 +5,10 @@
     flex-direction  : column;
     font-family     : "Lucida Grande", Helvetica, Arial, sans-serif;
     line-height     : 1.5;
-    color           : #DDD;
     font-size       : 14px;
     font-weight     : normal;
-    color           : #EEE;
     padding         : 10px 0px 10px 20px;
-    background      : #282C34;
-    border          : 1px solid #181818;
     border-radius   : 2px;
-    box-shadow      : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts dt {
@@ -46,7 +41,6 @@
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts h2 {
-    color       : #BBB;
     font-size   : 1.15rem;
 }
 
@@ -57,7 +51,6 @@
 
 .askia-modal-dialog.Keyboard-Shortcuts .left {
     width       : 170px;
-    border-right: 1px solid #181818;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts .right {
@@ -79,15 +72,10 @@
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts  a {
-     color      : #DDD;
-     transition : color ease-in .2s;
-}
-.askia-modal-dialog.Keyboard-Shortcuts  a:hover {
-    color: #FFF;
+    transition : color ease-in .2s;
 }
 
 .KBshortcut {
-    color       : #007DC5;
     font-weight : bold;
 }
 
