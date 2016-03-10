@@ -75,53 +75,20 @@ button {
     cursor          : pointer;
     align-self      : center;
     margin-left     : 10px;
-    background-color: #BBBBBB;
     border-radius   : 2px;
-    border          : 1px solid rgba(0,0,0,.95);
-    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
-    color           : #444;
     font-size       : 14px;
     font-weight     : normal;
     outline         : none;
     transition      : background-color ease-in .2s, color ease-in .2s;
-}
-
-button:hover {
-    background-color: #CCCCCC;
-    color           : #222;
-}
-
-button:active {
-    background-color: #DDDDDD;
-    color           : #222;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
 }
 
 button#new_output,
 button#new_category {
-    background-color: #007DC5;
     border-radius   : 2px;
-    border          : 1px solid rgba(0,0,0,.95);
-    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
-    color           : #DDD;
     font-size       : 14px;
     font-weight     : normal;
     outline         : none;
     transition      : background-color ease-in .2s, color ease-in .2s;
-}
-
-button#new_output:hover,
-button#new_category:hover {
-    background-color: #0085d1;
-    border          : 1px solid rgba(0,0,0,1);
-    color           : #EEE;
-}
-
-button#new_output:active,
-button#new_category:active {
-    background-color: #007DC5;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
-    color           : #EEE;
 }
 
 button#add_content,
@@ -149,14 +116,12 @@ button#add_property {
     display : inline-block;
     width   : 16px;
     height  : 16px;
-    background: url('collapsed.png') no-repeat center center;
 }
 
 .editing .toggle {
     display : inline-block;
     width   : 16px;
     height  : 16px;
-    background: url('expanded.png') no-repeat center center;
 }
 
 input, textarea, select {
@@ -179,11 +144,6 @@ ul {
     margin-bottom: 13px;
 }
 
-.error {
-  background: #e74c3c;
-  color     : #000;
-}
-
 #contents select {
     width   :100%;
     padding : 10px;
@@ -193,14 +153,12 @@ ul {
     padding         : 5px;
     min-width       : 120px;
     width           : 120px;
-    border-bottom   : 1px solid #111;
 }
 
 #contents th,
 #properties_table th {
     text-align  : left;
     padding-left: 15px;
-    color       : #888888;
 }
 
 #properties_table tr,
@@ -225,7 +183,6 @@ ul {
 #properties_table td {
     padding         : 5px;
     max-width       : 120px;
-    border-bottom   : 1px solid #111;
 }
 
 #contents td.content-controls,
@@ -252,52 +209,27 @@ table#properties_table {
 
 table#contents a,
 table#properties_table a:not(.add-property-option) {
-    background-color: #C0392B;
-    color           : #DDDDDD;
     padding         : 8px 10px;
-    border          : 1px solid black;
     border-radius   : 2px;
     text-decoration : none;
-    box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
     transition      : color ease-in .3s, background-color ease-in .3s;
 }
 
 table#contents a:hover,
 table#properties_table a:hover:not(.add-property-option) {
-    background-color: #D44435;
-    color           : #FFF;
     padding         : 8px 10px;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
 }
 
 table#contents a:active,
 table#properties_table a:active:not(.add-property-option) {
-    background-color: #C0392B;
-    color           : #FFF;
     padding         : 8px 10px;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
 }
 
 .add-property-option {
-    background-color: #BBB;
-    color           : #222 !important;
     padding         : 8px 10px;
-    border          : 1px solid black;
     border-radius   : 2px;
     text-decoration : none;
-    box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
     transition      : color ease-in .3s, background-color ease-in .3s;
-}
-
-.add-property-option:hover {
-    background-color: #CCC;
-    color           : #000;
-}
-
-.add-property-option:active {
-    background-color: #BBB;
-    color           : #000;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
 }
 
 .property-options-list-container {

@@ -1,20 +1,19 @@
-var viewer = (function () {
+(function () {
     var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
     if (!matchTabId || !matchTabId.length) {
         throw new Error("Invalid context, the tab id is not defined");
     }
+    var isAltFrame = /&altFrame=1/gi.test(window.location.href);
     var tabId    = matchTabId[1];
     var parent   = window.parent;
     var tabs     = parent.tabs;
     var tab      = tabs[tabId];
 
-    tab.window = window;
-
     window.addEventListener('focus', function () {
         tabs.onFocus(tab.id);
     });
 
-    tab.viewer = {
+    var viewer = {
         /**
          * Parent window
          */
@@ -65,5 +64,13 @@ var viewer = (function () {
         }
     };
 
-    return tab.viewer;
+    if (!isAltFrame) {
+        tab.window = window;
+        tab.viewer = viewer;
+    } else {
+        tab.altWindow = window;
+        tab.altViewer = viewer;
+    }
+
+    window.viewer = viewer;
 }());

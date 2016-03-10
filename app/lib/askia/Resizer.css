@@ -10,13 +10,11 @@ input, textarea, select {
 
 div.askia-resizer-horizontal-drag {
     cursor      : ew-resize;
-    background  : #333;
     z-index     : 1000;
 }
 
 div.askia-resizer-vertical-drag {
     cursor      : ns-resize;
-    background  : #333;
     z-index     : 1000;
 }
 
@@ -27,7 +25,6 @@ div.askia-resizer-modal {
     position    : absolute;
     top         : 0;
     left        : 0;
-    background  : transparent;
 }
 div.askia-resizer-modal.vertical {
     cursor: ns-resize;

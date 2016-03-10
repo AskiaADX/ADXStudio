@@ -21,13 +21,7 @@ h3 {
 
 #addressURL {
     flex            : 1;
-    background-color: #343A44;
-    border-top      : 1px solid #151515;
     border-left     : none;
-}
-
-#addressURL:focus {
-    border: 1px solid #151515;
 }
 
 .reset-cell {
@@ -35,29 +29,10 @@ h3 {
 }
 #reloadPreview, #openPreview, #reset {
     padding         : 1px 17px;
-    background-color: #21252B;
-    color           : #DDD;
-    border-color    : #151515;
     border-width    : 1px 1px 1px 0 !important;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.1) inset;
     cursor          : pointer;
     outline         : none;
     transition      : color ease-in .2s, background-color ease-in .2s;
-}
-
-#reloadPreview {
-    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, -1px 0 0 rgba(255,255,255,.1) inset;
-}
-
-#reloadPreview:hover, #openPreview:hover, #reset:hover {
-    color           : #FFF;
-    background-color: #31363E;
-}
-
-#reloadPreview:active, #openPreview:active, #reset:active {
-    color           : #FFF;
-    background-color: #21252B;
-    box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
 #main {
@@ -70,20 +45,14 @@ h3 {
     height      : 50%;
     width       : 100%;
     overflow    : auto;
-    border-top  : 4px solid #111;
 }
 
 #grid h2 {
     padding         : 0 0 10px 10px;
-    border-bottom   : 1px solid #21252B;
-    box-shadow      : 0 1px 0 #2F3032;
-    color           : rgb(215, 215, 215);
 }
 
 #grid h3 {
     padding: 26px 0 0 0;
-    border-top: 1px solid #2F3032;
-    box-shadow: 0 -1px 0 #21252b;
 }
 
 #grid table {
@@ -108,8 +77,22 @@ h3 {
     width: 95%;
 }
 
+#grid input[type=text] {
+    height          : 22px;
+    width           : 95%;
+    padding-bottom  : 10px;
+    vertical-align  : middle;
+}
+
+.color_text {
+    width: 60% !important;
+}
+
 #grid input[type=color] {
-    cursor: pointer;
+    cursor          : pointer;
+    height          : 22px;
+    vertical-align  : middle;
+    margin-left     : 10px;
 }
 
 #grid select {
@@ -125,7 +108,6 @@ h3 {
 #preview {
     flex        : 1;
     position    :relative;
-    background  : #FFF;
 }
 #preview_frame {
     margin  : 0;

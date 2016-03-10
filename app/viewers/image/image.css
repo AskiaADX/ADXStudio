@@ -12,8 +12,6 @@ html, body {
   flex-wrap     : nowrap;
   align-self    : flex-start;
   order         : 1;
-  background    : #282C34;
-  border-bottom: 1px solid #151505;
   width         : 100%;
   height        : 40px;
 }

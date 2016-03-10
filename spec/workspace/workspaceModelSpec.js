@@ -821,6 +821,87 @@ describe("workspace", function () {
             });
         });
 
+        it("should fix the path of the tab when the type is 'projectSettings' and the path doesn't contains 'config.xml'", function () {
+            var conf = {
+                tabs : [
+                    {
+                        id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
+                        pane : 'main',
+                        current : true,
+                        name : 'first',
+                        path : 'path/of/adc/',
+                        type : 'projectSettings'
+                    }
+                ]
+            };
+
+            runSync(function (done) {
+                workspace.init(conf, function () {
+                    workspace.currentTab('main', function (err, mainPaneTab) {
+                        expect(mainPaneTab.path).toEqual(nodePath.resolve(nodePath.join('path/of/adc/', 'config.xml')));
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("should not create duplicate tabs (opened with the same path)", function () {
+            var conf = {
+                tabs : [
+                    {
+                        id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
+                        pane : 'main',
+                        current : true,
+                        name : 'first',
+                        path : 'path/of/adc/file1',
+                        type : 'file'
+                    },
+                    {
+                        id : 'bbbbbb-bbbbbb-bbbbbb-bbbbbb',
+                        pane : 'main',
+                        name : 'second',
+                        path : 'path/of/adc/file1',
+                        type : 'file'
+                    }
+                ]
+            };
+
+            runSync(function (done) {
+                workspace.init(conf, function () {
+                    expect(workspace.tabs.length).toEqual(1);
+                    done();
+                });
+            });
+        });
+
+        it("should not open the 'config.xml' and the 'projectSettings' at the same time", function () {
+            var conf = {
+                tabs : [
+                    {
+                        id : 'aaaaaa-aaaaaa-aaaaaa-aaaaaa',
+                        pane : 'main',
+                        current : true,
+                        name : 'first',
+                        path : 'path/of/adc/config.xml',
+                        type : 'file'
+                    },
+                    {
+                        id : 'bbbbbb-bbbbbb-bbbbbb-bbbbbb',
+                        pane : 'main',
+                        name : 'second',
+                        path : 'path/of/adc/',
+                        type : 'projectSettings'
+                    }
+                ]
+            };
+
+            runSync(function (done) {
+                workspace.init(conf, function () {
+                    expect(workspace.tabs.length).toEqual(1);
+                    done();
+                });
+            });
+        });
     });
 
     describe("#unwatchTabsIn", function () {

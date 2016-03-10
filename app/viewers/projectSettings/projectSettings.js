@@ -5,28 +5,56 @@ document.addEventListener('DOMContentLoaded', function () {
     var tab = viewer.currentTab;
     var formProjectSettingsEl = document.getElementById("formProjectSettings");
 
+    // Make it available in workspace view
+    tab.projectSettings = window.projectSettings;
+
+    /**
+     * Reload the form
+     */
+    window.projectSettings.reloadForm = function reloadForm() {
+        window.projectSettings.initInfo();
+        window.projectSettings.initOutputs();
+        window.projectSettings.initProperties();
+    };
+
+    /**
+     * Return the information if the content has changed
+     */
+    window.projectSettings.hasChanged = function hasChanged() {
+        return window.projectSettings.hasInfoChanged() ||
+            window.projectSettings.hasOutputsChanged() ||
+            window.projectSettings.hasPropertiesChanged();
+    };
+
+
+    // Changes
+    window.projectSettings.onchange = function onformchange() {
+        tabs.onContentChange(tab.id, window.projectSettings.hasChanged());
+    };
+
     /**
      * Return the current configuration
      */
-    function getCurrentConfig() {
+    window.projectSettings.getCurrentConfig  = function getCurrentConfig() {
         return {
             info     : window.projectSettings.getCurrentInfo(),
             outputs  : window.projectSettings.getCurrentOutputs(),
             properties : window.projectSettings.getCurrentProperties()
         };
-    }
+    };
+
 
     // Form Submit
     viewer.saveContent = function saveContent() {
-        tabs.onSave(tab.id, getCurrentConfig());
+        tabs.onSave(tab.id, window.projectSettings.getCurrentConfig());
     };
     // Save as
     viewer.saveContentAs = function saveContentAs() {
-        tabs.onSaveAs(tab.id, getCurrentConfig());
+        tabs.onSaveAs(tab.id, window.projectSettings.getCurrentConfig());
     };
     // Save and close
     viewer.saveContentAndClose = function saveContentAndClose() {
-        tabs.onSaveAndClose(tab.id, getCurrentConfig());
+        tabs.onSaveAndClose(tab.id, window.projectSettings.getCurrentConfig());
     };
 
     formProjectSettingsEl.addEventListener('submit', function onSubmit(event) {
@@ -39,6 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.addEventListener('keydown', function onKeydown(event) {
         var S = 83;
         if (event.keyCode === S && event.ctrlKey) {
+            event.stopPropagation();
+            event.preventDefault();
             formProjectSettingsEl.dispatchEvent(new Event('submit'));
         }
     });
@@ -64,14 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Changes
-    window.projectSettings.onchange = function onformchange() {
-        var hasChanged = window.projectSettings.hasInfoChanged() ||
-                            window.projectSettings.hasOutputsChanged() ||
-                            window.projectSettings.hasPropertiesChanged();
-
-        tabs.onContentChange(tab.id, hasChanged);
-    };
 
     viewer.fireReady();
     formProjectSettingsEl.focus();

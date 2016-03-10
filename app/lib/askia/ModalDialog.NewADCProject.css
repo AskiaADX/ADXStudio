@@ -19,9 +19,6 @@
     padding         : 10px;
     width           : 418px;
     border-radius   : 2px;
-    border          : 1px solid #151515;
-    background-color: #21252B;
-    color           : #BBB;
     font-size       : 14px;
     margin-left     : 10px;
 }
@@ -33,7 +30,6 @@
 .askia-modal-new-project-container input:focus,
 .askia-modal-new-project-container textarea:focus,
 .askia-modal-new-project-container select:focus {
-    border  : 1px solid #007DC5;
     outline : none;
 }
 
@@ -63,24 +59,9 @@
     cursor          : pointer;
     align-self      : center;
     margin-left     : 10px;
-    background-color: #BBBBBB;
     border-radius   : 2px;
-    border          : 1px solid rgba(0,0,0,.95);
-    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
-    color           : #222;
     font-size       : 14px;
     font-weight     : bold;
     outline         : none;
     transition      : background-color ease-in .2s, color ease-in .2s;
-}
-
-.askia-modal-new-project-container button:hover {
-    background-color: #CCCCCC;
-    color           : #000;
-}
-
-.askia-modal-new-project-container button:active {
-    background-color: #DDDDDD;
-    color           : #000;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
 }

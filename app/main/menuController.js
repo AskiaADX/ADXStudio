@@ -171,6 +171,10 @@ app.once('ready', function createAppMenu() {
         function aboutADXStudioClick() {
             app.emit("menu-about-adxstudio");
         }
+        
+        function shortcutsClick() {
+            app.emit("menu-shortcuts");
+        }
 
         if (process.platforn !== 'darwin') {
             template = [
@@ -245,14 +249,17 @@ app.once('ready', function createAppMenu() {
                     label: 'Tools',
                     submenu: [
                         {
-                            label : '&Validate',
-                            accelerator: 'Ctrl+Shift+T',
-                            click : validateClick
-                        },
-                        {
                             label: '&Preview',
                             accelerator: 'F5',
                             click : previewClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Validate',
+                            accelerator: 'Ctrl+Shift+T',
+                            click : validateClick
                         },
                         {
                             label: '&Build',
@@ -324,6 +331,13 @@ app.once('ready', function createAppMenu() {
                         {
                             label : '&About ADX Studio',
                             click : aboutADXStudioClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Keyboard Shortcuts',
+                            click : shortcutsClick
                         },
                         {
                             type: 'separator'

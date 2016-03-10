@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (property.type !== 'color') {
             return (property.value !== property.defaultValue);
         }
-
         // Convert the color to the original format
         var value = property.value;
         var isHexa = (value.substr(0, 1) === '#');
@@ -386,6 +385,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             html.push('</select>');
         } else {
+            if (type === "color") {
+                html.push('<input type="text" id="color_' + property.id + '" value="' + property.value + '" class="color_text"'  + attrs.join(' ') + '/>');
+            }
             html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
         }
         html.push('</td>');
@@ -408,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (el.id === 'output' || el.id === 'fixture') {
                 self.form[el.id] = value;
             } else {
-                property = self.form.propertyById[el.id.replace(/^property_/i, '')];
+                property = self.form.propertyById[el.id.replace(/^(property_|color_)/i, '')];
                 if (property.colorFormat === 'rgb') {
                     value = hexToRgb(value);
                     // Add the original alpha value
@@ -442,6 +444,24 @@ document.addEventListener('DOMContentLoaded', function () {
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
             if (property.value !== property.defaultValue) {
+                if (property.value === null) {
+                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
+                    var rgb = inputText.value.split(',');
+                    property.value = inputText.value;
+                    inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
+                } else if (property.type === "color") {
+                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
+                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    if (property.value.substr(0, 1) !== '#') {
+                    var rgb = property.value.split(',');
+                    inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
+                    } else {
+                        inputColor.value = property.value;
+                    }
+                    inputText.value = property.value;
+                }
+
                 params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
             }
         }
