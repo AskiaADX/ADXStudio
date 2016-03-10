@@ -164,15 +164,3 @@ html, body {
     position	: relative;
 }
 
-.toggle-wrapper {
-    background  : green;
-}
-
-.toggle-wrapper button {
-    background : pink;
-    color : white;
-}
-.toggle-wrapper button.active-sub-tab {
-    background : blue;
-    color : yellow;
-}
