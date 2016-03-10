@@ -19,7 +19,7 @@ body {
 }
 
 body.grey {
-    background: #111;
+    background: #707073;
 }
 
 body.form-viewer {
@@ -130,11 +130,11 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 
 .explorer-html {
-    background-color: #21252B;
+    background-color: #E5E5E6;
 }
 
 #root {
-  color: #BBBBBB;
+  color: #444;
 }
 
 .toggle {
@@ -219,31 +219,31 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .folder {
-  color     : #BBB;
+  color     : #444;
   cursor    : pointer;
   transition: color ease-in .2s;
 }
 
 .folder:hover {
-  color: #DDD;
+  color: #000;
 }
 
 .file {
   cursor    : pointer;
-  color     : #BBB;
+  color     : #444;
   transition: color ease-in .3s;
 }
 
 .file:hover {
-  color: #DDD;
+  color: #222;
 }
 
 .selected {
-  background-color: #151515;
+  background-color: #CACACA;
 }
 
 .selected > .name {
-    color: #EEE;
+    color: #222;
 }
 
 /* TODO::IS THIS CLASS IS USED??? --- */
