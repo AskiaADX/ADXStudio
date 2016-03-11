@@ -278,11 +278,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tab {
-    border-top: 1px solid #BDC3C7;
-}
-
-.tab, .tabs-scroll div {
     background      : #ECF0F1;
+    border-top: 1px solid #BDC3C7;
     border-right    : 1px solid #BDC3C7;
     border-bottom   : 1px solid #BDC3C7;
     cursor          : pointer;
@@ -290,7 +287,18 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     color           : #444;
     padding         : 10px;
     position        : relative;
-    height          : 24px;
+    line-height     : 23px;
+    transition      : color ease-in .2s, background ease-in .2s;
+}
+
+.tabs-scroll div {
+    background      : #ECF0F1;
+    border-right    : 1px solid #BDC3C7;
+    cursor          : pointer;
+    font-size       : 14px;
+    color           : #444;
+    padding         : 10px;
+    position        : relative;
     line-height     : 23px;
     transition      : color ease-in .2s, background ease-in .2s;
 }
@@ -849,4 +857,18 @@ div.askia-resizer-vertical-drag {
 
 div.askia-resizer-modal {
     background  : transparent;
+}
+
+/* IMAGE VIEWER CONTAINER */
+
+.content .iframe-wrapper {
+    background: #FAFAFA;
+}
+
+.tool{
+    background-color: #8c9899;
+}
+
+.tool:hover {
+    background-color: #9EA8A9;
 }
