@@ -15,21 +15,39 @@ document.addEventListener('DOMContentLoaded', function () {
     var elTypeQuestion  = innerFormEl.querySelector(".property-type-question");
     var elTypeFile  = innerFormEl.querySelector(".property-type-file");
     var elPropOptionList = innerFormEl.querySelector(".property-options-list");
-    var currentSelectedCatIndex = -1;
-    var originalProps = tab.adcConfig.properties || {};
-    if (!originalProps.categories) {
-        originalProps.categories = [];
-    }
-    // Copy of the object
-    var currentProps = JSON.parse(JSON.stringify(originalProps));
-    var categoryIncrement = currentProps.categories.length;
-    var propertyIncrement = 0; // Will be modified in the init with the length of properties
-    var muteChange = false;
+    var currentSelectedCatIndex;
+    var originalProps;
+    var currentProps;
+    var categoryIncrement;
+    var propertyIncrement;
+    var muteChange;
 
-    (function init() {
+    /**
+     * Reset the global variables
+     */
+    function reset() {
+        currentSelectedCatIndex = -1;
+        originalProps = tab.adcConfig.properties || {};
+        if (!originalProps.categories) {
+            originalProps.categories = [];
+        }
+        // Copy of the object
+        currentProps = JSON.parse(JSON.stringify(originalProps));
+        categoryIncrement = currentProps.categories.length;
+        propertyIncrement = 0; // Will be modified in the init with the length of properties
+        muteChange = false;
+    }
+
+    /**
+     * Initialize the properties
+     */
+    window.projectSettings.initProperties = function initProperties() {
+        reset();
+
         var i, l, opt;
         var list = originalProps.categories;
 
+        categoriesListEl.innerHTML = '';
         for (i = 0, l = list.length; i < l; i += 1) {
             opt = document.createElement("option");
             opt.setAttribute("value", list[i].id);
@@ -40,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         loadCategory();
-    }());
+    };
 
     /**
      * Trigger the change
@@ -673,8 +691,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-
-
     /**
      * Return the current properties object
      */
@@ -687,4 +703,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * @returns {boolean}
      */
     window.projectSettings.hasPropertiesChanged = hasChanged;
+
+    // Init now
+    window.projectSettings.initProperties();
 });

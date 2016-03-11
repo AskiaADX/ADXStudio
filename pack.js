@@ -1,6 +1,6 @@
 "use strict";
 
-const fileVersion = "0.0.0.7";
+const fileVersion = "0.0.0.8";
 const path = require("path");
 const packager = require('electron-packager');
 const outputPath = path.join(process.cwd(), "releases/" + fileVersion + "/");

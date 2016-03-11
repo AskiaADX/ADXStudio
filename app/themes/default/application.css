@@ -329,6 +329,21 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
   font-style: italic;
 }
 
+/* Sub tab bar that appear for project settings */
+.toggle-wrapper {
+    background  : green;
+}
+
+.toggle-wrapper button {
+    background : pink;
+    color : white;
+}
+.toggle-wrapper button.active-sub-tab {
+    background : blue;
+    color : yellow;
+}
+/* End of sub tab bar */
+
 .pane.focused .tab.active::before {
     position        : absolute;
     display         : block;
@@ -357,10 +372,6 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     background-color: #21252B;
 }
 
-.toggle-wrapper {
-    height 		: 20px;
-    background  : red;
-}
 
 /* ========================================
    Preview Part

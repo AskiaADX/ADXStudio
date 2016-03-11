@@ -135,6 +135,12 @@ html, body {
     position : relative;
 }
 
+.content .iframe-wrapper.multi-iframes {
+    display 		: flex;
+    flex-direction  : column;
+    overflow        : hidden;
+}
+
 .content.active {
     display : block;
 }
@@ -153,12 +159,8 @@ html, body {
     right   : 0;
 }
 
-.content .iframe-wrapper.multi-iframes {
-    display 		:flex;
-    flex-direction  : column;
-}
-
 .content .iframe-wrapper.multi-iframes iframe {
 	flex   		: 1;
     position	: relative;
 }
+
