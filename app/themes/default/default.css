@@ -41,7 +41,8 @@ h3 {
 
 fieldset {
     border-width: 0 0 1px 0;
-    border-color: #606979;
+    border-color: #BDC3C7;
+    border-style: solid;
     margin-top  : 20px;
 }
 
@@ -56,16 +57,16 @@ label, input[type="checkbox"] {
 
 input, textarea {
     border-radius   : 2px;
-    border          : 1px solid #151515;
-    background-color: #21252B;
-    color           : #BBB;
+    border          : 1px solid #BDC3C7;
+    background-color: #ECF0F1;
+    color           : #444;
 }
 
 select {
-    background-color: #343A44;
+    border          : 1px solid #BDC3C7;
+    background-color: #ECF0F1;
+    color           : #444;
     border-radius   : 2px;
-    color           : #BBB;
-    border          : 1px solid #151505;
     cursor          : pointer;
 }
 
@@ -348,7 +349,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .toggle-wrapper button {
     outline     : none;
     cursor      : pointer;
-    background  : #BCD3C7;
+    background  : #D7DBDC;
     color       : #444;
     border      : 1px solid #92989C;
     box-shadow  : 0 1px 0 rgba(255,255,255,.2) inset;
@@ -359,7 +360,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .toggle-wrapper button:hover {
     color       : #222;
-    background  : #CBD0D4;
+    background  : #E5E8E8;
 }
 
 .toggle-wrapper button.active-sub-tab,
@@ -499,53 +500,53 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
-    background-color: #21252b;
+    background-color: #ECF0F1;
     transition      : background-color ease-in .2s;
 }
 
 .viewer-project-settings #properties_table tbody tr:hover:not(.editable),
 .viewer-project-settings #contents tbody tr:hover:not(.editable) {
-    background-color: #363C46;
+    background-color: #BDC3C7;
 }
 
 button {
-    background-color: #BBBBBB;
-    border          : 1px solid rgba(0,0,0,.95);
+    background-color: #D7DBDC;
+    border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
 }
 
 button:hover {
-    background-color: #CCCCCC;
+    background-color: #E5E8E8;
     color           : #222;
 }
 
 button:active {
-    background-color: #DDDDDD;
+    background-color: #E5E8E8;
     color           : #222;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
 
 button#new_output,
 button#new_category {
     background-color: #27AE60;
-    border          : 1px solid rgba(0,0,0,.95);
-    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
-    color           : #DDD;
+    border          : 1px solid #1B8246;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.3) inset;
+    color           : #EEE;
 }
 
 button#new_output:hover,
 button#new_category:hover {
-    background-color: #0085d1;
-    border          : 1px solid rgba(0,0,0,1);
-    color           : #EEE;
+    background-color: #2BC16A;
+    border          : 1px solid #1B8246;
+    color           : #FFF;
 }
 
 button#new_output:active,
 button#new_category:active {
     background-color: #27AE60;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
-    color           : #EEE;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.4) inset;
+    color           : #FFF;
 }
 
 .collapsable-row .toggle {
@@ -563,7 +564,7 @@ button#new_category:active {
 
 #contents th,
 #contents td {
-    border-bottom   : 1px solid #111;
+    border-bottom   : 1px solid #BDC3C7;
 }
 
 #contents th,
@@ -573,14 +574,14 @@ button#new_category:active {
 
 #properties_table th,
 #properties_table td {
-    border-bottom   : 1px solid #111;
+    border-bottom   : 1px solid #BDC3C7;
 }
 
 table#contents a,
 table#properties_table a:not(.add-property-option) {
     background-color: #C0392B;
-    color           : #DDDDDD;
-    border          : 1px solid black;
+    color           : #EEE;
+    border          : 1px solid #9E2D21;
     box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
 }
 
