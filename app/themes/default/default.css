@@ -19,7 +19,7 @@ body {
 }
 
 body.grey {
-    background: #707073;
+    background: #7F8C8D;
 }
 
 body.form-viewer {
@@ -36,7 +36,7 @@ body.form-viewer a {
 h3 {
     font-size   : 14px;
     font-weight : bold;
-    color       : #007DC5;
+    color       : #27AE60;
 }
 
 fieldset {
@@ -78,7 +78,7 @@ input[readonly] {
 }
 
 input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
     outline : none;
 }
 
@@ -239,7 +239,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .selected {
-  background-color: #BDC3C7;
+  background-color: #FEFEFE;
 }
 
 .selected > .name {
@@ -267,8 +267,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tab, .tabs-scroll div {
     background      : #ECF0F1;
-    border-right    : 1px solid #AAA;
-    border-bottom   : 1px solid #AAA;
+    border-right    : 1px solid #BDC3C7;
+    border-bottom   : 1px solid #BDC3C7;
     cursor          : pointer;
     font-size       : 14px;
     color           : #444;
@@ -276,7 +276,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     position        : relative;
     height          : 24px;
     line-height     : 23px;
-    transition      : color ease-in .2s;
+    transition      : color ease-in .2s, background ease-in .2s;
 }
 
 .tabs-scroll div    {
@@ -286,7 +286,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tab:hover, .tabs-scroll div:hover {
-    color: #DDDDDD;
+    color       : #222;
+    background  : #F5F6F7;
 }
 
 .scroll-left, .scroll-right {
@@ -332,8 +333,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 /* Sub tab bar that appear for project settings */
 .toggle-wrapper {
-    background  : #21252B;
-    border-top  : 1px solid #111111;
+    background  : #ECF0F1;
+    border-top  : 1px solid #BDC3C7;
     padding     : 8px 18px 8px 8px;
     text-align  : right;
 }
@@ -347,9 +348,9 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .toggle-wrapper button {
     outline     : none;
     cursor      : pointer;
-    background  : #444;
-    color       : #EEE;
-    border      : 1px solid #111;
+    background  : #BCD3C7;
+    color       : #444;
+    border      : 1px solid #92989C;
     box-shadow  : 0 1px 0 rgba(255,255,255,.2) inset;
     padding     : 6px 20px;
     font-family : "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -357,15 +358,16 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .toggle-wrapper button:hover {
-    color: #FFF;
-    background: #555;
+    color       : #222;
+    background  : #CBD0D4;
 }
 
 .toggle-wrapper button.active-sub-tab,
 .toggle-wrapper button.active-sub-tab:hover {
-    background  : #007DC5;
+    background  : #27AE60;
     color       : #FFF;
-    box-shadow  : 0 0 4px rgba(22,22,22,.6) inset;
+    box-shadow  : 0 0 8px rgba(0,0,0,.5) inset;
+    border-color: #166F3C;
 }
 /* End of sub tab bar */
 
@@ -374,7 +376,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     display         : block;
     width           : 4px;
     content         : ' ';
-    background-color: #007DC5;
+    background-color: #27AE60;
     height          : 100%;
     top             : 0;
     left            : 0;
@@ -461,15 +463,15 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 .viewer-project-settings nav {
     background-color: #FAFAFA;
-    border-right    : 1px solid #CCC;
+    border-right    : 1px solid #BDC3C7;
 }
 
 .viewer-project-settings nav a {
     color           : #444;
-    background-color: #E5E5E6;
+    background-color: #ECF0F1;
     text-decoration : none;
     cursor          : pointer;
-    border-bottom   : 1px solid #CCC;
+    border-bottom   : 1px solid #BDC3C7;
     box-shadow      : 0 1px 0 rgba(255,255,255,.5) inset;
     transition      : background-color ease-in .2s, color ease-in .2s;
 }
@@ -479,13 +481,13 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
-    color           : #fff;
-    background-color: #007DC5;
+    color           : #FFF;
+    background-color: #27AE60;
     box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
 }
 
 .viewer-project-settings nav a:hover {
-    background-color: #F1F1F1;
+    background-color: #FAFAFA;
     color           : #222;
 }
 
@@ -526,7 +528,7 @@ button:active {
 
 button#new_output,
 button#new_category {
-    background-color: #007DC5;
+    background-color: #27AE60;
     border          : 1px solid rgba(0,0,0,.95);
     box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
     color           : #DDD;
@@ -541,7 +543,7 @@ button#new_category:hover {
 
 button#new_output:active,
 button#new_category:active {
-    background-color: #007DC5;
+    background-color: #27AE60;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
     color           : #EEE;
 }
@@ -637,7 +639,7 @@ table#properties_table a:active:not(.add-property-option) {
 
 .askia-modal-button-ok,
 .askia-modal-button-yes {
-    background-color: #007dc5;
+    background-color: #27AE60;
     border          : 1px solid rgba(0,0,0,.8);
     box-shadow      : 0 1px 0 rgba(255,255,255,.25) inset;
     color           : #DDD;
@@ -652,7 +654,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-button-ok:active,
 .askia-modal-button-yes:active {
     color           : #FFF;
-    background-color: #007DC5;
+    background-color: #27AE60;
     box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
 }
 
@@ -683,7 +685,7 @@ table#properties_table a:active:not(.add-property-option) {
     color           : #BBB;
 }
 .askia-modal-input-prompt:focus {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
 }
 
 
@@ -739,7 +741,7 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .KBshortcut {
-    color       : #007DC5;
+    color       : #27AE60;
 }
 
 .askia-modal-new-project-container input,
@@ -753,7 +755,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-new-project-container input:focus,
 .askia-modal-new-project-container textarea:focus,
 .askia-modal-new-project-container select:focus {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
 }
 
 .askia-modal-new-project-container button {
@@ -786,7 +788,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-preferences-container input:focus,
 .askia-modal-preferences-container textarea:focus,
 .askia-modal-preferences-container select:focus {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
     outline : none;
 }
 
