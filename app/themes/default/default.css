@@ -130,7 +130,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 
 .explorer-html {
-    background-color: #E5E5E6;
+    background-color: #ECF0F1;
 }
 
 #root {
@@ -239,7 +239,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .selected {
-  background-color: #CACACA;
+  background-color: #BDC3C7;
 }
 
 .selected > .name {
@@ -266,7 +266,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tab, .tabs-scroll div {
-    background      : #E5E5E6;
+    background      : #ECF0F1;
     border-right    : 1px solid #AAA;
     border-bottom   : 1px solid #AAA;
     cursor          : pointer;
@@ -307,6 +307,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     visibility      : hidden;
     transition      : visibility ease-in .2s;
 }
+
 .tab:hover .tab-close {
     visibility: visible;
 }
@@ -316,7 +317,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background: #E5E5E6;
+    background: #ECF0F1;
 }
 
 .tab.active {
@@ -380,7 +381,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .pane {
-    background-color: #E5E5E6;
+    background-color: #ECF0F1;
 }
 
 .pane .placeholder {
