@@ -650,9 +650,9 @@ table#properties_table a:active:not(.add-property-option) {
 
 .askia-modal-dialog {
     color       : #444;
-    background  : #ECF0F1;
+    background  : #FAFAFA;
     border      : 1px solid #6A6B6B !important;
-    box-shadow: 0 0 17px 0 rgba(66,66,66,.8), 0 1px 0 white inset;
+    box-shadow  : 0 0 17px 0 rgba(66,66,66,.8), 0 1px 0 white inset;
 }
 
 .askia-modal-button-ok,
@@ -700,9 +700,9 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-input-prompt {
-    border          : 1px solid #151515;
-    background-color: #21252B;
-    color           : #BBB;
+    border          : 1px solid #BDC3C7;
+    background-color: #ECF0F1;
+    color           : #444;
 }
 
 .askia-modal-input-prompt:focus {
