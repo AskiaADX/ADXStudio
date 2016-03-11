@@ -225,10 +225,20 @@ function buildProject() {
  */
 function openPreferences(){
     appSettings.getPreferences(function onReadPreferences(err, preferences){
-        showModalDialog({
-            type : 'preferences',
-            preferences  : preferences
-        }, 'main-save-preferences');
+        fs.readdir(path.join(__dirname, '../themes'), function(err, files) {
+            const dirs = [];
+            files.forEach(function(file) {
+                const stat = fs.statSync(path.join(__dirname, "../themes/", file));
+                if (stat.isDirectory()) {
+                    dirs.push(file);
+                }
+            });
+            showModalDialog({
+                type : 'preferences',
+                preferences  : preferences,
+                themes : dirs || ['default']
+            }, 'main-save-preferences');
+        });
     });
 }
 

@@ -348,7 +348,9 @@
             if (!tabsEl) {
                 return;
             }
-
+            
+            tabs.theme = theme;
+            
             // First of all build an array with all tab ids
             // To have a static reference of the tab to save
             for (i = 0, l = tabsEl.length; i < l; i += 1) {
@@ -360,6 +362,9 @@
                 
                 if (typeof tab.viewer.switchTheme === 'function') {
                     tab.viewer.switchTheme(theme);
+                }
+                if (tab.altViewer && typeof tab.altViewer.switchTheme === 'function') {
+                    tab.altViewer.switchTheme(theme);
                 }
             }
         };

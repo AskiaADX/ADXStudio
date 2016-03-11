@@ -115,38 +115,21 @@
             el.themeSelect = document.createElement('select');
             el.themeSelect.setAttribute('id', 'modal_preferences_theme_' + autoIncrement);
             el.theme.appendChild(el.themeSelect);
-            
-            /*var option = document.createElement('option');
-            option.setAttribute('id', 'Choose a theme');
-            option.value = "Choose a theme";
-            option.textContent = "Choose a theme";
-            el.themeInput.appendChild(option);
-            */
-         
-            var option1 = document.createElement('option');
-            option1.value = "default";
-            option1.textContent = "default";
-
-            var option2 = document.createElement('option');
-            option2.value = "mixed";
-            option2.textContent = "mixed";
-
-            if (preferences.theme === option1.textContent) {
-                el.themeSelect.appendChild(option1);
-                el.themeSelect.appendChild(option2);
-            } else {
-                el.themeSelect.appendChild(option2);
-                el.themeSelect.appendChild(option1);
+                        
+            var option
+            for (var i = 0, l = options.themes.length; i < l; i++) {
+                var theme = options.themes[i];
+                option = document.createElement('option');
+                option.value = theme;
+                option.textContent = theme;
+                if (preferences.theme === theme) {
+                    option.setAttribute('selected', 'selected');
+                }
+                el.themeSelect.appendChild(option)
             }
             
-            el.themeSelect.value = (option1.selected)? option1 : option2;
             
-            /*if (option.selected) {
-                el.themeInput.value = author.theme;
-            } else {
-                el.themeInput.value = option1.selected || option2.selected;
-            }
-            */
+            
             
             root.appendChild(el.theme);
             
