@@ -102,14 +102,15 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #panel_status.opened {
-    background      : #21252B;
-    color           : #555;
+    background      : #ECF0F1;
+    border-bottom   : 1px solid #BDC3C7;
+    color           : #444;
 }
 
 .panel-title-bar {
-    background      : #21252B;
-    border-bottom   : 1px solid #000;
-    color           : #DDD;
+    background      : #ECF0F1;
+    border-bottom   : 1px solid #BDC3C7;
+    color           : #444;
 }
 
 .panel-title-bar .close {
@@ -117,23 +118,23 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .panel-contents {
-    color       : #EEE;
+    color: #444;
 }
 
 #panel_output a {
-    color       : #3498DB;
+    color: #3498DB;
 }
 
 #panel_output .error {
-    color       : #EC5F67;
+    color: #C0392B;
 }
 
 #panel_output .warning {
-    color       : #FFCB6B;
+    color: #E67E22;
 }
 
 #panel_output .success {
-    color       : #C3E88D;
+    color: #27AE60;
 }
 
 /* ========================================
@@ -458,18 +459,16 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #grid {
-    border-top  : 4px solid #111;
+    border-top  : 4px solid #7F8C8D;
 }
 
 #grid h2 {
-    border-bottom   : 1px solid #21252B;
-    box-shadow      : 0 1px 0 #2F3032;
-    color           : rgb(215, 215, 215);
+    border-bottom   : 1px solid #BDC3C7;
+    color           : #444;
 }
 
 #grid h3 {
-    border-top: 1px solid #2F3032;
-    box-shadow: 0 -1px 0 #21252b;
+    border-top: 1px solid #BDC3C7;
 }
 
 #preview {
