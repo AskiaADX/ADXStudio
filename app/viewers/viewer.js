@@ -10,6 +10,14 @@ var viewer = (function () {
 
     tab.window = window;
 
+    // Add the CSS of theme
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css"); 
+    link.href = "../../themes/" + tabs.theme + "/application.css";
+    
+    document.head.appendChild(link);
+    
     window.addEventListener('focus', function () {
         tabs.onFocus(tab.id);
     });
@@ -27,6 +35,13 @@ var viewer = (function () {
          * Current tab
          */
         currentTab  : tab,
+         /**
+         * When we switch the theme of the interface, propagate events on all tabs
+         * @param {String} theme Name of the theme
+         */
+        switchTheme : function onSwitchTheme(theme) {
+            link.href = '../../themes/' + theme + '/application.css';
+        },
         /**
          * Save content
          * Should be implemented by the viewer

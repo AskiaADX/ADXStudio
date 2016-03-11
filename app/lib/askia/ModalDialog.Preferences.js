@@ -22,7 +22,7 @@
                 options = modalDialog.options || {},
                 preferences = options.preferences || {},
                 author = (preferences.author) || {};
-
+            
             // Add extra class on the dialog box
             modalDialog.elements.dialog.classList.add('preferences');
 
@@ -103,6 +103,53 @@
 
             root.appendChild(el.website);
 
+            // Theme
+            el.theme = document.createElement('div');
+            el.theme.className = 'askia-modal-preferences-container';
+
+            el.themeLabel = document.createElement('label');
+            el.themeLabel.setAttribute('for', 'modal_preferences_theme_' + autoIncrement);
+            el.themeLabel.innerHTML = 'Theme: ';
+            el.theme.appendChild(el.themeLabel);
+
+            el.themeSelect = document.createElement('select');
+            el.themeSelect.setAttribute('id', 'modal_preferences_theme_' + autoIncrement);
+            el.theme.appendChild(el.themeSelect);
+            
+            /*var option = document.createElement('option');
+            option.setAttribute('id', 'Choose a theme');
+            option.value = "Choose a theme";
+            option.textContent = "Choose a theme";
+            el.themeInput.appendChild(option);
+            */
+         
+            var option1 = document.createElement('option');
+            option1.value = "default";
+            option1.textContent = "default";
+
+            var option2 = document.createElement('option');
+            option2.value = "mixed";
+            option2.textContent = "mixed";
+
+            if (preferences.theme === option1.textContent) {
+                el.themeSelect.appendChild(option1);
+                el.themeSelect.appendChild(option2);
+            } else {
+                el.themeSelect.appendChild(option2);
+                el.themeSelect.appendChild(option1);
+            }
+            
+            el.themeSelect.value = (option1.selected)? option1 : option2;
+            
+            /*if (option.selected) {
+                el.themeInput.value = author.theme;
+            } else {
+                el.themeInput.value = option1.selected || option2.selected;
+            }
+            */
+            
+            root.appendChild(el.theme);
+            
             // Open the latest project by default
             el.reopenLastProject = document.createElement('div');
             el.reopenLastProject.className = 'askia-modal-preferences-checkbox-container';
@@ -144,6 +191,7 @@
                         company: el.companyInput.value,
                         website: el.websiteInput.value
                     },
+                    theme: el.themeSelect.value,
                     openLastProjectByDefault : el.reopenLastProjectInput.checked
                 }
             };

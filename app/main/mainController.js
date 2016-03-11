@@ -245,6 +245,15 @@ function savePreferences(event, button, options) {
     appSettings.setPreferences(options.preferences);
 }
 
+
+/**
+ * Switch the current theme
+ * @param {String} themeName The name of the new theme
+ */
+function switchTheme(themeName) {
+    mainView.send('switch-theme', themeName);
+}
+
 /**
  * Closing the main window
  * @param event
@@ -336,15 +345,17 @@ ipc.on('main-ready', function (event) {
     // About ADXStudio
     app.removeListener('menu-about-adxstudio', showAbout);
     app.on('menu-about-adxstudio', showAbout);
-    
+
     app.removeListener('menu-shortcuts', showKeyboardShortcuts);
     app.on('menu-shortcuts', showKeyboardShortcuts);
-    
+
     // Preferences
     app.removeListener('menu-open-preferences', openPreferences);
     app.on('menu-open-preferences', openPreferences);
     ipc.removeListener('main-save-preferences', savePreferences);
     ipc.on('main-save-preferences', savePreferences);
+    app.removeListener('preference-switch-theme', switchTheme);
+    app.on('preference-switch-theme', switchTheme);
 
     // Verify everything before to quit the application
     global.mainWindow.removeListener('close', onCloseMainWindow);
