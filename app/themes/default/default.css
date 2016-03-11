@@ -8,6 +8,16 @@
 /* ========================================
     Share styling
    ======================================== */
+::-moz-selection {
+    background  : #27AE60;
+    color       : #FFF;
+}
+
+::selection {
+    background  : #27AE60;
+    color       : #FFF;
+}
+
 html {
     text-rendering          : optimizeLegibility !important;
     -webkit-font-smoothing  : antialiased !important;
@@ -266,6 +276,10 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     width: 50px;
 }
 
+.tab {
+    border-top: 1px solid #BDC3C7;
+}
+
 .tab, .tabs-scroll div {
     background      : #ECF0F1;
     border-right    : 1px solid #BDC3C7;
@@ -319,13 +333,14 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background: #ECF0F1;
+    background      : #ECF0F1;
+    border-bottom   : 1px solid #BDC3C7;
 }
 
 .tab.active {
     background          : #FAFAFA;
     color               : #222;
-    border-bottom-color : transparent;
+    border-bottom       : 1px solid transparent;
 }
 
 .tab.edit {
@@ -506,7 +521,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .viewer-project-settings #properties_table tbody tr:hover:not(.editable),
 .viewer-project-settings #contents tbody tr:hover:not(.editable) {
-    background-color: #BDC3C7;
+    background-color: #DADEE0;
 }
 
 button {
@@ -600,19 +615,19 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .add-property-option {
-    background-color: #BBB;
-    color           : #222 !important;
-    border          : 1px solid black;
+    background-color: #D7DBDC;
+    color           : #444 !important;
+    border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
 }
 
 .add-property-option:hover {
-    background-color: #CCC;
-    color           : #000;
+    background-color: #E5E8E8;
+    color           : #222;
 }
 
 .add-property-option:active {
-    background-color: #BBB;
+    background-color: #D7DBDC;
     color           : #000;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
 }
@@ -633,23 +648,25 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-dialog {
-    color           : #DDD;
-    background      : #282C34;
-    box-shadow      : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
+    color       : #444;
+    background  : #ECF0F1;
+    border      : 1px solid #6A6B6B !important;
+    box-shadow: 0 0 17px 0 rgba(66,66,66,.8), 0 1px 0 white inset;
 }
 
 .askia-modal-button-ok,
 .askia-modal-button-yes {
     background-color: #27AE60;
-    border          : 1px solid rgba(0,0,0,.8);
+    border          : 1px solid #1C8649;
     box-shadow      : 0 1px 0 rgba(255,255,255,.25) inset;
-    color           : #DDD;
+    color           : #EEE;
+    line-height     : 0;
 }
 
 .askia-modal-button-ok:hover,
 .askia-modal-button-yes:hover {
     color           : #FFF;
-    background-color: #028EDE;
+    background-color: #29BD67;
 }
 
 .askia-modal-button-ok:active,
@@ -661,22 +678,23 @@ table#properties_table a:active:not(.add-property-option) {
 
 .askia-modal-button-cancel,
 .askia-modal-button-no {
-    background-color: #BBBBBB;
-    border          : 1px solid rgba(0,0,0,1);
+    background-color: #D7DBDC;
+    border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
-    color           : #222;
+    color           : #444;
+    line-height     : 0;
 }
 
 .askia-modal-button-cancel:hover,
 .askia-modal-button-no:hover {
-    color           : #111111;
-    background-color: #CCCCCC;
+    color           : #222;
+    background-color: #E5E8E8;
 }
 
 .askia-modal-button-cancel:active,
 .askia-modal-button-no:active {
-    color           : #111111;
-    background-color: #BBBBBB;
+    color           : #222;
+    background-color: #D7DBDC;
     box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
 }
 
@@ -685,6 +703,7 @@ table#properties_table a:active:not(.add-property-option) {
     background-color: #21252B;
     color           : #BBB;
 }
+
 .askia-modal-input-prompt:focus {
     border  : 1px solid #27AE60;
 }
