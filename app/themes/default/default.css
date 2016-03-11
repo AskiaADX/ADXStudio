@@ -85,7 +85,7 @@ textarea {
 }
 
 input[readonly] {
-    color: #545961;
+    color: #888;
 }
 
 input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
@@ -421,23 +421,25 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 
 #addressURL {
-    background-color: #343A44;
-    border-top      : 1px solid #151515;
+    border          : 1px solid #BDC3C7;
+    border-top      : 1px solid transparent;
+    background-color: #ECF0F1;
+    color           : #444;
 }
 
 #addressURL:focus {
-    border: 1px solid #151515;
+    border: 1px solid #27AE60;
 }
 
 #addressURL[readonly] {
-    color : #BBB;
+    color : #888;
 }
 
 #reloadPreview, #openPreview, #reset {
-    background-color: #21252B;
-    color           : #DDD;
-    border-color    : #151515;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.1) inset;
+    background-color: #D7DBDC;
+    border          : 1px solid #BDC3C7;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #444;
 }
 
 #reloadPreview {
@@ -445,13 +447,13 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #reloadPreview:hover, #openPreview:hover, #reset:hover {
-    color           : #FFF;
-    background-color: #31363E;
+    color           : #222;
+    background-color: #E5E8E8;
 }
 
 #reloadPreview:active, #openPreview:active, #reset:active {
-    color           : #FFF;
-    background-color: #21252B;
+    color           : #000;
+    background-color: #D7DBDC;
     box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
@@ -560,7 +562,7 @@ button#new_category:hover {
 button#new_output:active,
 button#new_category:active {
     background-color: #27AE60;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.4) inset;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
     color           : #FFF;
 }
 
@@ -611,7 +613,7 @@ table#contents a:active,
 table#properties_table a:active:not(.add-property-option) {
     background-color: #C0392B;
     color           : #FFF;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
 
 .add-property-option {
@@ -629,7 +631,7 @@ table#properties_table a:active:not(.add-property-option) {
 .add-property-option:active {
     background-color: #D7DBDC;
     color           : #000;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
 /* ========================================
    Viewer Part - image
@@ -764,12 +766,16 @@ table#properties_table a:active:not(.add-property-option) {
     color       : #27AE60;
 }
 
+.askia-modal-dialog.new-project {
+    background: #FAFAFA;
+}
+
 .askia-modal-new-project-container input,
 .askia-modal-new-project-container textarea,
 .askia-modal-new-project-container select {
-    border          : 1px solid #151515;
-    background-color: #21252B;
-    color           : #BBB;
+    border          : 1px solid #BDC3C7;
+    background-color: #ECF0F1;
+    color           : #444;
 }
 
 .askia-modal-new-project-container input:focus,
@@ -779,29 +785,33 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-new-project-container button {
-    background-color: #BBBBBB;
-    border          : 1px solid rgba(0,0,0,.95);
+    background-color: #D7DBDC;
+    border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
-    color           : #222;
+    color           : #444;
 }
 
 .askia-modal-new-project-container button:hover {
-    background-color: #CCCCCC;
-    color           : #000;
+    background-color: #E5E8E8;
+    color           : #222;
 }
 
 .askia-modal-new-project-container button:active {
-    background-color: #DDDDDD;
+    background-color: #D7DBDC;
     color           : #000;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+}
+
+.askia-modal-dialog.preferences {
+    background: #FAFAFA;
 }
 
 .askia-modal-preferences-container input,
 .askia-modal-preferences-container textarea,
 .askia-modal-preferences-container select {
-    border          : 1px solid #151515;
-    background-color: #21252B;
-    color           : #BBB;
+    border          : 1px solid #BDC3C7;
+    background-color: #ECF0F1;
+    color           : #444;
 }
 
 .askia-modal-preferences-checkbox-container input:focus,
@@ -813,21 +823,21 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-preferences-container button {
-    background-color: #BBBBBB;
-    border          : 1px solid rgba(0,0,0,.95);
+    background-color: #D7DBDC;
+    border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
-    color           : #222;
+    color           : #444;
 }
 
 .askia-modal-preferences-container button:hover {
-    background-color: #CCCCCC;
-    color           : #000;
+    background-color: #E5E8E8;
+    color           : #222;
 }
 
 .askia-modal-preferences-container button:active {
-    background-color: #DDDDDD;
+    background-color: #D7DBDC;
     color           : #000;
-    box-shadow      : 0 0 10px 0 rgba(0,0,0,.9) inset;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
 
 div.askia-resizer-horizontal-drag {
