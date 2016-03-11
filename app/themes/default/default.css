@@ -738,27 +738,27 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts {
-    color           : #DDD;
-    color           : #EEE;
-    background      : #282C34;
-    border          : 1px solid #181818;
-    box-shadow      : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
+    color       : #444;
+    background  : #FAFAFA;
+    border      : 1px solid #555 !important;
+    box-shadow  : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts h2 {
-    color       : #BBB;
+    color: #888;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts .left {
-    border-right: 1px solid #181818;
+    border-right: 1px solid #BDC3C7;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts  a {
-     color      : #DDD;
+    color: #444;
+    transition: color ease-in .2s;
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts  a:hover {
-    color: #FFF;
+    color: #222;
 }
 
 .KBshortcut {
