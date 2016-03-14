@@ -474,14 +474,19 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
+#grid #reset {
+    height: 35px;
+    border-width: 1px !important;
+}
+
 #grid {
     border-top      : 4px solid #7F8C8D;
     background-color: #ECF0F1;
 }
 
 #grid h2 {
-    border-bottom   : 1px solid #BDC3C7;
     color           : #444;
+    padding         : 0;
 }
 
 #grid h3 {
