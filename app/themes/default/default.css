@@ -93,6 +93,10 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     outline : none;
 }
 
+#formProjectSettings textarea {
+    resize: vertical;
+}
+
 .splitter {
     background: transparent;
 }
