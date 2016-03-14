@@ -508,7 +508,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
     color           : #FFF;
     background-color: #27AE60;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
+    box-shadow      : 0 1px 0 #2AD070 inset;
 }
 
 .viewer-project-settings nav a:hover {
@@ -865,10 +865,11 @@ div.askia-resizer-modal {
     background: #FAFAFA;
 }
 
-.tool{
-    background-color: #8c9899;
+.toolbar .tool{
+    background-color: #7F8C8D;
 }
 
-.tool:hover {
-    background-color: #9EA8A9;
+.toolbar .tool:hover {
+    background-color: #8B9798;
+    border: 1px solid #7F8C8D;
 }
