@@ -84,6 +84,10 @@ textarea {
     font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+#grid input, #grid textarea, #grid select {
+    background-color: #E7EBEC;
+}
+
 input[readonly] {
     color: #888;
 }
@@ -471,7 +475,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #grid {
-    border-top  : 4px solid #7F8C8D;
+    border-top      : 4px solid #7F8C8D;
+    background-color: #ECF0F1;
 }
 
 #grid h2 {
