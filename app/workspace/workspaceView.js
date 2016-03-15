@@ -349,7 +349,14 @@
             var paneEl = document.getElementById(pane + '_pane'),
                 wrapperEl = paneEl.querySelector('.tabs-wrapper'),
                 scrollEl  = paneEl.querySelector('.tabs-scroll');
-            scrollEl.style.visibility = hasHorizontalScroll(wrapperEl) ? 'visible' : '';
+                if (hasHorizontalScroll(wrapperEl)) {
+                    scrollEl.querySelector('.scroll-right').classList.remove('disabled');
+                    scrollEl.querySelector('.scroll-left').classList.remove('disabled');
+                }
+                else {
+                    scrollEl.querySelector('.scroll-right').classList.add('disabled');
+                    scrollEl.querySelector('.scroll-left').classList.add('disabled');
+                }
         }
 
         /**
@@ -498,7 +505,7 @@
                     ipc.send('workspace-convert-config-to-xml', tab.projectSettings.getCurrentConfig());
                 });
             }
-            
+
             contentEl.appendChild(iFrameWrapper);
 
             var paneEl = document.getElementById(pane + '_pane');
@@ -1448,7 +1455,3 @@
     });
 
 }());
-
-
-
-

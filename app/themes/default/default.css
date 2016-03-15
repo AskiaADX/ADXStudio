@@ -295,6 +295,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll {
     width: 50px;
+    visibility: visible;
 }
 
 .tab {
@@ -313,7 +314,6 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll div {
     background      : #ECF0F1;
-    border-right    : 1px solid #BDC3C7;
     cursor          : pointer;
     font-size       : 14px;
     color           : #444;
@@ -329,13 +329,46 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     vertical-align  : middle;
 }
 
-.tab:hover, .tabs-scroll div:hover {
-    color       : #222;
-    background  : #F5F6F7;
-}
-
 .scroll-left, .scroll-right {
     border: 0;
+}
+
+.tabs-scroll .scroll-left {
+    background  : url(adxs-scroll-left.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-right {
+    background  : url(adxs-scroll-right.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-left:hover {
+    background  : url(adxs-scroll-left-hover.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-right:hover {
+    background  : url(adxs-scroll-right-hover.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-left.disabled {
+    background  : url(adxs-scroll-left-disabled.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+    cursor      : default;
+}
+
+.tabs-scroll .scroll-right.disabled {
+    background  : url(adxs-scroll-right-disabled.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+    cursor      : default;
 }
 
 .tab-icon {
@@ -469,6 +502,11 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     border          : 1px solid #BDC3C7;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
+}
+
+#reloadPreview,
+#openPreview {
+    border-top: none;
 }
 
 #reloadPreview {
