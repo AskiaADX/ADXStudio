@@ -8,6 +8,16 @@
 /* ========================================
     Share styling
    ======================================== */
+::-moz-selection {
+   background  : #007DC5;
+   color       : #FFF;
+}
+
+::selection {
+   background  : #007DC5;
+   color       : #FFF;
+}
+
 html {
     text-rendering          : optimizeLegibility !important;
     -webkit-font-smoothing  : antialiased !important;
@@ -80,6 +90,22 @@ input[readonly] {
 input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
     border  : 1px solid #007DC5;
     outline : none;
+}
+
+#formProjectSettings textarea {
+    resize: vertical;
+}
+
+#formProjectSettings #style_width,
+#formProjectSettings #style_height {
+    width: 80px;
+}
+
+#formProjectSettings input[type="text"],
+#formProjectSettings input[type="url"],
+#formProjectSettings textarea,
+#formProjectSettings select {
+    width: 60%;
 }
 
 .splitter {
@@ -265,7 +291,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     width: 50px;
 }
 
-.tab, .tabs-scroll div {
+.tab {
     background      : #21252B;
     border-right    : 1px solid #111;
     border-bottom   : 1px solid #111;
@@ -276,7 +302,22 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     position        : relative;
     height          : 24px;
     line-height     : 23px;
-    transition      : color ease-in .3s;
+    transition      : color ease-in .2s, background ease-in .2s;
+}
+
+div.tabs-scroll {
+    border-bottom: 1px solid #111;
+}
+
+.tabs-scroll div {
+    background      : #21252B;
+    cursor          : pointer;
+    font-size       : 14px;
+    color           : #B0B0B0;
+    padding         : 10px;
+    position        : relative;
+    line-height     : 23px;
+    transition      : color ease-in .2s, background ease-in .2s;
 }
 
 .tabs-scroll div    {
@@ -291,6 +332,44 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .scroll-left, .scroll-right {
     border: 0;
+}
+
+.tabs-scroll .scroll-left {
+    background  : url(adxs-scroll-left.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-right {
+    background  : url(adxs-scroll-right.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-left:hover {
+    background  : url(adxs-scroll-left-hover.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-right:hover {
+    background  : url(adxs-scroll-right-hover.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+}
+
+.tabs-scroll .scroll-left.disabled {
+    background  : url(adxs-scroll-left-disabled.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+    cursor      : default;
+}
+
+.tabs-scroll .scroll-right.disabled {
+    background  : url(adxs-scroll-right-disabled.png) no-repeat center center;
+    width       : 17px;
+    height      : 20px;
+    cursor      : default;
 }
 
 .tab-icon {
@@ -436,13 +515,17 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
+#grid #reset {
+    height: 35px;
+    border-width: 1px !important;
+}
+
 #grid {
     border-top  : 4px solid #111;
 }
 
 #grid h2 {
-    border-bottom   : 1px solid #21252B;
-    box-shadow      : 0 1px 0 #2F3032;
+    padding         : 0;
     color           : rgb(215, 215, 215);
 }
 
@@ -685,11 +768,13 @@ table#properties_table a:active:not(.add-property-option) {
     border  : 1px solid #007DC5;
 }
 
-
 .askia-modal-dialog.about {
-    background-color: #CBCBCB;
-    background-image: linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
+    background-color: #F4FBFF;
     box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 17px 4px rgba(0, 0, 0, .4);
+}
+
+.askia-modal-dialog.about h3 {
+    color: #222;
 }
 
 .askia-modal-dialog.about .left {
