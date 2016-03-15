@@ -469,7 +469,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     line-height : 1.3;
     font-size   : 2.6rem;
     font-weight : 700;
-    color       : #2E333A;
+    color       : #D5DBDC;
 }
 
 .pane .content,
@@ -783,9 +783,12 @@ table#properties_table a:active:not(.add-property-option) {
 
 
 .askia-modal-dialog.about {
-    background-color: #CBCBCB;
-    background-image: linear-gradient(bottom, rgba(204,204,204,.6) 0%, rgba(234,234,234,.6) 100%);
+    background-color: #ECF0F1;
     box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 17px 4px rgba(0, 0, 0, .4);
+}
+
+.askia-modal-dialog h3 {
+    color: #222;
 }
 
 .askia-modal-dialog.about .left {
