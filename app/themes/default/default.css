@@ -101,6 +101,18 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     resize: vertical;
 }
 
+#formProjectSettings #style_width,
+#formProjectSettings #style_height {
+    width: 80px;
+}
+
+#formProjectSettings input[type="text"],
+#formProjectSettings input[type="url"],
+#formProjectSettings textarea,
+#formProjectSettings select {
+    width: 60%;
+}
+
 .splitter {
     background: transparent;
 }
