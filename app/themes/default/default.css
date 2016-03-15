@@ -67,7 +67,7 @@ label, input[type="checkbox"] {
 input, textarea {
     border-radius   : 2px;
     border          : 1px solid #151515;
-    background-color: #21252B;
+    background-color: #343A44;
     color           : #BBB;
 }
 
@@ -761,7 +761,7 @@ table#properties_table a:active:not(.add-property-option) {
 
 .askia-modal-input-prompt {
     border          : 1px solid #151515;
-    background-color: #21252B;
+    background-color: #343A44;
     color           : #BBB;
 }
 .askia-modal-input-prompt:focus {
@@ -830,7 +830,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-new-project-container textarea,
 .askia-modal-new-project-container select {
     border          : 1px solid #151515;
-    background-color: #21252B;
+    background-color: #343A44;
     color           : #BBB;
 }
 
@@ -862,7 +862,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-preferences-container textarea,
 .askia-modal-preferences-container select {
     border          : 1px solid #151515;
-    background-color: #21252B;
+    background-color: #343A44;
     color           : #BBB;
 }
 
