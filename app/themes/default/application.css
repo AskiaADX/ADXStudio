@@ -731,7 +731,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-button-ok:hover,
 .askia-modal-button-yes:hover {
     color           : #FFF;
-    background-color: #028EDE;
+    background-color: #2DD071;
 }
 
 .askia-modal-button-ok:active,
@@ -793,11 +793,11 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-dialog.about  a {
-     color: #0073EA;
+     color: #27AE60;
 }
 
 .askia-modal-dialog.about  a:hover {
-    background  : #0073EA;
+    background  : #2DD071;
     color       : #FFF;
 }
 
