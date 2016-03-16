@@ -61,7 +61,7 @@ function tryIfADC(fn) {
  * @param {Function} callback
  * @param {Object} callback.structure
  * @param {String[]} callback.structure.dynamic List of files in dynamic directory
- * @param {String[]} callback.structure.statics List of files in static directory
+ * @param {String[]} callback.structure.static List of files in static directory
  * @param {String[]} callback.structure.share List of files in share directory
  */
 function getResourcesDirectoryStructure(callback) {
@@ -98,7 +98,7 @@ function getResourcesDirectoryStructure(callback) {
 
         var staticPath = path.join(adc.path, 'resources/static');
         fs.readdir(staticPath, function onReadStaticDirectory(errStatic, staticFiles) {
-            structure.statics = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
+            structure.static = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
 
             var dynamicPath = path.join(adc.path, 'resources/dynamic');
             fs.readdir(dynamicPath, function onReadDynamicDirectory(errDynamic, dynamicFiles) {
