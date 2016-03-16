@@ -337,38 +337,35 @@ div.tabs-scroll {
 .tabs-scroll .scroll-left {
     background  : url(adxs-scroll-left.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
+    box-shadow  : 1px 0 0 0 rgba(255,255,255,0.2) inset, 2px 0 0 0 rgba(0,0,0,1) inset;
 }
 
 .tabs-scroll .scroll-right {
     background  : url(adxs-scroll-right.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
 }
 
 .tabs-scroll .scroll-left:hover {
     background  : url(adxs-scroll-left-hover.png) no-repeat center center;
-    width       : 17px;
-    height      : 20px;
 }
 
 .tabs-scroll .scroll-right:hover {
     background  : url(adxs-scroll-right-hover.png) no-repeat center center;
-    width       : 17px;
-    height      : 20px;
 }
 
 .tabs-scroll .scroll-left.disabled {
     background  : url(adxs-scroll-left-disabled.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
     cursor      : default;
 }
 
 .tabs-scroll .scroll-right.disabled {
     background  : url(adxs-scroll-right-disabled.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
     cursor      : default;
 }
 
@@ -396,6 +393,10 @@ div.tabs-scroll {
 
 .tabs-scroll, .tab-end {
     background      : #21252B;
+}
+
+.tab-end {
+    border-bottom: 1px solid #111;
 }
 
 .tab.active {
@@ -482,7 +483,7 @@ div.tabs-scroll {
 
 #addressURL {
     background-color: #343A44;
-    border-top      : 1px solid #151515;
+    border-top      : none;
 }
 
 #addressURL:focus {
@@ -498,6 +499,7 @@ div.tabs-scroll {
     color           : #DDD;
     border-color    : #151515;
     box-shadow      : 0 1px 0 rgba(255,255,255,.1) inset;
+    border-width    : 0 1px 1px 0 !important;
 }
 
 #reloadPreview {

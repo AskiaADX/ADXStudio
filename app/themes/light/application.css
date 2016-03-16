@@ -336,38 +336,36 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .tabs-scroll .scroll-left {
     background  : url(adxs-scroll-left.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
+    box-shadow  : 1px 0 0 0 #BDC3C7 inset, 2px 0 0 0 rgba(255,255,255,0.8) inset;
 }
 
 .tabs-scroll .scroll-right {
     background  : url(adxs-scroll-right.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
 }
 
 .tabs-scroll .scroll-left:hover {
     background  : url(adxs-scroll-left-hover.png) no-repeat center center;
-    width       : 17px;
-    height      : 20px;
 }
 
 .tabs-scroll .scroll-right:hover {
     background  : url(adxs-scroll-right-hover.png) no-repeat center center;
-    width       : 17px;
-    height      : 20px;
 }
 
 .tabs-scroll .scroll-left.disabled {
     background  : url(adxs-scroll-left-disabled.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
     cursor      : default;
+    box-shadow  : none;
 }
 
 .tabs-scroll .scroll-right.disabled {
     background  : url(adxs-scroll-right-disabled.png) no-repeat center center;
     width       : 17px;
-    height      : 20px;
+    height      : 24px;
     cursor      : default;
 }
 
@@ -510,7 +508,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #reloadPreview {
-    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, -1px 0 0 rgba(255,255,255,.1) inset;
+    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, -1px 0 0 rgba(255,255,255,.1) inset;
 }
 
 #reloadPreview:hover, #openPreview:hover, #reset:hover {
