@@ -618,7 +618,7 @@ button#new_category {
 
 button#new_output:hover,
 button#new_category:hover {
-    background-color: #0085d1;
+    background-color: #2DD071;
     border          : 1px solid rgba(0,0,0,1);
     color           : #EEE;
 }
