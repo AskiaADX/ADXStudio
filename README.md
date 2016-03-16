@@ -55,3 +55,8 @@ Authors
 -  [Jérôme Sopoçko](https://github.com/BadJerry)
 -  [Mehdi Aït-Bachir](https://github.com/AskiaMehdi)
 -  [Jérôme Duparc](https://github.com/Djedj)
+
+Contributors
+------------
+
+- [Robbe Van der Gucht](https://github.com/sir-ragna)

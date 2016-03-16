@@ -28,7 +28,7 @@
     overflow-x : hidden;
     white-space: nowrap;
     box-shadow : 0 1px 4px #222222;
-    font-family : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    font-family: 'Source Sans Pro', monospace;
 }
 
 .cms-sense li {
@@ -40,8 +40,7 @@
 }
 
 .cms-sense li.cms-selected {
-    background  : #27AE60;
-    color       : #FFF;
+    background      : #abd3ff;
 }
 
 .cms-sense li.cms-visible {
@@ -326,3 +325,4 @@
     min-width: 150px;
     margin :15px;
 }
+
