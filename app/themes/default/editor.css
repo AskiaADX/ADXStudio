@@ -10,7 +10,7 @@
 }
 
 .cm-s-askia div.CodeMirror-selected {
-    background: rgba(0, 125, 197, .5) !important;
+    background: rgba(0, 125, 197, .2) !important;
 }
 
 .cm-s-askia .CodeMirror-gutters {

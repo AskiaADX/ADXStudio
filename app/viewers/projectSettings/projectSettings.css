@@ -251,7 +251,7 @@ table#properties_table a:active:not(.add-property-option) {
     margin-bottom: 4px;
 }
 .inner-form .property-options-list-row input[type=text] {
-    width: 125px;
+    width: 125px !important;
 }
 .property-option-value {
     margin-right: 5px;
