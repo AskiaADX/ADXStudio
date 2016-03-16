@@ -9,12 +9,12 @@
     Share styling
    ======================================== */
 ::-moz-selection {
-   background  : #007DC5;
+   background  : #27AE60;
    color       : #FFF;
 }
 
 ::selection {
-   background  : #007DC5;
+   background  : #27AE60;
    color       : #FFF;
 }
 
@@ -46,7 +46,7 @@ body.form-viewer a {
 h3 {
     font-size   : 14px;
     font-weight : bold;
-    color       : #007DC5;
+    color       : #27AE60;
 }
 
 fieldset {
@@ -88,7 +88,7 @@ input[readonly] {
 }
 
 input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
     outline : none;
 }
 
@@ -442,7 +442,7 @@ div.tabs-scroll {
 
 .toggle-wrapper button.active-sub-tab,
 .toggle-wrapper button.active-sub-tab:hover {
-    background  : #007DC5;
+    background  : #27AE60;
     color       : #FFF;
     box-shadow  : 0 0 4px rgba(22,22,22,.6) inset;
 }
@@ -453,7 +453,7 @@ div.tabs-scroll {
     display         : block;
     width           : 4px;
     content         : ' ';
-    background-color: #007DC5;
+    background-color: #27AE60;
     height          : 100%;
     top             : 0;
     left            : 0;
@@ -564,8 +564,8 @@ div.tabs-scroll {
 
 .viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
     color           : #fff;
-    background-color: #007DC5;
-    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
+    background-color: #27AE60;
+    box-shadow      : 0 1px 0 #47D683 inset;
 }
 
 .viewer-project-settings nav a:hover {
@@ -610,7 +610,7 @@ button:active {
 
 button#new_output,
 button#new_category {
-    background-color: #007DC5;
+    background-color: #27AE60;
     border          : 1px solid rgba(0,0,0,.95);
     box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
     color           : #DDD;
@@ -625,7 +625,7 @@ button#new_category:hover {
 
 button#new_output:active,
 button#new_category:active {
-    background-color: #007DC5;
+    background-color: #27AE60;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.8) inset;
     color           : #EEE;
 }
@@ -722,7 +722,7 @@ table#properties_table a:active:not(.add-property-option) {
 
 .askia-modal-button-ok,
 .askia-modal-button-yes {
-    background-color: #007dc5;
+    background-color: #27AE60;
     border          : 1px solid rgba(0,0,0,.8);
     box-shadow      : 0 1px 0 rgba(255,255,255,.25) inset;
     color           : #DDD;
@@ -737,7 +737,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-button-ok:active,
 .askia-modal-button-yes:active {
     color           : #FFF;
-    background-color: #007DC5;
+    background-color: #27AE60;
     box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
 }
 
@@ -768,7 +768,7 @@ table#properties_table a:active:not(.add-property-option) {
     color           : #BBB;
 }
 .askia-modal-input-prompt:focus {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
 }
 
 .askia-modal-dialog.about {
@@ -826,7 +826,7 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .KBshortcut {
-    color       : #007DC5;
+    color       : #27AE60;
 }
 
 .askia-modal-new-project-container input,
@@ -840,7 +840,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-new-project-container input:focus,
 .askia-modal-new-project-container textarea:focus,
 .askia-modal-new-project-container select:focus {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
 }
 
 .askia-modal-new-project-container button {
@@ -873,7 +873,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-preferences-container input:focus,
 .askia-modal-preferences-container textarea:focus,
 .askia-modal-preferences-container select:focus {
-    border  : 1px solid #007DC5;
+    border  : 1px solid #27AE60;
     outline : none;
 }
 

@@ -10,7 +10,7 @@
 }
 
 .cm-s-askia div.CodeMirror-selected {
-    background: rgba(0, 125, 197, .2) !important;
+    background: rgba(39,174,96,0.2) !important;
 }
 
 .cm-s-askia .CodeMirror-gutters {
@@ -31,7 +31,7 @@
 }
 
 .cm-s-askia .CodeMirror-cursor {
-    border-left: 2px solid #007DC5 !important;
+    border-left: 2px solid #27AE60 !important;
 }
 
 .cm-s-askia .CodeMirror-activeline-background {
