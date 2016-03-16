@@ -280,6 +280,14 @@ function finalPaste(event, button) {
     }	
 }
 
+/**
+ * Switch the current theme
+ * @param {String} themeName The name of the new theme
+ */
+function switchTheme(themeName) {
+    explorerView.send('switch-theme', themeName);
+}
+
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
@@ -293,6 +301,9 @@ ipc.on('explorer-ready', function (event) {
     app.removeListener('menu-open-project', openProject); // Remove it first to avoid duplicate event
     app.on('menu-open-project', openProject); // Add it back again
 
+    app.removeListener('preference-switch-theme', switchTheme);
+    app.on('preference-switch-theme', switchTheme);
+    
     ipc.removeListener('explorer-add-item', addItem);
     ipc.on('explorer-add-item', addItem);
 
@@ -325,7 +336,7 @@ ipc.on('explorer-ready', function (event) {
 
     ipc.removeListener('explorer-copy-override', finalPaste);
     ipc.on('explorer-copy-override', finalPaste);
-    
+     
     // When the directory structure change, reload the view
     explorer.removeListener('change', onChange); // Remove it first
     explorer.on('change', onChange); // Add it back

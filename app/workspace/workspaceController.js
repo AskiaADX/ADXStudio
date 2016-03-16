@@ -805,6 +805,16 @@ function menuPrevTab () {
     workspaceView.send('prev-tab');
 }
 
+/**
+ * Switch the current theme
+ * @param {String} themeName The name of the new theme
+ */
+function switchTheme(themeName) {
+    workspaceView.send('switch-theme', themeName);
+}
+
+
+
 ipc.on('workspace-ready', function (event) {
     
     // Keep the connection with the view
@@ -906,6 +916,9 @@ ipc.on('workspace-ready', function (event) {
     // A file has been renamed in the explorer
     app.removeListener('explorer-file-renamed', explorerRenamedFile);
     app.on('explorer-file-renamed', explorerRenamedFile);
+    
+    app.removeListener('preference-switch-theme', switchTheme);
+    app.on('preference-switch-theme', switchTheme);
 
     workspace.removeListener('file-changed', onFileChanged);
     workspace.on('file-changed', onFileChanged);

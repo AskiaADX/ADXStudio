@@ -6,7 +6,7 @@
         wks = document.getElementById("workspace"),
         askia = window.askia,
         countDownReadyWebView = 2; // 2 web-views must be loaded
-
+    
     /**
      * Look how many web-views are loaded and fire the ready event when all are ready
      */
@@ -26,7 +26,7 @@
 
     // Dev tools of the webview
     exp.addEventListener("dom-ready", function onExplorerDomReady() {
-        onWebViewLoaded();
+        onWebViewLoaded();    
     });
     wks.addEventListener("dom-ready", function onWorkspaceDomReady() {
         onWebViewLoaded();

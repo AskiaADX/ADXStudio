@@ -25,45 +25,51 @@ app.on('window-all-closed', function() {
 app.on('ready', function loadMainWindow() {
     // Initialize the global.project
     global.project = {};
-    
+
     // Load the default project path earlier in the application lifetime
     appSettings.getInitialProject(function onInitialProject(projectPath) {
         if (projectPath) {
             global.project.path = projectPath;
             global.project.adc = new ADC(projectPath);
         }
-        
-        // Create the browser window, but don't show
-        global.mainWindow = new BrowserWindow({
-            width: 800, 
-            height: 600, 
-            show : false,
-            title : "ADX Studio"
-        });
 
-        // Maximize it first
-        global.mainWindow.maximize();
+        // Load the preferences in order to have default theme etc...
+        appSettings.getPreferences(function (err, preferences) {
+            // Create the browser window, but don't show
+            global.mainWindow = new BrowserWindow({
+                width: 800, 
+                height: 600, 
+                show : false,
+                title : "ADX Studio"
+            });
 
-        // and load the index.html of the app.
-        global.mainWindow.loadURL('file://' + __dirname + '/main/index.html');
+            // Maximize it first
+            global.mainWindow.maximize();
 
-        // redirect all new window url to the default browser
-        global.mainWindow.webContents.on('new-window', function onNewWindow(event, url) {
-            event.preventDefault();
-            shell.openExternal(url);
-        });
-        
-        // Now show it
-        global.mainWindow.show();
+            // Get the theme
+            const theme = preferences.theme || 'default';
+            
+            // and load the index.html of the app.
+            global.mainWindow.loadURL('file://' + __dirname + '/main/index.html?theme=' + theme);
 
-        // Emitted when the window is closed.
-        global.mainWindow.on('closed', function onMainWindowClose() {
+            // redirect all new window url to the default browser
+            global.mainWindow.webContents.on('new-window', function onNewWindow(event, url) {
+                event.preventDefault();
+                shell.openExternal(url);
+            });
 
-            // Dereference the window object, usually you would store windows
-            // in an array if your app supports multi windows, this is the time
-            // when you should delete the corresponding element.
-            global.mainWindow = null;
-            delete global.mainWindow;
+            // Now show it
+            global.mainWindow.show();
+
+            // Emitted when the window is closed.
+            global.mainWindow.on('closed', function onMainWindowClose() {
+
+                // Dereference the window object, usually you would store windows
+                // in an array if your app supports multi windows, this is the time
+                // when you should delete the corresponding element.
+                global.mainWindow = null;
+                delete global.mainWindow;
+            });    
         });
     });
 });

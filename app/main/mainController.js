@@ -225,10 +225,20 @@ function buildProject() {
  */
 function openPreferences(){
     appSettings.getPreferences(function onReadPreferences(err, preferences){
-        showModalDialog({
-            type : 'preferences',
-            preferences  : preferences
-        }, 'main-save-preferences');
+        fs.readdir(path.join(__dirname, '../themes'), function(err, files) {
+            const dirs = [];
+            files.forEach(function(file) {
+                const stat = fs.statSync(path.join(__dirname, "../themes/", file));
+                if (stat.isDirectory()) {
+                    dirs.push(file);
+                }
+            });
+            showModalDialog({
+                type : 'preferences',
+                preferences  : preferences,
+                themes : dirs || ['default']
+            }, 'main-save-preferences');
+        });
     });
 }
 
@@ -243,6 +253,15 @@ function savePreferences(event, button, options) {
         return;
     }
     appSettings.setPreferences(options.preferences);
+}
+
+
+/**
+ * Switch the current theme
+ * @param {String} themeName The name of the new theme
+ */
+function switchTheme(themeName) {
+    mainView.send('switch-theme', themeName);
 }
 
 /**
@@ -336,15 +355,17 @@ ipc.on('main-ready', function (event) {
     // About ADXStudio
     app.removeListener('menu-about-adxstudio', showAbout);
     app.on('menu-about-adxstudio', showAbout);
-    
+
     app.removeListener('menu-shortcuts', showKeyboardShortcuts);
     app.on('menu-shortcuts', showKeyboardShortcuts);
-    
+
     // Preferences
     app.removeListener('menu-open-preferences', openPreferences);
     app.on('menu-open-preferences', openPreferences);
     ipc.removeListener('main-save-preferences', savePreferences);
     ipc.on('main-save-preferences', savePreferences);
+    app.removeListener('preference-switch-theme', switchTheme);
+    app.on('preference-switch-theme', switchTheme);
 
     // Verify everything before to quit the application
     global.mainWindow.removeListener('close', onCloseMainWindow);

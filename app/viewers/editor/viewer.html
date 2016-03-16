@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 <head>
     <title>Editor</title>
@@ -68,7 +68,6 @@
   	<script src="../../lib/codemirror/addon/sense/sense.js"></script>
   
   	<!-- Theme & Global management -->
-	<link rel="stylesheet" href="../../themes/default/askia.css">
     <script src="../viewer.js"></script>
     <style>
         html, body
@@ -95,6 +94,7 @@
                 xml  : 'askiascript/xml',
                 md   : 'text/x-markdown'
             };
+           
             var tabs     = viewer.tabs;
             var tab      = viewer.currentTab;
             var textarea = document.getElementById('code');
@@ -103,6 +103,23 @@
             var fileExt = (matchFileExt && matchFileExt.length) ? matchFileExt[1].toLocaleLowerCase() : '';
             var contentType = (fileExt) ? contentTypeByFileExt[fileExt] : '';
 
+
+            // Add the CSS of theme
+            var link = document.createElement("link");
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css"); 
+            link.href = "../../themes/" + tabs.theme + "/editor.css";
+
+            document.head.appendChild(link);
+
+            var oldSwitchTheme = viewer.switchTheme;
+            
+            viewer.switchTheme = function(theme) {
+                oldSwitchTheme(theme);
+                link.href = "../../themes/" + theme + "/editor.css";
+            };
+            
+            
             textarea.value = tab.content;
 
             // Map save command (CTRL+S) and the main menu

@@ -22,7 +22,7 @@
                 options = modalDialog.options || {},
                 preferences = options.preferences || {},
                 author = (preferences.author) || {};
-
+            
             // Add extra class on the dialog box
             modalDialog.elements.dialog.classList.add('preferences');
 
@@ -103,6 +103,36 @@
 
             root.appendChild(el.website);
 
+            // Theme
+            el.theme = document.createElement('div');
+            el.theme.className = 'askia-modal-preferences-container';
+
+            el.themeLabel = document.createElement('label');
+            el.themeLabel.setAttribute('for', 'modal_preferences_theme_' + autoIncrement);
+            el.themeLabel.innerHTML = 'Theme: ';
+            el.theme.appendChild(el.themeLabel);
+
+            el.themeSelect = document.createElement('select');
+            el.themeSelect.setAttribute('id', 'modal_preferences_theme_' + autoIncrement);
+            el.theme.appendChild(el.themeSelect);
+                        
+            var option
+            for (var i = 0, l = options.themes.length; i < l; i++) {
+                var theme = options.themes[i];
+                option = document.createElement('option');
+                option.value = theme;
+                option.textContent = theme;
+                if (preferences.theme === theme) {
+                    option.setAttribute('selected', 'selected');
+                }
+                el.themeSelect.appendChild(option)
+            }
+            
+            
+            
+            
+            root.appendChild(el.theme);
+            
             // Open the latest project by default
             el.reopenLastProject = document.createElement('div');
             el.reopenLastProject.className = 'askia-modal-preferences-checkbox-container';
@@ -144,6 +174,7 @@
                         company: el.companyInput.value,
                         website: el.websiteInput.value
                     },
+                    theme: el.themeSelect.value,
                     openLastProjectByDefault : el.reopenLastProjectInput.checked
                 }
             };

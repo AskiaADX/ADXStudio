@@ -1,5 +1,6 @@
 "use strict";
 
+const app = require('electron').app;
 const path = require('path');
 const fs = require('fs');
 const ADC = require('adcutil').ADC;
@@ -134,6 +135,11 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                         callback(err);
                     }
                     return;
+                }
+
+                //if preferences changed, send an event to the app
+                if (currentPrefs.theme !== finalPreferences.theme) {
+                    app.emit('preference-switch-theme', finalPreferences.theme);
                 }
 
                 if (!adcUtilPref) {

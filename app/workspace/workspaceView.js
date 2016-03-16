@@ -5,7 +5,8 @@
         remote	= electron.remote,
         Menu	= remote.Menu,
         MenuItem = remote.MenuItem,
-        shell	= remote.shell;
+        shell	= remote.shell,
+        askia =  window.askia;
 
 
     window.tabs  = {
@@ -13,6 +14,11 @@
          * Expose the IPC object to the client iframe
          */
         ipc         : ipc,
+        
+        /**
+         * Current interface theme
+         */
+        theme      : askia.initialTheme,
 
         /**
          * Id of the current active tab
@@ -318,7 +324,6 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var tabs = window.tabs,
-            askia =  window.askia,
             resizer = new askia.Resizer({
                 element : document.getElementById('main_pane'),
                 onResize : fixRendering
@@ -331,6 +336,40 @@
             },
             modalDialog = window.askia.modalDialog;
 
+        /**
+         * When we switch the theme of the interface, propagate events on all tabs
+         * @param {String} theme Name of the theme
+         */
+        askia.onSwitchTheme = function onSwitchTheme(theme) {
+            var tabsEl = document.querySelectorAll('.tab'),
+                i, l,
+                id,
+                tab;
+            if (!tabsEl) {
+                return;
+            }
+            
+            tabs.theme = theme;
+            
+            // First of all build an array with all tab ids
+            // To have a static reference of the tab to save
+            for (i = 0, l = tabsEl.length; i < l; i += 1) {
+                id  = tabsEl[i].id.replace(/^tab-/, '');
+                tab = tabs[id];
+                if (!tab || !tab.viewer) {
+                    continue;
+                }
+                
+                if (typeof tab.viewer.switchTheme === 'function') {
+                    tab.viewer.switchTheme(theme);
+                }
+                if (tab.altViewer && typeof tab.altViewer.switchTheme === 'function') {
+                    tab.altViewer.switchTheme(theme);
+                }
+            }
+        };
+        
+        
         /**
          * Indicates if the element has horizontal scroll
          * @param {HTMLElement} el

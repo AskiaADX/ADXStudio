@@ -1,4 +1,4 @@
-(function () {
+		(function () {
     var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
     if (!matchTabId || !matchTabId.length) {
         throw new Error("Invalid context, the tab id is not defined");
@@ -9,6 +9,16 @@
     var tabs     = parent.tabs;
     var tab      = tabs[tabId];
 
+    tab.window = window;
+
+    // Add the CSS of theme
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css"); 
+    link.href = "../../themes/" + tabs.theme + "/application.css";
+    
+    document.head.appendChild(link);
+    
     window.addEventListener('focus', function () {
         tabs.onFocus(tab.id);
     });
@@ -26,6 +36,13 @@
          * Current tab
          */
         currentTab  : tab,
+         /**
+         * When we switch the theme of the interface, propagate events on all tabs
+         * @param {String} theme Name of the theme
+         */
+        switchTheme : function onSwitchTheme(theme) {
+            link.href = '../../themes/' + theme + '/application.css';
+        },
         /**
          * Save content
          * Should be implemented by the viewer
