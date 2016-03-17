@@ -335,14 +335,14 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll .scroll-left {
     background  : url(adxs-scroll-left.png) no-repeat center center;
-    width       : 17px;
+    width       : 18px;
     height      : 24px;
     box-shadow  : 1px 0 0 0 #BDC3C7 inset, 2px 0 0 0 rgba(255,255,255,0.8) inset;
 }
 
 .tabs-scroll .scroll-right {
     background  : url(adxs-scroll-right.png) no-repeat center center;
-    width       : 17px;
+    width       : 18px;
     height      : 24px;
 }
 
@@ -356,7 +356,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll .scroll-left.disabled {
     background  : url(adxs-scroll-left-disabled.png) no-repeat center center;
-    width       : 17px;
+    width       : 18px;
     height      : 24px;
     cursor      : default;
     box-shadow  : none;
@@ -364,7 +364,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-scroll .scroll-right.disabled {
     background  : url(adxs-scroll-right-disabled.png) no-repeat center center;
-    width       : 17px;
+    width       : 18px;
     height      : 24px;
     cursor      : default;
 }
