@@ -142,11 +142,11 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #panel_output a {
-    color: #3498DB;
+    color: #A2D6F9;
 }
 
 #panel_output .error {
-    color: #C0392B;
+    color: #F7F7F7;
 }
 
 #panel_output .warning {
