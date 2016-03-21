@@ -288,6 +288,10 @@ function switchTheme(themeName) {
     explorerView.send('switch-theme', themeName);
 }
 
+function switchClick(clickToUse) {
+    explorerView.send('switch-click', clickToUse);
+}
+
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
 
@@ -303,6 +307,9 @@ ipc.on('explorer-ready', function (event) {
 
     app.removeListener('preference-switch-theme', switchTheme);
     app.on('preference-switch-theme', switchTheme);
+    
+    app.removeListener('preference-switch-click', switchClick);
+    app.on('preference-switch-click', switchClick);
     
     ipc.removeListener('explorer-add-item', addItem);
     ipc.on('explorer-add-item', addItem);

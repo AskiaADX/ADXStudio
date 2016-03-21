@@ -6,6 +6,7 @@ var MenuItem 	= remote.MenuItem;
 var ipc 		= electron.ipcRenderer;
 var shell   	= electron.shell;
 var lastSelected;
+var dbclick;
 var keyCodes = {
     pageUp   : 33,
     pageDown : 34,
@@ -297,6 +298,9 @@ function selectItem(e) {
 }
 
 function itemDoubleClick(e) {
+    if (!dbclick) {
+        return;
+    }
     var itemInfo = this;
     var item = itemInfo.parentNode;
     var file = item.file;
@@ -367,6 +371,12 @@ function itemclick(e) {
             ipc.send('explorer-load-folder', file.path);
             file.loaded = true;
         }
+    } 
+    if (dbclick) {
+        return;
+    }
+    if (file.type === "file") {
+        ipc.send('explorer-load-file', file);
     }
 }
 
@@ -676,6 +686,10 @@ function downExplorer () {
     lastChild.classList.add('selected');
 }
 
+function switchClick(event, clickToUse) {
+    dbclick = clickToUse;
+}
+
 //Add shortcut to navigate in the explorer
 document.addEventListener('keydown', function (e) {
     if ((e.keyCode === keyCodes.c) && (e.ctrlKey)) {
@@ -699,6 +713,7 @@ document.addEventListener('keydown', function (e) {
     }
 })
 
+ipc.on('switch-click', switchClick);
 
 document.addEventListener('DOMContentLoaded', function () {
     /*

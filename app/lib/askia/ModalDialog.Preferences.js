@@ -152,6 +152,25 @@
 
             root.appendChild(el.reopenLastProject);
 
+            // Use double click to open a file in the explorer
+            el.dbclick = document.createElement('div');
+            el.dbclick.className = 'askia-modal-preferences-checkbox-container';
+
+            el.dbclickInput = document.createElement('input');
+            el.dbclickInput.setAttribute('id', 'modal_preferences_dbclick_' + autoIncrement);
+            el.dbclickInput.setAttribute('type', 'checkbox');
+            if (preferences.useDBclickByDefault) {
+                el.dbclickInput.setAttribute('checked', 'checked');
+            }
+            el.dbclick.appendChild(el.dbclickInput);
+
+            el.dbclickLabel = document.createElement('label');
+            el.dbclickLabel.setAttribute('for', 'modal_preferences_dbclick_' + autoIncrement);
+            el.dbclickLabel.innerHTML = "Use double click to open a file in the explorer";
+            el.dbclick.appendChild(el.dbclickLabel);
+
+            root.appendChild(el.dbclick);
+
 
             // OK / Cancel button
 
@@ -175,7 +194,8 @@
                         website: el.websiteInput.value
                     },
                     theme: el.themeSelect.value,
-                    openLastProjectByDefault : el.reopenLastProjectInput.checked
+                    openLastProjectByDefault : el.reopenLastProjectInput.checked,
+                    useDBclickByDefault : el.dbclickInput.checked
                 }
             };
         }

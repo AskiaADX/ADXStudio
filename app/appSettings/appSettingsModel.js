@@ -141,6 +141,11 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                 if (currentPrefs.theme !== finalPreferences.theme) {
                     app.emit('preference-switch-theme', finalPreferences.theme);
                 }
+                
+                //if preferences changed, send an event to the app
+                if (currentPrefs.useDBclickByDefault !== finalPreferences.useDBclickByDefault) {
+                    app.emit('preference-switch-click', finalPreferences.useDBclickByDefault);
+                }
 
                 if (!adcUtilPref) {
                     if (typeof callback === 'function') {
