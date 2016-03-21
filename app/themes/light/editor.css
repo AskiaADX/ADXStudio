@@ -1,0 +1,91 @@
+.CodeMirror pre {
+    padding: 0 10px;
+}
+
+.cm-s-askia.CodeMirror {
+    background  : #FAFAFA;
+    color       : #444;
+    font-family : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    font-size   : 16px;
+}
+
+.cm-s-askia div.CodeMirror-selected {
+    background: rgba(39,174,96,0.2) !important;
+}
+
+.cm-s-askia .CodeMirror-gutters {
+    background  : #ECF0F1;
+    border-right: 1px solid #C7CCCE;
+}
+
+.cm-s-askia .CodeMirror-guttermarker {
+    color: white;
+}
+
+.cm-s-askia .CodeMirror-guttermarker-subtle {
+    color: #d0d0d0;
+}
+
+.cm-s-askia .CodeMirror-linenumber {
+    color: #C7CCCE;
+}
+
+.cm-s-askia .CodeMirror-cursor {
+    border-left: 2px solid #27AE60 !important;
+}
+
+.cm-s-askia .CodeMirror-activeline-background {
+    background: #ECF0F1 !important;
+}
+
+.cm-s-askia .CodeMirror-matchingbracket {
+  text-decoration   : underline;
+  color             : #FFF !important;
+}
+
+.CodeMirror-activeline .CodeMirror-linenumber {
+    color: #AAA !important;
+}
+
+/* Code styling */
+.cm-s-askia span.cm-operator { color: #16A085; }
+.cm-s-askia span.cm-variable-2 { color: #80CBC4; }
+.cm-s-askia span.cm-variable-3 { color: #82B1FF; }
+.cm-s-askia span.cm-builtin { color: #DECB6B; }
+.cm-s-askia span.cm-atom { color: #F77669; }
+.cm-s-askia span.cm-number { color: #F77669; }
+.cm-s-askia span.cm-def { color: rgba(233, 237, 237, 1); }
+.cm-s-askia span.cm-error {
+  color                 : #E74C3C !important;
+  background-image      : url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
+  background-position   : left bottom;
+  background-repeat     : repeat-x;
+}
+
+.cm-s-askia span.cm-variant {color: #111;}
+.cm-s-askia span.cm-keyword {color: #8E44AD;}
+.cm-s-askia span.cm-atom {color: #219;}
+.cm-s-askia span.cm-number {color: #164;}
+.cm-s-askia span.cm-def {color: #00f;}
+.cm-s-askia span.cm-variable,
+.cm-s-askia span.cm-punctuation,
+.cm-s-askia span.cm-property,
+.cm-s-askia span.cm-operator {}
+.cm-s-askia span.cm-variable-2 {color: #05a;}
+.cm-s-askia span.cm-variable-3 {color: #085;}
+.cm-s-askia span.cm-comment {color: #888;}
+.cm-s-askia span.cm-string {color: #C0392B;}
+.cm-s-askia span.cm-string-2 {color: #f50;}
+.cm-s-askia span.cm-meta {color: #555;}
+.cm-s-askia span.cm-qualifier {color: #555;}
+.cm-s-askia span.cm-builtin {color: #30a;}
+.cm-s-askia span.cm-bracket {color: #997;}
+.cm-s-askia span.cm-tag {color: #D35400;}
+.cm-s-askia span.cm-attribute {color: #2980B9;}
+.cm-s-askia span.cm-hr {color: #999;}
+.cm-s-askia span.cm-link {color: #00c;}
+
+div.cm-s-askia span.CodeMirror-matchingbracket {
+    outline :1px solid grey;
+    color   : inherit;
+}

@@ -6,11 +6,11 @@
     background  : #282C34;
     color       : #f8f8f2;
     font-family : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
-    font-size   : 17px;
+    font-size   : 16px;
 }
 
 .cm-s-askia div.CodeMirror-selected {
-    background: rgba(0, 125, 197, .5) !important;
+    background: rgba(39,174,96,0.2) !important;
 }
 
 .cm-s-askia .CodeMirror-gutters {
