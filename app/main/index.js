@@ -7,6 +7,7 @@
         askia = window.askia,
         countDownReadyWebView = 2; // 2 web-views must be loaded
     
+        
     /**
      * Look how many web-views are loaded and fire the ready event when all are ready
      */
@@ -20,8 +21,8 @@
             });
 
             resExpl.start();
+            ipc.send('main-ready');
         }
-        ipc.send('main-ready');
     }
 
     // Dev tools of the webview

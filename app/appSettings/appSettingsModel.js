@@ -141,6 +141,10 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                 if (currentPrefs.theme !== finalPreferences.theme) {
                     app.emit('preference-switch-theme', finalPreferences.theme);
                 }
+                
+                if (currentPrefs.policy !== finalPreferences.policy) {
+                    app.emit('preference-switch-size', finalPreferences.policy);
+                }
 
                 if (!adcUtilPref) {
                     if (typeof callback === 'function') {

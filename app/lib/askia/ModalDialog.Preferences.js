@@ -128,10 +128,35 @@
                 el.themeSelect.appendChild(option)
             }
             
-            
-            
-            
             root.appendChild(el.theme);
+            
+            // Policy size
+            el.policy = document.createElement('div');
+            el.policy.className = 'askia-modal-preferences-container';
+
+            el.policyLabel = document.createElement('label');
+            el.policyLabel.setAttribute('for', 'modal_preferences_policy_' + autoIncrement);
+            el.policyLabel.innerHTML = 'Font-size: ';
+            el.policy.appendChild(el.policyLabel);
+
+            el.policySelect = document.createElement('select');
+            el.policySelect.setAttribute('id', 'modal_preferences_policy_' + autoIncrement);
+            el.policy.appendChild(el.policySelect);
+                        
+            options.policies = ["12","14","16","18","20"];
+            for (var i = 0, l = options.policies.length; i < l; i++) {
+                var policy = options.policies[i];
+                option = document.createElement('option');
+                option.value = policy;
+                option.textContent = policy;
+                if (preferences.policy === policy) {
+                    option.setAttribute('selected', 'selected');
+                }
+                el.policySelect.appendChild(option)
+            }
+            
+            root.appendChild(el.policy);
+            
             
             // Open the latest project by default
             el.reopenLastProject = document.createElement('div');
@@ -175,7 +200,8 @@
                         website: el.websiteInput.value
                     },
                     theme: el.themeSelect.value,
-                    openLastProjectByDefault : el.reopenLastProjectInput.checked
+                    openLastProjectByDefault : el.reopenLastProjectInput.checked,
+                    policy: el.policySelect.value
                 }
             };
         }

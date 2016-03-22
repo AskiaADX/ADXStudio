@@ -102,8 +102,8 @@
             var matchFileExt = /\.([^\.]+)$/.exec(tab.name);
             var fileExt = (matchFileExt && matchFileExt.length) ? matchFileExt[1].toLocaleLowerCase() : '';
             var contentType = (fileExt) ? contentTypeByFileExt[fileExt] : '';
-
-
+            var lines;
+           
             // Add the CSS of theme
             var link = document.createElement("link");
             link.setAttribute("rel", "stylesheet");
@@ -119,6 +119,9 @@
                 link.href = "../../themes/" + theme + "/editor.css";
             };
             
+            viewer.changeFontSize = function(size) {
+                lines.style.fontSize = size + "px";
+            }
             
             textarea.value = tab.content;
 
@@ -253,7 +256,10 @@
                 window.editor.on("change", trigger);
                 markTags();
             }
-
+                        
+            lines = document.getElementsByClassName('CodeMirror')[0];
+            lines.style.fontSize = window.localStorage['adxstudio-initial-policy'] + "px";
+            
             viewer.fireReady();
         }());
 

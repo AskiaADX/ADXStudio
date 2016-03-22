@@ -19,7 +19,7 @@
          * Current interface theme
          */
         theme      : askia.initialTheme,
-
+        
         /**
          * Id of the current active tab
          */
@@ -965,6 +965,35 @@
             setActiveTab(previousTab, pane);
         }
 
+        function switchFontSize(e, size) {
+            var tabsEl = document.querySelectorAll('.tab'),
+                i, l,
+                id,
+                tab;
+            if (!tabsEl) {
+                return;
+            }
+
+            tabs.fontSize = size;
+          
+            // First of all build an array with all tab ids
+            // To have a static reference of the tab to save
+            for (i = 0, l = tabsEl.length; i < l; i += 1) {
+                id  = tabsEl[i].id.replace(/^tab-/, '');
+                tab = tabs[id];
+                if (!tab || !tab.viewer) {
+                    continue;
+                }
+                
+                if (typeof tab.viewer.changeFontSize === 'function') {
+                    tab.viewer.changeFontSize(size);
+                }
+                if (tab.altViewer && typeof tab.altViewer.changeFontSize === 'function') {
+                    tab.altViewer.viewer.changeFontSize(size);
+                }
+            }
+        }
+        
         (function initTabEvents() {
             var i, l,
                 els = document.querySelectorAll('.tabs'),
@@ -1402,6 +1431,8 @@
 
         ipc.on('prev-tab', prevTab);
 
+        ipc.on('switch-size', switchFontSize)
+        
         ipc.on('workspace-create-tab', function (event, err, tab, pane) {
             if (err) {
                 console.warn(err);

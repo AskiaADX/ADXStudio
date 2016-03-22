@@ -813,6 +813,10 @@ function switchTheme(themeName) {
     workspaceView.send('switch-theme', themeName);
 }
 
+function switchFontSize(fontSize) {
+    workspaceView.send('switch-size', fontSize);
+}
+
 
 
 ipc.on('workspace-ready', function (event) {
@@ -831,7 +835,7 @@ ipc.on('workspace-ready', function (event) {
 
     // Initialize the workspace
     openProject();
-
+    
     ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
     ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
 
@@ -919,6 +923,9 @@ ipc.on('workspace-ready', function (event) {
     
     app.removeListener('preference-switch-theme', switchTheme);
     app.on('preference-switch-theme', switchTheme);
+    
+    app.removeListener('preference-switch-size', switchFontSize);
+    app.on('preference-switch-size', switchFontSize);
 
     workspace.removeListener('file-changed', onFileChanged);
     workspace.on('file-changed', onFileChanged);
