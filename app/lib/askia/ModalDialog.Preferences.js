@@ -130,32 +130,32 @@
             
             root.appendChild(el.theme);
             
-            // Policy size
-            el.policy = document.createElement('div');
-            el.policy.className = 'askia-modal-preferences-container';
+            // editorFontSize size
+            el.editorFontSize = document.createElement('div');
+            el.editorFontSize.className = 'askia-modal-preferences-container';
 
-            el.policyLabel = document.createElement('label');
-            el.policyLabel.setAttribute('for', 'modal_preferences_policy_' + autoIncrement);
-            el.policyLabel.innerHTML = 'Font-size: ';
-            el.policy.appendChild(el.policyLabel);
+            el.editorFontSizeLabel = document.createElement('label');
+            el.editorFontSizeLabel.setAttribute('for', 'modal_preferences_editorFontSize_' + autoIncrement);
+            el.editorFontSizeLabel.innerHTML = 'Font-size: ';
+            el.editorFontSize.appendChild(el.editorFontSizeLabel);
 
-            el.policySelect = document.createElement('select');
-            el.policySelect.setAttribute('id', 'modal_preferences_policy_' + autoIncrement);
-            el.policy.appendChild(el.policySelect);
+            el.editorFontSizeSelect = document.createElement('select');
+            el.editorFontSizeSelect.setAttribute('id', 'modal_preferences_editorFontSize_' + autoIncrement);
+            el.editorFontSize.appendChild(el.editorFontSizeSelect);
                         
             options.policies = ["12","14","16","18","20"];
             for (var i = 0, l = options.policies.length; i < l; i++) {
-                var policy = options.policies[i];
+                var editorFontSize = options.policies[i];
                 option = document.createElement('option');
-                option.value = policy;
-                option.textContent = policy;
-                if (preferences.policy === policy) {
+                option.value = editorFontSize;
+                option.textContent = editorFontSize;
+                if (preferences.editorFontSize === editorFontSize) {
                     option.setAttribute('selected', 'selected');
                 }
-                el.policySelect.appendChild(option)
+                el.editorFontSizeSelect.appendChild(option)
             }
             
-            root.appendChild(el.policy);
+            root.appendChild(el.editorFontSize);
             
             
             // Open the latest project by default
@@ -178,23 +178,23 @@
             root.appendChild(el.reopenLastProject);
 
             // Use double click to open a file in the explorer
-            el.dbclick = document.createElement('div');
-            el.dbclick.className = 'askia-modal-preferences-checkbox-container';
+            el.DblClick = document.createElement('div');
+            el.DblClick.className = 'askia-modal-preferences-checkbox-container';
 
-            el.dbclickInput = document.createElement('input');
-            el.dbclickInput.setAttribute('id', 'modal_preferences_dbclick_' + autoIncrement);
-            el.dbclickInput.setAttribute('type', 'checkbox');
-            if (preferences.useDBclickByDefault) {
-                el.dbclickInput.setAttribute('checked', 'checked');
+            el.DblClickInput = document.createElement('input');
+            el.DblClickInput.setAttribute('id', 'modal_preferences_DblClick_' + autoIncrement);
+            el.DblClickInput.setAttribute('type', 'checkbox');
+            if (preferences.useDblClickByDefault) {
+                el.DblClickInput.setAttribute('checked', 'checked');
             }
-            el.dbclick.appendChild(el.dbclickInput);
+            el.DblClick.appendChild(el.DblClickInput);
 
-            el.dbclickLabel = document.createElement('label');
-            el.dbclickLabel.setAttribute('for', 'modal_preferences_dbclick_' + autoIncrement);
-            el.dbclickLabel.innerHTML = "Use double click to open file from the explorer";
-            el.dbclick.appendChild(el.dbclickLabel);
+            el.DblClickLabel = document.createElement('label');
+            el.DblClickLabel.setAttribute('for', 'modal_preferences_DblClick_' + autoIncrement);
+            el.DblClickLabel.innerHTML = "Use double click to open file from the explorer";
+            el.DblClick.appendChild(el.DblClickLabel);
 
-            root.appendChild(el.dbclick);
+            root.appendChild(el.DblClick);
 
 
             // OK / Cancel button
@@ -220,8 +220,8 @@
                     },
                     theme: el.themeSelect.value,
                     openLastProjectByDefault : el.reopenLastProjectInput.checked,
-                    useDBclickByDefault : el.dbclickInput.checked,
-                    policy : el.policySelect.value
+                    useDblClickByDefault : el.DblClickInput.checked,
+                    editorFontSize : el.editorFontSizeSelect.value
                 }
             };
         }

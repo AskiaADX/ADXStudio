@@ -5,7 +5,7 @@ var Menu 		= remote.Menu;
 var MenuItem 	= remote.MenuItem;
 var ipc 		= electron.ipcRenderer;
 var shell   	= electron.shell;
-var dbclick = JSON.parse(localStorage['adxstudio-initial-useDBclick']);
+var dblClick = JSON.parse(localStorage['adxstudio-initial-useDblClick']);
 var lastSelected;
 var keyCodes = {
     pageUp   : 33,
@@ -298,7 +298,7 @@ function selectItem(e) {
 }
 
 function itemDoubleClick(e) {
-    if (!dbclick) {
+    if (!dblClick) {
         return;
     }
     var itemInfo = this;
@@ -372,7 +372,7 @@ function itemclick(e) {
             file.loaded = true;
         }
     }
-    if (dbclick) {
+    if (dblClick) {
         console.log('ici');
         return;
     }
@@ -688,7 +688,7 @@ function downExplorer () {
 }
 
 function switchClick(event, clickToUse) {
-    dbclick = clickToUse;
+    dblClick = clickToUse;
 }
 
 //Add shortcut to navigate in the explorer

@@ -143,12 +143,12 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                 }
                 
                 //if preferences changed, send an event to the app
-                if (currentPrefs.useDBclickByDefault !== finalPreferences.useDBclickByDefault) {
-                    app.emit('preference-switch-click', finalPreferences.useDBclickByDefault);
+                if (currentPrefs.useDblClickByDefault !== finalPreferences.useDblClickByDefault) {
+                    app.emit('preference-switch-click', finalPreferences.useDblClickByDefault);
                 }
                 
-                if (currentPrefs.policy !== finalPreferences.policy) {
-                    app.emit('preference-switch-size', finalPreferences.policy);
+                if (currentPrefs.editorFontSize !== finalPreferences.editorFontSize) {
+                    app.emit('preference-switch-size', finalPreferences.editorFontSize);
                 }
 
                 if (!adcUtilPref) {

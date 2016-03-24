@@ -289,6 +289,7 @@ function switchTheme(themeName) {
 }
 
 function switchClick(clickToUse) {
+    //console.log(clickToUse);
     explorerView.send('switch-click', clickToUse);
 }
 

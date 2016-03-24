@@ -12,13 +12,13 @@
 
                 function storePreferences(event ,preferences) {
                     window.localStorage['adxstudio-initial-theme'] = preferences.themes || 'default';
-                    window.localStorage['adxstudio-initial-policy'] = preferences.policy || '16';
-                    window.localStorage['adxstudio-initial-useDBclick'] = preferences.useDBclickByDefault;
+                    window.localStorage['adxstudio-initial-editorFontSize'] = preferences.editorFontSize || '16';
+                    window.localStorage['adxstudio-initial-useDblClick'] = preferences.useDblClickByDefault || "false";
                     window.localStorage['adxstudio-initial-author'] = preferences.author || {company: "",
                                                                                              email: "",
                                                                                              name: "",
                                                                                              website: ""};
-                    window.localStorage['adxstudio-initial-openProjectDefault'] = preferences.openLastProjectByDefault;
+                    window.localStorage['adxstudio-initial-openProjectDefault'] = preferences.openLastProjectByDefault || "true";
                     window.localStorage['adxstudio-initial-defaultProjectsLocation'] = preferences.defaultProjectsLocation;
                     window.location.href="index.html";
                 }
