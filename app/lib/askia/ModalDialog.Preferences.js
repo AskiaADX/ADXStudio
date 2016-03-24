@@ -166,7 +166,7 @@
 
             el.dbclickLabel = document.createElement('label');
             el.dbclickLabel.setAttribute('for', 'modal_preferences_dbclick_' + autoIncrement);
-            el.dbclickLabel.innerHTML = "Use double click to open a file in the explorer";
+            el.dbclickLabel.innerHTML = "Use double click to open file from the explorer";
             el.dbclick.appendChild(el.dbclickLabel);
 
             root.appendChild(el.dbclick);
