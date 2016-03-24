@@ -5,8 +5,8 @@ var Menu 		= remote.Menu;
 var MenuItem 	= remote.MenuItem;
 var ipc 		= electron.ipcRenderer;
 var shell   	= electron.shell;
+var dbclick = JSON.parse(localStorage['adxstudio-initial-useDBclick']);
 var lastSelected;
-var dbclick;
 var keyCodes = {
     pageUp   : 33,
     pageDown : 34,
@@ -371,8 +371,9 @@ function itemclick(e) {
             ipc.send('explorer-load-folder', file.path);
             file.loaded = true;
         }
-    } 
+    }
     if (dbclick) {
+        console.log('ici');
         return;
     }
     if (file.type === "file") {
@@ -787,7 +788,6 @@ document.addEventListener('DOMContentLoaded', function () {
             root.appendChild(item);
         }
     });
-
-
+    
     ipc.send('explorer-ready');
 });
