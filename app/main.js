@@ -4,6 +4,7 @@ const BrowserWindow = electron.BrowserWindow;  // Module to create native browse
 const appSettings = require('./appSettings/appSettingsModel.js');
 const ADC = require('adcutil').ADC;
 const shell =  electron.shell;
+const ipc   = electron.ipcMain;
 
 require('./main/mainController.js');
 
@@ -42,16 +43,13 @@ app.on('ready', function loadMainWindow() {
                 show : false,
                 title : "ADX Studio"
             });
-
-            // Maximize it first
-            global.mainWindow.maximize();
-
-            // Get the theme
-            const theme = preferences.theme || 'default';
+           
             
             // and load the index.html of the app.
-            global.mainWindow.loadURL('file://' + __dirname + '/main/index.html?theme=' + theme);
-
+            global.mainWindow.loadURL('file://' + __dirname + '/main/preload.html');
+            global.mainWindow.show();
+            global.mainWindow.maximize();
+            
             // redirect all new window url to the default browser
             global.mainWindow.webContents.on('new-window', function onNewWindow(event, url) {
                 event.preventDefault();
@@ -59,8 +57,10 @@ app.on('ready', function loadMainWindow() {
             });
 
             // Now show it
-            global.mainWindow.show();
-
+            ipc.on('preload-ready', function (event) {
+                event.sender.send('preload-app-preferences', preferences);
+            });
+                        
             // Emitted when the window is closed.
             global.mainWindow.on('closed', function onMainWindowClose() {
 
