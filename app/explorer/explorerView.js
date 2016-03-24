@@ -712,7 +712,7 @@ document.addEventListener('keydown', function (e) {
     } else if (e.keyCode === keyCodes.pageDown) {
         downExplorer();
     }
-})
+});
 
 ipc.on('switch-click', switchClick);
 
