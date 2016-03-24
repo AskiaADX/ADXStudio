@@ -685,6 +685,22 @@ table#properties_table a:active:not(.add-property-option) {
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
 
+
+.tool {
+    background-color: #282C34;
+    border: 1px solid transparent;
+}
+
+.tool:active {
+  background-color: #343A44;
+  border: 1px inset #151505;
+}
+
+.tool:hover {
+  background-color: #343A44;
+  border: 1px solid #151505;
+}
+
 .add-property-option {
     background-color: #D7DBDC;
     color           : #444 !important;
