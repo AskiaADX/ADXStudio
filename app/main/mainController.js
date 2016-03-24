@@ -229,6 +229,13 @@ function openPreferences(){
             const dirs = [];
             files.forEach(function(file) {
                 const stat = fs.statSync(path.join(__dirname, "../themes/", file));
+                try {
+                    fs.statSync(path.join(__dirname, "../themes/", file, "/application.css"));
+                }
+                catch (err) {
+                    return;
+                }
+                
                 if (stat.isDirectory()) {
                     dirs.push(file);
                 }
