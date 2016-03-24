@@ -146,6 +146,10 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                 if (currentPrefs.useDBclickByDefault !== finalPreferences.useDBclickByDefault) {
                     app.emit('preference-switch-click', finalPreferences.useDBclickByDefault);
                 }
+                
+                if (currentPrefs.policy !== finalPreferences.policy) {
+                    app.emit('preference-switch-size', finalPreferences.policy);
+                }
 
                 if (!adcUtilPref) {
                     if (typeof callback === 'function') {

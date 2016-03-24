@@ -44,6 +44,11 @@
             link.href = '../../themes/' + theme + '/application.css';
         },
         /**
+         * Change font size
+         * Should be implemented by the viewer
+         */
+        changeFontSize: function onChangeFontSize(size) {/* Function that should be implemented in the viewer */},
+        /**
          * Save content
          * Should be implemented by the viewer
          */
