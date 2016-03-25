@@ -484,9 +484,6 @@
             iFrameWrapper.style.visibility = "hidden";
 
             if (tab.type === "projectSettings") {
-                iFrame.style.display = "none";
-                tab.displayAltViewer = true;
-
                 iFrameWrapper.classList.add('multi-iframes');
 
                 var altIFrame = document.createElement('iframe');
@@ -498,15 +495,25 @@
                 var toggleWrapper = document.createElement('div');
                 toggleWrapper.className = "toggle-wrapper";
                 iFrameWrapper.appendChild(toggleWrapper);
+                
                 var buttonForm = document.createElement('button');
                 buttonForm.textContent = "Form";
-                buttonForm.className = "active-sub-tab";
                 toggleWrapper.appendChild(buttonForm);
 
                 var buttonCode = document.createElement('button');
                 buttonCode.textContent = "Code";
                 toggleWrapper.appendChild(buttonCode);
 
+                if (tab.mode === "form") {
+                    iFrame.style.display = "none";
+                    tab.displayAltViewer = true;
+                    buttonForm.className = "active-sub-tab";
+                } else {
+                    tab.displayAltViewer = false;
+                    altIFrame.style.display = "none";
+                    buttonCode.className = "active-sub-tab";
+                }
+                
                 buttonForm.addEventListener('click', function() {
                     if (tab.displayAltViewer) { // Already displayed
                         return;
@@ -520,6 +527,8 @@
                         tab.displayAltViewer = true;
                         iFrame.style.display = "none";
                         altIFrame.style.display = "";
+                        tab.config.mode = "form";
+                        tab.mode =  "form";
                         buttonForm.classList.add("active-sub-tab");
                         buttonCode.classList.remove("active-sub-tab");
                     });
@@ -538,6 +547,8 @@
                         tab.displayAltViewer = false;
                         altIFrame.style.display = "none";
                         iFrame.style.display = "";
+                        tab.mode = "code";
+                        tab.config.mode = "code";
                         buttonForm.classList.remove("active-sub-tab");
                         buttonCode.classList.add("active-sub-tab");
                     });

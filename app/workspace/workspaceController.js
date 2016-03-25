@@ -216,12 +216,16 @@ function reloadWorkspace() {
  *
  * @param {String} file Path of file to open
  */
-function openFile(file) {
+function openFile(file, fromExplorer) {
     var adc = global.project.adc,
         configXmlPath = (adc && adc.path) ? path.join(adc.path, 'config.xml').toLowerCase() : '';
 
     // If the trying to open the config.xml, make sure we use the projectSettings tab
     if (configXmlPath && file.toLowerCase() === configXmlPath) {
+        if (fromExplorer) {
+            openProjectSettings(true);
+            return;
+        }
         openProjectSettings();
         return;
     }
@@ -255,13 +259,13 @@ function openFile(file) {
  */
 function openFileFromExplorer(event, file) {
     var filePath = (typeof file === 'string') ? file : file.path;
-    openFile(filePath);
+    openFile(filePath, true);
 }
 
 /**
  * Open project settings
  */
-function openProjectSettings() {
+function openProjectSettings(code) {
     tryIfADC(function tryToOpenProjectSettings(adc) {
         if (!adc || !adc.path) {
             return;
@@ -277,10 +281,16 @@ function openProjectSettings() {
                 return;
             }
 
+            if (code) {
+                code = "code";
+            } else {
+                code = "form";
+            }
             // When the tab doesn't exist, create it
             workspace.createTab({
                 path : configXmlPath,
-                type : 'projectSettings'
+                type : 'projectSettings',
+                mode : code
             }, function (err, tab, pane) {
                 // TODO::Don't throw the error but send it to the view
                 if (err) {

@@ -256,6 +256,10 @@ Workspace.prototype.toJSON = function toJSON() {
         if (tab.config && tab.config.name) {
             jsonTab.name = tab.config.name;
         }
+        if (tab.mode) {
+            jsonTab.mode = tab.mode;
+        }
+        
         obj.tabs.push(jsonTab);
     }
 

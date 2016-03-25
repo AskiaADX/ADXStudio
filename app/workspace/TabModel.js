@@ -33,6 +33,7 @@ function Tab(config) {
     this.statTimes = {};
     this.content  = null;
     this.edited   = false;
+    this.mode = this.config.mode || "";
 }
 
 /**

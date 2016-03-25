@@ -373,7 +373,6 @@ function itemclick(e) {
         }
     }
     if (dblClick) {
-        console.log('ici');
         return;
     }
     if (file.type === "file") {
