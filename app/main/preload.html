@@ -11,7 +11,7 @@
                     ipc = electron.ipcRenderer;
 
                 function storePreferences(event ,preferences) {
-                    window.localStorage['adxstudio-initial-theme'] = preferences.themes || 'default';
+                    window.localStorage['adxstudio-initial-theme'] = preferences.theme || 'default';
                     window.localStorage['adxstudio-initial-editorFontSize'] = preferences.editorFontSize || '16';
                     window.localStorage['adxstudio-initial-useDblClick'] = preferences.useDblClickByDefault || "false";
                     window.localStorage['adxstudio-initial-author'] = preferences.author || {company: "",
