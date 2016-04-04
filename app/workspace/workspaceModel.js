@@ -175,6 +175,9 @@ Workspace.prototype.init = function init(config, callback) {
                     if (tab.name) { // Don't manage the backwards compatibility
                         tabConfig.name = tab.name;
                     }
+                    if (tab.mode) {
+                        tabConfig.mode = tab.mode;
+                    }
 
                     // Now this is forbidden to have two tabs for projectSettings & config.xml
                     // For backwards compatibility, make sure the projectSettings have a good path

@@ -272,19 +272,20 @@ function openProjectSettings(code) {
         }
         var configXmlPath = path.join(adc.path, 'config.xml');
         workspace.find(configXmlPath, function (err, tab, pane) {
-
-            // If the tab already exist only focus it
-            if (tab) {
-                // TODO::Look if the content of the tab has changed
-                // TODO::Look if the file has been removed
-                workspaceView.send('workspace-focus-tab', err, tab, pane);
-                return;
-            }
-
             if (code) {
                 code = "code";
             } else {
                 code = "form";
+            }
+            // If the tab already exist only focus it
+            if (tab) {
+                // TODO::Look if the content of the tab has changed
+                // TODO::Look if the file has been removed
+                if (tab.mode !== code) {
+                    tab.mode = code;
+                }
+                workspaceView.send('workspace-focus-tab', err, tab, pane);
+                return;
             }
             // When the tab doesn't exist, create it
             workspace.createTab({
@@ -402,7 +403,7 @@ function onGetAdcStructure(event, tabId) {
  * @param event
  * @param {Object} content
  */
-function onConvertConfigToXml(event, content) {
+function onConvertConfigToXml(event, content, tabId) {
     var adc = global.project.adc;
     if (!adc || !adc.path) {
         workspaceView.send('workspace-config-to-xml', new Error('Could not find ADC project in global'));
@@ -413,6 +414,14 @@ function onConvertConfigToXml(event, content) {
         config.set(content);
         workspaceView.send('workspace-config-to-xml', null, config.toXml());
     });
+    workspace.find(tabId, function (err, tab) {
+        if (err) {
+            return;
+        }
+        tab.mode = "code";
+        tab.config.mode = "code";
+        saveWorkspaceStatus();
+    });
 }
 
 /**
@@ -420,7 +429,7 @@ function onConvertConfigToXml(event, content) {
  * @param event
  * @param {String} content
  */
-function onConvertXmlToConfig(event, content) {
+function onConvertXmlToConfig(event, content, tabId) {
     var adc = global.project.adc;
     if (!adc || !adc.path) {
         workspaceView.send('workspace-xml-to-config', new Error('Could not find ADC project in global'));
@@ -430,6 +439,14 @@ function onConvertXmlToConfig(event, content) {
     config.load(function () {
         config.fromXml(content);
         workspaceView.send('workspace-xml-to-config', null, config.get());
+    });
+    workspace.find(tabId, function (err, tab) {
+        if (err) {
+            return;
+        }
+        tab.mode = "form";
+        tab.config.mode = "form";
+        saveWorkspaceStatus();
     });
 }
 

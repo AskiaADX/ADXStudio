@@ -528,11 +528,11 @@
                         iFrame.style.display = "none";
                         altIFrame.style.display = "";
                         tab.config.mode = "form";
-                        tab.mode =  "form";
+                        tab.mode = "form";
                         buttonForm.classList.add("active-sub-tab");
                         buttonCode.classList.remove("active-sub-tab");
                     });
-                    ipc.send('workspace-convert-xml-to-config', tab.editor.getValue());
+                    ipc.send('workspace-convert-xml-to-config', tab.editor.getValue(), tab.id);
                 });
 
                 buttonCode.addEventListener('click', function() {
@@ -552,7 +552,7 @@
                         buttonForm.classList.remove("active-sub-tab");
                         buttonCode.classList.add("active-sub-tab");
                     });
-                    ipc.send('workspace-convert-config-to-xml', tab.projectSettings.getCurrentConfig());
+                    ipc.send('workspace-convert-config-to-xml', tab.projectSettings.getCurrentConfig(), tab.id);
                 });
             }
 
