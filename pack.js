@@ -1,6 +1,6 @@
 "use strict";
 
-const fileVersion = "0.0.0.8";
+const fileVersion = "0.0.0.9";
 const path = require("path");
 const packager = require('electron-packager');
 const outputPath = path.join(process.cwd(), "releases/" + fileVersion + "/");
@@ -9,18 +9,18 @@ const opts = {
     "name" : "ADXStudio",
     "platform" : "win32",
     "arch" : "all",
-    "version" : "0.36.8",
+    "version" : "0.37.4",
     "out" : outputPath,
     "icon" : path.join(process.cwd(), "app/adx-studio_icon.ico"),
     "overwrite" : true,
     "ignore" : /(\.adxstudio|docs|tmp|\.git|\.idea|releases|jasmine-node|pack\.js)/i,
+    "app-copyright" :  "Copyright (c) Askia 2016",
+    "app-version" : fileVersion,
+    "build-version" : fileVersion,
     "version-string" : {
         "CompanyName" : "Askia SAS",
-        "LegalCopyright" : "Copyright (c) Askia 2016",
         "FileDescription" : "Askia Design eXtension - Studio",
         "OriginalFilename" : "ADXStudio",
-        "FileVersion" : fileVersion,
-        "ProductVersion" : fileVersion,
         "ProductName" : "ADXStudio",
         "InternalName" : "ADXStudio"
     }
