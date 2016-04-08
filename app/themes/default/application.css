@@ -283,14 +283,15 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    WorkSpace Part
    ======================================== */
 
-.tabs-wrapper {
-    max-width : calc(100% - 50px);
-}
-
 .tabs-scroll {
     width: 50px;
+    display:block;
 }
-
+.tabs-container {
+    height  : 45px;
+    margin  : 0;
+    padding : 0;
+}
 .tab {
     background      : #21252B;
     border-right    : 1px solid #111;
