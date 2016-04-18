@@ -245,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function (){
         function onTabsClick (event) {
             var tabId = event.target.parentNode.id.replace(/^(tab-)/, '') || event.target.id.replace(/^(tab-)/, '');
 
+            self.setPanel();
             if (event.target.className === "tab-close") {
                 self.removeTab(tabId);
             } else {
@@ -774,6 +775,8 @@ document.addEventListener("DOMContentLoaded", function (){
 
         var iFramesContainer = document.getElementById('iframes');
         iFramesContainer.appendChild(contentEl);
+        
+        this.setActiveTab();
         /*setTabContentPosition(contentEl, pane);
 
     if (isActive) {
@@ -936,7 +939,7 @@ document.addEventListener("DOMContentLoaded", function (){
     Tab.prototype.getActiveTab = function () {
         var wor = WorkspaceView.getInstance();
         var panel = wor.getActivePanel();
-        var activeTab = panel.htmlElements.tabsWrapper.querySelectorAll('.tab.active');
+        var activeTab = panel.htmlElements.tabsWrapper.querySelector('.tab.active');
         
         if (activeTab) {
             activeTab = activeTab.id.replace(/^tab-/, "");
@@ -950,7 +953,7 @@ document.addEventListener("DOMContentLoaded", function (){
             return;
         }
         var oldActiveTab = this.getActiveTab();
-
+        
         if (oldActiveTab) {
             oldActiveTab.htmlElements.tab.classList.remove('active');
             oldActiveTab.htmlElements.content.classList.remove('active');
