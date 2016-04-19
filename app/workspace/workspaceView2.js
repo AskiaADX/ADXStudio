@@ -827,9 +827,10 @@ document.addEventListener("DOMContentLoaded", function (){
     };
 
     /**
+     * Get the viewer's URL for the specicied tab
      *
-     *
-     *
+     * @param {boolean} [altContent=false] Alternative containt for toggle tab
+     * @return {String} the url
      */
     Tab.prototype.getViewerUrl = function (altContent) {
         var viewerSubFolderName = 'editor';
