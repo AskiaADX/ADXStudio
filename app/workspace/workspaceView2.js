@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function (){
-
     /**
      * Create a single instance of the WorkspaceView
      *
@@ -29,6 +28,10 @@ document.addEventListener("DOMContentLoaded", function (){
             second : this.panels.second.htmlElements.root.querySelector('.tabs-content')
         };
 
+       	this.electron = require('electron');
+		this.remote = this.electron.remote;
+        this.Menu = this.remote.Menu;
+        this.MenuItem = this.remote.MenuItem;
         this.resizer = new this.askia.Resizer({
             element :  this.panels.main.htmlElements.root,
             onResize : function onResize() {
@@ -74,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function (){
     WorkspaceView.prototype.findTab = function findTab(tabId) {
         return this.panels.main.findTab(tabId) || this.panels.second.findTab(tabId) || null;
     };
-    
+
     /**
      * Move a tab to another pane
      *
@@ -87,12 +90,12 @@ document.addEventListener("DOMContentLoaded", function (){
             return null;
         }
         if (tab.panelId = "main") {
-            this.panels.second.add(tab);
-            this.panels.main.remove(tabId);
+            this.panels.second.addTab(tab);
+            this.panels.main.removeTab(tabId);
             tab.panelId = "second";
         } else {
-            this.panels.main.add(tab);
-            this.panels.second.remove(tabId);
+            this.panels.main.addTab(tab);
+            this.panels.second.removeTab(tabId);
             tab.panelId = "main";
         }
         return tab;
@@ -120,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function (){
         return editedTabs;
     };
 
-	/**
+    /**
      * Open the specified pane
      *
      * @param {String} panelId Name of the pane to open
@@ -146,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function (){
         }
         return this.fixRendering();
     };
-    
+
     /**
 	 * Close the specified pane
 	 * @param {String} panelId Name of the pane to close
@@ -164,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function (){
             panesEl.classList.add('full');
             this.resizer.stop();
         }
-       return this.fixRendering();
+        return this.fixRendering();
     };
 
     /**
@@ -188,6 +191,20 @@ document.addEventListener("DOMContentLoaded", function (){
     WorkspaceView.prototype.removeTab = function (panelId, tabId) {
         this.panels[panelId].removeTab(tabId);
     };
+
+    /**
+     * Remove all tabs in a panel
+     */
+    WorkspaceView.prototype.removeAllTabs = function (tabId) {
+        for (var panel in this.panels) {
+            var pane = this.panels[panel];
+            for (var tab in pane.tabs) {
+                if (tab !== tabId) {
+                    this.removeTab(panel, tab);                    
+                }
+            }
+        }
+    }
     
     /**
      * Search the current active panel
@@ -197,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function (){
     WorkspaceView.prototype.getActivePanel = function () {
         return this.panels[this.activePanelId];
     };
-    
+
     /**
      * Set the active Panel
      *
@@ -325,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function (){
             .fixTabsScroll('second')
             .fixTabContentPositions();
     };
-    
+
     /**
      *
      *
@@ -361,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function (){
         this.tabsSelectionOrder = [];
     }
 
-	/**
+    /**
      * Itnit the event linked w
      */
     Panel.prototype.listenHtmlEvents = function () {
@@ -385,16 +402,64 @@ document.addEventListener("DOMContentLoaded", function (){
         }
 
         function onTabsRightClick (event) {
-            var tabId = event.target.parentNode.id.replace(/^(tab-)/, '');
-            console.warn("Right Click Menu not implemented yet");
+            var tabId = event.target.parentNode.id.replace(/^(tab-)/, '') || event.target.id.replace(/^(tab-)/, '');
+			switch (event.target.className) {
+                case 'tab-end' :
+                    return;
+                default :
+                    var tab = self.findTab(tabId);
+                    showContextualMenu(tab);
+            }
         }
+        
+        /**
+         * Display the contextual menu on tab
+         */
+        function showContextualMenu(tab) {
+            var wor = WorkspaceView.getInstance();
+            var contextualMenu = new wor.Menu();           
+            
+            /* Close */
+            contextualMenu.append(new wor.MenuItem({
+                label: 'Close',
+                click: function onCloseClick() {
+                    wor.removeTab(self.id, tab.id);
+                }
+            }));
+            /* Close others */
+            contextualMenu.append(new wor.MenuItem({
+                label: 'Close others',
+                click: function onCloseOthersClick() {
+                    wor.removeAllTabs(tab.id);
+                }
+            }));
+            /* Close all */
+            contextualMenu.append(new wor.MenuItem({
+                label: 'Close all',
+                click: function onCloseAllClick() {
+                    wor.removeAllTabs();
+                }
+            }));
 
+            contextualMenu.append(new wor.MenuItem({type : 'separator'}));
+
+            /* Move to other pane */
+            contextualMenu.append(new wor.MenuItem({
+                label: 'Move to other pane',
+                click: function onMoveToOtherPaneClick() {
+                    wor.moveToAnotherPane(tab.id);
+                }
+            }));
+            
+            contextualMenu.popup(wor.remote.getCurrentWindow());
+        }
+        
         function onTabsMousedown (event) {
             var el = event.srcElement,
                 shouldClose = el.classList.contains('tab-close'),
                 tabId,
                 tab;
-            
+
             if (shouldClose) {
                 return;
             }
@@ -406,7 +471,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 tabId = event.target.parentNode.id.replace(/^(tab-)/, '');
                 tab = self.findTab(tabId);
                 var paneEl= el;
-                
+
                 while(!paneEl.classList.contains('pane') && paneEl.tagName !== 'body') {
                     paneEl = paneEl.parentNode;
                 }
@@ -436,7 +501,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 details.placeholder.style.width = details.el.offsetWidth + 'px';
                 this.classList.add('on-tab-dragging');
             }
-            
+
             // Lower and upper bound of the element
             pos = (event.pageX - details.delta);
             if (pos > details.maxLeft) {
@@ -489,10 +554,11 @@ document.addEventListener("DOMContentLoaded", function (){
             if (details.hasMoved) {
                 var placeholder = details.placeholder,
                     tabId = details.el.id.replace(/^(tab-)/, '');
-                placeholder.parentNode.insertBefore(details.el, placeholder);
+                placeholder.parentNode.insertBefore(details.el,  placeholder);
                 if (!placeholder.previousElementSibling.previousElementSibling) {
+                    console.log(placeholder.previousElementSibling.previousElementSibling);
                     var beforeTabId = placeholder.nextElementSibling.id.replace(/^(tab-)/, '');
-                    self.moveBeforeTab(tabId, beforeTabId);
+                    self.moveFirst(tabId, beforeTabId);
                     console.log('before : ', beforeTabId);
                 } else {
                     var afterTabId = placeholder.previousElementSibling.previousElementSibling.id.replace(/^(tab-)/, '');
@@ -500,7 +566,7 @@ document.addEventListener("DOMContentLoaded", function (){
                     console.log('after : ', afterTabId);
                 }
             }
-            
+
 
         }
 
@@ -568,7 +634,7 @@ document.addEventListener("DOMContentLoaded", function (){
         }
         this.lastTab = tab;
         this.tabs[tab.id] = tab;
-        
+
         tab.render();
 
         return this.setActiveTab(tab.id);
@@ -586,8 +652,9 @@ document.addEventListener("DOMContentLoaded", function (){
             previousTabId	= tab.previousTabId,
             nextTabId 		= tab.nextTabId;            
 
+
         if (previousTabId) {
-            tab.tabs[previousTabId].nextTabId = nextTabId;
+            this.tabs[previousTabId].nextTabId = nextTabId;
         }
         if (nextTabId) {
             this.tabs[nextTabId].previousTabId = previousTabId;
@@ -598,7 +665,7 @@ document.addEventListener("DOMContentLoaded", function (){
         if (this.firstTab === tab) {
             this.firstTab = this.tabs[nextTabId] || null;
         }
-        
+
         var indexSelected = this.tabsSelectionOrder.indexOf(tab.id);
 
         if (indexSelected !== -1) {
@@ -613,7 +680,7 @@ document.addEventListener("DOMContentLoaded", function (){
         tab.remove();
 
         if(tabToSelect) {
-            this.setCurrentTab(tabToSelect.id);
+            this.setActiveTab(tabToSelect.id);
         } else {
             if (!this.hasTab()) {
                 var workspace = WorkspaceView.getInstance();
@@ -632,23 +699,29 @@ document.addEventListener("DOMContentLoaded", function (){
      * @param {String} beforeTabId The Id of the tab before the current one
      * @return {Tab} tab The current Tab
      */
-    Panel.prototype.moveBeforeTab = function (tabId, beforeTabId) {
+    Panel.prototype.moveFirst = function (tabId, beforeTabId) {
         var tab = this.tabs[tabId];
         var beforeTab = this.tabs[beforeTabId];
-        if (this.lastTab.id === tabId) {
-            this.tabs[tab.previousTabId].nextTabId = tab.nextTabId;
-            this.lastTab = this.tabs[tab.previousTabId];
+        var nextTabId = tab.nextTabId;
+        var previousTabId = tab.previousTabId;
+
+        if (this.lastTab.id === tabId && previousTabId) {
+            this.lastTab = this.tabs[previousTabId];
+        } else {
+            this.tabs[nextTabId].previousTabId = previousTabId;
         }
+        
         if (this.firstTab.id === beforeTabId) {
             this.firstTab = tab;
+        } else {
+            this.tabs[beforeTab.beforeTabId].nextTabId = tabId;
         }
-
-        if (beforeTab.nextTabId === tabId) {
-            beforeTab.nextTabId = tab.nextTabId;
-        }
+        
         tab.nextTabId = beforeTabId;
         tab.previousTabId = beforeTab.previousTabId;
-
+        
+        this.tabs[previousTabId].nextTabId = nextTabId;
+        
         beforeTab.previousTabId = tabId;
 
         return tab;
@@ -663,20 +736,25 @@ document.addEventListener("DOMContentLoaded", function (){
     Panel.prototype.moveAfterTab = function (tabId, afterTabId) {
         var tab = this.tabs[tabId];
         var afterTab = this.tabs[afterTabId];
+        var nextTabId = tab.nextTabId;
+        var previousTabId = tab.previousTabId;
+        
         if (this.firstTab.id === tabId) {
-            this.tabs[tab.nextTabId].previousTabId = tab.previousTabId;
-            this.firstTab = this.tabs[tab.nextTabId];
+            this.firstTab = this.tabs[nextTabId];
+        } else {
+            this.tabs[previousTabId].nextTabId = nextTabId;
         }
+        
         if (this.lastTab.id === afterTabId) {
             this.lastTab = tab;
+        } else {
+            this.tabs[afterTab.nextTabId].previousTabId = previousTabId;
         }
-        if (afterTab.previousTabId === tabId) {
-            afterTab.previousTabId = tab.previousTabId;
-        }
-       
+        
         tab.nextTabId = afterTab.nextTabId;
         tab.previousTabId = afterTabId;
 
+        
         afterTab.nextTabId = tabId;
 
         return tab;
@@ -694,7 +772,7 @@ document.addEventListener("DOMContentLoaded", function (){
         tab.rename(name);
         return tab;
     };
-        
+
     /**
      * Check if the pane contain any tab
      *
@@ -720,7 +798,7 @@ document.addEventListener("DOMContentLoaded", function (){
     Panel.prototype.setActiveTab = function (tabId) {
         var tabToDeactivate = this.getActiveTab();
         var tabToActivate = this.findTab(tabId);
-        
+
         // Same tab do nothing
         if (tabToDeactivate && tabToDeactivate.id === tabToActivate.id) {
             return this.getActiveTab();
@@ -950,13 +1028,13 @@ document.addEventListener("DOMContentLoaded", function (){
 
         var iFramesContainer = document.getElementById('iframes');
         iFramesContainer.appendChild(contentEl);
-        
+
         this.activate();
-        
+
         var wor = WorkspaceView.getInstance();
         wor.setTabContentPosition(contentEl, this.panelId);
         wor.fixRendering();
-/*
+        /*
 		//Close the empty pane but never close both pane
 	    var paneState       = getPanesState();
 	    if (paneState.main && paneState.second) {
@@ -1000,7 +1078,7 @@ document.addEventListener("DOMContentLoaded", function (){
         // return '../viewers/' + viewerSubFolderName + '/viewer.html?tabId=' + this.id + '&' + params.join('&');
         return "fakeviewers/file" + this.id + ".html?tabId=" + this.id + "&" + params.join('&');
     };
-    
+
     /**
      * Method call by the viewer once the tab is ready to be display
      */
@@ -1013,7 +1091,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 tab.editor.focus();
             }*/
     };
-    
+
     /**
      *	remove the tab from the view
      */
@@ -1022,8 +1100,8 @@ document.addEventListener("DOMContentLoaded", function (){
             contentEl       = this.htmlElements.content,
             tabToSelect     = null,
             panel     		= this.getPanel();
- 
-        
+
+
         //Remove the tab
         el.parentNode.removeChild(el);
         contentEl.parentNode.removeChild(contentEl);
@@ -1057,7 +1135,7 @@ document.addEventListener("DOMContentLoaded", function (){
     Tab.prototype.getNextTab = function () {
         var panel = this.getPanel();
         return panel.findTab(this.nextTabId);
-};
+    };
 
     /**
      * Search the previous selected tab
@@ -1067,7 +1145,7 @@ document.addEventListener("DOMContentLoaded", function (){
     Tab.prototype.getPreviousSelectedTab = function () {
         var panel = this.getPanel();
         return panel.findTab(this.previousSelectedTabId);
-};
+    };
 
     /**
      * Search the next selected tab
@@ -1077,7 +1155,7 @@ document.addEventListener("DOMContentLoaded", function (){
     Tab.prototype.getNextSelectedTab = function () {
         var panel = this.getPanel();
         return panel.findTab(this.nextSelectedTabId);
-};
+    };
 
     /**
      * Search is the tab is the current activated
@@ -1111,7 +1189,7 @@ document.addEventListener("DOMContentLoaded", function (){
         this.name = name;
         return this;
     };  
-    
+
     /**
      * Activate the tab
      * @chainable
@@ -1133,16 +1211,16 @@ document.addEventListener("DOMContentLoaded", function (){
         this.htmlElements.content.classList.remove('active');
         return this;
     };
-    
+
     var wor = WorkspaceView.getInstance(),
         main = wor.panels.main,
         second = wor.panels.second;
-       
+
     wor.addTab("main", {id :"1", name : "Tab1", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     wor.addTab("main", {id :"2", name : "Tab2", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     wor.addTab("main", {id :"3", name : "Tab3", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     wor.addTab("second", {id :"4", name : "Tab4", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     wor.addTab("second", {id :"5", name : "Tab5", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
-      
+    wor.addTab("main", {id :"6", name : "Tab6", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});  
     window.workspace = WorkspaceView.getInstance();
 });
