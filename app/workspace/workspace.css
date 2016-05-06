@@ -20,10 +20,12 @@ html, body {
     z-index         : 0;
     display         : flex;
     flex-direction  : row;
+    position        : relative;
 }
 
 #panes.full .pane {
-    flex: 1;
+    flex  : 1;
+    width : 100%;
 }
 
 #panes.split #second_pane {
@@ -43,12 +45,22 @@ html, body {
 }
 
 .tabs-container {
-    display: flex;
+    display  : flex;
+    position : relative;
+}
+
+.tabs-top-wrapper {
+    height : 100%;
+    width  : 100%;
+    position : relative;
+    flex   : 1;
 }
 
 .tabs-wrapper {
-    flex      : 1;
+    position  : absolute;
   	overflow  : hidden;
+    height    : 100%;
+    width     : 100%;
 }
 
 .tabs-scroll {
