@@ -7,7 +7,6 @@ const dialog = electron.dialog;
 const ADCConfigurator = require('adcutil').Configurator;
 const workspace = require('./workspaceModel.js');
 const servers   = require('../modules/servers/adxServers.js');
-const globalShortcut = electron.globalShortcut;
 var workspaceView;
 
 /**
@@ -824,11 +823,11 @@ function explorerRemovedFile(err, fileType, filePath) {
     }
 }
 
-function menuNextTab () {
+function menuNextTab() {
     workspaceView.send('next-tab');
 }
 
-function menuPrevTab () {
+function menuPrevTab() {
     workspaceView.send('prev-tab');
 }
 
@@ -850,15 +849,6 @@ ipc.on('workspace-ready', function (event) {
     
     // Keep the connection with the view
     workspaceView = event.sender;
-        
-    globalShortcut.register ('ctrl+tab', function () {
-        workspaceView.send('next-tab');
-    })
-
-    globalShortcut.register ('ctrl+shift+tab', function () {
-        workspaceView.send('prev-tab');
-    })
-
 
     // Initialize the workspace
     openProject();

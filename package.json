@@ -1,6 +1,6 @@
 {
   "name": "ADXStudio",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
@@ -34,8 +34,8 @@
     "wrench": "^1.5.8"
   },
   "devDependencies": {
-    "electron-packager": "^5.2.1",
-    "electron-prebuilt": "^0.36.8",
+    "electron-packager": "^7.0.1",
+    "electron-prebuilt": "^0.37.8",
     "jasmine-node": "^1.14.5"
   }
 }
