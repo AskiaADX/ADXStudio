@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function (){
+document.addEventListener("DOMContentLoaded", function () {
     /**
      * Create a single instance of the WorkspaceView
      *
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function (){
         // Management of singleton
         // Enforce only one instance of the WorkspaceView
         if (WorkspaceView._instance) {
-            return WorskpaceView._instance;        
+            return WorkspaceView._instance;
         }
         this.activePanelId = "main";
 
@@ -411,18 +411,9 @@ document.addEventListener("DOMContentLoaded", function (){
 
         function onTabsRightClick (event) {
             var tabId = event.target.parentNode.id.replace(/^(tab-)/, '') || event.target.id.replace(/^(tab-)/, '');
-<<<<<<< HEAD
-            switch (event.target.className) {
-                case 'tab-end' :
-                    return;
-                default :
-                    var tab = self.findTab(tabId);
-                    showContextualMenu(tab);
-=======
             if (event.target.className !== 'tab-end') {
                 var tab = self.findTab(tabId);
                 showContextualMenu(tab);
->>>>>>> 5a73f83eebaffbd9891b2f258cdbb0e386a1f922
             }
         }
 
@@ -430,14 +421,8 @@ document.addEventListener("DOMContentLoaded", function (){
          * Display the contextual menu on tab
          */
         function showContextualMenu(tab) {
-<<<<<<< HEAD
             var wor = WorkspaceView.getInstance();
-            var contextualMenu = new wor.Menu();           
-
-=======
-            var contextualMenu = new workspace.Menu();
-            
->>>>>>> 5a73f83eebaffbd9891b2f258cdbb0e386a1f922
+            var contextualMenu = new wor.Menu();
             /* Close */
             contextualMenu.append(new workspace.MenuItem({
                 label: 'Close',
@@ -470,13 +455,7 @@ document.addEventListener("DOMContentLoaded", function (){
                     workspace.moveToAnotherPane(tab.id);
                 }
             }));
-<<<<<<< HEAD
-
             contextualMenu.popup(wor.remote.getCurrentWindow());
-=======
-            
-            contextualMenu.popup(workspace.remote.getCurrentWindow());
->>>>>>> 5a73f83eebaffbd9891b2f258cdbb0e386a1f922
         }
 
         function onTabsMousedown (event) {
@@ -582,11 +561,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 placeholder.parentNode.insertBefore(details.el,  placeholder);
                 if (!placeholder.previousElementSibling.previousElementSibling) {
                     var beforeTabId = placeholder.nextElementSibling.id.replace(/^(tab-)/, '');
-<<<<<<< HEAD
                     self.moveFirst(tabId, beforeTabId);
-=======
-                    self.moveBeforeTab(tabId, beforeTabId);
->>>>>>> 5a73f83eebaffbd9891b2f258cdbb0e386a1f922
                 } else {
                     var afterTabId = placeholder.previousElementSibling.previousElementSibling.id.replace(/^(tab-)/, '');
                     self.moveAfterTab(tabId, afterTabId);
