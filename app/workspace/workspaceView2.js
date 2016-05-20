@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", function (){
             second : this.panels.second.htmlElements.root.querySelector('.tabs-content')
         };
 
-       	this.electron = require('electron');
-		this.remote = this.electron.remote;
+        this.electron = require('electron');
+        this.remote = this.electron.remote;
         this.Menu = this.remote.Menu;
         this.MenuItem = this.remote.MenuItem;
         this.resizer = new this.askia.Resizer({
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function (){
             }
         }
     }
-    
+
     /**
      * Search the current active panel
      *
@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function (){
 
         function onTabsRightClick (event) {
             var tabId = event.target.parentNode.id.replace(/^(tab-)/, '') || event.target.id.replace(/^(tab-)/, '');
-			switch (event.target.className) {
+            switch (event.target.className) {
                 case 'tab-end' :
                     return;
                 default :
@@ -411,14 +411,14 @@ document.addEventListener("DOMContentLoaded", function (){
                     showContextualMenu(tab);
             }
         }
-        
+
         /**
          * Display the contextual menu on tab
          */
         function showContextualMenu(tab) {
             var wor = WorkspaceView.getInstance();
             var contextualMenu = new wor.Menu();           
-            
+
             /* Close */
             contextualMenu.append(new wor.MenuItem({
                 label: 'Close',
@@ -450,10 +450,10 @@ document.addEventListener("DOMContentLoaded", function (){
                     wor.moveToAnotherPane(tab.id);
                 }
             }));
-            
+
             contextualMenu.popup(wor.remote.getCurrentWindow());
         }
-        
+
         function onTabsMousedown (event) {
             var el = event.srcElement,
                 shouldClose = el.classList.contains('tab-close'),
@@ -556,14 +556,11 @@ document.addEventListener("DOMContentLoaded", function (){
                     tabId = details.el.id.replace(/^(tab-)/, '');
                 placeholder.parentNode.insertBefore(details.el,  placeholder);
                 if (!placeholder.previousElementSibling.previousElementSibling) {
-                    console.log(placeholder.previousElementSibling.previousElementSibling);
                     var beforeTabId = placeholder.nextElementSibling.id.replace(/^(tab-)/, '');
                     self.moveFirst(tabId, beforeTabId);
-                    console.log('before : ', beforeTabId);
                 } else {
                     var afterTabId = placeholder.previousElementSibling.previousElementSibling.id.replace(/^(tab-)/, '');
                     self.moveAfterTab(tabId, afterTabId);
-                    console.log('after : ', afterTabId);
                 }
             }
 
@@ -703,27 +700,27 @@ document.addEventListener("DOMContentLoaded", function (){
         var tab = this.tabs[tabId];
         var beforeTab = this.tabs[beforeTabId];
         var nextTabId = tab.nextTabId;
+        var nextTab = this.tabs[nextTabId];
         var previousTabId = tab.previousTabId;
-
-        if (this.lastTab.id === tabId && previousTabId) {
-            this.lastTab = this.tabs[previousTabId];
+        var previousTab = this.tabs[previousTabId];
+        
+        this.firstTab = tab;
+        
+        if(nextTab) {
+            nextTab.previousTabId = previousTabId;
         } else {
-            this.tabs[nextTabId].previousTabId = previousTabId;
+            this.lastTab = previousTab;
         }
         
-        if (this.firstTab.id === beforeTabId) {
-            this.firstTab = tab;
-        } else {
-            this.tabs[beforeTab.beforeTabId].nextTabId = tabId;
+        if (previousTab) {
+            previousTab.nextTabId = nextTabId;
         }
         
         tab.nextTabId = beforeTabId;
         tab.previousTabId = beforeTab.previousTabId;
         
-        this.tabs[previousTabId].nextTabId = nextTabId;
-        
         beforeTab.previousTabId = tabId;
-
+        
         return tab;
     };
 
@@ -737,24 +734,32 @@ document.addEventListener("DOMContentLoaded", function (){
         var tab = this.tabs[tabId];
         var afterTab = this.tabs[afterTabId];
         var nextTabId = tab.nextTabId;
+        var nextTab = this.tabs[nextTabId];
         var previousTabId = tab.previousTabId;
+        var previousTab = this.tabs[previousTabId];
+        var nextAfterTab = this.tabs[afterTab.nextTabId];
         
-        if (this.firstTab.id === tabId) {
-            this.firstTab = this.tabs[nextTabId];
+        if(nextTab) {
+            nextTab.previousTabId = previousTabId;
         } else {
-            this.tabs[previousTabId].nextTabId = nextTabId;
+            this.lastTab = previousTab;
         }
         
-        if (this.lastTab.id === afterTabId) {
+        if (previousTab) {
+            previousTab.nextTabId = nextTabId;
+        } else {
+            this.firstTab = nextTab;
+        }
+        
+        if (nextAfterTab) {
+            nextAfterTab.previousTabId = tabId;
+        } else {
             this.lastTab = tab;
-        } else {
-            this.tabs[afterTab.nextTabId].previousTabId = previousTabId;
         }
-        
+
         tab.nextTabId = afterTab.nextTabId;
         tab.previousTabId = afterTabId;
 
-        
         afterTab.nextTabId = tabId;
 
         return tab;
@@ -1221,6 +1226,6 @@ document.addEventListener("DOMContentLoaded", function (){
     wor.addTab("main", {id :"3", name : "Tab3", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     wor.addTab("second", {id :"4", name : "Tab4", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     wor.addTab("second", {id :"5", name : "Tab5", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
-    wor.addTab("main", {id :"6", name : "Tab6", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});  
+    wor.addTab("main", {id :"6", name : "Tab6", path : "C:\Users\Vincent\Desktop\ADXStudio\app\worspace\workspaceView2.js", content : "ICI", type : "file"});
     window.workspace = WorkspaceView.getInstance();
 });
