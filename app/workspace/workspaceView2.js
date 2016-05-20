@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
             main : this.panels.main.htmlElements.root.querySelector('.tabs-content'),
             second : this.panels.second.htmlElements.root.querySelector('.tabs-content')
         };
-
+        
         this.electron = require('electron');
         this.remote = this.electron.remote;
         this.Menu = this.remote.Menu;
@@ -38,10 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 WorkspaceView.getInstance().fixRendering();
             }
         });
-
-
-        this.listenHtmlEvents();
+        
         WorkspaceView._instance = this;
+        this.listenHtmlEvents();
     }
 
     /**
@@ -393,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
             tabsEl = this.htmlElements.root.querySelector('.tabs'),
             self = this,
             scrollTimeout;
-
+        
         function onTabsClick (event) {
             var tabId = event.target.parentNode.id.replace(/^(tab-)/, '') || event.target.id.replace(/^(tab-)/, '');
             workspace.setActivePanel(self.id);
@@ -698,7 +697,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * @param {String} beforeTabId The Id of the tab before the current one
      * @return {Tab} tab The current Tab
      */
-    Panel.prototype.moveBeforeTab = function (tabId, beforeTabId) {
+    Panel.prototype.moveFirst = function (tabId, beforeTabId) {
         var tab = this.tabs[tabId];
         var beforeTab = this.tabs[beforeTabId];
         var nextTabId = tab.nextTabId;
