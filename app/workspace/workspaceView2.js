@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (WorkspaceView._instance) {
             return WorkspaceView._instance;
         }
+        WorkspaceView._instance = this;
+
         this.activePanelId = "main";
 
         this.htmlElements = {};
@@ -38,8 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 WorkspaceView.getInstance().fixRendering();
             }
         });
-        
-        WorkspaceView._instance = this;
+
         this.listenHtmlEvents();
     }
 
@@ -150,17 +151,24 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     /**
-	 * Close the specified pane
+	 * Close the specified pane when it's possible
 	 * @param {String} panelId Name of the pane to close
      * @chainable
      * @return {WorkspaceView} Return the current workspace
 	 */
     WorkspaceView.prototype.closePanel = function (panelId) {
         var panel = this.panels[panelId];
+        var otherPanel = (panel.id === "main") ? this.panels["second"] : this.panels["main"];
+
+        // Always keep open 1 panel
+        if (!otherPanel.isOpen) {
+            return this;
+        }
+
         panel.htmlElements.root.classList.remove('open');
         panel.isOpen = false;
-        var otherPanel = (panel.id === "main") ? this.panels["second"] : this.panels["main"];
-        if (!panel.isOpen || !otherPanel.isOpen) {
+
+        if (!otherPanel.isOpen) {
             var panesEl = this.htmlElements.panes;
             panesEl.classList.remove('split');
             panesEl.classList.add('full');
@@ -412,7 +420,9 @@ document.addEventListener("DOMContentLoaded", function () {
             var tabId = event.target.parentNode.id.replace(/^(tab-)/, '') || event.target.id.replace(/^(tab-)/, '');
             if (event.target.className !== 'tab-end') {
                 var tab = self.findTab(tabId);
-                showContextualMenu(tab);
+                if (tab) {
+                    showContextualMenu(tab);
+                }
             }
         }
 
@@ -420,8 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
          * Display the contextual menu on tab
          */
         function showContextualMenu(tab) {
-            var wor = WorkspaceView.getInstance();
-            var contextualMenu = new wor.Menu();
+            var contextualMenu = new workspace.Menu();
             /* Close */
             contextualMenu.append(new workspace.MenuItem({
                 label: 'Close',
@@ -454,7 +463,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     workspace.moveToAnotherPane(tab.id);
                 }
             }));
-            contextualMenu.popup(wor.remote.getCurrentWindow());
+            contextualMenu.popup(workspace.remote.getCurrentWindow());
         }
 
         function onTabsMousedown (event) {
@@ -560,10 +569,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 placeholder.parentNode.insertBefore(details.el,  placeholder);
                 if (!placeholder.previousElementSibling.previousElementSibling) {
                     var beforeTabId = placeholder.nextElementSibling.id.replace(/^(tab-)/, '');
-                    self.moveFirst(tabId, beforeTabId);
+                    self.moveTabBefore(tabId, beforeTabId);
                 } else {
                     var afterTabId = placeholder.previousElementSibling.previousElementSibling.id.replace(/^(tab-)/, '');
-                    self.moveAfterTab(tabId, afterTabId);
+                    self.moveTabAfter(tabId, afterTabId);
                 }
             }
         }
@@ -595,7 +604,7 @@ document.addEventListener("DOMContentLoaded", function () {
             scrollTimeout = setInterval(doScroll, 150);
         }
 
-        //Add Event on tabs container and tabs scroll
+        // Add events on tabs container and tabs scroll
         tabsEl.addEventListener('click', onTabsClick);
         tabsEl.addEventListener('contextmenu', onTabsRightClick, false);
         tabsEl.addEventListener('mousedown', onTabsMousedown);
@@ -619,8 +628,8 @@ document.addEventListener("DOMContentLoaded", function () {
      * @return {Tab} tab the added Tab
      */
     Panel.prototype.addTab = function (tabConfig) {
-        var wor = WorkspaceView.getInstance();
-        wor.openPanel(this.id);
+        var workspace = WorkspaceView.getInstance();
+        workspace.openPanel(this.id);
 
         var tab = new Tab(tabConfig, this.id);
         if (this.lastTab) {
@@ -648,7 +657,8 @@ document.addEventListener("DOMContentLoaded", function () {
         var tab = this.tabs[tabId],
             tabToSelect     = null,
             previousTabId	= tab.previousTabId,
-            nextTabId 		= tab.nextTabId;            
+            nextTabId 		= tab.nextTabId,
+            workspace = WorkspaceView.getInstance();
 
 
         if (previousTabId) {
@@ -669,7 +679,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (indexSelected !== -1) {
             this.tabsSelectionOrder.splice(indexSelected, 1);
         }
-        //Check if we remove the current tab
+
+        // Check if we remove the current tab
         if (tab.isActive()) {
             tabToSelect = this.tabsSelectionOrder[indexSelected - 1] || tab.previousTabId || tab.nextTabId;
             tabToSelect = this.findTab(tabToSelect);
@@ -677,12 +688,10 @@ document.addEventListener("DOMContentLoaded", function () {
         delete this.tabs[tabId];
         tab.remove();
 
-        if(tabToSelect) {
+        if (tabToSelect) {
             this.setActiveTab(tabToSelect.id);
         } else {
             if (!this.hasTab()) {
-                var workspace = WorkspaceView.getInstance();
-                workspace.openOtherPanel(this.id);
                 workspace.closePanel(this.id);
             }
         }
@@ -691,79 +700,95 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     /**
-     * update current Tab while moving
+     * Move specified tab before or after another tab
      *
-     * @param {String} tabId The Id of the tab
-     * @param {String} beforeTabId The Id of the tab before the current one
+     * @param {"before"|"after"} direction Direction of move
+     * @param {String} tabId Id of the tab to move
+     * @param {String} destinationTabId Id of the destination tab where to move
      * @return {Tab} tab The current Tab
      */
-    Panel.prototype.moveFirst = function (tabId, beforeTabId) {
+    Panel.prototype.moveTab = function (direction, tabId, destinationTabId) {
         var tab = this.tabs[tabId];
-        var beforeTab = this.tabs[beforeTabId];
-        var nextTabId = tab.nextTabId;
-        var nextTab = this.tabs[nextTabId];
         var previousTabId = tab.previousTabId;
         var previousTab = this.tabs[previousTabId];
-        
-        this.firstTab = tab;
-        
-        if(nextTab) {
-            nextTab.previousTabId = previousTabId;
+        var nextTabId = tab.nextTabId;
+        var nextTab = this.tabs[nextTabId];
+
+        var beforeTabId;
+        var beforeTab;
+        var afterTabId;
+        var afterTab;
+
+        if (direction === 'before') {
+            beforeTabId = destinationTabId;
+            beforeTab = this.tabs[beforeTabId] || null;
+            afterTabId = (beforeTab && beforeTab.previousTabId) || null;
+            afterTab = this.tabs[afterTabId] || null;
         } else {
-            this.lastTab = previousTab;
+            afterTabId = destinationTabId;
+            afterTab   = this.tabs[afterTabId] || null;
+            beforeTabId = (afterTab && afterTab.nextTabId) || null;
+            beforeTab = this.tabs[beforeTabId] || null;
         }
-        
+
         if (previousTab) {
             previousTab.nextTabId = nextTabId;
         }
-        
+        if (nextTab) {
+            nextTab.previousTabId = previousTabId;
+        }
+        // If we are moving the first tab,
+        // take the next one and assign it as the first tab
+        if (this.firstTab === tab && nextTab) {
+            this.firstTab = nextTab;
+        }
+        else if (this.firstTab === beforeTab) {
+            this.firstTab = tab;
+        }
+        // If we are moving the last tab,
+        // take the previous one and assign it as the last tab
+        if (this.lastTab === tab && previousTab) {
+            this.lastTab = previousTab;
+        }
+        else if (this.lastTab === afterTab) {
+            this.lastTab = tab;
+        }
+
+        // Upgrade the reference of the tab that has been moved
         tab.nextTabId = beforeTabId;
-        tab.previousTabId = beforeTab.previousTabId;
-        
-        beforeTab.previousTabId = tabId;
-        
+        tab.previousTabId = afterTabId;
+
+        // Upgrade the reference of the tabs around
+        if (beforeTab) {
+            beforeTab.previousTabId = tabId;
+        }
+        if (afterTab) {
+            afterTab.nextTabId = tabId;
+        }
+
         return tab;
     };
 
     /**
-     * update current Tab while moving
+     * Move specified tab before the another tab
      *
-     * @param {String} tabId The Id of the tab
+     * @param {String} tabId Id of the tab to move
+     * @param {String} beforeTabId Id of the destination tab before where to move
      * @return {Tab} tab The current Tab
      */
-    Panel.prototype.moveAfterTab = function (tabId, afterTabId) {
-        var tab = this.tabs[tabId];
-        var afterTab = this.tabs[afterTabId];
-        var nextTabId = tab.nextTabId;
-        var nextTab = this.tabs[nextTabId];
-        var previousTabId = tab.previousTabId;
-        var previousTab = this.tabs[previousTabId];
-        var nextAfterTab = this.tabs[afterTab.nextTabId];
-        
-        if(nextTab) {
-            nextTab.previousTabId = previousTabId;
-        } else {
-            this.lastTab = previousTab;
-        }
-        
-        if (previousTab) {
-            previousTab.nextTabId = nextTabId;
-        } else {
-            this.firstTab = nextTab;
-        }
-        
-        if (nextAfterTab) {
-            nextAfterTab.previousTabId = tabId;
-        } else {
-            this.lastTab = tab;
-        }
+    Panel.prototype.moveTabBefore = function (tabId, beforeTabId) {
+        return this.moveTab("before", tabId, beforeTabId);
+    };
 
-        tab.nextTabId = afterTab.nextTabId;
-        tab.previousTabId = afterTabId;
-
-        afterTab.nextTabId = tabId;
-
-        return tab;
+    /**
+     * Move specified tab after the another tab
+     *
+     * @param {String} tabId Id of the tab to move
+     * @param {String} afterTabId Id of the destination tab after where to move
+     * @return {Tab} tab The current Tab
+     */
+    Panel.prototype.moveTabAfter = function (tabId, afterTabId) {
+        return this.moveTab("after", tabId, afterTabId);
     };
 
     /**
@@ -1085,6 +1110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return "fakeviewers/file" + this.id + ".html?tabId=" + this.id + "&" + params.join('&');
     };
 
+
     /**
      * Method call by the viewer once the tab is ready to be display
      */
@@ -1099,16 +1125,12 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     /**
-     *	remove the tab from the view
+     *	Remove the tab from the view
      */
     Tab.prototype.remove = function () {
         var el              = this.htmlElements.tab,
-            contentEl       = this.htmlElements.content,
-            tabToSelect     = null,
-            panel     		= this.getPanel();
+            contentEl       = this.htmlElements.content;
 
-
-        //Remove the tab
         el.parentNode.removeChild(el);
         contentEl.parentNode.removeChild(contentEl);
     };
@@ -1143,25 +1165,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return panel.findTab(this.nextTabId);
     };
 
-    /**
-     * Search the previous selected tab
-     *
-     * @return {Tab} The previous selected Tab
-     */
-    Tab.prototype.getPreviousSelectedTab = function () {
-        var panel = this.getPanel();
-        return panel.findTab(this.previousSelectedTabId);
-    };
-
-    /**
-     * Search the next selected tab
-     *
-     * @return {Tab} The next selected Tab
-     */
-    Tab.prototype.getNextSelectedTab = function () {
-        var panel = this.getPanel();
-        return panel.findTab(this.nextSelectedTabId);
-    };
 
     /**
      * Search is the tab is the current activated
@@ -1187,7 +1190,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /**
  	 * Rename the specified tab
  	 *
-     * @param {Strin} name The new name of the tab
+     * @param {String} name The new name of the tab
      * @return {Tab} The current Tab
      */
     Tab.prototype.rename = function (name) {
@@ -1208,7 +1211,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     /**
-     * Deactivete the tab
+     * Deactivate the tab
      * @chainable
      * @return {Tab} Returns the tab
      */

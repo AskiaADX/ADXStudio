@@ -10,6 +10,6 @@
         var workspace = parent.workspace;
         var tab       = workspace.findTab(tabId);
 
-        tab.ready();    
+        tab.ready();
     });
 }());

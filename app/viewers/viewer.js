@@ -1,4 +1,4 @@
-		(function () {
+(function () {
     var matchTabId  =  /\?tabid=([^&]+)/gi.exec(window.location.href);
     if (!matchTabId || !matchTabId.length) {
         throw new Error("Invalid context, the tab id is not defined");
