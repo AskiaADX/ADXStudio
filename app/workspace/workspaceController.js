@@ -4,7 +4,7 @@ const ipc = electron.ipcMain;
 const path = require('path');
 const fs = require('fs');
 const dialog = electron.dialog;
-const ADCConfigurator = require('adcutil').Configurator;
+const ADXConfigurator = require('adxutil').Configurator;
 const workspace = require('./workspaceModel.js');
 const servers   = require('../modules/servers/adxServers.js');
 var workspaceView;
@@ -13,50 +13,50 @@ var workspaceView;
  * Save the status of the workspace
  */
 function saveWorkspaceStatus() {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
+    var adx = global.project.adx;
+    if (!adx || !adx.path) {
         return;
     }
 
-    fs.mkdir(path.join(adc.path, '.adxstudio'), function () {
-        fs.writeFile(path.join(adc.path, '.adxstudio', 'workspace.json'),  JSON.stringify(workspace.toJSON()), {encoding: 'utf8'});
+    fs.mkdir(path.join(adx.path, '.adxstudio'), function () {
+        fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'),  JSON.stringify(workspace.toJSON()), {encoding: 'utf8'});
     });
 }
 
 /**
- * Try to execute the function if the project is an ADC
+ * Try to execute the function if the project is an ADX
  * @param {Function} fn
- * @param {ADC} fn.adc Instance of the ADC
+ * @param {ADX} fn.adx Instance of the ADX
  */
-function tryIfADC(fn) {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
+function tryIfADX(fn) {
+    var adx = global.project.adx;
+    if (!adx || !adx.path) {
         return;
     }
 
-    adc.load(function (err) {
+    adx.load(function (err) {
         if (err) {
             return;
         }
-        if (!adc.configurator) {
+        if (!adx.configurator) {
             return;
         }
-        if (!adc.configurator.info) {
+        if (!adx.configurator.info) {
             return;
         }
 
-        var info = adc.configurator.info.get();
+        var info = adx.configurator.info.get();
         if (!info || !info.name || !info.guid) {
             return;
         }
-        // Ok seems to be an ADC
-        fn(adc);
+        // Ok seems to be an ADX
+        fn(adx);
     });
 }
 
 
 /**
- * Return the structure of the resources directory of the current ADC
+ * Return the structure of the resources directory of the current ADX
  * @param {Function} callback
  * @param {Object} callback.structure
  * @param {String[]} callback.structure.dynamic List of files in dynamic directory
@@ -68,7 +68,7 @@ function getResourcesDirectoryStructure(callback) {
         return;
     }
 
-    var adc = global.project.adc;
+    var adx = global.project.adx;
     function buildFiles(dir, files) {
         var stats;
         var finalFiles = [];
@@ -91,15 +91,15 @@ function getResourcesDirectoryStructure(callback) {
     }
 
     var structure = {};
-    var sharePath = path.join(adc.path, 'resources/share');
+    var sharePath = path.join(adx.path, 'resources/share');
     fs.readdir(sharePath, function onReadShareDirectory(errShare, shareFiles) {
         structure.share = (!errShare) ? (buildFiles(sharePath, shareFiles) || []) : [];
 
-        var staticPath = path.join(adc.path, 'resources/static');
+        var staticPath = path.join(adx.path, 'resources/static');
         fs.readdir(staticPath, function onReadStaticDirectory(errStatic, staticFiles) {
             structure.static = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
 
-            var dynamicPath = path.join(adc.path, 'resources/dynamic');
+            var dynamicPath = path.join(adx.path, 'resources/dynamic');
             fs.readdir(dynamicPath, function onReadDynamicDirectory(errDynamic, dynamicFiles) {
                 structure.dynamic = (!errDynamic) ? (buildFiles(dynamicPath, dynamicFiles) || []) : [];
                 callback(structure);
@@ -114,16 +114,16 @@ function getResourcesDirectoryStructure(callback) {
  * @param {Function} cb
  */
 function loadProjectSettingsTab(tab, cb) {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
-        cb(new Error("The ADC project is not defined in the global"), tab);
+    var adx = global.project.adx;
+    if (!adx || !adx.path) {
+        cb(new Error("The ADX project is not defined in the global"), tab);
         return;
     }
     getResourcesDirectoryStructure(function (structure) {
         tab.loadFile(function (err) {
-            adc.load(function (err2) {
-                tab.adcConfig = (!err2)  ? adc.configurator.get() : {};
-                tab.adcStructure = structure;
+            adx.load(function (err2) {
+                tab.adxConfig = (!err2)  ? adx.configurator.get() : {};
+                tab.adxStructure = structure;
                 cb(err || err2, tab);
             });
         });
@@ -141,12 +141,12 @@ function openProject() {
         var json = err ? {} : JSON.parse(data.toString());
         workspace.init(json, function () {
             // Reload the workspace as it where before leaving the application
-            var adc = global.project.adc,
+            var adx = global.project.adx,
                 currentTabIds = {
                     main   : workspace.panes.main.currentTabId,
                     second : workspace.panes.second.currentTabId
                 },
-                configXmlPath = (adc && adc.path) ? path.join(adc.path, 'config.xml').toLowerCase() : '';
+                configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
 
 
             // Copy the tabs before to iterate through it
@@ -164,7 +164,7 @@ function openProject() {
                 switch (tab.type) {
                     // Open the preview
                     case 'preview':
-                        if (adc) {
+                        if (adx) {
                             servers.listen(function (options) {
                                 tab.name = 'Preview';
                                 tab.ports     = {
@@ -178,7 +178,7 @@ function openProject() {
 
                     // Open the project settings
                     case 'projectSettings':
-                        if (adc) {
+                        if (adx) {
                             loadProjectSettingsTab(tab, function (err) {
                                 workspaceView.send(action, err, tab, pane);
                             });
@@ -216,8 +216,8 @@ function reloadWorkspace() {
  * @param {String} file Path of file to open
  */
 function openFile(file, fromExplorer) {
-    var adc = global.project.adc,
-        configXmlPath = (adc && adc.path) ? path.join(adc.path, 'config.xml').toLowerCase() : '';
+    var adx = global.project.adx,
+        configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
 
     // If the trying to open the config.xml, make sure we use the projectSettings tab
     if (configXmlPath && file.toLowerCase() === configXmlPath) {
@@ -265,11 +265,11 @@ function openFileFromExplorer(event, file) {
  * Open project settings
  */
 function openProjectSettings(code) {
-    tryIfADC(function tryToOpenProjectSettings(adc) {
-        if (!adc || !adc.path) {
+    tryIfADX(function tryToOpenProjectSettings(adx) {
+        if (!adx || !adx.path) {
             return;
         }
-        var configXmlPath = path.join(adc.path, 'config.xml');
+        var configXmlPath = path.join(adx.path, 'config.xml');
         workspace.find(configXmlPath, function (err, tab, pane) {
             if (code) {
                 code = "code";
@@ -311,8 +311,8 @@ function openProjectSettings(code) {
  * @param {Number} options.wsPort WS port listen
  */
 function openPreview(options) {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
+    var adx = global.project.adx;
+    if (!adx || !adx.path) {
         return;
     }
 
@@ -347,12 +347,12 @@ function openPreview(options) {
  * Start the preview servers
  */
 function startPreview() {
-    tryIfADC(function tryToStartPreview(adc) {
-        if (!adc || !adc.path) {
+    tryIfADX(function tryToStartPreview(adx) {
+        if (!adx || !adx.path) {
             return;
         }
 
-        adc.checkFixtures(function () {
+        adx.checkFixtures(function () {
             servers.listen(openPreview);
         });
     });
@@ -380,18 +380,18 @@ function saveAllFiles() {
 }
 
 /**
- * Return the file structure of the ADC resources directory
+ * Return the file structure of the ADX resources directory
  * @param event
  * @param {String} tabId Id of the tab that request the list of files
  */
-function onGetAdcStructure(event, tabId) {
-    tryIfADC(function tryToOpenProjectSettings(adc) {
-        if (!adc || !adc.path) {
+function onGetAdxStructure(event, tabId) {
+    tryIfADX(function tryToOpenProjectSettings(adx) {
+        if (!adx || !adx.path) {
             return;
         }
         getResourcesDirectoryStructure(function (structure) {
-            adc.load(function (err) {
-                workspaceView.send('workspace-update-adc-structure', err, tabId, structure);
+            adx.load(function (err) {
+                workspaceView.send('workspace-update-adx-structure', err, tabId, structure);
             });
         });
     });
@@ -403,12 +403,12 @@ function onGetAdcStructure(event, tabId) {
  * @param {Object} content
  */
 function onConvertConfigToXml(event, content, tabId) {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
-        workspaceView.send('workspace-config-to-xml', new Error('Could not find ADC project in global'));
+    var adx = global.project.adx;
+    if (!adx || !adx.path) {
+        workspaceView.send('workspace-config-to-xml', new Error('Could not find ADX project in global'));
         return;
     }
-    var config = new ADCConfigurator(adc.path);
+    var config = new ADXConfigurator(adx.path);
     config.load(function () {
         config.set(content);
         workspaceView.send('workspace-config-to-xml', null, config.toXml());
@@ -429,12 +429,12 @@ function onConvertConfigToXml(event, content, tabId) {
  * @param {String} content
  */
 function onConvertXmlToConfig(event, content, tabId) {
-    var adc = global.project.adc;
-    if (!adc || !adc.path) {
-        workspaceView.send('workspace-xml-to-config', new Error('Could not find ADC project in global'));
+    var adx = global.project.adx;
+    if (!adx || !adx.path) {
+        workspaceView.send('workspace-xml-to-config', new Error('Could not find ADX project in global'));
         return;
     }
-    var config = new ADCConfigurator(adc.path);
+    var config = new ADXConfigurator(adx.path);
     config.load(function () {
         config.fromXml(content);
         workspaceView.send('workspace-xml-to-config', null, config.get());
@@ -552,18 +552,18 @@ function onSaveContent(event, tabId, content) {
             return;
         }
         if (tab.type === 'projectSettings') {
-            var adc = global.project.adc;
-            if (!adc || !adc.path) {
+            var adx = global.project.adx;
+            if (!adx || !adx.path) {
                 return;
             }
 
             if (typeof content === 'string') {
-                adc.configurator.fromXml(content);
+                adx.configurator.fromXml(content);
             } else {
-                adc.configurator.set(content);
+                adx.configurator.set(content);
             }
 
-            tab.saveFile(adc.configurator.toXml(), function (err) {
+            tab.saveFile(adx.configurator.toXml(), function (err) {
                 loadProjectSettingsTab(tab, function (err) {
                     sendUpdateTabEvent(err, tab, pane);
                 });
@@ -623,7 +623,7 @@ function onSaveContentAs(event, tabId, content) {
             fileNameWithoutExt = 'Config';
             parentDir = tab.path;
             // Use a fresh instance of the configurator based on the same file
-            var configurator = new ADCConfigurator(tab.path);
+            var configurator = new ADXConfigurator(tab.path);
             configurator.load(function onLoadConfig(err) {
                 if (err) {
                     return; // Do nothing
@@ -658,18 +658,18 @@ function onSaveContentAndClose(event, tabId, content) {
             return;
         }
         if (tab.type === 'projectSettings') {
-            var adc = global.project.adc;
-            if (!adc || !adc.path) {
+            var adx = global.project.adx;
+            if (!adx || !adx.path) {
                 return;
             }
 
             if (typeof content === 'string') {
-                adc.configurator.fromXml(content);
+                adx.configurator.fromXml(content);
             } else {
-                adc.configurator.set(content);
+                adx.configurator.set(content);
             }
-            tab.saveFile(adc.configurator.toXml(), function (err) {
-                adc.configurator.load();
+            tab.saveFile(adx.configurator.toXml(), function (err) {
+                adx.configurator.load();
                 onCloseTab(event, tab.id);
             });
         }
@@ -883,8 +883,8 @@ ipc.on('workspace-ready', function (event) {
     ipc.removeListener('workspace-move-tab', onMoveTab);
     ipc.on('workspace-move-tab', onMoveTab);
 
-    ipc.removeListener('workspace-get-adc-structure', onGetAdcStructure);
-    ipc.on('workspace-get-adc-structure', onGetAdcStructure);
+    ipc.removeListener('workspace-get-adx-structure', onGetAdxStructure);
+    ipc.on('workspace-get-adx-structure', onGetAdxStructure);
 
     ipc.removeListener('workspace-convert-config-to-xml', onConvertConfigToXml);
     ipc.on('workspace-convert-config-to-xml', onConvertConfigToXml);

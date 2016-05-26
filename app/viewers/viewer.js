@@ -64,19 +64,19 @@
          */
         saveContentAndClose : function () {/* Function that should be implemented in the viewer */},
         /**
-         * Request the list of file in the ADC resources directory
+         * Request the list of file in the ADX resources directory
          * @param {Function} callback With the structure of the file in args
          */
-        getADCStructure : function (callback) {
+        getADXStructure : function (callback) {
             var ipc = tabs.ipc;
-            if (tab.previousADCStructCb) {
-                ipc.removeListener('workspace-update-adc-structure', tab.previousADCStructCb);
+            if (tab.previousADXStructCb) {
+                ipc.removeListener('workspace-update-adx-structure', tab.previousADXStructCb);
             }
-            tab.previousADCStructCb = function (event, err, tabId, structure) {
+            tab.previousADXStructCb = function (event, err, tabId, structure) {
                 callback(structure);
             };
-            ipc.on('workspace-update-adc-structure', tab.previousADCStructCb);
-            ipc.send('workspace-get-adc-structure', tab.id);
+            ipc.on('workspace-update-adx-structure', tab.previousADXStructCb);
+            ipc.send('workspace-get-adx-structure', tab.id);
         },
         /**
          * Fire loaded event

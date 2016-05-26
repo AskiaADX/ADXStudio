@@ -103,15 +103,15 @@ Server.prototype.close = function close(callback) {
  * @param {String} callback.fixtures.defaultFixture Default fixture
  */
 function getFixtures(callback) {
-    const adc = global.project.adc;
+    const adx = global.project.adx;
 
-    adc.getFixtureList(function (err, fixtures) {
+    adx.getFixtureList(function (err, fixtures) {
         const result = {
             list : fixtures  || []
         };
         // Search the first allowed question type
         let defaultFixture = '';
-        const constraints = adc.configurator.info.constraints();
+        const constraints = adx.configurator.info.constraints();
         if (constraints.questions) {
             for (const constraint in constraints.questions) {
                 if (constraints.questions.hasOwnProperty(constraint)) {

@@ -2,7 +2,7 @@ const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const appSettings = require('./appSettings/appSettingsModel.js');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 const shell =  electron.shell;
 const ipc   = electron.ipcMain;
 
@@ -31,7 +31,7 @@ app.on('ready', function loadMainWindow() {
     appSettings.getInitialProject(function onInitialProject(projectPath) {
         if (projectPath) {
             global.project.path = projectPath;
-            global.project.adc = new ADC(projectPath);
+            global.project.adx = new ADX(projectPath);
         }
 
         // Load the preferences in order to have default theme etc...

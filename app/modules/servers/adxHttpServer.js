@@ -26,15 +26,15 @@ function throwError(err, response) {
 }
 
 /**
- * Serve the ADC output
+ * Serve the ADX output
  *
  * @param {Error} err Error
  * @param {Object} request HTTP Request
  * @param {Object} response HTTP Response
  * @param {Object} fixtures Fixtures
  */
-function serveADCOutput(err, request, response, fixtures) {
-    const adc = global.project.adc;
+function serveADXOutput(err, request, response, fixtures) {
+    const adx = global.project.adx;
     if (err) {
         throwError(err, response);
         return;
@@ -47,7 +47,7 @@ function serveADCOutput(err, request, response, fixtures) {
     // The [fixture-name] is optional
     const uriParse = url.parse(request.url);
     const uri   = decodeURIComponent(uriParse.pathname);
-    let outputName = adc.configurator.outputs.defaultOutput();
+    let outputName = adx.configurator.outputs.defaultOutput();
     let fixtureName = fixtures.defaultFixture;
     const properties = uriParse.query || '';
     const arg = {
@@ -72,11 +72,11 @@ function serveADCOutput(err, request, response, fixtures) {
     if (fixtureName) {
         arg.fixture = fixtureName;
     }
-    arg.masterPage = path.join(__dirname, '../../../node_modules/adcutil/templates/master_page/default.html');
+    arg.masterPage = path.join(__dirname, '../../../node_modules/adxutil/templates/master_page/default.html');
     if (properties) {
         arg.properties = properties;
     }
-    adc.show(arg, function (err, output) {
+    adx.show(arg, function (err, output) {
         if (err) {
             throwError(err, response);
         } else {
@@ -96,15 +96,15 @@ function serveADCOutput(err, request, response, fixtures) {
 }
 
 /**
- * Serve the ADC configuration
+ * Serve the ADX configuration
  *
  * @param {Error} err Error
  * @param {Object} request HTTP Request
  * @param {Object} response HTTP Response
  * @param {Object} fixtures Fixtures
  */
-function serveADCConfig(err, request, response, fixtures) {
-    const adc = global.project.adc;
+function serveADXConfig(err, request, response, fixtures) {
+    const adx = global.project.adx;
 
     if (err) {
         throwError(err, response);
@@ -117,7 +117,7 @@ function serveADCConfig(err, request, response, fixtures) {
         'Expires': '0'
     });
     response.write(JSON.stringify({
-        config    : adc.configurator.get(),
+        config    : adx.configurator.get(),
         fixtures  : fixtures
     }));
     response.end();
@@ -128,33 +128,33 @@ function serveADCConfig(err, request, response, fixtures) {
  */
 function reply(request, response) {
     // Always reload to obtain the up-to-date info
-    const adc = global.project.adc;
-    adc.load(function (err) {
+    const adx = global.project.adx;
+    adx.load(function (err) {
         const uri = decodeURIComponent(url.parse(request.url).pathname);
 
         if (/^\/output\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
             getFixtures(function (fixtures) {
-                serveADCOutput(err, request, response, fixtures);
+                serveADXOutput(err, request, response, fixtures);
             });
             return;
         }
 
         if (/^\/config\//i.test(uri)) {
             getFixtures(function (fixtures) {
-                serveADCConfig(err, request, response, fixtures);
+                serveADXConfig(err, request, response, fixtures);
             });
             return;
         }
 
-        const adcname = adc.configurator.info.name();
-        const pattern = new RegExp("\/survey\/" + adcname.toLocaleLowerCase() + "\/", "i");
+        const adxname = adx.configurator.info.name();
+        const pattern = new RegExp("\/survey\/" + adxname.toLocaleLowerCase() + "\/", "i");
         let uriRewrite = uri.replace(pattern, "/static/").replace(/\/survey\//i, "/share/");
         const match     = /(resources\/(?:.*))/i.exec(uriRewrite);
         if (match && match.length === 2) {
             uriRewrite = match[1];
         }
 
-        const filename = path.join(adc.path, uriRewrite);
+        const filename = path.join(adx.path, uriRewrite);
         let stats;
 
         try {

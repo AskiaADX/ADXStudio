@@ -5,7 +5,7 @@ const app = electron.app;
 const util = require('util');
 const ipc = electron.ipcMain;
 const appSettings = require('../appSettings/appSettingsModel.js');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 const fs = require("fs");
 const path = require("path");
 const uuid = require('node-uuid');
@@ -47,9 +47,9 @@ function closeOutput() {
 }
 
 /**
- * Logger for the ADCUtil
+ * Logger for the ADXUtil
  */
-global.adcLogger = {
+global.adxLogger = {
     writeMessage : function writeMessage() {
         writeOutput(util.format.apply(null, arguments), 'message');
     },
@@ -116,15 +116,18 @@ function showKeyboardShortcuts() {
  * Show the modal dialog to create a new project
  */
 function newProject() {
-    ADC.getTemplateList(function (err, templates) {
-        showModalDialog({
-            type : 'newADCProject',
-            buttonText : {
-                ok : "Create project"
-            },
-            adcTemplates : templates,
-            defaultRootDir : app.getPath('documents')
-        }, 'main-create-new-project');
+    ADX.getTemplateList('adc', function (err, adcTemplates) {
+        ADX.getTemplateList('adp', function (err, adpTemplates) {
+            showModalDialog({
+                type : 'newADXProject',
+                buttonText : {
+                    ok : "Create project"
+                },
+                adcTemplates : adcTemplates,
+                adpTemplates : adpTemplates,
+                defaultRootDir : app.getPath('documents')
+            }, 'main-create-new-project');
+        });
     });
 }
 
@@ -140,13 +143,13 @@ function createNewProject(event, button, options) {
     }
 
     clearOutput();
-    showLoader("Creating `" + options.name + "` ADC project ...");
+    showLoader("Creating `" + options.name + "` ADX project ...");
     var project = {
         output: options.path,
         template: options.template,
         description: options.description
     };
-    ADC.generate(options.name, project, function (err, adc) {
+    ADX.generate(options.projectType, options.name, project, function (err, adx) {
         closeModalDialog();
         if (err) {
             showModalDialog({
@@ -155,26 +158,26 @@ function createNewProject(event, button, options) {
             });
             return;
         }
-        global.project.path = adc.path;
-        global.project.adc = adc;
+        global.project.path = adx.path;
+        global.project.adx = adx;
 
         // Open the project with the 'Project settings' tab open
-        fs.mkdir(path.join(adc.path, '.adxstudio'), function () {
-            fs.writeFile(path.join(adc.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
+        fs.mkdir(path.join(adx.path, '.adxstudio'), function () {
+            fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
                 tabs: [
                     {
                         id: uuid.v4(),
                         pane: "main",
                         current: true,
                         config: {
-                            path: adc.path,
+                            path: adx.path,
                             type: "projectSettings"
                         }
                     }
                 ]
             }), {encoding: 'utf8'}, function () {
                 // Open the newest project
-                app.emit('menu-open-project', adc.path);
+                app.emit('menu-open-project', adx.path);
             });
         });
     });
@@ -192,14 +195,14 @@ function openProject() {
  * Validate the project
  */
 function validateProject() {
-    var adc = global.project.adc;
+    var adx = global.project.adx;
     var logger = global.adcLogger;
-    if (!adc || !adc.path) {
+    if (!adx || !adx.path) {
         return;
     }
 
     clearOutput();
-    adc.validate({
+    adx.validate({
         logger : logger
     });
 }
@@ -208,14 +211,14 @@ function validateProject() {
  * Build the project
  */
 function buildProject() {
-    var adc = global.project.adc;
-    var logger = global.adcLogger;
-    if (!adc || !adc.path) {
+    var adx = global.project.adx;
+    var logger = global.adxLogger;
+    if (!adx || !adx.path) {
         return;
     }
 
     clearOutput();
-    adc.build({
+    adx.build({
         logger : logger
     });
 }
@@ -379,7 +382,4 @@ ipc.on('main-ready', function (event) {
     global.mainWindow.on('close', onCloseMainWindow);
     ipc.removeListener('main-save-before-quit', saveOrNotBeforeQuit);
     ipc.on('main-save-before-quit', saveOrNotBeforeQuit);
-
-
-
 });

@@ -20,10 +20,10 @@ let fileToPaste;
  * @param {String[]} files Array of path
  */
 function openRootFolder(err, dir, files) {
-    const adc = global.project.adc;
-    if (adc) {
-        adc.load(function (err) {
-            const name = (!err) ? adc.configurator.info.name() : path.basename(dir);
+    const adx = global.project.adx;
+    if (adx) {
+        adx.load(function (err) {
+            const name = (!err) ? adx.configurator.info.name() : path.basename(dir);
             explorerView.send('explorer-expand-folder', err, dir, files, true, name);
         });
     }
@@ -72,7 +72,6 @@ function addItem(event, dirPath, type, itemName) {
                     type : 'okOnly',
                     message : err.message
                 });
-                return;
             }
         });
     }
@@ -118,7 +117,6 @@ function removeFile(event, file) {
                 type : 'okOnly',
                 message : err.message
             });
-            return;
         }
     });
 }

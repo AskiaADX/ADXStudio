@@ -6,7 +6,7 @@ const dialog = electron.dialog;
 const shell = electron.shell;
 const fs = require('fs');
 const path = require('path');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 const appSettings = require('../appSettings/appSettingsModel.js');
 
 // Default Menu of the app.
@@ -24,7 +24,7 @@ app.once('ready', function createAppMenu() {
                 label : path.basename(mruItem.path),
                 click : function () {
                     global.project.path = mruItem.path;
-                    global.project.adc = new ADC(mruItem.path);
+                    global.project.adx = new ADX(mruItem.path);
 
                     app.emit("menu-open-project", mruItem.path);
                 }
@@ -70,7 +70,7 @@ app.once('ready', function createAppMenu() {
             dialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
                 if (folderpath && folderpath.length) {
                     global.project.path = folderpath[0];
-                    global.project.adc = new ADC(folderpath[0]);
+                    global.project.adx = new ADX(folderpath[0]);
 
                     app.emit("menu-open-project", folderpath[0]);
                 }
@@ -131,14 +131,14 @@ app.once('ready', function createAppMenu() {
         }
 
         /**
-         * Validate the ADC
+         * Validate the ADX
          */
         function validateClick() {
             app.emit("menu-validate");
         }
 
         /**
-         * Build the ADC
+         * Build the ADX
          */
         function buildClick() {
             app.emit("menu-build");

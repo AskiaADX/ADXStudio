@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Build the form using the ADC info
+     * Build the form using the ADX info
      * @singleton
      */
     function FormBuilder() {
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Return a single instance of the ADC
+     * Return a single instance of the ADX
      */
     FormBuilder.getInstance = function getInstance() {
         if (!FormBuilder.instance) {
@@ -121,11 +121,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Update the form with the newest information
-     * @param {Object} adcInfo
+     * @param {Object} adxInfo
      * @chainable
      */
-    FormBuilder.prototype.update = function update(adcInfo) {
-        return this.init(adcInfo).build().reloadPreview();
+    FormBuilder.prototype.update = function update(adxInfo) {
+        return this.init(adxInfo).build().reloadPreview();
     };
 
     /**
@@ -160,21 +160,21 @@ document.addEventListener('DOMContentLoaded', function () {
     FormBuilder.prototype.reset = function reset() {
         this.form = null;
         this._backup = null;
-        return this.update(this.adcInfo);
+        return this.update(this.adxInfo);
     };
 
     /**
-     * Initialize the form builder with the ADC information
+     * Initialize the form builder with the ADX information
      * #chainable
      */
-    FormBuilder.prototype.init = function init(adcInfo) {
+    FormBuilder.prototype.init = function init(adxInfo) {
         var i, l, isFound = false;
 
         this.backup();
 
-        this.adcInfo       = adcInfo;
-        this.config        = adcInfo.config;
-        this.fixtures      = adcInfo.fixtures;
+        this.adxInfo       = adxInfo;
+        this.config        = adxInfo.config;
+        this.fixtures      = adxInfo.fixtures;
         this.categories    = this.config.properties.categories;
         this.outputs       = this.config.outputs;
 
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fixture;
 
         html.push('<table><tr>');
-        html.push('<td><h2>ADC Properties</h2></td>');
+        html.push('<td><h2>ADX Properties</h2></td>');
         html.push('<td class="reset-cell"><button id="reset">Reset</button></td>');
         html.push('</tr></table>');
         html.push('<table>');
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Transform a category to his HTML representation
-     * @param {Object} category ADC Category
+     * @param {Object} category ADX Category
      * #return {String}
      */
     FormBuilder.prototype.categoryToHtml = function categoryToHtml(category) {
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Transform a property his HTML representation
-     * @param {Object} property ADC Property
+     * @param {Object} property ADX Property
      * #return {String}
      */
     FormBuilder.prototype.propertyToHtml =  function propertyToHtml(property) {

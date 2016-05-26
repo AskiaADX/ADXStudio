@@ -3,7 +3,7 @@
 const app = require('electron').app;
 const path = require('path');
 const fs = require('fs');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 
 const prefFileName = "Prefs.json";
 const mruFileName = "MRU.json";
@@ -75,9 +75,9 @@ AppDataSettings.prototype.getPreferences = function getPreferences(callback) {
     };
 
     fs.readFile(filePath, function onReadPrefs(err, data) {
-        // Read the ADCUtil preferences
-        ADC.preferences.read({silent: true}, function (adcprefs) {
-            let finalPrerences = adcprefs || {};
+        // Read the ADXUtil preferences
+        ADX.preferences.read({silent: true}, function (adxprefs) {
+            let finalPrerences = adxprefs || {};
 
             finalPrerences = merge(defaultPreferences, finalPrerences);
 
@@ -97,11 +97,11 @@ AppDataSettings.prototype.getPreferences = function getPreferences(callback) {
  * @param {Object} preferences Preferences to set
  * @param {String} [preferences.defaultProjectsLocation] Default path to create projects
  * @param {Boolean} [preferences.openLastProjectByDefault] Open the last project by default
- * @param {Object} [preferences.author] Default ADC author (from ADCUtil)
- * @param {String} [preferences.author.name] Default Name of the ADC author (from ADCUtil)
- * @param {String} [preferences.author.email] Default Email of the ADC author (from ADCUtil)
- * @param {String} [preferences.author.company] Default Company of the ADC author (from ADCUtil)
- * @param {String} [preferences.author.webSite] Default WebSite of the ADC author (from ADCUtil)
+ * @param {Object} [preferences.author] Default ADX author (from ADXUtil)
+ * @param {String} [preferences.author.name] Default Name of the ADX author (from ADXUtil)
+ * @param {String} [preferences.author.email] Default Email of the ADX author (from ADXUtil)
+ * @param {String} [preferences.author.company] Default Company of the ADX author (from ADXUtil)
+ * @param {String} [preferences.author.webSite] Default WebSite of the ADX author (from ADXUtil)
  * @param {Function} callback
  * @param {Error} callback.err
  */
@@ -114,14 +114,14 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
         let finalPreferences = merge({}, preferences);
         finalPreferences = merge(finalPreferences, currentPrefs);
 
-        // Extract the preferences from ADCUtil to store it using ADCUtil
-        let adcUtilPref = null;
+        // Extract the preferences from ADXUtil to store it using ADXUtil
+        let adxUtilPref = null;
         if (finalPreferences.author) {
             // Author could come from currentPrefs
             // If it's not define in the `preferences` in args, don't treat it
             if (preferences.author) {
-                adcUtilPref = adcUtilPref || {};
-                adcUtilPref.author = finalPreferences.author;
+                adxUtilPref = adxUtilPref || {};
+                adxUtilPref.author = finalPreferences.author;
             }
             delete finalPreferences.author;
         }
@@ -151,14 +151,14 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                     app.emit('preference-switch-size', finalPreferences.editorFontSize);
                 }
 
-                if (!adcUtilPref) {
+                if (!adxUtilPref) {
                     if (typeof callback === 'function') {
                         callback(null);
                     }
                     return;
                 }
 
-                ADC.preferences.write(adcUtilPref, function onADCUtilWritePref() {
+                ADX.preferences.write(adxUtilPref, function onADXUtilWritePref() {
                     if (typeof callback === 'function') {
                         callback(null);
                     }

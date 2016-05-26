@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     document.getElementById('info').addEventListener('change', function onFormChange(event) {
-        var info = tab.adcConfig.info;
+        var info = tab.adxConfig.info;
         var element = event.srcElement;
         var name    = element.name;
         var rg = /([^\[]+)(?:\[([^\]]+)\])?/, matches = rg.exec(name);
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.projectSettings.initInfo = function initInfo() {
         infoChanges = null;
 
-        var info = tab.adcConfig.info;
+        var info = tab.adxConfig.info;
         var i, l, key, constraints;
         var responses = document.getElementById('responses');
 

@@ -12,12 +12,12 @@ const that = {};
 /**
  * When the resources folder or the config.xml has changed
  */
-function onADCResourcesChanged(eventName, filepath) {
-    const adc = global.project.adc;
+function onADXResourcesChanged(eventName, filepath) {
+    const adx = global.project.adx;
 
     // For the Config xml: reload the config
-    if (filepath.toLowerCase() === path.join(adc.path, 'config.xml').toLowerCase()) {
-        adc.load(function (err) {
+    if (filepath.toLowerCase() === path.join(adx.path, 'config.xml').toLowerCase()) {
+        adx.load(function (err) {
             getFixtures(function (fixtures) {
                 broadcast(createMessage('reloadConfig', fixtures));
             });
@@ -30,21 +30,21 @@ function onADCResourcesChanged(eventName, filepath) {
 }
 
 /**
- * Watch the ADC
+ * Watch the ADX
  */
-function watchADC() {
-    const adc = global.project.adc;
-    if (that.watched === adc.path) {
+function watchADX() {
+    const adx = global.project.adx;
+    if (that.watched === adx.path) {
         return;
     }
     if (that.watcher) {
         that.watcher.close();
     }
-    that.watched = adc.path;
-    that.watcher = watcher.create(path.join(adc.path, 'resources'), {recursive : true});
-    that.watcher.add(path.join(adc.path, 'tests'), {recursive : true});
-    that.watcher.add(path.join(adc.path, 'config.xml'));
-    that.watcher.on('change', onADCResourcesChanged);
+    that.watched = adx.path;
+    that.watcher = watcher.create(path.join(adx.path, 'resources'), {recursive : true});
+    that.watcher.add(path.join(adx.path, 'tests'), {recursive : true});
+    that.watcher.add(path.join(adx.path, 'config.xml'));
+    that.watcher.on('change', onADXResourcesChanged);
 }
 
 /**
@@ -69,12 +69,12 @@ function throwError(err, connection) {
  * @param {Object} [fixtures]
  */
 function createMessage(action, fixtures) {
-    const adc = global.project.adc;
+    const adx = global.project.adx;
     const obj = {
         error : 0,
         action : action || 'getConfig',
         message : {
-            config: adc.configurator.get()
+            config: adx.configurator.get()
         }
     };
     if (fixtures) {
@@ -84,10 +84,10 @@ function createMessage(action, fixtures) {
 }
 
 /**
- * Serve the adc config
+ * Serve the adx config
  * @param connection
  */
-function serveADCConfig(err, connection, fixtures) {
+function serveADXConfig(err, connection, fixtures) {
     if (err) {
         throwError(err, connection);
         return;
@@ -95,7 +95,7 @@ function serveADCConfig(err, connection, fixtures) {
 
     const message = createMessage('getConfig', fixtures);
     connection.sendText(message);
-    watchADC();
+    watchADX();
 }
 
 /**
@@ -106,12 +106,12 @@ function reply(connection) {
 
     connection.on("text", function onReceiveMessage(message) {
         // Always reload to obtain the up-to-date info
-        const adc = global.project.adc;
+        const adx = global.project.adx;
         const query = JSON.parse(message);
-        adc.load(function (err) {
+        adx.load(function (err) {
             if (query.action === 'getConfig') {
                 getFixtures(function (fixtures) {
-                    serveADCConfig(err, connection, fixtures);
+                    serveADXConfig(err, connection, fixtures);
                 });
             }
         });
