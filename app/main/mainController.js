@@ -26,10 +26,9 @@ let enforceQuit = false;
  * Write message in the output window
  *
  * @param {String} text Message to write
- * @param {String|"message"|"error"|"warning"|"success"} type Type of the message
  */
-function writeOutput(text, type) {
-    mainView.send('output-write', text, type);
+function writeOutput(text) {
+    mainView.send('output-write', util.format.apply(null, arguments));
 }
 
 /**
@@ -50,18 +49,10 @@ function closeOutput() {
  * Logger for the ADXUtil
  */
 global.adxLogger = {
-    writeMessage : function writeMessage() {
-        writeOutput(util.format.apply(null, arguments), 'message');
-    },
-    writeError : function writeError() {
-        writeOutput(util.format.apply(null, arguments), 'error');
-    },
-    writeWarning : function writeWarning() {
-        writeOutput(util.format.apply(null, arguments), 'warning');
-    },
-    writeSuccess : function writeSuccess() {
-        writeOutput(util.format.apply(null, arguments), 'success');
-    }
+    writeMessage : writeOutput,
+    writeError : writeOutput,
+    writeWarning : writeOutput,
+    writeSuccess : writeOutput
 };
 
 /**
@@ -196,14 +187,15 @@ function openProject() {
  */
 function validateProject() {
     var adx = global.project.adx;
-    var logger = global.adcLogger;
+    var logger = global.adxLogger;
     if (!adx || !adx.path) {
         return;
     }
 
     clearOutput();
     adx.validate({
-        logger : logger
+        logger : logger,
+        printMode : 'html'
     });
 }
 
@@ -219,7 +211,8 @@ function buildProject() {
 
     clearOutput();
     adx.build({
-        logger : logger
+        logger : logger,
+        printMode : 'html'
     });
 }
 

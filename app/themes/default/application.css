@@ -141,14 +141,17 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 #panel_output .error {
     color       : #EC5F67;
+    background  : inherit;
 }
 
 #panel_output .warning {
     color       : #FFCB6B;
+    background  : inherit;
 }
 
 #panel_output .success {
     color       : #C3E88D;
+    background  : inherit;
 }
 
 /* ========================================

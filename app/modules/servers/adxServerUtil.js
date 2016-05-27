@@ -112,7 +112,7 @@ function getFixtures(callback) {
         // Search the first allowed question type
         let defaultFixture = '';
         const constraints = adx.configurator.info.constraints();
-        if (constraints.questions) {
+        if (constraints && constraints.questions) {
             for (const constraint in constraints.questions) {
                 if (constraints.questions.hasOwnProperty(constraint)) {
                     for (let i  = 0, l = result.list.length; i < l; i += 1) {
