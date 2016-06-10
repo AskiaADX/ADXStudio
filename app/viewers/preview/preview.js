@@ -444,39 +444,39 @@ document.addEventListener('DOMContentLoaded', function () {
             property,
             params  = [],
             output  = this.form.output,
-            fixture = this.form.fixture,
-            url     = "http://localhost:" + tab.ports.http + "/output/",
+            fixture = this.form.fixture.replace(/\.xml$/i, ''),
+            url     = "http://localhost:" + tab.ports.http + "/fixture/",
             i, l,
-            tempValue;
+            inputColor, inputText, rgb;
 
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
             if (property.value !== property.defaultValue) {
                 if (property.value === null) {
-                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
-                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
-                    var rgb = inputText.value.split(',');
+                    inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    inputText = document.querySelectorAll('#color_' + property.id + '')[0];
+                    rgb = inputText.value.split(',');
                     property.value = inputText.value;
                     inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
                 } else if (property.type === "color") {
-                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
-                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    inputText = document.querySelectorAll('#color_' + property.id + '')[0];
+                    inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
                     if (property.value.substr(0, 1) !== '#') {
-                    var rgb = property.value.split(',');
-                    inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
+                        rgb = property.value.split(',');
+                        inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
                     } else {
                         inputColor.value = property.value;
                     }
                     inputText.value = property.value;
                 }
 
-                params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
+                params.push('prop[' + encodeURIComponent(property.id) + "]=" + encodeURIComponent(property.value));
             }
         }
 
-        url += output+ "/" + fixture;
+        url += fixture + "/" + output + ".html";
         if (params.length) {
-            url += '?' + params.join('&')
+            url += '?' + params.join('&');
         }
         this.iframe.src = url ;
         this.addressURL.value = url;

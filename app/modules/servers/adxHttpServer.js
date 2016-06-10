@@ -26,6 +26,49 @@ function throwError(err, response) {
 }
 
 /**
+ * Parse the query part of the URI and return an object that represent it
+ *
+ * Query like ?prop[a]=1&prop[b]=2&theme[a]=10&theme[b]=20 will be transform to:
+ *
+ * prop:   a=1&b=2
+ * theme:  a=10&b=20
+ *
+ * @param query
+ */
+function parseUriQuery(query) {
+    const obj = {};
+    const params = query.split('&');
+
+    for (let i = 0, l = params.length; i < l; i += 1) {
+        if (!params[i]) continue;
+
+        const keyVal = params[i].split('=');
+        const key = keyVal[0];
+        const value = keyVal[1] || '';
+        if (!key) continue;
+
+        const match = /([^\[]+)\[([^\]]+)\]/i.exec(key);
+        if (!match || match.length !== 3) continue;
+        const objKey = match[1];
+        const objValue = match[2];
+        if (!obj[objKey]) {
+            obj[objKey] = [];
+        }
+        obj[objKey].push(objValue + '=' + value);
+    }
+
+    // Transform to string
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            obj[key] = obj[key].join('&');
+        }
+    }
+
+    return obj;
+}
+
+
+/**
  * Serve the ADX output
  *
  * @param {Error} err Error
@@ -41,24 +84,27 @@ function serveADXOutput(err, request, response, fixtures) {
     }
 
     // Decrypt the url query
-    // Search the output-name and the fixture-name
+    // Search the fixture-name and the output-name
     // The url should look like that:
-    // "/output/[output-name]/[fixture-name]/
-    // The [fixture-name] is optional
+    // "/fixture/[fixture-name]/[output-name]/"
     const uriParse = url.parse(request.url);
     const uri   = decodeURIComponent(uriParse.pathname);
     let outputName = adx.configurator.outputs.defaultOutput();
     let fixtureName = fixtures.defaultFixture;
-    const properties = uriParse.query || '';
+    const uriQuery = parseUriQuery(uriParse.query || '');
+    let properties = uriQuery.prop || '';
+    let themes = uriQuery.theme || '';
     const arg = {
         silent : true
     };
 
-    const match = /\/output\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
+    console.log(uriQuery);
+
+    const match = /\/fixture\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
     if (match) {
-        outputName = match[1];
+        fixtureName = match[1];
         if (match.length > 1 && match[2]) {
-            fixtureName =  match[2];
+            outputName =  match[2];
         }
     }
 
@@ -66,15 +112,21 @@ function serveADXOutput(err, request, response, fixtures) {
     if (fixtureName && !/\.xml$/i.test(fixtureName)) {
         fixtureName += '.xml';
     }
+
     if (outputName) {
+        outputName = outputName.replace(/\.html$/i, '');
         arg.output = outputName;
     }
     if (fixtureName) {
         arg.fixture = fixtureName;
     }
     arg.masterPage = path.join(__dirname, '../../../node_modules/adxutil/templates/master_page/default.html');
+
     if (properties) {
         arg.properties = properties;
+    }
+    if (themes) {
+        arg.themes = themes;
     }
     adx.show(arg, function (err, output) {
         if (err) {
@@ -92,36 +144,6 @@ function serveADXOutput(err, request, response, fixtures) {
     });
 }
 
-/*
- *
- * Serve the ADX configuration
- *
- * @param {Error} err Error
- * @param {Object} request HTTP Request
- * @param {Object} response HTTP Response
- * @param {Object} fixtures Fixtures
- *
-function serveADXConfig(err, request, response, fixtures) {
-    const adx = global.project.adx;
-
-    if (err) {
-        throwError(err, response);
-        return;
-    }
-    response.writeHead(200, {
-        "Content-Type": "application/json",
-        'Cache-Control' : 'no-cache, no-store, must-revalidate',
-        'Pragma' : 'no-cache',
-        'Expires': '0'
-    });
-    response.write(JSON.stringify({
-        config    : adx.configurator.get(),
-        fixtures  : fixtures
-    }));
-    response.end();
-}
-*/
-
 /**
  * Reply on HTTP request
  */
@@ -131,19 +153,12 @@ function reply(request, response) {
     adx.load(function (err) {
         const uri = decodeURIComponent(url.parse(request.url).pathname);
 
-        if (/^\/output\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
+        if (/^\/fixture\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
             getFixtures(function (fixtures) {
                 serveADXOutput(err, request, response, fixtures);
             });
             return;
         }
-
-        /*if (/^\/config\//i.test(uri)) {
-            getFixtures(function (fixtures) {
-                serveADXConfig(err, request, response, fixtures);
-            });
-            return;
-        }*/
 
         // The share files are generated like that:
         // ../Resources/Survey/file_name
@@ -153,7 +168,7 @@ function reply(request, response) {
         // ../Resources/Survey/ADXName/file_name
         const reStatic = /(\/resources\/survey\/([^\/]+)\/)(.+)$/i;
 
-        let uriRewrite = uri.replace(/^(\/output)/i, '')
+        let uriRewrite = uri.replace(/^(\/fixture)/i, '')
                             .replace(reShare, '/resources/share/$2')
                             .replace(reStatic, '/resources/static/$3');
         const filename = path.join(adx.path, uriRewrite);
