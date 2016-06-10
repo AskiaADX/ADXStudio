@@ -80,29 +80,27 @@ function serveADXOutput(err, request, response, fixtures) {
         if (err) {
             throwError(err, response);
         } else {
-            // Fix paths inside output:
-            const rg = new RegExp("File:\\\\\\\\\\\\" + global.project.path.replace(/\\/g, "/"), "g");
-            const html = output.replace(rg, "../Resources/Survey/");
             response.writeHead(200, {
                 "Content-Type": "text/html",
                 'Cache-Control' : 'no-cache, no-store, must-revalidate',
                 'Pragma' : 'no-cache',
                 'Expires': '0'
             });
-            response.write(html);
+            response.write(output);
             response.end();
         }
     });
 }
 
-/**
+/*
+ *
  * Serve the ADX configuration
  *
  * @param {Error} err Error
  * @param {Object} request HTTP Request
  * @param {Object} response HTTP Response
  * @param {Object} fixtures Fixtures
- */
+ *
 function serveADXConfig(err, request, response, fixtures) {
     const adx = global.project.adx;
 
@@ -122,6 +120,7 @@ function serveADXConfig(err, request, response, fixtures) {
     }));
     response.end();
 }
+*/
 
 /**
  * Reply on HTTP request
@@ -139,21 +138,24 @@ function reply(request, response) {
             return;
         }
 
-        if (/^\/config\//i.test(uri)) {
+        /*if (/^\/config\//i.test(uri)) {
             getFixtures(function (fixtures) {
                 serveADXConfig(err, request, response, fixtures);
             });
             return;
-        }
+        }*/
 
-        const adxname = adx.configurator.info.name();
-        const pattern = new RegExp("\/survey\/" + adxname.toLocaleLowerCase() + "\/", "i");
-        let uriRewrite = uri.replace(pattern, "/static/").replace(/\/survey\//i, "/share/");
-        const match     = /(resources\/(?:.*))/i.exec(uriRewrite);
-        if (match && match.length === 2) {
-            uriRewrite = match[1];
-        }
+        // The share files are generated like that:
+        // ../Resources/Survey/file_name
+        const reShare = /(\/resources\/survey\/)([^\/]+)$/i;
 
+        // The static files are generated like that:
+        // ../Resources/Survey/ADXName/file_name
+        const reStatic = /(\/resources\/survey\/([^\/]+)\/)(.+)$/i;
+
+        let uriRewrite = uri.replace(/^(\/output)/i, '')
+                            .replace(reShare, '/resources/share/$2')
+                            .replace(reStatic, '/resources/static/$3');
         const filename = path.join(adx.path, uriRewrite);
         let stats;
 

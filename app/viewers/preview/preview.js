@@ -94,6 +94,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
+     * Escape the HTML for the tag attribute
+     * @param text
+     */
+    function escapeHtmlAttr(text) {
+        return typeof text === 'string' ? text.replace(/"/g, '&quot;') : text;
+    }
+
+    /**
      * Build the form using the ADX info
      * @singleton
      */
@@ -365,13 +373,13 @@ document.addEventListener('DOMContentLoaded', function () {
             type = 'text';
         }
         if (typeof property.min === 'number' && isFinite(property.min)) {
-            attrs.push('min="' + property.min + '"');
+            attrs.push('min="' + escapeHtmlAttr(property.min) + '"');
         }
         if (typeof property.max === 'number' && isFinite(property.max)) {
-            attrs.push('max="' + property.max + '"');
+            attrs.push('max="' + escapeHtmlAttr(property.max) + '"');
         }
         if (property.pattern) {
-            attrs.push('pattern="' + property.pattern + '"');
+            attrs.push('pattern="' + escapeHtmlAttr(property.pattern) + '"');
         }
         if (property.require) {
             attrs.push('required="required"');
@@ -381,14 +389,14 @@ document.addEventListener('DOMContentLoaded', function () {
             html.push('<select id="property_' + property.id + '">');
             opts.forEach(function (opt) {
                 var selected = opt.value.toString() === value ? ' selected="selected"' : '';
-                html.push('<option value="' + opt.value + '"' + selected + '>' + opt.text + '</option>');
+                html.push('<option value="' + escapeHtmlAttr(opt.value) + '"' + selected + '>' + opt.text + '</option>');
             });
             html.push('</select>');
         } else {
             if (type === "color") {
-                html.push('<input type="text" id="color_' + property.id + '" value="' + property.value + '" class="color_text"'  + attrs.join(' ') + '/>');
+                html.push('<input type="text" id="color_' + property.id + '" value="' + escapeHtmlAttr(property.value) + '" class="color_text"'  + attrs.join(' ') + '/>');
             }
-            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
+            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + escapeHtmlAttr(displayValue) + '" ' + attrs.join(' ') + '/>');
         }
         html.push('</td>');
         html.push('</tr>');
