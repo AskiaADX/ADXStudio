@@ -98,8 +98,6 @@ function serveADXOutput(err, request, response, fixtures) {
         silent : true
     };
 
-    console.log(uriQuery);
-
     const match = /\/fixture\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
     if (match) {
         fixtureName = match[1];
