@@ -13,7 +13,7 @@ const that = {};
  * When the resources folder or the config.xml has changed
  */
 function onADXResourcesChanged(eventName, filepath) {
-    const adx = global.project.adx;
+    const adx = global.project.getADX();
 
     // For the Config xml: reload the config
     if (filepath.toLowerCase() === path.join(adx.path, 'config.xml').toLowerCase()) {
@@ -33,7 +33,7 @@ function onADXResourcesChanged(eventName, filepath) {
  * Watch the ADX
  */
 function watchADX() {
-    const adx = global.project.adx;
+    const adx = global.project.getADX();
     if (that.watched === adx.path) {
         return;
     }
@@ -69,12 +69,12 @@ function throwError(err, connection) {
  * @param {Object} [fixtures]
  */
 function createMessage(action, fixtures) {
-    const adx = global.project.adx;
+    const adx = global.project.getADX();
     const obj = {
         error : 0,
         action : action || 'getConfig',
         message : {
-            config: adx.configurator.get()
+            config : adx.configurator.get()
         }
     };
     if (fixtures) {
@@ -106,7 +106,7 @@ function reply(connection) {
 
     connection.on("text", function onReceiveMessage(message) {
         // Always reload to obtain the up-to-date info
-        const adx = global.project.adx;
+        const adx = global.project.getADX();
         const query = JSON.parse(message);
         adx.load(function (err) {
             if (query.action === 'getConfig') {

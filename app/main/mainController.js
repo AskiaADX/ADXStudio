@@ -149,8 +149,7 @@ function createNewProject(event, button, options) {
             });
             return;
         }
-        global.project.path = adx.path;
-        global.project.adx = adx;
+        global.project.set(adx);
 
         // Open the project with the 'Project settings' tab open
         fs.mkdir(path.join(adx.path, '.adxstudio'), function () {
@@ -186,7 +185,7 @@ function openProject() {
  * Validate the project
  */
 function validateProject() {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     var logger = global.adxLogger;
     if (!adx || !adx.path) {
         return;
@@ -203,7 +202,7 @@ function validateProject() {
  * Build the project
  */
 function buildProject() {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     var logger = global.adxLogger;
     if (!adx || !adx.path) {
         return;

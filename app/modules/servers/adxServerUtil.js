@@ -103,7 +103,7 @@ Server.prototype.close = function close(callback) {
  * @param {String} callback.fixtures.defaultFixture Default fixture
  */
 function getFixtures(callback) {
-    const adx = global.project.adx;
+    const adx = global.project.getADX();
 
     adx.getFixtureList(function (err, fixtures) {
         const result = {

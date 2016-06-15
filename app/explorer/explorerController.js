@@ -20,7 +20,7 @@ let fileToPaste;
  * @param {String[]} files Array of path
  */
 function openRootFolder(err, dir, files) {
-    const adx = global.project.adx;
+    const adx = global.project.getADX();
     if (adx) {
         adx.load(function (err) {
             const name = (!err) ? adx.configurator.info.name() : path.basename(dir);
@@ -293,11 +293,12 @@ function switchClick(clickToUse) {
 
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
+    var projectPath = global.project.getPath();
 
     // Load the default path
-    if (global.project.path) {
-        explorer.load(global.project.path, true, function (err, files) {
-            openRootFolder(err, global.project.path, files);
+    if (projectPath) {
+        explorer.load(projectPath, true, function (err, files) {
+            openRootFolder(err, projectPath, files);
         });
     }
 

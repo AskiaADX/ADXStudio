@@ -8,6 +8,58 @@ const ipc   = electron.ipcMain;
 
 require('./main/mainController.js');
 
+/**
+ * Manage the open project
+ *
+ * @singleton
+ */
+function Project() {
+    if (global.project) { // Singleton object
+        return global.project;
+    }
+    this._adx  = null;
+    global.project = this; // Singleton object
+}
+
+/**
+ * Creates a new instance of project
+ * @constructor
+ */
+Project.prototype.constructor = Project;
+
+/**
+ * Defines the project path and adx currently open
+ *
+ * @param {String|ADX} pathOrAdx Path of the project or ADX object
+ */
+Project.prototype.set = function setPath(pathOrAdx) {
+    // Destroy the previous instance of the project
+    if (this._adx) {
+        this._adx.destroy();
+    }
+
+    if (typeof pathOrAdx === 'string') {
+        this._adx = new ADX(pathOrAdx);
+    }
+    if (pathOrAdx instanceof ADX) {
+        this._adx  = pathOrAdx;
+    }
+};
+
+/**
+ * Returns the instance of the ADX object currently open
+ */
+Project.prototype.getADX = function getADX() {
+    return this._adx;
+};
+
+/**
+ * Returns the project path
+ */
+Project.prototype.getPath = function getPath() {
+    return (this._adx && this._adx.path) || '';
+};
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -25,13 +77,12 @@ app.on('window-all-closed', function() {
 // initialization and ready for creating browser windows.
 app.on('ready', function loadMainWindow() {
     // Initialize the global.project
-    global.project = {};
+    global.project = new Project();
 
     // Load the default project path earlier in the application lifetime
     appSettings.getInitialProject(function onInitialProject(projectPath) {
         if (projectPath) {
-            global.project.path = projectPath;
-            global.project.adx = new ADX(projectPath);
+            global.project.set(projectPath);
         }
 
         // Load the preferences in order to have default theme etc...

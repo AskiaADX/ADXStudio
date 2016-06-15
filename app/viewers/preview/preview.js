@@ -102,6 +102,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
+     * Get url parameter
+     *
+     * @param {String} name Name of parmeter to read
+     * @param {Document} [doc=window.document] Document from where to read the location
+     * @return {String} Return the value of the parameter or ""
+     */
+    function getUrlParameter(name, doc) {
+        if (!name || typeof (name) !== "string") {
+            return "";
+        }
+        doc = doc || document;
+        var rgExp = new RegExp(name + "=([^\\&]*)", "i"),
+            arrResult = rgExp.exec(doc.location.search);
+        if (!arrResult) {
+            return "";
+        }
+        if (arrResult.length < 2) {
+            return "";
+        }
+        return arrResult[1] || "";
+    }
+
+    /**
      * Build the form using the ADX info
      * @singleton
      */
@@ -404,12 +427,21 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     /**
+     * Read the interview id in the iframe url and return it
+     * @returns {String}
+     */
+    FormBuilder.prototype.getInterviewIdFromUrl = function getInterviewIdFromUrl() {
+        return getUrlParameter('_id', this.iframe.contentWindow)
+    };
+
+    /**
      * Add listener
      * @chainable
      */
     FormBuilder.prototype.listen = function listen() {
         var self = this;
 
+        // Listen changes on the property grid
         self.ongridChange = function ongridChange(event) {
             var el = event.target || event.srcElement,
                 property,
@@ -432,6 +464,15 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         this.grid.addEventListener('change', self.ongridChange);
 
+
+        // Listen the location change of the iframe
+        self.onlocationChange = function onlocationChange() {
+            // Wait a few in case of the HTTP redirect
+            setTimeout(function () {
+                self.addressURL.value = self.iframe.contentWindow.location.href;
+            }, 500);
+        };
+        this.iframe.addEventListener('load', self.onlocationChange);
         return this;
     };
 
@@ -446,8 +487,14 @@ document.addEventListener('DOMContentLoaded', function () {
             output  = this.form.output,
             fixture = this.form.fixture.replace(/\.xml$/i, ''),
             url     = "http://localhost:" + tab.ports.http + "/fixture/",
+            action  = (this.iframe.src === 'Loading.html') ? 'restart' : 'show',
+            intvwId = this.getInterviewIdFromUrl(),
             i, l,
             inputColor, inputText, rgb;
+
+        if (intvwId) {
+            params.push('_id=' + intvwId);
+        }
 
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
@@ -474,12 +521,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        url += fixture + "/" + output + ".html";
+        url += fixture + "/" + output + "/" + action +  ".html";
         if (params.length) {
             url += '?' + params.join('&');
         }
-        this.iframe.src = url ;
+
         this.addressURL.value = url;
+        this.iframe.src = url ;
 
         return this;
     };
@@ -487,7 +535,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('openPreview').addEventListener('click', function () {
         var builder = FormBuilder.getInstance();
         var url = builder.addressURL.value;
+        var intvwId = builder.getInterviewIdFromUrl();
+
         if (url) {
+            // Remove the interview to start a new interview id
+            url = url.replace('_id=' + intvwId, '');
             viewer.tabs.openExternal(url);
         }
     });

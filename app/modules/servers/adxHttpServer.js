@@ -8,6 +8,7 @@ const mime    = require('mime-types');
 const serverUtil  = require('./adxServerUtil.js');
 const getFixtures = serverUtil.getFixtures;
 const Server      = serverUtil.Server;
+const regularKey = 'regular';
 
 /**
  * Throw an HTTP error
@@ -28,14 +29,17 @@ function throwError(err, response) {
 /**
  * Parse the query part of the URI and return an object that represent it
  *
- * Query like ?prop[a]=1&prop[b]=2&theme[a]=10&theme[b]=20 will be transform to:
+ * Query like ?x=y&prop[a]=1&prop[b]=2&theme[a]=10&theme[b]=20 will be transform to:
  *
+ * regular : {
+ *   x : y
+ * }
  * prop:   a=1&b=2
  * theme:  a=10&b=20
  *
  * @param query
  */
-function parseUriQuery(query) {
+function queryToObj(query) {
     const obj = {};
     const params = query.split('&');
 
@@ -48,18 +52,21 @@ function parseUriQuery(query) {
         if (!key) continue;
 
         const match = /([^\[]+)\[([^\]]+)\]/i.exec(key);
-        if (!match || match.length !== 3) continue;
-        const objKey = match[1];
-        const objValue = match[2];
+        const objKey = (match && match.length === 3) ? match[1] : regularKey;
+        const objValue = (match && match.length === 3) ? match[2] : key;
         if (!obj[objKey]) {
-            obj[objKey] = [];
+            obj[objKey] = objKey !== regularKey ? [] : {};
         }
-        obj[objKey].push(objValue + '=' + value);
+        if (objKey !== regularKey) {
+            obj[objKey].push(objValue + '=' + value);
+        } else {
+            obj[objKey][objValue] = value;
+        }
     }
 
     // Transform to string
     for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
+        if (obj.hasOwnProperty(key) && key !== regularKey) {
             obj[key] = obj[key].join('&');
         }
     }
@@ -76,33 +83,44 @@ function parseUriQuery(query) {
  * @param {Object} response HTTP Response
  * @param {Object} fixtures Fixtures
  */
-function serveADXOutput(err, request, response, fixtures) {
-    const adx = global.project.adx;
+function serveADXOutput(err, request, response, requestData, fixtures) {
+    const adx = global.project.getADX();
     if (err) {
         throwError(err, response);
         return;
     }
 
+    let command = 'show'; // 'restart',  'update' or 'show'
+    const options = {};
+
+    let fixtureName = fixtures.defaultFixture;
+    let outputName = adx.configurator.outputs.defaultOutput();
+
+    // Extract url data
+    const uriParse = url.parse(request.url);
+    const uri   = decodeURIComponent(uriParse.pathname);
+    const queryString = uriParse.query || '';
+    const queryObj = queryToObj(queryString);
+
+    // Extract information from the query string
+    let id = (queryObj && queryObj.regular && queryObj.regular._id) || null;
+    let properties = queryObj.prop || '';
+    let themes = queryObj.theme || '';
+    let interview;
+
+
     // Decrypt the url query
     // Search the fixture-name and the output-name
     // The url should look like that:
-    // "/fixture/[fixture-name]/[output-name]/"
-    const uriParse = url.parse(request.url);
-    const uri   = decodeURIComponent(uriParse.pathname);
-    let outputName = adx.configurator.outputs.defaultOutput();
-    let fixtureName = fixtures.defaultFixture;
-    const uriQuery = parseUriQuery(uriParse.query || '');
-    let properties = uriQuery.prop || '';
-    let themes = uriQuery.theme || '';
-    const arg = {
-        silent : true
-    };
-
-    const match = /\/fixture\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
+    // "/fixture/[fixture-name]/[output-name]/[action].html"
+    const match = /\/fixture\/([^\/]+)?\/?([^\/]+)?\/?([^\/]+)?$/i.exec(uri);
     if (match) {
         fixtureName = match[1];
         if (match.length > 1 && match[2]) {
             outputName =  match[2];
+        }
+        if (match.length > 2 && match[3]) {
+            command = match[3].replace(/\.html$/i, '');
         }
     }
 
@@ -111,22 +129,72 @@ function serveADXOutput(err, request, response, fixtures) {
         fixtureName += '.xml';
     }
 
-    if (outputName) {
-        outputName = outputName.replace(/\.html$/i, '');
-        arg.output = outputName;
-    }
-    if (fixtureName) {
-        arg.fixture = fixtureName;
-    }
-    arg.masterPage = path.join(__dirname, '../../../node_modules/adxutil/templates/master_page/default.html');
+    options.output = outputName;
+    options.fixture = fixtureName;
+    // arg.masterPage = path.join(__dirname, '../../../node_modules/adxutil/templates/master_page/default.html');
+    options.properties = properties;
+    options.themes = themes;
 
-    if (properties) {
-        arg.properties = properties;
+    // Update on POST
+    if (request.method === 'POST') {
+        command = 'update';
+        options.parameters = requestData;
     }
-    if (themes) {
-        arg.themes = themes;
+
+    if (id === null && request.method === 'GET') {
+        command = 'restart';
+        interview = adx.interviews.create();
+    } else {
+        interview = adx.interviews.getById(id);
     }
-    adx.show(arg, function (err, output) {
+
+    // Could not find or create an interview
+    if (!interview) {
+        throwError(new Error("Cannot find the interview with the specified id `" + id + "`"), response);
+        return;
+    }
+
+    interview.execCommand(command, options, function (err, output) {
+        if (err) {
+            throwError(err, response);
+            return;
+        }
+
+        if (command !== 'show' && !/\s*ok\s*/i.test(output)) {
+            throwError(new Error(output), response);
+            return;
+        }
+
+        if (command !== 'show') { // By default use the redirection to display the page
+            let q = '';
+            if (!queryObj || !queryObj.regular || !queryObj.regular._id) {
+                q = '_id=' + interview.id;
+                if (queryString) {
+                    q += '&' + queryString;
+                }
+            } else {
+                q = queryString;
+            }
+
+            response.writeHead(302, {
+                'Location': 'http://localhost:3500/fixture/' + fixtureName.replace(/\.xml$/i, '') + '/' + outputName + '/show.html?' + q
+            });
+            response.end();
+        }
+        else {
+            response.writeHead(200, {
+                "Content-Type": "text/html",
+                'Cache-Control' : 'no-cache, no-store, must-revalidate',
+                'Pragma' : 'no-cache',
+                'Expires': '0'
+            });
+            response.write(output);
+            response.end();
+        }
+    });
+
+
+    /*adx.show(arg, function (err, output) {
         if (err) {
             throwError(err, response);
         } else {
@@ -139,21 +207,45 @@ function serveADXOutput(err, request, response, fixtures) {
             response.write(output);
             response.end();
         }
+    });*/
+}
+
+/**
+ * Get the request data
+ */
+function getRequestData(request, callback) {
+    if (request.method !== 'POST') {
+        callback(null, '');
+        return;
+    }
+
+    let queryData = '';
+    request.on('data', function(data) {
+        queryData += data;
+        if (queryData.length > 1e6) {
+            queryData = "";
+            request.connection.destroy();
+            callback(new Error("Request data too long"), null);
+        }
+    });
+
+    request.on('end', function() {
+        callback(null, queryData);
     });
 }
 
 /**
  * Reply on HTTP request
  */
-function reply(request, response) {
+function replyWithRequestData(request, response, requestData) {
     // Always reload to obtain the up-to-date info
-    const adx = global.project.adx;
+    const adx = global.project.getADX();
     adx.load(function (err) {
         const uri = decodeURIComponent(url.parse(request.url).pathname);
 
-        if (/^\/fixture\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
+        if (/^\/fixture\/([^\/]+\/?){0,3}(\?.*)?$/i.test(uri)) {
             getFixtures(function (fixtures) {
-                serveADXOutput(err, request, response, fixtures);
+                serveADXOutput(err, request, response, requestData, fixtures);
             });
             return;
         }
@@ -166,9 +258,9 @@ function reply(request, response) {
         // ../Resources/Survey/ADXName/file_name
         const reStatic = /(\/resources\/survey\/([^\/]+)\/)(.+)$/i;
 
-        let uriRewrite = uri.replace(/^(\/fixture)/i, '')
-                            .replace(reShare, '/resources/share/$2')
-                            .replace(reStatic, '/resources/static/$3');
+        let uriRewrite = uri.replace(/^(\/fixture\/(?:[^\/]+))/i, '')
+            .replace(reShare, '/resources/share/$2')
+            .replace(reStatic, '/resources/static/$3');
         const filename = path.join(adx.path, uriRewrite);
         let stats;
 
@@ -207,6 +299,14 @@ function reply(request, response) {
             // Symbolic link, socket and other ...
             throwError(null, response);
         }
+    });
+}
+/**
+ * Reply on HTTP request
+ */
+function reply(request, response) {
+    getRequestData(request, function (err, requestData) {
+        replyWithRequestData(request, response, requestData);
     });
 }
 

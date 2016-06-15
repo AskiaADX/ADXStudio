@@ -13,7 +13,7 @@ var workspaceView;
  * Save the status of the workspace
  */
 function saveWorkspaceStatus() {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     if (!adx || !adx.path) {
         return;
     }
@@ -29,7 +29,7 @@ function saveWorkspaceStatus() {
  * @param {ADX} fn.adx Instance of the ADX
  */
 function tryIfADX(fn) {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     if (!adx || !adx.path) {
         return;
     }
@@ -68,7 +68,7 @@ function getResourcesDirectoryStructure(callback) {
         return;
     }
 
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     function buildFiles(dir, files) {
         var stats;
         var finalFiles = [];
@@ -114,7 +114,7 @@ function getResourcesDirectoryStructure(callback) {
  * @param {Function} cb
  */
 function loadProjectSettingsTab(tab, cb) {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     if (!adx || !adx.path) {
         cb(new Error("The ADX project is not defined in the global"), tab);
         return;
@@ -137,11 +137,11 @@ function openProject() {
     workspace.removeListener('change', saveWorkspaceStatus);
 
     // Load the default path
-    fs.readFile(path.join(global.project.path || '', '.adxstudio', 'workspace.json'), function (err, data) {
+    fs.readFile(path.join(global.project.getPath(), '.adxstudio', 'workspace.json'), function (err, data) {
         var json = err ? {} : JSON.parse(data.toString());
         workspace.init(json, function () {
             // Reload the workspace as it where before leaving the application
-            var adx = global.project.adx,
+            var adx = global.project.getADX(),
                 currentTabIds = {
                     main   : workspace.panes.main.currentTabId,
                     second : workspace.panes.second.currentTabId
@@ -216,7 +216,7 @@ function reloadWorkspace() {
  * @param {String} file Path of file to open
  */
 function openFile(file, fromExplorer) {
-    var adx = global.project.adx,
+    var adx = global.project.getADX(),
         configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
 
     // If the trying to open the config.xml, make sure we use the projectSettings tab
@@ -311,7 +311,7 @@ function openProjectSettings(code) {
  * @param {Number} options.wsPort WS port listen
  */
 function openPreview(options) {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     if (!adx || !adx.path) {
         return;
     }
@@ -403,7 +403,7 @@ function onGetAdxStructure(event, tabId) {
  * @param {Object} content
  */
 function onConvertConfigToXml(event, content, tabId) {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     if (!adx || !adx.path) {
         workspaceView.send('workspace-config-to-xml', new Error('Could not find ADX project in global'));
         return;
@@ -429,7 +429,7 @@ function onConvertConfigToXml(event, content, tabId) {
  * @param {String} content
  */
 function onConvertXmlToConfig(event, content, tabId) {
-    var adx = global.project.adx;
+    var adx = global.project.getADX();
     if (!adx || !adx.path) {
         workspaceView.send('workspace-xml-to-config', new Error('Could not find ADX project in global'));
         return;
@@ -552,7 +552,7 @@ function onSaveContent(event, tabId, content) {
             return;
         }
         if (tab.type === 'projectSettings') {
-            var adx = global.project.adx;
+            var adx = global.project.getADX();
             if (!adx || !adx.path) {
                 return;
             }
@@ -658,7 +658,7 @@ function onSaveContentAndClose(event, tabId, content) {
             return;
         }
         if (tab.type === 'projectSettings') {
-            var adx = global.project.adx;
+            var adx = global.project.getADX();
             if (!adx || !adx.path) {
                 return;
             }
