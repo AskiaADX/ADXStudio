@@ -33,10 +33,7 @@ Project.prototype.constructor = Project;
  * @param {String|ADX} pathOrAdx Path of the project or ADX object
  */
 Project.prototype.set = function setPath(pathOrAdx) {
-    // Destroy the previous instance of the project
-    if (this._adx) {
-        this._adx.destroy();
-    }
+    this.close();
 
     if (typeof pathOrAdx === 'string') {
         this._adx = new ADX(pathOrAdx);
@@ -44,6 +41,17 @@ Project.prototype.set = function setPath(pathOrAdx) {
     if (pathOrAdx instanceof ADX) {
         this._adx  = pathOrAdx;
     }
+};
+
+/**
+ * Close the current open project
+ */
+Project.prototype.close = function close() {
+    // Destroy the previous instance of the project
+    if (this._adx) {
+        this._adx.destroy();
+    }
+    this._adx = null;
 };
 
 /**
@@ -114,6 +122,8 @@ app.on('ready', function loadMainWindow() {
                         
             // Emitted when the window is closed.
             global.mainWindow.on('closed', function onMainWindowClose() {
+                // Close the current project
+                global.project.close();
 
                 // Dereference the window object, usually you would store windows
                 // in an array if your app supports multi windows, this is the time
