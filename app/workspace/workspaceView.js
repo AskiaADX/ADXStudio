@@ -461,6 +461,7 @@
             tabText.innerHTML = tab.name || 'File';
             tabEl.appendChild(tabText);
 
+            
 
             var tabClose = document.createElement('a');
             tabClose.setAttribute('href', '#');
@@ -1534,5 +1535,4 @@
 
         ipc.send('workspace-ready');
     });
-
 }());

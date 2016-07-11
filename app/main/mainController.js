@@ -379,7 +379,4 @@ ipc.on('main-ready', function (event) {
     global.mainWindow.on('close', onCloseMainWindow);
     ipc.removeListener('main-save-before-quit', saveOrNotBeforeQuit);
     ipc.on('main-save-before-quit', saveOrNotBeforeQuit);
-
-
-
 });

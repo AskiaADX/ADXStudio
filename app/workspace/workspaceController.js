@@ -962,7 +962,3 @@ exports.hasEditingTabs = function hasEditingTabs() {
         return tab.edited;
     });
 };
-
-
-
-

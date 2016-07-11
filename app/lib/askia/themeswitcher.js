@@ -22,6 +22,6 @@
             window.askia.onSwitchTheme(themeName);
         }
     }
-    
+
     ipc.on('switch-theme', changeTheme);
 })();

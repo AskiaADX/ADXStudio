@@ -3,11 +3,11 @@
     if (!matchTabId || !matchTabId.length) {
         throw new Error("Invalid context, the tab id is not defined");
     }
-    var isAltFrame = /&altFrame=1/gi.test(window.location.href);
-    var tabId    = matchTabId[1];
-    var parent   = window.parent;
-    var tabs     = parent.tabs;
-    var tab      = tabs[tabId];
+    var isAltFrame 		= /&altFrame=1/gi.test(window.location.href);
+    var tabId    		= matchTabId[1];
+    var parent   		= window.parent;
+    var workspaceView	= parent.workspace;
+    var tab				= workspaceView.findTab(tabId);
 
     tab.window = window;
 
@@ -15,12 +15,12 @@
     var link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css"); 
-    link.href = "../../themes/" + tabs.theme + "/application.css";
-    
+    link.href = "../../themes/" + workspaceView.theme + "/application.css";
+
     document.head.appendChild(link);
-    
+
     window.addEventListener('focus', function () {
-        tabs.onFocus(tab.id);
+        workspaceView.setActiveTab();
     });
 
     var viewer = {
@@ -29,15 +29,15 @@
          */
         parent : parent,
         /**
-         * tabs object in parent window
+         * workspaceView object in parent window
          */
-        tabs : tabs,
+        workspaceView : workspaceView,
         /**
          * Current tab
          */
         currentTab  : tab,
-         /**
-         * When we switch the theme of the interface, propagate events on all tabs
+        /**
+         * When we switch the theme of the interface, propagate events on all workspaceView
          * @param {String} theme Name of the theme
          */
         switchTheme : function onSwitchTheme(theme) {
@@ -68,7 +68,7 @@
          * @param {Function} callback With the structure of the file in args
          */
         getADCStructure : function (callback) {
-            var ipc = tabs.ipc;
+            var ipc = workspaceView.ipc;
             if (tab.previousADCStructCb) {
                 ipc.removeListener('workspace-update-adc-structure', tab.previousADCStructCb);
             }
@@ -82,7 +82,7 @@
          * Fire loaded event
          */
         fireReady : function fireReady() {
-            tabs.onEditorLoaded(tab);
+            workspaceView.onEditorLoaded(tab);
         }
     };
 
