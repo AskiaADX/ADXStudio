@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
         this.remote 	= this.electron.remote;
         this.Menu 		= this.remote.Menu;
         this.MenuItem 	= this.remote.MenuItem;
+        this.shell		= this.remote.shell;
         this.resizer 	= new this.askia.Resizer({
             element		:  this.panels.main.htmlElements.root,
             onResize 	: function onResize() {
@@ -114,12 +115,12 @@ document.addEventListener("DOMContentLoaded", function () {
         var self = this;
         /*TODO::ADD IPC LISTENER*/
         
-        this.ipc.on('workspace-update-tab', function (event, err, newTabConfig, panelId) {
+        this.ipc.on('workspace-update-tab', function(event, err, newTabConfig, panelId) {
             if (err) {
                 console.warn(err);
                 return;
             }
-            self.uptdateTab(newTabConfig, panelId);
+            self.updateTab(newTabConfig, panelId);
         });
         
         this.ipc.on('workspace-save-active-file', function() {
@@ -163,12 +164,52 @@ document.addEventListener("DOMContentLoaded", function () {
             
         });
 
+        this.ipc.on('workspace-remove-tab', function(event, err, tabConfig, panelId) {
+            if (err) {
+                console.warn(err);
+                return;
+            }
+            self.panels[panelId].removeTab(tabConfig.id);
+        });
+        
+        this.ipc.on('workspace-remove-tabs', function(event, err, removedTabs) {
+            if (err) {
+                console.warn(err);
+                return;
+            }
+            self.removeAllTabs(removedTabs);
+        });
+
+        this.ipc.on('workspace-reload-tab', function (event, err, tabConfig, panelId) {
+            if (err) {
+                console.warn(err);
+                return;
+            }
+            self.reloadTab(tabConfig, panelId);
+        });
+        
+        this.ipc.on('workspace-rename-tab', function(event, err, tabConfig, panelId) {
+            if (err) {
+                console.warn(err);
+                return;
+            }
+            self.renameTab(tabConfig, panelId);
+        });
+        
         this.ipc.on('switch-size', function(event, size) {
             self.switchFontSize(size);
         });
+     
+        this.ipc.on('next-tab', function() {
+            self.nextTab();
+        });
+
+        this.ipc.on('prev-tab', function() {
+            self.prevTab();
+        });
         
         this.ipc.send('workspace-ready');
-    }
+    };
     
     /***************************************************************************************
      * 							Content position and tabs Scroll						   *
@@ -325,18 +366,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Always keep open 1 panel
         if (!otherPanel.isOpen) {
+            var panesEl = this.htmlElements.panes;
+            panesEl.classList.remove('split');
+            panesEl.classList.add('full');
+            this.resizer.stop();
             return this;
         }
 
         panel.htmlElements.root.classList.remove('open');
         panel.isOpen = false;
+        
+        var panesEl = this.htmlElements.panes;
+        panesEl.classList.remove('split');
+        panesEl.classList.add('full');
 
-        if (!otherPanel.isOpen) {
-            var panesEl = this.htmlElements.panes;
-            panesEl.classList.remove('split');
-            panesEl.classList.add('full');
-            this.resizer.stop();
-        }
         return this.fixRendering();
     };
     
@@ -408,11 +451,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!tab) {
             return;
         }
-        
         //if the tab is not edited
         if (!tab.edited) {
             this.ipc.send('workspace-close-tab', tabId);
-            panel.removeTab(tabId);
             return;
         }
         
@@ -424,11 +465,9 @@ document.addEventListener("DOMContentLoaded", function () {
             switch(retVal.button) {
                 case 'yes':
                     tab.viewer.saveContentAndClose();
-                    panel.removeTab(tabId);
                     break;
                 case 'no':
                     // Close it
-                    panel.removeTab(tabId);
                     self.ipc.send('workspace-close-tab', tabId);
                     break;
                 case 'cancel':
@@ -443,21 +482,12 @@ document.addEventListener("DOMContentLoaded", function () {
      *
      * @param {String} [exceptTabId] Tab to not remove
      */
-    WorkspaceView.prototype.removeAllTabs = function(exceptTabId) {
-        for (var panelId in this.panels) {
-            if (this.panels.hasOwnProperty(panelId)) {
-                var tabs = this.panels[panelId].tabs;
-                for (var tabId in tabs) {
-                    if (tabs.hasOwnProperty(tabId)) {
-                        if (tabId === exceptTabId) {
-                            continue;
-                        }
-                        this.removeTab(panelId, tabId);
-                    }
-                }
-            }
+    WorkspaceView.prototype.removeAllTabs = function(removedTabs) {
+        for (var i = 0, l = removedTabs.length; i < l; i++) {
+            var panelId = removedTabs[i].pane;
+            var tabId 	= removedTabs[i].tab.id;
+            this.panels[panelId].removeTab(tabId);
         }
-        this.ipc.send('workspace-close-all-tabs');
     };
     
     /**
@@ -525,7 +555,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tabId) {
             panel.setActiveTab(tabId);
         }
-    }
+    };
     
     /**
      * Move a tab to another pane
@@ -550,7 +580,45 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return tab;
     };
+    
+    /**
+     * Update the information of the tab
+     *
+     * @param {Object} newTabConfig new config of the tab to update
+     * @param {String} panelId Id of the pane
+     */
+    WorkspaceView.prototype.updateTab = function(newTabConfig, panelId) {
+        var tab = this.panels[panelId].tabs[newTabConfig.id];
+        if (!tab) {
+            return;
+        }
 
+        //COpy the new config in the tab
+        for (var key in newTabConfig) {
+            if (newTabConfig.hasOwnProperty(key)) {
+                tab[key] = newTabConfig[key];
+            }
+        }
+
+        //Update de editor code when we are in project settings
+        if (newTabConfig.type === 'projectSettings' && newTabConfig.displayAltViewer) {
+            newTabConfig.editor.setValue(newTabConfig.content);
+        }
+
+        tab.tabContentChange(tab.content);
+    };
+
+     /**
+      * Reload the tab and update the information of the tab
+      *
+      * @param {Object} tabConfig config of the tab to update
+      * @param {String} panelId id of the pane
+      */
+    WorkspaceView.prototype.reloadTab = function(tabConfig, panelId) {
+        this.updateTab(tabConfig, panelId);
+        this.panels[panelId].reloadTab(tabConfig.id);
+    };
+    
     /***************************************************************************************
      * 									Event and controls							   	   *
    	 ***************************************************************************************/
@@ -566,7 +634,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
         tab.tabContentChange(content);
-    };
+    }; 
     
     /**
      *	Display the tab
@@ -604,14 +672,60 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     };
+    
+    /**
+     * Display the previous Tab
+     */
+    WorkspaceView.prototype.prevTab = function() {
+        var currentPanel = this.getActivePanel();
+        var currentTab = currentPanel.getActiveTab();
+        var otherPanel = (currentPanel.id === "main")? this.panels.second : this.panels.main;
+        var toActivate;
+        
+        if (!currentTab.previousTabId) {
+            if (otherPanel.isOpen) {
+                this.setActivePanel(otherPanel.id);
+                toActivate = otherPanel.lastTab.id;
+            } else {
+                toActivate = currentPanel.lastTab.id;
+            }
+        } else {
+            toActivate = currentTab.previousTabId;
+        }
+        
+        this.setActiveTab(toActivate);
+    };
+    
+    /**
+     * Display the next Tab
+     */
+    WorkspaceView.prototype.nextTab = function() {
+        var currentPanel = this.getActivePanel();
+        var currentTab = currentPanel.getActiveTab();
+        var otherPanel = (currentPanel.id === "main")? this.panels.second : this.panels.main;
+        var toActivate;
+        
+        if (!currentTab.nextTabId) {
+            if (otherPanel.isOpen) {
+                this.setActivePanel(otherPanel.id);
+                toActivate = otherPanel.firstTab.id;
+            } else {
+                toActivate = currentPanel.firstTab.id;
+            }
+        } else {
+            toActivate = currentTab.nextTabId;
+        }
 
+        this.setActiveTab(toActivate);
+    };
+    
     /**
      * call in html viewer and send it to controller to save content
      *
      * @param {String} tabId the id of the tab to save
      * @param {String} content the content of the tab
      */
-    WorkspaceView.prototype.onSave = function (tabId, content) {
+    WorkspaceView.prototype.onSave = function(tabId, content) {
         this.ipc.send('workspace-save-content', tabId, content);
     };
     
@@ -621,7 +735,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * @param {String} tabId the id of the tab to save
      * @param {String} content the content of the tab
      */
-    WorkspaceView.prototype.onSaveAs = function (tabId, content) {
+    WorkspaceView.prototype.onSaveAs = function(tabId, content) {
         this.ipc.send('workspace-save-content-as', tabId, content);
     };
     
@@ -631,7 +745,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * @param {String} tabId the id of the tab to save
      * @param {String} content the content of the tab
      */
-    WorkspaceView.prototype.onSaveAndClose = function (tabId, content) {
+    WorkspaceView.prototype.onSaveAndClose = function(tabId, content) {
         this.ipc.send('workspace-save-content-and-close', tabId, content);
     };
     
@@ -657,28 +771,19 @@ document.addEventListener("DOMContentLoaded", function () {
         for (var id in tabs) {
             tabs[id].save();
         }
-    }
-    
-    WorkspaceView.prototype.uptdateTab = function(newTabConfig, panelId) {
-        var tab = this.panels[panelId].tabs[newTabConfig.id];
-        if (!tab) {
-            return;
-        }
-        
-        //COpy the new config in the tab
-        for (var key in newTabConfig) {
-            if (newTabConfig.hasOwnProperty(key)) {
-                tab[key] = newTabConfig[key];
-            }
-        }
-        
-        //Update de editor code when we are in project settings
-        if (newTabConfig.type === 'projectSettings' && newTabConfig.displayAltViewer) {
-            newTabConfig.editor.setValue(newTabConfig.content);
-        }
-        
-        tab.tabContentChange(tab.content);
     };
+    
+    /**
+     * Rename a tab
+     *
+     * @param {Object} tabConfig config of the tab to renam
+     * @param {String} panelId id of the pane
+     */
+    WorkspaceView.prototype.rename = function(tabConfig, panelId) {
+        var panel = this.panels[panelId];
+        panel.renameTab(tabConfig);
+    };
+    
     
     /**
      * Creates a new instance of panel
@@ -716,7 +821,7 @@ document.addEventListener("DOMContentLoaded", function () {
             workspace.setActivePanel(self.id);
             switch (event.target.className) {
                 case 'tab-close':
-                    self.removeTab(tabId);
+                    workspace.removeTab(self.id, tabId);
                     break;
                 case 'tab-end':
                     return;
@@ -753,14 +858,17 @@ document.addEventListener("DOMContentLoaded", function () {
             contextualMenu.append(new workspace.MenuItem({
                 label: 'Close others',
                 click: function onCloseOthersClick() {
-                    workspace.removeAllTabs(tab.id);
+                    workspace.ipc.send('workspace-close-all-tabs', {
+                        except : tab.id
+                    });
+                    //workspace.removeAllTabs(tab.id);
                 }
             }));
             /* Close all */
             contextualMenu.append(new workspace.MenuItem({
                 label: 'Close all',
                 click: function onCloseAllClick() {
-                    workspace.removeAllTabs();
+                    workspace.ipc.send('workspace-close-all-tabs');
                 }
             }));
 
@@ -771,8 +879,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 label: 'Move to other pane',
                 click: function onMoveToOtherPaneClick() {
                     workspace.moveToAnotherPane(tab.id);
+                    workspace.ipc.send('workspace-move-tab', tab.id, (tab.panelId === 'main') ? 'second' : 'main');
                 }
             }));
+            
+            /* Open file in the OS manner */
+                if (/\.html?$/i.test(tab.path)) {
+                    contextualMenu.append(new workspace.MenuItem({type : 'separator'}));
+
+                    contextualMenu.append(new workspace.MenuItem({
+                        label: 'Open in browser',
+                        click: function onClickOpen() {
+                            workspace.shell.openItem(tab.path);
+                        }
+                    }));
+                }
+            
+            
             contextualMenu.popup(workspace.remote.getCurrentWindow());
         }
 
@@ -968,7 +1091,7 @@ document.addEventListener("DOMContentLoaded", function () {
             tabToSelect     = null,
             previousTabId	= tab.previousTabId,
             nextTabId 		= tab.nextTabId,
-            workspace = WorkspaceView.getInstance();
+            workspace 		= WorkspaceView.getInstance();
 
 
         if (previousTabId) {
@@ -997,7 +1120,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         delete this.tabs[tabId];
         tab.remove();
-
+        
         if (tabToSelect) {
             this.setActiveTab(tabToSelect.id);
         } else {
@@ -1151,17 +1274,40 @@ document.addEventListener("DOMContentLoaded", function () {
             this.tabsSelectionOrder.splice(index, 1);
         }
         this.tabsSelectionOrder.push(tabToActivate.id);
-
+        
         // Mark the html with CSS class
         if (tabToDeactivate) {
             tabToDeactivate.deactivate();
         }
+        this.activeTabId = tabId;
         
         tabToActivate.activate();
         this.verify();
         WorkspaceView.getInstance().fixRendering();
-        this.activeTabId = tabId;
         return this.getActiveTab();
+    };
+    
+    /**
+     * Reload the tab and update the information of the tab
+     *
+     * @param {String} tabId the id of the tab to reload
+     */
+    Panel.prototype.reloadTab = function(tabId) {
+        var tab = this.findTab(tabId);
+        tab.reload();
+    };
+    
+    /**
+     * Reload the tab and update the information of the tab
+     *
+     * @param {Object} tabConfig config of the tab to rename
+     */
+    Panel.prototype.renameTab = function(tabConfig) {
+        var tab = this.findTab(tabConfig.id);
+        if (!tab) {
+            return;
+        }
+        tab.rename(tabConfig);
     };
 
     //Just for debug
@@ -1208,6 +1354,8 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     function Tab(config, paneId) {
         this.id = config.id;
+        this.adcConfig = config.adcConfig || null;
+        this.adcStructure = config.adcStructure || null;
         this.adxConfig = config.adxConfig || null;
         this.adxType = config.adxType || null;
         this.adxVersion = config.adxVersion || null;
@@ -1218,6 +1366,7 @@ document.addEventListener("DOMContentLoaded", function () {
         this.content = config.content;
         this.edited = false;
         this.mode = config.mode || null;
+        this.ports = config.ports || null;
         this.panelId = paneId;
         this.viewer = null;
         this.altViewer = null;
@@ -1296,6 +1445,8 @@ document.addEventListener("DOMContentLoaded", function () {
         iFrameWrapper.style.visibility = "hidden";
 
         if (this.type === "projectSettings") {
+            var wor = WorkspaceView.getInstance();
+            var self = this;
             iFrameWrapper.classList.add('multi-iframes');
 
             var altIFrame = document.createElement('iframe');
@@ -1335,44 +1486,44 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             buttonForm.addEventListener('click', function() {
-                if (this.displayAltViewer) { // Already displayed
+                if (self.displayAltViewer) { // Already displayed
                     return;
                 }
+                
                 // ask the conversion of the config object to xml
-                /*ipc.once('workspace-xml-to-config', function (event, err, config) {
-                // Reload the content using the new config
-                this.adcConfig = config;
-                this.projectSettings.reloadForm();
-                // Toggle iframes
-                this.displayAltViewer = true;
-                iFrame.style.display = "none";
-                altIFrame.style.display = "";
-                this.config.mode = "form";
-                this.mode = "form";
-                buttonForm.classList.add("active-sub-tab");
-                buttonCode.classList.remove("active-sub-tab");
-            });
-            ipc.send('workspace-convert-xml-to-config', this.editor.getValue(), this.id);*/
+                wor.ipc.once('workspace-xml-to-config', function (event, err, config) {
+                    // Reload the content using the new config
+                    self.adcConfig = config;
+                    self.projectSettings.reloadForm();
+                    // Toggle iframes
+                    self.displayAltViewer = true;
+                    iFrame.style.display = "none";
+                    altIFrame.style.display = "";
+                    self.mode = "form";
+                    buttonForm.classList.add("active-sub-tab");
+                    buttonCode.classList.remove("active-sub-tab");
+                });
+                wor.ipc.send('workspace-convert-xml-to-config', self.editor.getValue(), self.id);
             });
 
             buttonCode.addEventListener('click', function() {
-                if (!this.displayAltViewer) { // Already displayed
+                if (!self.displayAltViewer) { // Already displayed
                     return;
                 }
+                
                 // ask the conversion of the config object to xml
-                /*ipc.once('workspace-config-to-xml', function (event, err, xml) {
-                // Reload the content using the new xml
-                this.editor.setValue(xml);
-                // Toggle iframes
-                this.displayAltViewer = false;
-                altIFrame.style.display = "none";
-                iFrame.style.display = "";
-                this.mode = "code";
-                this.config.mode = "code";
-                buttonForm.classList.remove("active-sub-tab");
-                buttonCode.classList.add("active-sub-tab");
-            });
-            ipc.send('workspace-convert-config-to-xml', this.projectSettings.getCurrentConfig(), this.id);*/
+                wor.ipc.once('workspace-config-to-xml', function (event, err, xml) {
+                    // Reload the content using the new xml
+                    self.editor.setValue(xml);
+                    // Toggle iframes
+                    self.displayAltViewer = false;
+                    altIFrame.style.display = "none";
+                    iFrame.style.display = "";
+                    self.mode = "code";
+                    buttonForm.classList.remove("active-sub-tab");
+                    buttonCode.classList.add("active-sub-tab");
+                });
+                wor.ipc.send('workspace-convert-config-to-xml', self.projectSettings.getCurrentConfig(), self.id);
             });
         }
 
@@ -1528,7 +1679,6 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     Tab.prototype.activate = function() {
         var editor = this && this.editor;
-        
         this.htmlElements.tab.scrollIntoView();
         this.htmlElements.tab.classList.add('active');
         this.htmlElements.content.classList.add('active');
@@ -1536,7 +1686,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (editor && editor.focus) {
             editor.focus();
         }
-        
         return this;
     };
 
@@ -1549,6 +1698,24 @@ document.addEventListener("DOMContentLoaded", function () {
         this.htmlElements.tab.classList.remove('active');
         this.htmlElements.content.classList.remove('active');
         return this;
+    };
+    
+    /**
+     * Reload the tab and update the information of the tab
+     */
+    Tab.prototype.reload = function() {
+        this.htmlElements.iframe.src = this.getViewerUrl(this);
+    };
+    
+    /**
+     * Reload the tab and update the information of the tab
+     *
+     * @param {Object} tabConfig config of the tab to rename
+     */
+    Tab.prototype.rename = function(tabConfig) {
+        this.htmlElements.tabText.innerHTML = tabConfig.name || 'File';
+        this.name = tabConfig.name;
+        this.path = tabConfig.path;
     };
 
     /**
