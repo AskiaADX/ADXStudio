@@ -8,10 +8,11 @@ const appSettings = require('../appSettings/appSettingsModel.js');
 const path = require('path');
 const fs = require('fs');
 const fse = require('fs.extra');
-const wrench = require('wrench');
-let  explorerView;
-let lastCopy;
-let fileToPaste;
+const wrench = require('wrench'),
+    util = require('util');
+var explorerView;
+var lastCopy;
+var fileToPaste;
 
 /**
  * Open the root folder
@@ -206,12 +207,19 @@ function cut(event, file) {
 
 function paste(event, file) {
     fileToPaste = file;
-
+    
+    if (file.type === "file") {
+        var path = file.path.substring(0, (file.path.length - file.name.length - 1));
+        file.path = path;
+    }
+    
+    
+    
     fs.readdir(file.path, function (err, files) {
         if (err) {
             console.log(err.message);
         }
-        if (files.length >= 1) {
+        if (files.length && files.length >= 1) {
             for (let i = 0, l = files.length; i < l; i++) {
                 if (files[i] === lastCopy.file.name) {
                     app.emit('show-modal-dialog', {

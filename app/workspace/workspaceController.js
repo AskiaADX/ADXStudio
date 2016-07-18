@@ -494,7 +494,10 @@ function onCloseAllTabs(event, options) {
  */
 function onMoveTab(event, tabId, targetPane) {
     workspace.moveTab(tabId, targetPane, function (err, tab, pane) {
-        workspaceView.send('workspace-change-tab-location', err, tab, pane);
+        if (err) {
+            console.warn(err);
+            return;
+        }
     });    
 }
 

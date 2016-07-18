@@ -113,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     WorkspaceView.prototype.listenIpcEvents = function listenIpcEvents() {
         var self = this;
-        /*TODO::ADD IPC LISTENER*/
         
         this.ipc.on('workspace-update-tab', function(event, err, newTabConfig, panelId) {
             if (err) {
@@ -593,7 +592,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        //COpy the new config in the tab
+        //Copy the new config in the tab
         for (var key in newTabConfig) {
             if (newTabConfig.hasOwnProperty(key)) {
                 tab[key] = newTabConfig[key];
@@ -637,7 +636,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }; 
     
     /**
-     *	Display the tab
+     * Display the tab
      *
      * @param {Tab} tab The tab to display
      */
