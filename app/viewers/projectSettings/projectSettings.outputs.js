@@ -246,11 +246,13 @@ document.addEventListener('DOMContentLoaded', function () {
         var output = currentOutputs.outputs[currentSelectedOutputIndex];
         var contents = output.contents;
         var i, l;
-
+       
         contentsBodyEl.innerHTML = ""; // Clear first
 
-        for (i = 0, l = contents.length; i < l; i += 1) {
-            addContent(contents[i]);
+        if (contents) {
+            for (i = 0, l = contents.length; i < l; i += 1) {
+                addContent(contents[i]);
+            }   
         }
 
     }

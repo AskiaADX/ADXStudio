@@ -20,7 +20,7 @@
     document.head.appendChild(link);
 
     window.addEventListener('focus', function () {
-        workspaceView.setActiveTab();
+        workspaceView.setActiveTab(tabId);
     });
 
     var viewer = {

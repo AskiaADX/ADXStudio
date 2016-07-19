@@ -549,9 +549,11 @@ document.addEventListener("DOMContentLoaded", function () {
             tabId = tab.id;
         } else {
             tabId = tabConfigId;
+            tab	  = this.findTab(tabId);
+            panel = this.panels[tab.panelId];
         }
-       
         if (tabId) {
+            this.setActivePanel(panel.id);
             panel.setActiveTab(tabId);
         }
     };
@@ -1540,18 +1542,6 @@ document.addEventListener("DOMContentLoaded", function () {
         var wor = WorkspaceView.getInstance();
         wor.setTabContentPosition(contentEl, this.panelId);
         wor.fixRendering();
-        /*
-		//Close the empty pane but never close both pane
-	    var paneState       = getPanesState();
-	    if (paneState.main && paneState.second) {
-    	    if (!isPaneHasTab('main')) {
-       			closePane('main');
-       	} else if (!isPaneHasTab('second')) {
-        	closePane('second');
-        }
-    }
-
-    fixRendering();*/
     };
 
     /**
