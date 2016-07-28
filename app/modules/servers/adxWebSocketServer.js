@@ -116,6 +116,11 @@ function reply(connection) {
             }
         });
     });
+
+    connection.on('error', function (err) {
+        console.dir(err);
+    });
+
     connection.on("close", function () {
         const ws = exports.server.innerServer;
         if (!ws.connections.length) {
