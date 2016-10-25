@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function reset() {
         currentSelectedCatIndex = -1;
-        originalProps = tab.adcConfig.properties || {};
+        originalProps = tab.adxConfig.properties || {};
         if (!originalProps.categories) {
             originalProps.categories = [];
         }

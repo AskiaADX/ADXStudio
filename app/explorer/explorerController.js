@@ -21,10 +21,10 @@ var fileToPaste;
  * @param {String[]} files Array of path
  */
 function openRootFolder(err, dir, files) {
-    const adc = global.project.adc;
-    if (adc) {
-        adc.load(function (err) {
-            const name = (!err) ? adc.configurator.info.name() : path.basename(dir);
+    const adx = global.project.getADX();
+    if (adx) {
+        adx.load(function (err) {
+            const name = (!err) ? adx.configurator.info.name() : path.basename(dir);
             explorerView.send('explorer-expand-folder', err, dir, files, true, name);
         });
     }
@@ -73,7 +73,6 @@ function addItem(event, dirPath, type, itemName) {
                     type : 'okOnly',
                     message : err.message
                 });
-                return;
             }
         });
     }
@@ -119,7 +118,6 @@ function removeFile(event, file) {
                 type : 'okOnly',
                 message : err.message
             });
-            return;
         }
     });
 }
@@ -303,11 +301,12 @@ function switchClick(clickToUse) {
 
 ipc.on('explorer-ready', function (event) {
     explorerView = event.sender; // Keep the connection with the view
+    var projectPath = global.project.getPath();
 
     // Load the default path
-    if (global.project.path) {
-        explorer.load(global.project.path, true, function (err, files) {
-            openRootFolder(err, global.project.path, files);
+    if (projectPath) {
+        explorer.load(projectPath, true, function (err, files) {
+            openRootFolder(err, projectPath, files);
         });
     }
 

@@ -522,7 +522,7 @@
                     // ask the conversion of the config object to xml
                     ipc.once('workspace-xml-to-config', function (event, err, config) {
                         // Reload the content using the new config
-                        tab.adcConfig = config;
+                        tab.adxConfig = config;
                         tab.projectSettings.reloadForm();
                         // Toggle iframes
                         tab.displayAltViewer = true;

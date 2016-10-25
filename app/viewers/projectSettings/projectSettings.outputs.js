@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function reset() {
         currentSelectedOutputIndex = -1;
-        originalOutputs = tab.adcConfig.outputs || {};
+        originalOutputs = tab.adxConfig.outputs || {};
         if (!originalOutputs.outputs) {
             originalOutputs.outputs = [];
         }
@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             displaySelect();
         } else {
-            viewer.getADCStructure(function (structure) {
+            viewer.getADXStructure(function (structure) {
                 for (structKey in structure) {
                     if (structure.hasOwnProperty(structKey)) {
                         options = structure[structKey];

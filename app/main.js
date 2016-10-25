@@ -2,11 +2,71 @@ const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const appSettings = require('./appSettings/appSettingsModel.js');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 const shell =  electron.shell;
 const ipc   = electron.ipcMain;
 
 require('./main/mainController.js');
+
+/**
+ * Manage the open project
+ *
+ * @singleton
+ */
+function Project() {
+    if (global.project) { // Singleton object
+        return global.project;
+    }
+    this._adx  = null;
+    global.project = this; // Singleton object
+}
+
+/**
+ * Creates a new instance of project
+ * @constructor
+ */
+Project.prototype.constructor = Project;
+
+/**
+ * Defines the project path and adx currently open
+ *
+ * @param {String|ADX} pathOrAdx Path of the project or ADX object
+ */
+Project.prototype.set = function setPath(pathOrAdx) {
+    this.close();
+
+    if (typeof pathOrAdx === 'string') {
+        this._adx = new ADX(pathOrAdx);
+    }
+    if (pathOrAdx instanceof ADX) {
+        this._adx  = pathOrAdx;
+    }
+};
+
+/**
+ * Close the current open project
+ */
+Project.prototype.close = function close() {
+    // Destroy the previous instance of the project
+    if (this._adx) {
+        this._adx.destroy();
+    }
+    this._adx = null;
+};
+
+/**
+ * Returns the instance of the ADX object currently open
+ */
+Project.prototype.getADX = function getADX() {
+    return this._adx;
+};
+
+/**
+ * Returns the project path
+ */
+Project.prototype.getPath = function getPath() {
+    return (this._adx && this._adx.path) || '';
+};
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -25,13 +85,12 @@ app.on('window-all-closed', function() {
 // initialization and ready for creating browser windows.
 app.on('ready', function loadMainWindow() {
     // Initialize the global.project
-    global.project = {};
+    global.project = new Project();
 
     // Load the default project path earlier in the application lifetime
     appSettings.getInitialProject(function onInitialProject(projectPath) {
         if (projectPath) {
-            global.project.path = projectPath;
-            global.project.adc = new ADC(projectPath);
+            global.project.set(projectPath);
         }
 
         // Load the preferences in order to have default theme etc...
@@ -63,6 +122,8 @@ app.on('ready', function loadMainWindow() {
                         
             // Emitted when the window is closed.
             global.mainWindow.on('closed', function onMainWindowClose() {
+                // Close the current project
+                global.project.close();
 
                 // Dereference the window object, usually you would store windows
                 // in an array if your app supports multi windows, this is the time

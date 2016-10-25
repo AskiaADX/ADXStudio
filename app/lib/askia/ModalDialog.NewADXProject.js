@@ -24,7 +24,7 @@
         }, callback);
     }
 
-    modalDialog.addPlugin('newADCProject', {
+    modalDialog.addPlugin('newADXProject', {
         /**
          * Create form
          * @param  modalDialog
@@ -174,6 +174,7 @@
         validate : function validate(modalDialog, retVal) {
             var el   = modalDialog.elements.newProject;
             retVal.value = {
+                projectType : 'adc',
                 name : el.nameInput.value,
                 path : el.pathInput.value,
                 description : el.descriptionInput.value,

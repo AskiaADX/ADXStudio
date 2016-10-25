@@ -153,15 +153,14 @@
          * Write in the output
          * @param {String} text Text to write
          */
-        ipc.on("output-write", function (event, text, type) {
+        ipc.on("output-write", function (event, text) {
             openStatusBar("panel_output"); // Make sure it's open
 
-            var el = document.createElement("p");
+            //var el = document.createElement("div");
             var rg = /(file:\/\/\/[^\s\r\n]+)/gi;
-            el.innerText = text;
-            el.innerHTML = el.innerText.replace(rg, '<a href="$1" class="open-file-in-folder">$1</a>');
-            el.className = type;
-            outEl.appendChild(el);
+            text = text.replace(rg, '<a href="$1" class="open-file-in-folder">$1</a>');
+            outEl.insertAdjacentHTML('beforeend', text);
+            // outEl.appendChild(el);
             // Scroll at the end
             var sep = document.createElement("div");
             // sep.innerText = 'SEP';

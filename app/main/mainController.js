@@ -5,7 +5,7 @@ const app = electron.app;
 const util = require('util');
 const ipc = electron.ipcMain;
 const appSettings = require('../appSettings/appSettingsModel.js');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 const fs = require("fs");
 const path = require("path");
 const uuid = require('node-uuid');
@@ -26,10 +26,9 @@ let enforceQuit = false;
  * Write message in the output window
  *
  * @param {String} text Message to write
- * @param {String|"message"|"error"|"warning"|"success"} type Type of the message
  */
-function writeOutput(text, type) {
-    mainView.send('output-write', text, type);
+function writeOutput(text) {
+    mainView.send('output-write', util.format.apply(null, arguments));
 }
 
 /**
@@ -47,21 +46,13 @@ function closeOutput() {
 }
 
 /**
- * Logger for the ADCUtil
+ * Logger for the ADXUtil
  */
-global.adcLogger = {
-    writeMessage : function writeMessage() {
-        writeOutput(util.format.apply(null, arguments), 'message');
-    },
-    writeError : function writeError() {
-        writeOutput(util.format.apply(null, arguments), 'error');
-    },
-    writeWarning : function writeWarning() {
-        writeOutput(util.format.apply(null, arguments), 'warning');
-    },
-    writeSuccess : function writeSuccess() {
-        writeOutput(util.format.apply(null, arguments), 'success');
-    }
+global.adxLogger = {
+    writeMessage : writeOutput,
+    writeError : writeOutput,
+    writeWarning : writeOutput,
+    writeSuccess : writeOutput
 };
 
 /**
@@ -116,15 +107,18 @@ function showKeyboardShortcuts() {
  * Show the modal dialog to create a new project
  */
 function newProject() {
-    ADC.getTemplateList(function (err, templates) {
-        showModalDialog({
-            type : 'newADCProject',
-            buttonText : {
-                ok : "Create project"
-            },
-            adcTemplates : templates,
-            defaultRootDir : app.getPath('documents')
-        }, 'main-create-new-project');
+    ADX.getTemplateList('adc', function (err, adcTemplates) {
+        ADX.getTemplateList('adp', function (err, adpTemplates) {
+            showModalDialog({
+                type : 'newADXProject',
+                buttonText : {
+                    ok : "Create project"
+                },
+                adcTemplates : adcTemplates,
+                adpTemplates : adpTemplates,
+                defaultRootDir : app.getPath('documents')
+            }, 'main-create-new-project');
+        });
     });
 }
 
@@ -140,13 +134,13 @@ function createNewProject(event, button, options) {
     }
 
     clearOutput();
-    showLoader("Creating `" + options.name + "` ADC project ...");
+    showLoader("Creating `" + options.name + "` ADX project ...");
     var project = {
         output: options.path,
         template: options.template,
         description: options.description
     };
-    ADC.generate(options.name, project, function (err, adc) {
+    ADX.generate(options.projectType, options.name, project, function (err, adx) {
         closeModalDialog();
         if (err) {
             showModalDialog({
@@ -155,26 +149,25 @@ function createNewProject(event, button, options) {
             });
             return;
         }
-        global.project.path = adc.path;
-        global.project.adc = adc;
+        global.project.set(adx);
 
         // Open the project with the 'Project settings' tab open
-        fs.mkdir(path.join(adc.path, '.adxstudio'), function () {
-            fs.writeFile(path.join(adc.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
+        fs.mkdir(path.join(adx.path, '.adxstudio'), function () {
+            fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
                 tabs: [
                     {
                         id: uuid.v4(),
                         pane: "main",
                         current: true,
                         config: {
-                            path: adc.path,
+                            path: adx.path,
                             type: "projectSettings"
                         }
                     }
                 ]
             }), {encoding: 'utf8'}, function () {
                 // Open the newest project
-                app.emit('menu-open-project', adc.path);
+                app.emit('menu-open-project', adx.path);
             });
         });
     });
@@ -192,15 +185,16 @@ function openProject() {
  * Validate the project
  */
 function validateProject() {
-    var adc = global.project.adc;
-    var logger = global.adcLogger;
-    if (!adc || !adc.path) {
+    var adx = global.project.getADX();
+    var logger = global.adxLogger;
+    if (!adx || !adx.path) {
         return;
     }
 
     clearOutput();
-    adc.validate({
-        logger : logger
+    adx.validate({
+        logger : logger,
+        printMode : 'html'
     });
 }
 
@@ -208,15 +202,16 @@ function validateProject() {
  * Build the project
  */
 function buildProject() {
-    var adc = global.project.adc;
-    var logger = global.adcLogger;
-    if (!adc || !adc.path) {
+    var adx = global.project.getADX();
+    var logger = global.adxLogger;
+    if (!adx || !adx.path) {
         return;
     }
 
     clearOutput();
-    adc.build({
-        logger : logger
+    adx.build({
+        logger : logger,
+        printMode : 'html'
     });
 }
 

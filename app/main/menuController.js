@@ -6,7 +6,7 @@ const dialog = electron.dialog;
 const shell = electron.shell;
 const fs = require('fs');
 const path = require('path');
-const ADC = require('adcutil').ADC;
+const ADX = require('adxutil').ADX;
 const appSettings = require('../appSettings/appSettingsModel.js');
 
 // Default Menu of the app.
@@ -23,9 +23,7 @@ app.once('ready', function createAppMenu() {
             return {
                 label : path.basename(mruItem.path),
                 click : function () {
-                    global.project.path = mruItem.path;
-                    global.project.adc = new ADC(mruItem.path);
-
+                    global.project.set(mruItem.path);
                     app.emit("menu-open-project", mruItem.path);
                 }
             };
@@ -44,7 +42,7 @@ app.once('ready', function createAppMenu() {
         function newFileClick() {
             dialog.showSaveDialog({
                 properties: ['openFile'],
-                defaultPath : (global.project && global.project.path) || ''
+                defaultPath : global.project.getPath()
             }, function (filepath) {
                 if (!filepath) {
                     return;
@@ -69,9 +67,7 @@ app.once('ready', function createAppMenu() {
         function openProjectClick() {
             dialog.showOpenDialog({properties: ['openDirectory']}, function(folderpath) {
                 if (folderpath && folderpath.length) {
-                    global.project.path = folderpath[0];
-                    global.project.adc = new ADC(folderpath[0]);
-
+                    global.project.set(folderpath[0]);
                     app.emit("menu-open-project", folderpath[0]);
                 }
             });
@@ -131,14 +127,14 @@ app.once('ready', function createAppMenu() {
         }
 
         /**
-         * Validate the ADC
+         * Validate the ADX
          */
         function validateClick() {
             app.emit("menu-validate");
         }
 
         /**
-         * Build the ADC
+         * Build the ADX
          */
         function buildClick() {
             app.emit("menu-build");

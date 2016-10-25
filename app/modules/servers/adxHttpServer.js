@@ -8,6 +8,7 @@ const mime    = require('mime-types');
 const serverUtil  = require('./adxServerUtil.js');
 const getFixtures = serverUtil.getFixtures;
 const Server      = serverUtil.Server;
+const regularKey = 'regular';
 
 /**
  * Throw an HTTP error
@@ -26,39 +27,100 @@ function throwError(err, response) {
 }
 
 /**
- * Serve the ADC output
+ * Parse the query part of the URI and return an object that represent it
+ *
+ * Query like ?x=y&prop[a]=1&prop[b]=2&theme[a]=10&theme[b]=20 will be transform to:
+ *
+ * regular : {
+ *   x : y
+ * }
+ * prop:   a=1&b=2
+ * theme:  a=10&b=20
+ *
+ * @param query
+ */
+function queryToObj(query) {
+    const obj = {};
+    const params = query.split('&');
+
+    for (let i = 0, l = params.length; i < l; i += 1) {
+        if (!params[i]) continue;
+
+        const keyVal = params[i].split('=');
+        const key = keyVal[0];
+        const value = keyVal[1] || '';
+        if (!key) continue;
+
+        const match = /([^\[]+)\[([^\]]+)\]/i.exec(key);
+        const objKey = (match && match.length === 3) ? match[1] : regularKey;
+        const objValue = (match && match.length === 3) ? match[2] : key;
+        if (!obj[objKey]) {
+            obj[objKey] = objKey !== regularKey ? [] : {};
+        }
+        if (objKey !== regularKey) {
+            obj[objKey].push(objValue + '=' + value);
+        } else {
+            obj[objKey][objValue] = value;
+        }
+    }
+
+    // Transform to string
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key) && key !== regularKey) {
+            obj[key] = obj[key].join('&');
+        }
+    }
+
+    return obj;
+}
+
+
+/**
+ * Serve the ADX output
  *
  * @param {Error} err Error
  * @param {Object} request HTTP Request
  * @param {Object} response HTTP Response
  * @param {Object} fixtures Fixtures
  */
-function serveADCOutput(err, request, response, fixtures) {
-    const adc = global.project.adc;
+function serveADXOutput(err, request, response, requestData, fixtures) {
+    const adx = global.project.getADX();
     if (err) {
         throwError(err, response);
         return;
     }
 
-    // Decrypt the url query
-    // Search the output-name and the fixture-name
-    // The url should look like that:
-    // "/output/[output-name]/[fixture-name]/
-    // The [fixture-name] is optional
+    let command = 'show'; // 'restart',  'update' or 'show'
+    const options = {};
+
+    let fixtureName = fixtures.defaultFixture;
+    let outputName = adx.configurator.outputs.defaultOutput();
+
+    // Extract url data
     const uriParse = url.parse(request.url);
     const uri   = decodeURIComponent(uriParse.pathname);
-    let outputName = adc.configurator.outputs.defaultOutput();
-    let fixtureName = fixtures.defaultFixture;
-    const properties = uriParse.query || '';
-    const arg = {
-        silent : true
-    };
+    const queryString = uriParse.query || '';
+    const queryObj = queryToObj(queryString);
 
-    const match = /\/output\/([^\/]+)\/?([^\/]+)?/i.exec(uri);
+    // Extract information from the query string
+    let id = (queryObj && queryObj.regular && queryObj.regular._id) || null;
+    let properties = queryObj.prop || '';
+    let themes = queryObj.theme || '';
+    let interview;
+
+
+    // Decrypt the url query
+    // Search the fixture-name and the output-name
+    // The url should look like that:
+    // "/fixture/[fixture-name]/[output-name]/[action].html"
+    const match = /\/fixture\/([^\/]+)?\/?([^\/]+)?\/?([^\/]+)?$/i.exec(uri);
     if (match) {
-        outputName = match[1];
+        fixtureName = match[1];
         if (match.length > 1 && match[2]) {
-            fixtureName =  match[2];
+            outputName =  match[2];
+        }
+        if (match.length > 2 && match[3]) {
+            command = match[3].replace(/\.html$/i, '');
         }
     }
 
@@ -66,95 +128,140 @@ function serveADCOutput(err, request, response, fixtures) {
     if (fixtureName && !/\.xml$/i.test(fixtureName)) {
         fixtureName += '.xml';
     }
-    if (outputName) {
-        arg.output = outputName;
+
+    options.output = outputName;
+    options.fixture = fixtureName;
+    // arg.masterPage = path.join(__dirname, '../../../node_modules/adxutil/templates/master_page/default.html');
+    options.properties = properties;
+    options.themes = themes;
+
+    // Update on POST
+    if (request.method === 'POST') {
+        command = 'update';
+        options.parameters = requestData;
     }
-    if (fixtureName) {
-        arg.fixture = fixtureName;
+
+    if (id === null && request.method === 'GET') {
+        command = 'restart';
+        interview = adx.interviews.create();
+    } else {
+        interview = adx.interviews.getById(id);
     }
-    arg.masterPage = path.join(__dirname, '../../../node_modules/adcutil/templates/master_page/default.html');
-    if (properties) {
-        arg.properties = properties;
+
+    // Could not find or create an interview
+    if (!interview) {
+        throwError(new Error("Cannot find the interview with the specified id `" + id + "`"), response);
+        return;
     }
-    adc.show(arg, function (err, output) {
+
+    interview.execCommand(command, options, function (err, output) {
         if (err) {
             throwError(err, response);
-        } else {
-            // Fix paths inside output:
-            const rg = new RegExp("File:\\\\\\\\\\\\" + global.project.path.replace(/\\/g, "/"), "g");
-            const html = output.replace(rg, "../Resources/Survey/");
+            return;
+        }
+
+        if (command !== 'show' && !/\s*ok\s*/i.test(output)) {
+            throwError(new Error(output), response);
+            return;
+        }
+
+        if (command !== 'show') { // By default use the redirection to display the page
+            let q = '';
+            if (!queryObj || !queryObj.regular || !queryObj.regular._id) {
+                q = '_id=' + interview.id;
+                if (queryString) {
+                    q += '&' + queryString;
+                }
+            } else {
+                q = queryString;
+            }
+
+            response.writeHead(302, {
+                'Location': 'http://localhost:3500/fixture/' + fixtureName.replace(/\.xml$/i, '') + '/' + outputName + '/show.html?' + q
+            });
+            response.end();
+        }
+        else {
             response.writeHead(200, {
                 "Content-Type": "text/html",
                 'Cache-Control' : 'no-cache, no-store, must-revalidate',
                 'Pragma' : 'no-cache',
                 'Expires': '0'
             });
-            response.write(html);
+            response.write(output);
             response.end();
         }
     });
+
+
+    /*adx.show(arg, function (err, output) {
+        if (err) {
+            throwError(err, response);
+        } else {
+            response.writeHead(200, {
+                "Content-Type": "text/html",
+                'Cache-Control' : 'no-cache, no-store, must-revalidate',
+                'Pragma' : 'no-cache',
+                'Expires': '0'
+            });
+            response.write(output);
+            response.end();
+        }
+    });*/
 }
 
 /**
- * Serve the ADC configuration
- *
- * @param {Error} err Error
- * @param {Object} request HTTP Request
- * @param {Object} response HTTP Response
- * @param {Object} fixtures Fixtures
+ * Get the request data
  */
-function serveADCConfig(err, request, response, fixtures) {
-    const adc = global.project.adc;
-
-    if (err) {
-        throwError(err, response);
+function getRequestData(request, callback) {
+    if (request.method !== 'POST') {
+        callback(null, '');
         return;
     }
-    response.writeHead(200, {
-        "Content-Type": "application/json",
-        'Cache-Control' : 'no-cache, no-store, must-revalidate',
-        'Pragma' : 'no-cache',
-        'Expires': '0'
+
+    let queryData = '';
+    request.on('data', function(data) {
+        queryData += data;
+        if (queryData.length > 1e6) {
+            queryData = "";
+            request.connection.destroy();
+            callback(new Error("Request data too long"), null);
+        }
     });
-    response.write(JSON.stringify({
-        config    : adc.configurator.get(),
-        fixtures  : fixtures
-    }));
-    response.end();
+
+    request.on('end', function() {
+        callback(null, queryData);
+    });
 }
 
 /**
  * Reply on HTTP request
  */
-function reply(request, response) {
+function replyWithRequestData(request, response, requestData) {
     // Always reload to obtain the up-to-date info
-    const adc = global.project.adc;
-    adc.load(function (err) {
+    const adx = global.project.getADX();
+    adx.load(function (err) {
         const uri = decodeURIComponent(url.parse(request.url).pathname);
 
-        if (/^\/output\/([^\/]+\/?){0,2}(\?.*)?$/i.test(uri)) {
+        if (/^\/fixture\/([^\/]+\/?){0,3}(\?.*)?$/i.test(uri)) {
             getFixtures(function (fixtures) {
-                serveADCOutput(err, request, response, fixtures);
+                serveADXOutput(err, request, response, requestData, fixtures);
             });
             return;
         }
 
-        if (/^\/config\//i.test(uri)) {
-            getFixtures(function (fixtures) {
-                serveADCConfig(err, request, response, fixtures);
-            });
-            return;
-        }
+        // The share files are generated like that:
+        // ../Resources/Survey/file_name
+        const reShare = /(\/resources\/survey\/)([^\/]+)$/i;
 
-        const adcname = adc.configurator.info.name();
-        const pattern = new RegExp("\/survey\/" + adcname.toLocaleLowerCase() + "\/", "i");
-        let uriRewrite = uri.replace(pattern, "/static/").replace(/\/survey\//i, "/share/");
-        const match     = /(resources\/(?:.*))/i.exec(uriRewrite);
-        if (match && match.length === 2) {
-            uriRewrite = match[1];
-        }
+        // The static files are generated like that:
+        // ../Resources/Survey/ADXName/file_name
+        const reStatic = /(\/resources\/survey\/([^\/]+)\/)(.+)$/i;
 
-        const filename = path.join(adc.path, uriRewrite);
+        let uriRewrite = uri.replace(/^(\/fixture\/(?:[^\/]+))/i, '')
+            .replace(reShare, '/resources/share/$2')
+            .replace(reStatic, '/resources/static/$3');
+        const filename = path.join(adx.path, uriRewrite);
         let stats;
 
         try {
@@ -192,6 +299,14 @@ function reply(request, response) {
             // Symbolic link, socket and other ...
             throwError(null, response);
         }
+    });
+}
+/**
+ * Reply on HTTP request
+ */
+function reply(request, response) {
+    getRequestData(request, function (err, requestData) {
+        replyWithRequestData(request, response, requestData);
     });
 }
 

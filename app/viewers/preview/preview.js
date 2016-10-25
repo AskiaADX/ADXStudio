@@ -94,7 +94,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Build the form using the ADC info
+     * Escape the HTML for the tag attribute
+     * @param text
+     */
+    function escapeHtmlAttr(text) {
+        return typeof text === 'string' ? text.replace(/"/g, '&quot;') : text;
+    }
+
+    /**
+     * Get url parameter
+     *
+     * @param {String} name Name of parmeter to read
+     * @param {Document} [doc=window.document] Document from where to read the location
+     * @return {String} Return the value of the parameter or ""
+     */
+    function getUrlParameter(name, doc) {
+        if (!name || typeof (name) !== "string") {
+            return "";
+        }
+        doc = doc || document;
+        var rgExp = new RegExp(name + "=([^\\&]*)", "i"),
+            arrResult = rgExp.exec(doc.location.search);
+        if (!arrResult) {
+            return "";
+        }
+        if (arrResult.length < 2) {
+            return "";
+        }
+        return arrResult[1] || "";
+    }
+
+    /**
+     * Build the form using the ADX info
      * @singleton
      */
     function FormBuilder() {
@@ -109,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Return a single instance of the ADC
+     * Return a single instance of the ADX
      */
     FormBuilder.getInstance = function getInstance() {
         if (!FormBuilder.instance) {
@@ -121,11 +152,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Update the form with the newest information
-     * @param {Object} adcInfo
+     * @param {Object} adxInfo
      * @chainable
      */
-    FormBuilder.prototype.update = function update(adcInfo) {
-        return this.init(adcInfo).build().reloadPreview();
+    FormBuilder.prototype.update = function update(adxInfo) {
+        return this.init(adxInfo).build().reloadPreview();
     };
 
     /**
@@ -160,21 +191,21 @@ document.addEventListener('DOMContentLoaded', function () {
     FormBuilder.prototype.reset = function reset() {
         this.form = null;
         this._backup = null;
-        return this.update(this.adcInfo);
+        return this.update(this.adxInfo);
     };
 
     /**
-     * Initialize the form builder with the ADC information
+     * Initialize the form builder with the ADX information
      * #chainable
      */
-    FormBuilder.prototype.init = function init(adcInfo) {
+    FormBuilder.prototype.init = function init(adxInfo) {
         var i, l, isFound = false;
 
         this.backup();
 
-        this.adcInfo       = adcInfo;
-        this.config        = adcInfo.config;
-        this.fixtures      = adcInfo.fixtures;
+        this.adxInfo       = adxInfo;
+        this.config        = adxInfo.config;
+        this.fixtures      = adxInfo.fixtures;
         this.categories    = this.config.properties.categories;
         this.outputs       = this.config.outputs;
 
@@ -254,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fixture;
 
         html.push('<table><tr>');
-        html.push('<td><h2>ADC Properties</h2></td>');
+        html.push('<td><h2>ADX Properties</h2></td>');
         html.push('<td class="reset-cell"><button id="reset">Reset</button></td>');
         html.push('</tr></table>');
         html.push('<table>');
@@ -279,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Transform a category to his HTML representation
-     * @param {Object} category ADC Category
+     * @param {Object} category ADX Category
      * #return {String}
      */
     FormBuilder.prototype.categoryToHtml = function categoryToHtml(category) {
@@ -295,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Transform a property his HTML representation
-     * @param {Object} property ADC Property
+     * @param {Object} property ADX Property
      * #return {String}
      */
     FormBuilder.prototype.propertyToHtml =  function propertyToHtml(property) {
@@ -365,13 +396,13 @@ document.addEventListener('DOMContentLoaded', function () {
             type = 'text';
         }
         if (typeof property.min === 'number' && isFinite(property.min)) {
-            attrs.push('min="' + property.min + '"');
+            attrs.push('min="' + escapeHtmlAttr(property.min) + '"');
         }
         if (typeof property.max === 'number' && isFinite(property.max)) {
-            attrs.push('max="' + property.max + '"');
+            attrs.push('max="' + escapeHtmlAttr(property.max) + '"');
         }
         if (property.pattern) {
-            attrs.push('pattern="' + property.pattern + '"');
+            attrs.push('pattern="' + escapeHtmlAttr(property.pattern) + '"');
         }
         if (property.require) {
             attrs.push('required="required"');
@@ -381,18 +412,26 @@ document.addEventListener('DOMContentLoaded', function () {
             html.push('<select id="property_' + property.id + '">');
             opts.forEach(function (opt) {
                 var selected = opt.value.toString() === value ? ' selected="selected"' : '';
-                html.push('<option value="' + opt.value + '"' + selected + '>' + opt.text + '</option>');
+                html.push('<option value="' + escapeHtmlAttr(opt.value) + '"' + selected + '>' + opt.text + '</option>');
             });
             html.push('</select>');
         } else {
             if (type === "color") {
-                html.push('<input type="text" id="color_' + property.id + '" value="' + property.value + '" class="color_text"'  + attrs.join(' ') + '/>');
+                html.push('<input type="text" id="color_' + property.id + '" value="' + escapeHtmlAttr(property.value) + '" class="color_text"'  + attrs.join(' ') + '/>');
             }
-            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + displayValue + '" ' + attrs.join(' ') + '/>');
+            html.push('<input type="' + type + '" id="property_' + property.id + '" value="' + escapeHtmlAttr(displayValue) + '" ' + attrs.join(' ') + '/>');
         }
         html.push('</td>');
         html.push('</tr>');
         return html.join('');
+    };
+
+    /**
+     * Read the interview id in the iframe url and return it
+     * @returns {String}
+     */
+    FormBuilder.prototype.getInterviewIdFromUrl = function getInterviewIdFromUrl() {
+        return getUrlParameter('_id', this.iframe.contentWindow)
     };
 
     /**
@@ -402,6 +441,7 @@ document.addEventListener('DOMContentLoaded', function () {
     FormBuilder.prototype.listen = function listen() {
         var self = this;
 
+        // Listen changes on the property grid
         self.ongridChange = function ongridChange(event) {
             var el = event.target || event.srcElement,
                 property,
@@ -424,6 +464,15 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         this.grid.addEventListener('change', self.ongridChange);
 
+
+        // Listen the location change of the iframe
+        self.onlocationChange = function onlocationChange() {
+            // Wait a few in case of the HTTP redirect
+            setTimeout(function () {
+                self.addressURL.value = self.iframe.contentWindow.location.href;
+            }, 500);
+        };
+        this.iframe.addEventListener('load', self.onlocationChange);
         return this;
     };
 
@@ -436,42 +485,49 @@ document.addEventListener('DOMContentLoaded', function () {
             property,
             params  = [],
             output  = this.form.output,
-            fixture = this.form.fixture,
-            url     = "http://localhost:" + tab.ports.http + "/output/",
+            fixture = this.form.fixture.replace(/\.xml$/i, ''),
+            url     = "http://localhost:" + tab.ports.http + "/fixture/",
+            action  = (this.iframe.src === 'Loading.html') ? 'restart' : 'show',
+            intvwId = this.getInterviewIdFromUrl(),
             i, l,
-            tempValue;
+            inputColor, inputText, rgb;
+
+        if (intvwId) {
+            params.push('_id=' + intvwId);
+        }
 
         for (i = 0, l = properties.length; i < l; i += 1) {
             property = properties[i];
             if (property.value !== property.defaultValue) {
                 if (property.value === null) {
-                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
-                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
-                    var rgb = inputText.value.split(',');
+                    inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    inputText = document.querySelectorAll('#color_' + property.id + '')[0];
+                    rgb = inputText.value.split(',');
                     property.value = inputText.value;
                     inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
                 } else if (property.type === "color") {
-                    var inputText = document.querySelectorAll('#color_' + property.id + '')[0];
-                    var inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
+                    inputText = document.querySelectorAll('#color_' + property.id + '')[0];
+                    inputColor = document.querySelectorAll('#property_' + property.id + '')[0];
                     if (property.value.substr(0, 1) !== '#') {
-                    var rgb = property.value.split(',');
-                    inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
+                        rgb = property.value.split(',');
+                        inputColor.value = rgbToHex(rgb[0], rgb[1], rgb[2]);
                     } else {
                         inputColor.value = property.value;
                     }
                     inputText.value = property.value;
                 }
 
-                params.push(encodeURIComponent(property.id) + "=" + encodeURIComponent(property.value));
+                params.push('prop[' + encodeURIComponent(property.id) + "]=" + encodeURIComponent(property.value));
             }
         }
 
-        url += output+ "/" + fixture;
+        url += fixture + "/" + output + "/" + action +  ".html";
         if (params.length) {
-            url += '?' + params.join('&')
+            url += '?' + params.join('&');
         }
-        this.iframe.src = url ;
+
         this.addressURL.value = url;
+        this.iframe.src = url ;
 
         return this;
     };
@@ -479,7 +535,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('openPreview').addEventListener('click', function () {
         var builder = FormBuilder.getInstance();
         var url = builder.addressURL.value;
+        var intvwId = builder.getInterviewIdFromUrl();
+
         if (url) {
+            // Remove the interview to start a new interview id
+            url = url.replace('_id=' + intvwId, '');
             viewer.tabs.openExternal(url);
         }
     });
