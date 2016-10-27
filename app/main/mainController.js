@@ -216,6 +216,50 @@ function buildProject() {
 }
 
 /**
+ * Validate the publication project
+ */
+function publishZendeskProject() {
+    showModalDialog({
+            type : 'okCancel',
+            message : "Do you want to publish your program on Zendesk?"
+        }, 'publish-validation');
+}
+
+/**
+ * Publish the project
+ */
+function publishZendesk(event, button) {
+    if (button === "cancel") {
+        return;
+    }
+    appSettings.getPreferences(function (err, preferences) {
+        var adx = global.project.getADX();
+        var logger = global.adxLogger;
+        if (!adx || !adx.path) {
+            return;
+        }
+        
+        clearOutput();
+        adx.publish("ZenDesk", {
+            username 			: preferences.loginZendesk,
+            password 			: preferences.password,
+            url 	 			: preferences.uri,
+            section  			: preferences.sectionTitle,
+            promoted 			: preferences.promoted,
+            demoUrl 			: preferences.uriDemo,
+            comments_disabled 	: preferences.commentDisable,
+            logger 				: logger,
+            printMode 			: 'html'
+        }, function (err) {
+            if (err) {
+                console.log(err);
+            }
+        });        
+    })
+}
+
+
+/**
  * Open preferences
  */
 function openPreferences(){
@@ -350,6 +394,12 @@ ipc.on('main-ready', function (event) {
     // Build project
     app.removeListener('menu-build', buildProject);
     app.on('menu-build', buildProject);
+    
+    // Publish the project on zendesk
+    app.removeListener('menu-publish-zendesk', publishZendeskProject);
+    app.on('menu-publish-zendesk', publishZendeskProject);
+    ipc.removeListener('publish-validation', publishZendesk);
+    ipc.on('publish-validation', publishZendesk);
 
     app.removeListener('menu-dev-tools', toggleDevTools);
     app.on('menu-dev-tools', toggleDevTools);

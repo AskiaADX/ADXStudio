@@ -3,7 +3,7 @@
  */
 (function (askia) {
     if (!askia || !askia.modalDialog) {
-        throw new Error("NodalDialog.js is not loaded, please load it first");
+        throw new Error("ModalDialog.js is not loaded, please load it first");
     }
 
     var modalDialog     = askia.modalDialog,

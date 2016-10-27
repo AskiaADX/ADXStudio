@@ -11,13 +11,12 @@ const appSettings = require('../appSettings/appSettingsModel.js');
 
 // Default Menu of the app.
 app.once('ready', function createAppMenu() {
-
-
     appSettings.getMostRecentlyUsed(function (err, mru){
         const menuFileIndex = 0;
         const menuOpenRecentIndex = 4;
 
         var template;
+        var templatePublish;
 
         function createOpenRecentMenu(mruItem) {
             return {
@@ -28,7 +27,7 @@ app.once('ready', function createAppMenu() {
                 }
             };
         }
-
+        
         /**
          * New project
          */
@@ -139,7 +138,7 @@ app.once('ready', function createAppMenu() {
         function buildClick() {
             app.emit("menu-build");
         }
-
+        
         /**
          * Preview
          */
@@ -171,7 +170,58 @@ app.once('ready', function createAppMenu() {
         function shortcutsClick() {
             app.emit("menu-shortcuts");
         }
+        
+        function createSubMenu() {
+            var sub = [
+                {
+                    label: '&Preview',
+                    accelerator: 'F5',
+                    click : previewClick
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    label : '&Validate',
+                    accelerator: 'Ctrl+Shift+T',
+                    click : validateClick
+                },
+                {
+                    label: '&Build',
+                    accelerator: 'Ctrl+Shift+B',
+                    click: buildClick
+                }
+            ];
+            appSettings.getPreferences(function (err, prefs) {
+                if (err) {
+                    console.log(err);
+                    return sub;
+                }
+                var publish = {
+                    label : '&Publish',
+                    submenu: [
+                        {
+                            label: '&Zendesk',
+                            click : function publishZendeskClick() {
+                                app.emit("menu-publish-zendesk");
+                            }
+                        }
+                    ]
+                };
+                var separ = {
+                    type : "separator"
+                };
 
+                if (prefs.useZendesk) {
+                    sub.push(separ);
+                    sub.push(publish);
+                    return sub;
+                }
+            });
+            
+            return sub;
+        }
+        
         if (process.platforn !== 'darwin') {
             template = [
                 {
@@ -362,20 +412,240 @@ app.once('ready', function createAppMenu() {
                     ]
                 }
             ];
-
+            templatePublish = [
+                {
+                    label: '&File',
+                    submenu: [
+                        {
+                            label: '&New Project',
+                            accelerator : 'Ctrl+Shift+N',
+                            click : newProjectClick
+                        },
+                        {
+                            label: '&New File',
+                            accelerator: 'Ctrl+N',
+                            click : newFileClick
+                        },
+                        {
+                            label: '&Open Project',
+                            accelerator: 'Ctrl+Shift+O',
+                            click: openProjectClick
+                        },
+                        {
+                            label: '&Open File',
+                            accelerator : 'Ctrl+O',
+                            click : openFileClick
+                        },
+                        {
+                            label : '&Open Recent',
+                            submenu : []
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label: '&Save',
+                            accelerator: 'Ctrl+S',
+                            click : saveClick
+                        },
+                        {
+                            label: '&Save As...',
+                            accelerator: 'Ctrl+Shift+S',
+                            click: saveAsClick
+                        },
+                        {
+                            label: '&Save All',
+                            click: saveAllClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label: '&Project settings',
+                            click : projectSettingsClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Preferences',
+                            click : preferencesClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Exit',
+                            click : exitClick
+                        }
+                    ]
+                },
+                {
+                    label: 'Tools',
+                    submenu: [
+                        {
+                            label: '&Preview',
+                            accelerator: 'F5',
+                            click : previewClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Validate',
+                            accelerator: 'Ctrl+Shift+T',
+                            click : validateClick
+                        },
+                        {
+                            label: '&Build',
+                            accelerator: 'Ctrl+Shift+B',
+                            click: buildClick
+                        },
+                        {
+                            type : "separator"
+                        },
+                        {
+                            label : '&Publish',
+                            submenu: [
+                                {
+                                    label: '&Zendesk',
+                                    click : function publishZendeskClick() {
+                                        app.emit("menu-publish-zendesk");
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    label: 'View',
+                    submenu: [
+                        {
+                            label: '&Next Tab',
+                            accelerator: 'Ctrl+Tab',
+                            click: function () {
+                                app.emit("menu-next-tab");
+                            }
+                        },
+                        {
+                            label: '&Previous Tab',
+                            accelerator: 'Ctrl+Shift+Tab',
+                            click: function () {
+                                app.emit("menu-previous-tab");
+                            }
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label: '&Reload',
+                            accelerator: 'Ctrl+R',
+                            click: function() {
+                                var focusedWindow = BrowserWindow.getFocusedWindow();
+                                if (focusedWindow) {
+                                    focusedWindow.reload();
+                                }
+                            }
+                        },
+                        {
+                            label : '&Developer Tools',
+                            submenu : [
+                                {
+                                    label: '&Main window',
+                                    accelerator: 'Alt+Ctrl+I',
+                                    click: function() {
+                                        var focusedWindow = BrowserWindow.getFocusedWindow();
+                                        if (focusedWindow) {
+                                            focusedWindow.toggleDevTools();
+                                        }
+                                    }
+                                },
+                                {
+                                    label : '&Explorer view',
+                                    accelerator: 'Alt+Ctrl+E',
+                                    click : devToolsExplorerClick
+                                },
+                                {
+                                    label : '&Workspace view',
+                                    accelerator: 'Alt+Ctrl+W',
+                                    click : devToolsWorkspaceClick
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    label: 'Help',
+                    submenu: [
+                        {
+                            label : '&About ADX Studio',
+                            click : aboutADXStudioClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label : '&Keyboard Shortcuts',
+                            click : shortcutsClick
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                        	label : 'ADX Specifications',
+                            click : function () { 
+                                shell.openExternal('https://github.com/AskiaADX/ADXStudio/wiki');
+                            }
+                        },
+                        {
+                            label: 'AskiaScript Documentation',
+                            click: function() { 
+                                shell.openExternal('http://designhelp.askia.com/askiascript2_introduction_to_askiascript_2');
+                            }
+                        },
+                        {
+                            type: 'separator'
+                        },
+                        {
+                            label: '&About Askia',
+                            click: function() {
+                                shell.openExternal('http://www.askia.com/');
+                            }
+                        }
+                    ]
+                }
+            ];
+            
             if (mru.length) {
                 var i, l, subMenuOpenRecent = template[menuFileIndex].submenu[menuOpenRecentIndex].submenu;
+                var subMenuOpenRecentPub = templatePublish[menuFileIndex].submenu[menuOpenRecentIndex].submenu;
                 for (i = 0, l = mru.length; i < l; i += 1) {
                     subMenuOpenRecent.push(
+                        createOpenRecentMenu(mru[i])
+                    );
+                    subMenuOpenRecentPub.push(
                         createOpenRecentMenu(mru[i])
                     );
                 }
             } else {
                 template[menuFileIndex].submenu.splice(menuOpenRecentIndex, 1);
+                templatePublish[menuFileIndex].submenu.splice(menuOpenRecentIndex, 1);
             }
         }
 
-        var menuTemplate = Menu.buildFromTemplate(template);
-        Menu.setApplicationMenu(menuTemplate);
+        appSettings.getPreferences(function (err, prefs) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(prefs);
+            var menuTemplate;
+            if (prefs.useZendesk) {
+                 menuTemplate = Menu.buildFromTemplate(templatePublish);
+            } else {
+                menuTemplate = Menu.buildFromTemplate(template);
+            }
+            Menu.setApplicationMenu(menuTemplate);
+        });
     });
 });

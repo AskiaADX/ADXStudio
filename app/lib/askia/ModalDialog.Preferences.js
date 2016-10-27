@@ -3,7 +3,7 @@
  */
 (function (askia) {
     if (!askia || !askia.modalDialog) {
-        throw new Error("NodalDialog.js is not loaded, please load it first");
+        throw new Error("ModalDialog.js is not loaded, please load it first");
     }
 
     var modalDialog     = askia.modalDialog,
@@ -34,6 +34,12 @@
             root.appendChild(el.title);
 
             // User Name
+            el.wrapper = document.createElement('div');
+            el.wrapper.className = 'askia-modal-preferences-wrapper';
+            
+            root.appendChild(el.wrapper);
+            
+            // User Name
             el.userName = document.createElement('div');
             el.userName.className = 'askia-modal-preferences-container';
 
@@ -50,7 +56,7 @@
             // Register for the auto focus
             modalDialog.elements.autoFocusOn = el.userNameInput;
 
-            root.appendChild(el.userName);
+            el.wrapper.appendChild(el.userName);
 
             // User Email
             el.userEmail = document.createElement('div');
@@ -67,7 +73,7 @@
             el.userEmailInput.value = author.email || "";
             el.userEmail.appendChild(el.userEmailInput);
 
-            root.appendChild(el.userEmail);
+            el.wrapper.appendChild(el.userEmail);
 
             // Company
             el.company = document.createElement('div');
@@ -84,7 +90,7 @@
             el.companyInput.value = author.company || "";
             el.company.appendChild(el.companyInput);
 
-            root.appendChild(el.company);
+            el.wrapper.appendChild(el.company);
 
             // Website
             el.website = document.createElement('div');
@@ -101,7 +107,7 @@
             el.websiteInput.value = author.website || "";
             el.website.appendChild(el.websiteInput);
 
-            root.appendChild(el.website);
+            el.wrapper.appendChild(el.website);
 
             // Theme
             el.theme = document.createElement('div');
@@ -128,7 +134,7 @@
                 el.themeSelect.appendChild(option)
             }
             
-            root.appendChild(el.theme);
+            el.wrapper.appendChild(el.theme);
             
             // editorFontSize size
             el.editorFontSize = document.createElement('div');
@@ -155,7 +161,7 @@
                 el.editorFontSizeSelect.appendChild(option)
             }
             
-            root.appendChild(el.editorFontSize);
+            el.wrapper.appendChild(el.editorFontSize);
             
             
             // Open the latest project by default
@@ -175,7 +181,7 @@
             el.reopenLastProjectLabel.innerHTML = "Reopen last project on startup";
             el.reopenLastProject.appendChild(el.reopenLastProjectLabel);
 
-            root.appendChild(el.reopenLastProject);
+            el.wrapper.appendChild(el.reopenLastProject);
 
             // Use double click to open a file in the explorer
             el.DblClick = document.createElement('div');
@@ -194,10 +200,199 @@
             el.DblClickLabel.innerHTML = "Use double click to open file from the explorer";
             el.DblClick.appendChild(el.DblClickLabel);
 
-            root.appendChild(el.DblClick);
+            el.wrapper.appendChild(el.DblClick);
+            
+            // Use zendesk publisher
+            el.useZendesk = document.createElement('div');
+            el.useZendesk.className = 'askia-modal-preferences-checkbox-container';
 
+            el.useZendeskInput = document.createElement('input');
+            el.useZendeskInput.setAttribute('id', 'modal_preferences_useZendesk_' + autoIncrement);
+            el.useZendeskInput.setAttribute('type', 'checkbox');
+            if (preferences.useZendesk) {
+                el.useZendeskInput.setAttribute('checked', 'checked');
+            }
+            el.useZendesk.appendChild(el.useZendeskInput);
+
+            el.useZendeskLabel = document.createElement('label');
+            el.useZendeskLabel.setAttribute('for', 'modal_preferences_useZendesk_' + autoIncrement);
+            el.useZendeskLabel.innerHTML = "Use Zendesk publisher";
+            el.useZendesk.appendChild(el.useZendeskLabel);
+            
+            el.wrapper.appendChild(el.useZendesk);
+            
+            // Username
+            el.loginZendesk = document.createElement('div');
+            el.loginZendesk.className = 'askia-modal-preferences-container';
+
+            el.loginZendeskLabel = document.createElement('label');
+            el.loginZendeskLabel.setAttribute('for', 'modal_preferences_loginZendesk_' + autoIncrement);
+            el.loginZendeskLabel.innerHTML = 'Zendesk login:';
+            el.loginZendesk.appendChild(el.loginZendeskLabel);
+
+            el.loginZendeskInput = document.createElement('input');
+            el.loginZendeskInput.setAttribute('id', 'modal_preferences_loginZendesk_' + autoIncrement);
+            el.loginZendeskInput.setAttribute('type', 'text');
+            el.loginZendeskInput.value = preferences.loginZendesk || "";
+            el.loginZendesk.appendChild(el.loginZendeskInput);
+            if (!el.useZendeskInput.checked) {
+                el.loginZendeskInput.setAttribute('disabled', 'disabled');
+                el.loginZendeskInput.value = "";
+            }
+
+            el.wrapper.appendChild(el.loginZendesk);
+            
+            // Password
+            el.password = document.createElement('div');
+            el.password.className = 'askia-modal-preferences-container';
+
+            el.passwordLabel = document.createElement('label');
+            el.passwordLabel.setAttribute('for', 'modal_preferences_password_' + autoIncrement);
+            el.passwordLabel.innerHTML = 'Password:';
+            el.password.appendChild(el.passwordLabel);
+
+            el.passwordInput = document.createElement('input');
+            el.passwordInput.setAttribute('id', 'modal_preferences_password_' + autoIncrement);
+            el.passwordInput.setAttribute('type', 'text');
+            el.passwordInput.value = preferences.password || "";
+            el.password.appendChild(el.passwordInput);
+            if (!el.useZendeskInput.checked) {
+                el.passwordInput.setAttribute('disabled', 'disabled');
+                el.passwordInput.value = "";
+            }
+
+            el.wrapper.appendChild(el.password);
+            
+            // Url of zendesk
+            el.uri = document.createElement('div');
+            el.uri.className = 'askia-modal-preferences-container';
+
+            el.uriLabel = document.createElement('label');
+            el.uriLabel.setAttribute('for', 'modal_preferences_uri_' + autoIncrement);
+            el.uriLabel.innerHTML = 'Url Zendesk:';
+            el.uri.appendChild(el.uriLabel);
+
+            el.uriInput = document.createElement('input');
+            el.uriInput.setAttribute('id', 'modal_preferences_uri_' + autoIncrement);
+            el.uriInput.setAttribute('type', 'text');
+            el.uriInput.value = preferences.uri || "";
+            el.uri.appendChild(el.uriInput);
+            if (!el.useZendeskInput.checked) {
+                el.uriInput.setAttribute('disabled', 'disabled');
+                el.uriInput.value = "";
+            }
+
+            el.wrapper.appendChild(el.uri);
+            
+            // DemoUrl
+            el.uriDemo = document.createElement('div');
+            el.uriDemo.className = 'askia-modal-preferences-container';
+
+            el.uriDemoLabel = document.createElement('label');
+            el.uriDemoLabel.setAttribute('for', 'modal_preferences_uriDemo_' + autoIncrement);
+            el.uriDemoLabel.innerHTML = 'Url demo:';
+            el.uriDemo.appendChild(el.uriDemoLabel);
+
+            el.uriDemoInput = document.createElement('input');
+            el.uriDemoInput.setAttribute('id', 'modal_preferences_uriDemo_' + autoIncrement);
+            el.uriDemoInput.setAttribute('type', 'text');
+            el.uriDemoInput.value = preferences.uriDemo || "";
+            el.uriDemo.appendChild(el.uriDemoInput);
+            if (!el.useZendeskInput.checked) {
+                el.uriDemoInput.setAttribute('disabled', 'disabled');
+                el.uriDemoInput.value = "";
+            }
+
+            el.wrapper.appendChild(el.uriDemo);
+            
+            // Section title
+            el.sectionTitle = document.createElement('div');
+            el.sectionTitle.className = 'askia-modal-preferences-container';
+
+            el.sectionTitleLabel = document.createElement('label');
+            el.sectionTitleLabel.setAttribute('for', 'modal_preferences_sectionTitle_' + autoIncrement);
+            el.sectionTitleLabel.innerHTML = 'Section title:';
+            el.sectionTitle.appendChild(el.sectionTitleLabel);
+
+            el.sectionTitleInput = document.createElement('input');
+            el.sectionTitleInput.setAttribute('id', 'modal_preferences_sectionTitle_' + autoIncrement);
+            el.sectionTitleInput.setAttribute('type', 'text');
+            el.sectionTitleInput.value = preferences.sectionTitle || "";
+            el.sectionTitle.appendChild(el.sectionTitleInput);
+            if (!el.useZendeskInput.checked) {
+                el.sectionTitleInput.setAttribute('disabled', 'disabled');
+                el.sectionTitleInput.value = "";
+            }
+
+            el.wrapper.appendChild(el.sectionTitle);
+            
+            // Disable Comment
+            el.commentDisable = document.createElement('div');
+            el.commentDisable.className = 'askia-modal-preferences-checkbox-container';
+
+            el.commentDisableInput = document.createElement('input');
+            el.commentDisableInput.setAttribute('id', 'modal_preferences_commentDisable_' + autoIncrement);
+            el.commentDisableInput.setAttribute('type', 'checkbox');
+            if (preferences.commentDisable) {
+                el.commentDisableInput.setAttribute('checked', 'checked');
+            }
+            el.commentDisable.appendChild(el.commentDisableInput);
+
+            el.commentDisableLabel = document.createElement('label');
+            el.commentDisableLabel.setAttribute('for', 'modal_preferences_commentDisable_' + autoIncrement);
+            el.commentDisableLabel.innerHTML = "Disable Comment";
+            el.commentDisable.appendChild(el.commentDisableLabel);
+            if (!el.useZendeskInput.checked) {
+                el.commentDisableInput.setAttribute('disabled', 'disabled');
+                el.commentDisableInput.checked = false;
+            }
+
+            el.wrapper.appendChild(el.commentDisable);
+            
+            // Promoted
+            el.promoted = document.createElement('div');
+            el.promoted.className = 'askia-modal-preferences-checkbox-container';
+
+            el.promotedInput = document.createElement('input');
+            el.promotedInput.setAttribute('id', 'modal_preferences_promoted_' + autoIncrement);
+            el.promotedInput.setAttribute('type', 'checkbox');
+            if (preferences.promoted) {
+                el.promotedInput.setAttribute('checked', 'checked');
+            }
+            el.promoted.appendChild(el.promotedInput);
+
+            el.promotedLabel = document.createElement('label');
+            el.promotedLabel.setAttribute('for', 'modal_preferences_promoted_' + autoIncrement);
+            el.promotedLabel.innerHTML = "Promoted";
+            el.promoted.appendChild(el.promotedLabel);
+            if (!el.useZendeskInput.checked) {
+                el.promotedInput.setAttribute('disabled', 'disabled');
+                el.promotedInput.checked = false;
+            }
+
+            el.wrapper.appendChild(el.promoted);
 
             // OK / Cancel button
+            
+            el.useZendesk.addEventListener ("change", function (event){               
+                if (!el.useZendeskInput.checked) {
+                    el.loginZendeskInput.setAttribute('disabled', 'disabled');
+                    el.passwordInput.setAttribute('disabled', 'disabled');
+                    el.uriInput.setAttribute('disabled', 'disabled');
+                    el.uriDemoInput.setAttribute('disabled', 'disabled');
+                    el.promotedInput.setAttribute('disabled', 'disabled');
+                    el.commentDisableInput.setAttribute('disabled', 'disabled');
+                    el.sectionTitleInput.setAttribute('disabled', 'disabled');
+                } else {
+                    el.loginZendeskInput.disabled = false;
+                    el.passwordInput.disabled = false;
+                    el.uriInput.disabled = false;
+                    el.uriDemoInput.disabled = false;
+                    el.promotedInput.disabled = false;
+                    el.commentDisableInput.disabled = false;
+                    el.sectionTitleInput.disabled = false;
+                }
+            });
 
             modalDialog.addOkButton();
             modalDialog.addCancelButton();
@@ -221,6 +416,14 @@
                     theme: el.themeSelect.value,
                     openLastProjectByDefault : el.reopenLastProjectInput.checked,
                     useDblClickByDefault : el.DblClickInput.checked,
+                    useZendesk : el.useZendeskInput.checked,
+                    loginZendesk : el.loginZendeskInput.value,
+                    password : el.passwordInput.value,
+                    uri : el.uriInput.value,
+                    uriDemo : el.uriDemoInput.value,
+                    promoted : el.promotedInput.checked,
+                    commentDisable : el.commentDisableInput.checked,
+                    sectionTitle : el.sectionTitleInput.value,
                     editorFontSize : el.editorFontSizeSelect.value
                 }
             };

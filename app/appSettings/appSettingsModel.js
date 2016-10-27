@@ -147,6 +147,10 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
                     app.emit('preference-switch-click', finalPreferences.useDblClickByDefault);
                 }
                 
+                if (currentPrefs.useZendesk !== finalPreferences.useZendesk) {
+                    app.emit('preference-switch-zendesk', finalPreferences.useZendesk);
+                }
+                
                 if (currentPrefs.editorFontSize !== finalPreferences.editorFontSize) {
                     app.emit('preference-switch-size', finalPreferences.editorFontSize);
                 }
