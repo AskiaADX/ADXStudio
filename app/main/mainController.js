@@ -219,16 +219,18 @@ function buildProject() {
  * Validate the publication project
  */
 function publishZendeskProject() {
-    showModalDialog({
-            type : 'okCancel',
-            message : "Do you want to publish your program on Zendesk?"
+    appSettings.getPreferences(function onReadPreferences(err, preferences){
+        showModalDialog({
+            type : 'zendeskPublisher',
+            preferences  : preferences,
         }, 'publish-validation');
+    });
 }
 
 /**
  * Publish the project
  */
-function publishZendesk(event, button) {
+function publishZendesk(event, button, options) {
     if (button === "cancel") {
         return;
     }
@@ -245,9 +247,9 @@ function publishZendesk(event, button) {
             password 			: preferences.password,
             url 	 			: preferences.uri,
             section  			: preferences.sectionTitle,
-            promoted 			: preferences.promoted,
+            promoted 			: options.promoted,
             demoUrl 			: preferences.uriDemo,
-            comments_disabled 	: preferences.commentDisable,
+            comments_disabled 	: options.commentDisable,
             logger 				: logger,
             printMode 			: 'html'
         }, function (err) {

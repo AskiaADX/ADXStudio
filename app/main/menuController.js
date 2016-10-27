@@ -171,57 +171,6 @@ app.once('ready', function createAppMenu() {
             app.emit("menu-shortcuts");
         }
         
-        function createSubMenu() {
-            var sub = [
-                {
-                    label: '&Preview',
-                    accelerator: 'F5',
-                    click : previewClick
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label : '&Validate',
-                    accelerator: 'Ctrl+Shift+T',
-                    click : validateClick
-                },
-                {
-                    label: '&Build',
-                    accelerator: 'Ctrl+Shift+B',
-                    click: buildClick
-                }
-            ];
-            appSettings.getPreferences(function (err, prefs) {
-                if (err) {
-                    console.log(err);
-                    return sub;
-                }
-                var publish = {
-                    label : '&Publish',
-                    submenu: [
-                        {
-                            label: '&Zendesk',
-                            click : function publishZendeskClick() {
-                                app.emit("menu-publish-zendesk");
-                            }
-                        }
-                    ]
-                };
-                var separ = {
-                    type : "separator"
-                };
-
-                if (prefs.useZendesk) {
-                    sub.push(separ);
-                    sub.push(publish);
-                    return sub;
-                }
-            });
-            
-            return sub;
-        }
-        
         if (process.platforn !== 'darwin') {
             template = [
                 {
@@ -638,7 +587,6 @@ app.once('ready', function createAppMenu() {
                 console.log(err);
                 return;
             }
-            console.log(prefs);
             var menuTemplate;
             if (prefs.useZendesk) {
                  menuTemplate = Menu.buildFromTemplate(templatePublish);
