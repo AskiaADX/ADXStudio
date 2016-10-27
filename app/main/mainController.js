@@ -249,7 +249,7 @@ function publishZendesk(event, button, options) {
             section  			: preferences.sectionTitle,
             promoted 			: options.promoted,
             demoUrl 			: preferences.uriDemo,
-            comments_disabled 	: options.commentDisable,
+            disableComments 	: options.commentDisable,
             logger 				: logger,
             printMode 			: 'html'
         }, function (err) {
