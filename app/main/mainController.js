@@ -252,10 +252,6 @@ function publishZendesk(event, button, options) {
             disableComments 	: options.commentDisable,
             logger 				: logger,
             printMode 			: 'html'
-        }, function (err) {
-            if (err) {
-                console.log(err);
-            }
         });        
     })
 }

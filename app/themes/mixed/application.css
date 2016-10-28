@@ -147,7 +147,6 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 #panel_output .error {
     color: #F7F7F7;
-    background  : inherit;
 }
 
 #panel_output .warning {
