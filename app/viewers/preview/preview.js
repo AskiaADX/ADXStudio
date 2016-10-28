@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (url) {
             // Remove the interview to start a new interview id
             url = url.replace('_id=' + intvwId, '');
-            viewer.tabs.openExternal(url);
+            viewer.workspaceView.openExternal(url);
         }
     });
 
