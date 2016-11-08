@@ -261,46 +261,66 @@ function replyWithRequestData(request, response, requestData) {
         let uriRewrite = uri.replace(/^(\/fixture\/(?:[^\/]+))/i, '')
             .replace(reShare, '/resources/share/$2')
             .replace(reStatic, '/resources/static/$3');
+
         const filename = path.join(adx.path, uriRewrite);
-        let stats;
 
-        try {
-            stats = fs.lstatSync(filename); // throws if path doesn't exist
-        } catch (e) {
-            response.writeHead(404, {'Content-Type': 'text/plain'});
-            response.write('404 Not Found\n');
-            response.end();
-            return;
+        function statCallback(err, stats, filepath) {
+            if (err) {
+                response.writeHead(404, {'Content-Type': 'text/plain'});
+                response.write('404 Not Found\n');
+                response.end();
+                return;
+            }
+
+            if (stats.isFile()) {
+                // path exists, is a file
+
+                response.writeHead(200, {
+                    'Content-Type': mime.lookup(filepath),
+                    'Cache-Control' : 'no-cache, no-store, must-revalidate',
+                    'Pragma' : 'no-cache',
+                    'Expires': '0'
+                });
+                const fileStream = fs.createReadStream(filepath);
+                fileStream.pipe(response);
+
+            } else if (stats.isDirectory()) {
+
+                // path exists, is a directory
+
+                response.writeHead(200, {'Content-Type': 'text/plain'});
+                response.write('Index of ' + uri + '\n');
+                response.write('TODO, show index?\n');
+                response.end();
+
+            } else {
+
+                // Symbolic link, socket and other ...
+                throwError(null, response);
+            }
         }
 
-        if (stats.isFile()) {
-            // path exists, is a file
+        fs.stat(filename, function (err, stats) {
+            if (!err) {
+                statCallback(err, stats, filename);
+                return;
+            }
 
-            response.writeHead(200, {
-                'Content-Type': mime.lookup(filename),
-                'Cache-Control' : 'no-cache, no-store, must-revalidate',
-                'Pragma' : 'no-cache',
-                'Expires': '0'
+            // Re-try with the alternative file
+            let altUriRewrite = uri.replace(/^(\/fixture\/(?:[^\/]+))/i, '')
+                .replace(reShare, '/resources/share/$2')
+                .replace(reStatic, '/$2/resources/static/$3');
+
+            const subProjectType = (adx.configurator.projectType === 'adc') ? 'adp' : 'adc';
+            const altFileName = path.join(adx.path, 'tests/fixtures/' + subProjectType, altUriRewrite);
+
+            fs.stat(altFileName, function (err, stats) {
+                statCallback(err, stats, altFileName);
             });
-            const fileStream = fs.createReadStream(filename);
-            fileStream.pipe(response);
-
-        } else if (stats.isDirectory()) {
-
-            // path exists, is a directory
-
-            response.writeHead(200, {'Content-Type': 'text/plain'});
-            response.write('Index of ' + uri + '\n');
-            response.write('TODO, show index?\n');
-            response.end();
-
-        } else {
-
-            // Symbolic link, socket and other ...
-            throwError(null, response);
-        }
+        });
     });
 }
+
 /**
  * Reply on HTTP request
  */

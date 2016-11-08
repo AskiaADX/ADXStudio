@@ -834,6 +834,14 @@ document.addEventListener("DOMContentLoaded", function () {
         var panel = this.panels[panelId];
         panel.renameTab(tabConfig);
     };
+
+    /**
+     * Open an external browser window with the specified url
+     * @param {String} url URL to open
+     */
+    WorkspaceView.prototype.openExternal = function openExternal(url) {
+        this.shell.openExternal(url);
+    };
     
     
     /**

@@ -499,31 +499,31 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     color : #888;
 }
 
-#reloadPreview, #openPreview, #reset {
+.preview-button {
     background-color: #D7DBDC;
     border          : 1px solid #BDC3C7;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
 }
+.preview-button:hover {
+    color           : #222;
+    background-color: #E5E8E8;
+}
+
+.preview-button:active {
+    color           : #000;
+    background-color: #D7DBDC;
+    box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
+}
 
 #reloadPreview,
+#restartInterview,
 #openPreview {
     border-top: none;
 }
 
 #reloadPreview {
     box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, -1px 0 0 rgba(255,255,255,.1) inset;
-}
-
-#reloadPreview:hover, #openPreview:hover, #reset:hover {
-    color           : #222;
-    background-color: #E5E8E8;
-}
-
-#reloadPreview:active, #openPreview:active, #reset:active {
-    color           : #000;
-    background-color: #D7DBDC;
-    box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
 
 #grid #reset {

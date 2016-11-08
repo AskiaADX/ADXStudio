@@ -27,7 +27,7 @@ h3 {
 .reset-cell {
     text-align:right;
 }
-#reloadPreview, #openPreview, #reset {
+.preview-button {
     padding         : 1px 17px;
     border-width    : 1px 1px 1px 0 !important;
     cursor          : pointer;

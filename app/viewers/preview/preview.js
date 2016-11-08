@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         html.push('<table><tr>');
         html.push('<td><h2>ADX Properties</h2></td>');
-        html.push('<td class="reset-cell"><button id="reset">Reset</button></td>');
+        html.push('<td class="reset-cell"><button id="reset" class="preview-button">Reset</button></td>');
         html.push('</tr></table>');
         html.push('<table>');
         html.push('<tr><td><label for="output">Output:</label></td>');
@@ -480,19 +480,20 @@ document.addEventListener('DOMContentLoaded', function () {
      * Reload the preview
      * @chainable
      */
-    FormBuilder.prototype.reloadPreview = function reloadPreview(){
+    FormBuilder.prototype.reloadPreview = function reloadPreview(action){
         var properties = this.form.properties,
             property,
             params  = [],
             output  = this.form.output,
             fixture = this.form.fixture.replace(/\.xml$/i, ''),
             url     = "http://localhost:" + tab.ports.http + "/fixture/",
-            action  = (this.iframe.src === 'Loading.html') ? 'restart' : 'show',
             intvwId = this.getInterviewIdFromUrl(),
             i, l,
             inputColor, inputText, rgb;
 
-        if (intvwId) {
+        action  = action || (this.iframe.src === 'Loading.html') ? 'restart' : 'show';
+
+        if (intvwId && action === 'show') {
             params.push('_id=' + intvwId);
         }
 
@@ -532,6 +533,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return this;
     };
 
+    /**
+     * Restart a new interview
+     */
+    FormBuilder.prototype.restartInterview = function restartInterview() {
+        return this.reloadPreview('restart');
+    };
+
     document.getElementById('openPreview').addEventListener('click', function () {
         var builder = FormBuilder.getInstance();
         var url = builder.addressURL.value;
@@ -540,12 +548,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (url) {
             // Remove the interview to start a new interview id
             url = url.replace('_id=' + intvwId, '');
-            viewer.tabs.openExternal(url);
+            viewer.workspaceView.openExternal(url);
         }
     });
 
     document.getElementById('reloadPreview').addEventListener('click', function () {
         FormBuilder.getInstance().reloadPreview();
+    });
+
+    document.getElementById('restartInterview').addEventListener('click', function () {
+        FormBuilder.getInstance().restartInterview();
     });
 
     resizer.start();

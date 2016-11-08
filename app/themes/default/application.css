@@ -498,7 +498,7 @@ div.tabs-scroll {
     color : #BBB;
 }
 
-#reloadPreview, #openPreview, #reset {
+.preview-button {
     background-color: #21252B;
     color           : #DDD;
     border-color    : #151515;
@@ -506,20 +506,21 @@ div.tabs-scroll {
     border-width    : 0 1px 1px 0 !important;
 }
 
-#reloadPreview {
-    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, -1px 0 0 rgba(255,255,255,.1) inset;
-}
-
-#reloadPreview:hover, #openPreview:hover, #reset:hover {
+.preview-button:hover {
     color           : #FFF;
     background-color: #31363E;
 }
 
-#reloadPreview:active, #openPreview:active, #reset:active {
+.preview-button:active {
     color           : #FFF;
     background-color: #21252B;
     box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
 }
+
+#reloadPreview {
+    box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, -1px 0 0 rgba(255,255,255,.1) inset;
+}
+
 
 #grid #reset {
     height: 35px;
