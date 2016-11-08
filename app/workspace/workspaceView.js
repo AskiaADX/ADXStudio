@@ -843,6 +843,14 @@ document.addEventListener("DOMContentLoaded", function () {
         this.shell.openExternal(url);
     };
     
+    /**
+	 * Open an external browser window with the specified url
+     * @param {String} url URL to open
+     */
+    WorkspaceView.prototype.openExternal = function openExternal(url) {
+        this.shell.openExternal(url);
+    }
+    
     
     /**
      * Creates a new instance of panel
