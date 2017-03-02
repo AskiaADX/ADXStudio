@@ -1,9 +1,9 @@
 ADX Studio
 ==========
 
-![ADX Studio](https://dl.dropboxusercontent.com/u/4885226/adx-studio_icon.png)
+![ADX Studio](https://github.com/AskiaADX/ADXStudio/blob/develop/adxstudio.png?raw=true)
 
-This is the Windows desktop IDE to create and/or edit ADCs (Askia Design Control) for [Askia](http://www.askia.com/) powered survey controls. 
+This is the Windows desktop IDE to create and/or edit ADCs (Askia Design Control) for [Askia](http://www.askia.com/) powered survey controls.
 It makes intensive use of [Electron](https://github.com/atom/electron) and [NodeJS](https://nodejs.org/en/).
 
 Setup
@@ -26,7 +26,7 @@ Clone the repository (via `HTTPS`, `SSH` or simply download the repository as a 
 
 Install [NodeJS](https://nodejs.org/download/).
 
-Open [Powershell](https://msdn.microsoft.com/en-us/dd742419) as an `Administrator` and browse to the local ADXStudio repository. 
+Open [Powershell](https://msdn.microsoft.com/en-us/dd742419) as an `Administrator` and browse to the local ADXStudio repository.
 There, run the following commands:
 
 ```
@@ -43,7 +43,7 @@ Available resources
 -	[ADX specifications](https://github.com/AskiaADX/ADXStudio/wiki)
 -	[Askiascript documentation](askiascript2_introduction_to_askiascript_2)
 -	[List of ADCs 2.0](https://support.askia.com/hc/en-us/sections/200009182-askia-design-control-ADC-2-0-Javascript-)
--	[Askia website](http://askia.com/)
+-	[Askia website](https://askia.com/)
 
 Authors
 -------
