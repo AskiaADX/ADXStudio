@@ -14,7 +14,7 @@ const opts = {
     "icon" : path.join(process.cwd(), "app/adx-studio_icon.ico"),
     "overwrite" : true,
     "ignore" : /(\.adxstudio|docs|tmp|\.git|\.idea|releases|jasmine-node|pack\.js)/i,
-    "app-copyright" :  "Copyright (c) Askia 2016",
+    "app-copyright" :  "Copyright (c) Askia 2017",
     "app-version" : fileVersion,
     "build-version" : fileVersion,
     "version-string" : {
