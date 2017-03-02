@@ -3,8 +3,7 @@ ADX Studio
 
 ![ADX Studio](https://github.com/AskiaADX/ADXStudio/blob/develop/adxstudio.png?raw=true)
 
-This is the Windows desktop IDE to create and/or edit ADCs (Askia Design Control) for [Askia](http://www.askia.com/) powered survey controls.
-It makes intensive use of [Electron](https://github.com/atom/electron) and [NodeJS](https://nodejs.org/en/).
+This is the Windows desktop IDE to create and/or edit ADCs (Askia Design Control) and ADPs (Askia Design Pages) for [Askia](http://www.askia.com/) powered survey controls and layouts. It makes intensive use of [Electron](https://github.com/atom/electron) and [NodeJS](https://nodejs.org/en/).
 
 Setup
 -----
@@ -20,7 +19,7 @@ Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/lat
 
 *Note: do not tamper with any other components of `ADXStudio-win32-x64` / `ADXStudio-win32-ia32` folder.*
 
-#### Manual
+#### Manual installation
 
 Clone the repository (via `HTTPS`, `SSH` or simply download the repository as a `.ZIP` archive).
 
