@@ -1,0 +1,59 @@
+.askia-modal-zendesk-publisher-container,
+.askia-modal-zendesk-publisher-checkbox-container {
+    padding: 15px 0 15px 20px;
+}
+
+.askia-modal-zendesk-publisher-container input,
+.askia-modal-zendesk-publisher-container textarea,
+.askia-modal-zendesk-publisher-container select {
+    padding         : 10px;
+    width           : 418px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    margin-left     : 10px;
+}
+
+.askia-modal-zendesk-publisher-checkbox-container input:focus,
+.askia-modal-zendesk-publisher-container input:focus,
+.askia-modal-zendesk-publisher-container textarea:focus,
+.askia-modal-zendesk-publisher-container select:focus {
+    outline : none;
+}
+
+.askia-modal-zendesk-publisher-container input,
+.askia-modal-zendesk-publisher-container textarea,
+.askia-modal-zendesk-publisher-container select {
+    padding         : 10px;
+    width           : 300px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    margin-left     : 10px;
+}
+
+.askia-modal-zendesk-publisher-container label {
+    display     : block;
+    width       : 100px;
+    float       : left;
+    align-self  : center;
+}
+
+.zendesk-publisher .askia-modal-buttons-container {
+    padding-right: 30px !important;
+}
+
+.askia-modal-zendesk-publisher-container textarea {
+    height: 60px;
+}
+
+.askia-modal-zendesk-publisher-container button {
+    width           : 40px;
+    height          : 37px;
+    cursor          : pointer;
+    align-self      : center;
+    margin-left     : 10px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    font-weight     : bold;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}

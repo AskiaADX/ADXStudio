@@ -1,0 +1,266 @@
+* {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+  margin    : 0;
+  padding   : 0;
+  height    : 100vh;
+}
+
+body {
+    display         : flex;
+    flex-direction  : row;
+}
+
+nav, ul {
+    margin  : 0;
+    padding : 0;
+}
+
+nav {
+    width   : 200px;
+    height  : 100vh;
+}
+
+nav a {
+    display : block;
+    padding : 10px;
+    width   : 180px;
+}
+
+form {
+  padding   : 0;
+  margin    : 0;
+  overflow  : auto;
+  flex      : 1;
+  height    : 100vh;
+}
+
+section {
+    display: none;
+}
+
+section.active {
+    display: block;
+}
+
+section > div {
+    margin-left: 10px;
+}
+
+fieldset#output_list_fieldset,
+fieldset#contents_fieldset,
+fieldset#categories_list_fieldset {
+    padding-bottom: 15px;
+}
+
+#outputs_list,
+#categories_list {
+    width: 490px;
+}
+
+label {
+  width         : 170px;
+  display       : inline-block;
+  vertical-align: top;
+}
+
+#default_output_label {
+    line-height: 1.3;
+}
+
+input[type="text"], input[type="url"], textarea, select {
+    width: 460px;
+}
+
+button {
+    padding         : 10px 15px;
+    cursor          : pointer;
+    align-self      : center;
+    margin-left     : 10px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    font-weight     : normal;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}
+
+button#new_output,
+button#new_category {
+    border-radius   : 2px;
+    font-size       : 14px;
+    font-weight     : normal;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}
+
+button#add_content,
+button#add_property {
+    margin: 20px 0 0 0;
+}
+
+.inner-form label {
+    width           : 120px;
+    vertical-align  : inherit;
+}
+
+.inner-form input[type="text"],
+.inner-form input[type="url"],
+.inner-form textarea,
+.inner-form select {
+    width: 300px;
+}
+
+.inner-form.editable select {
+    width: 321px;
+}
+
+.collapsable-row .toggle {
+    display : inline-block;
+    width   : 16px;
+    height  : 16px;
+}
+
+.editing .toggle {
+    display : inline-block;
+    width   : 16px;
+    height  : 16px;
+}
+
+input, textarea, select {
+    padding: 10px;
+}
+
+#style_width, #style_height {
+    width: 211px;
+}
+
+#responses_min, #responses_max {
+    max-width: 460px;
+}
+
+ul {
+  list-style: none;
+}
+
+#responses-min {
+    margin-bottom: 13px;
+}
+
+#contents select {
+    width   :100%;
+    padding : 10px;
+}
+#contents th,
+#contents td {
+    padding         : 5px;
+    width           : 120px;
+}
+
+#contents th,
+#properties_table th {
+    text-align  : left;
+    padding-left: 15px;
+}
+
+#properties_table tr,
+#contents tbody tr {
+    height: 55px;
+}
+#contents span {
+    padding: 10px;
+}
+.cat-prop,
+.output-content {
+    cursor: pointer;
+}
+
+.property-toggle {
+    min-width   : 20px;
+    width       : 20px;
+    padding     : 5px 0 0 0 !important;
+}
+
+#properties_table th,
+#properties_table td {
+    padding         : 5px;
+    max-width       : 120px;
+}
+
+#contents td.content-controls,
+#properties td.content-controls {
+    text-align  : left;
+    padding-left: 15px;
+}
+
+#properties_table tfoot,
+#properties_table .inner-form {
+    display: none;
+}
+
+#properties_table .inner-form.editable {
+    display         :table-row;
+    background-color: transparent !important;
+}
+
+table#contents,
+table#properties_table {
+    border-spacing  : 0;
+    width           : 100%;
+}
+
+table#contents a,
+table#properties_table a:not(.add-property-option) {
+    padding         : 8px 10px;
+    border-radius   : 2px;
+    text-decoration : none;
+    transition      : color ease-in .3s, background-color ease-in .3s;
+}
+
+table#contents a:hover,
+table#properties_table a:hover:not(.add-property-option) {
+    padding         : 8px 10px;
+}
+
+table#contents a:active,
+table#properties_table a:active:not(.add-property-option) {
+    padding         : 8px 10px;
+}
+
+.add-property-option {
+    padding         : 8px 10px;
+    border-radius   : 2px;
+    text-decoration : none;
+    transition      : color ease-in .3s, background-color ease-in .3s;
+}
+
+.property-options-list-container {
+    display: inline-block;
+}
+
+.property-options-list {
+    overflow-y      : auto;
+    overflow-x      : hidden;
+    max-height      : 160px;
+    width           : 350px;
+    padding-bottom  : 10px;
+}
+.property-options-list,
+.property-options-list-row {
+    display: block;
+}
+.property-options-list-row {
+    margin-bottom: 4px;
+}
+.inner-form .property-options-list-row input[type=text] {
+    width: 125px !important;
+}
+.property-option-value {
+    margin-right: 5px;
+}
+
+.not-visible {
+    display : none;
+}

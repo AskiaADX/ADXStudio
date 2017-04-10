@@ -1,0 +1,129 @@
+/**
+ cms-find prefix is use to isolate the find path
+*/
+
+.cms-find-match-occurrence {
+    background: rgba(255, 0, 0, .2);
+}
+
+.cms-find-match-occurrence.cms-find-match-current {
+    border:1px solid black;
+}
+
+/* Find container */
+.cms-find {
+    font-family : Arial, Helvetica, sans-serif;
+    line-height : normal;
+    background  : #F7F7F7;
+    border      : none;
+    border-bottom  : 1px solid #cccccc;
+    display     : none;
+}
+/* Find mode or find and replace mode*/
+.cms-find.find,
+.cms-find.find-replace  {
+    display: block;
+}
+
+/* ---
+COMMON
+--- */
+.cms-find-search,
+.cms-find-replace {
+    padding: 2px 10px;
+}
+.cms-find-search > div,
+.cms-find-replace > div {
+    display: inline-block;
+    margin-right : 10px;
+}
+
+.cms-find-input-pattern-container,
+.cms-find-input-replace-container {
+    min-width  : 150px;
+    width : 300px;
+    max-width: 50%;
+}
+
+.cms-find-input-pattern,
+.cms-find-input-replace {
+    width : 100%;
+}
+
+
+/* ---
+ Search container
+ --- */
+
+/* Up-down navigation */
+.cms-find-nav {
+    vertical-align: middle;
+}
+.cms-find-nav a {
+    display : inline-block;
+    width   : 20px;
+    height  : 20px;
+    margin-left : 5px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    border:1px solid transparent;
+}
+.cms-find-nav a:hover {
+    background: #ddd;
+    border-color:#ccc;
+}
+.cms-find-nav .jump-to-prev {
+    /* background: red; */
+}
+.cms-find-nav .jump-to-next {
+    /* background: green; */
+    margin-right : 5px;
+}
+
+/* Container of options */
+.cms-find-options {}
+.cms-find-options > div {
+    display : inline-block;
+    margin-right : 15px;
+}
+
+/* Match result */
+.cms-find-match-result {}
+
+.cms-find-close {
+    float:right;
+    display : inline-block;
+    width   : 20px;
+    height  : 20px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    border:1px solid transparent;
+}
+
+.cms-find-close:hover {
+    background: #ddd;
+    border-color:#ccc;
+}
+
+
+/* ---
+Replace container
+ --- */
+.cms-find-replace {
+    display : none;
+}
+.cms-find.find-replace .cms-find-replace {
+    display : block;
+}
+
+/* Container of `Replace`, `Replace All` buttons */
+.cms-replace-actions input {
+    font-family : Arial, Helvetica, sans-serif;
+    font-size: inherit;
+    margin-right : 15px;
+}
+
+
+

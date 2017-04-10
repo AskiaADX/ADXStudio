@@ -1,0 +1,176 @@
+html, body {
+    width   : 100vw;
+    height  : 100vh;
+    padding : 0;
+    margin  : 0;
+    overflow: hidden;
+}
+
+#iframes {
+    z-index : 1;
+    width   : 0;
+    height  : 0;
+	padding : 0;
+    margin  : 0;
+    position: relative;
+}
+
+
+#panes  {
+    z-index         : 0;
+    display         : flex;
+    flex-direction  : row;
+    position        : relative;
+}
+
+#panes.full .pane {
+    flex  : 1;
+    width : 100%;
+}
+
+#panes.split #second_pane {
+    flex        : 1;
+    margin-left : 6px; /* Size of splitter */
+}
+
+.pane.open {
+    display: flex;
+}
+
+.pane {
+    display         : none;
+    flex-direction  : column;
+    height          : 100vh;
+  	position		: relative;
+}
+
+.tabs-container {
+    display  : flex;
+    position : relative;
+}
+
+.tabs-top-wrapper {
+    height : 100%;
+    width  : 100%;
+    position : relative;
+    flex   : 1;
+}
+
+.tabs-wrapper {
+    position  : absolute;
+  	overflow  : hidden;
+    height    : 100%;
+    width     : 100%;
+}
+
+.tabs-scroll {
+    margin      : 0;
+}
+
+.tabs-scroll div {
+    display: inline-block;
+}
+
+.tabs {
+    height      : 45px;
+    margin      : 0;
+    padding     : 0;
+    display     : flex;
+    white-space : nowrap;
+    position    : relative;
+}
+
+.tab, .tab-placeholder {
+    display     : flex;
+    list-style  : none;
+    min-width   : 180px;
+    width       : 180px;
+    max-width   : 180px;
+    margin      : 0;
+}
+
+.tab-placeholder {
+    display : none;
+}
+
+.on-tab-dragging .tab-placeholder {
+    display : flex;
+}
+
+.tab.dragging {
+    position : absolute;
+    z-index  : 100;
+}
+
+.tab-text {
+    flex            : 1;
+    padding-left    : 5px;
+    overflow        : hidden;
+    text-overflow   : ellipsis;
+}
+
+.tab-end {
+    flex        : 1;
+    margin      : 0;
+    padding     : 3px;
+    list-style  : none;
+}
+
+.tabs-content {
+    flex      : 1;
+    position  : relative;
+}
+
+/* Placeholder styling */
+
+.placeholder-wrapper {
+    display                 : flex;
+    align-items             : center;
+    justify-content         : center;
+    height                  : 93vh;
+    -webkit-touch-callout   : none;
+    -webkit-user-select     : none;
+    user-select             : none;
+}
+
+.content {
+    display : none;
+    /* Fit  the tabs-content */
+    position: absolute;
+}
+
+.content .iframe-wrapper {
+    width    : 100%;
+    height   : 100%;
+    overflow : auto;
+    position : relative;
+}
+
+.content .iframe-wrapper.multi-iframes {
+    display 		: flex;
+    flex-direction  : column;
+    overflow        : hidden;
+}
+
+.content.active {
+    display : block;
+}
+
+.content .iframe-wrapper iframe {
+    margin  : 0;
+    padding : 0;
+    border  : 0;
+    width   : 100%;
+    height  : 100%;
+    overflow: hidden;
+    position: absolute;
+    top     : 0;
+    bottom  : 0;
+    left    : 0;
+    right   : 0;
+}
+
+.content .iframe-wrapper.multi-iframes iframe {
+	flex   		: 1;
+    position	: relative;
+}

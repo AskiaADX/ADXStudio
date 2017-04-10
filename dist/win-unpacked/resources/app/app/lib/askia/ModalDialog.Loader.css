@@ -1,0 +1,7 @@
+.askia-modal-dialog.loader {
+    height : 25px;
+}
+
+.askia-modal-dialog.loader .askia-modal-message {
+    font-weight: bold;
+}

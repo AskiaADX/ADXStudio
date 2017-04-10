@@ -1,0 +1,1199 @@
+/* ========================================
+
+    CSS for ADX STUDIO THEMES.
+    This will serve to change theme of the application.
+
+   ======================================== */
+
+/* ========================================
+    Share styling
+   ======================================== */
+::-moz-selection {
+    background  : #7FB633;
+    color       : #FFF;
+}
+
+::selection {
+    background  : #7FB633;
+    color       : #FFF;
+}
+
+html {
+    text-rendering          : optimizeLegibility !important;
+    -webkit-font-smoothing  : antialiased !important;
+}
+
+body {
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+body.grey {
+    background: #7F8C8D;
+}
+
+body.form-viewer {
+    background  : #FAFAFA;
+    color       : #444;
+    line-height : 1.7;
+    font-size   : 14px;
+}
+
+body.form-viewer a {
+    color: #BBB;
+}
+
+h3 {
+    font-size   : 14px;
+    font-weight : bold;
+    color       : #7FB633;
+}
+
+fieldset {
+    border-width: 0 0 1px 0;
+    border-color: #BDC3C7;
+    border-style: solid;
+    margin-top  : 20px;
+}
+
+legend {
+    font-size   : 18px;
+    font-weight : bold;
+}
+
+label, input[type="checkbox"] {
+    cursor: pointer;
+}
+
+input, textarea {
+    border-radius   : 2px;
+    border          : 1px solid #BDC3C7;
+    background-color: #F0F0F0;
+    color           : #444;
+}
+
+select {
+    border          : 1px solid #BDC3C7;
+    background-color: #F0F0F0;
+    color           : #444;
+    border-radius   : 2px;
+    cursor          : pointer;
+}
+
+textarea {
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+#grid input, #grid textarea, #grid select {
+    background-color: #F0F0F0;
+}
+
+input[readonly] {
+    color: #888;
+}
+
+input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
+    border  : 1px solid #7FB633;
+    outline : none;
+}
+
+#formProjectSettings textarea {
+    resize: vertical;
+}
+
+#formProjectSettings #style_width,
+#formProjectSettings #style_height {
+    width: 80px;
+}
+
+#formProjectSettings input[type="text"],
+#formProjectSettings input[type="url"],
+#formProjectSettings textarea,
+#formProjectSettings select {
+    width: 75%;
+}
+
+.splitter {
+    background: transparent;
+}
+.splitter.drag {
+    background  : rgba(33,33,33,.3);
+    cursor      : ne-resize;
+}
+
+#panel_status.opened {
+    background      : #F0F0F0;
+    border-bottom   : 1px solid #BDC3C7;
+    color           : #444;
+}
+
+.panel-title-bar {
+    background      : #F0F0F0;
+    border-bottom   : 1px solid #BDC3C7;
+    color           : #444;
+}
+
+.panel-title-bar .close {
+    background  : url(adxs-close.png) no-repeat center center;
+}
+
+.panel-contents {
+    color: #444;
+}
+
+#panel_output a {
+    color: #2f7ec1;
+}
+
+#panel_output .error {
+    color: #F7F7F7;
+}
+
+#panel_output .warning {
+    color: #E67E22;
+    background  : inherit;
+}
+
+#panel_output .success {
+    color: #508704;
+    background  : inherit;
+}
+
+/* ========================================
+   Explorer Part
+   ======================================== */
+
+.explorer-html {
+    background-color: #F0F0F0;
+}
+
+#root {
+  color: #444;
+}
+
+.toggle {
+  background-image  : url(adxs-toggle-closed.png);
+  background-repeat : no-repeat;
+  width             : 20px;
+  min-width         : 20px;
+  height            : 20px;
+}
+
+.file > .item-info > .toggle, .file > .item-info:hover > .toggle {
+  background-image: none;
+}
+
+.item-info:hover .toggle {
+  background-image  : url(adxs-toggle-closed-hover.png);
+  width             : 20px;
+  height            : 20px;
+}
+
+.toggle.open {
+  background-image  : url(adxs-toggle-open.png);
+  width             : 20px;
+  height            : 20px;
+}
+
+.item-info:hover .toggle.open {
+  background-image  : url(adxs-toggle-open-hover.png);
+  width             : 20px;
+  height            : 20px;
+}
+
+#root > .item-info > .icon {
+  background-image  : url(adxs-folder.png);
+  background-repeat : no-repeat;
+  display           : inline-block;
+  width             : 20px;
+  height            : 20px;
+  transition        : background-image ease-in .2s;
+}
+
+.folder > .item-info > .icon {
+  background-image  : url(adxs-folder.png);
+  background-repeat : no-repeat;
+  display           : inline-block;
+  width             : 20px;
+  height            : 20px;
+  transition        : background-image ease-in .2s;
+}
+
+.folder > .item-info > .open + .icon,
+#root > .item-info > .open + .icon {
+  background-image: url(adxs-folder-opened.png);
+}
+
+.file > .item-info > .icon {
+  background-image  : url(adxs-file-hover.png);
+  background-repeat : no-repeat;
+  display           : inline-block;
+  width             : 20px;
+  min-width         : 20px;
+  max-width         : 20px;
+  height            : 20px;
+  transition        : background-image ease-in .2s;
+}
+
+.tab-icon.preview {
+  background-image  : url(adxs-file-type-preview.png);
+}
+
+.file > .item-info > .adc,
+.tab-icon.adc {
+  background-image  : url(adxs-file-type-adc.png);
+}
+
+.file > .item-info > .adp,
+.tab-icon.adp {
+  background-image  : url(adxs-file-type-adp.png);
+}
+
+.file > .item-info > .asx,
+.tab-icon.asx {
+  background-image  : url(adxs-file-type-asx.png);
+}
+
+.file > .item-info > .css,
+.tab-icon.css {
+  background-image  : url(adxs-file-type-css.png);
+}
+
+.file > .item-info > .doc,
+.tab-icon.doc,
+.file > .item-info > .docx,
+.tab-icon.docx {
+  background-image  : url(adxs-file-type-word.png);
+}
+
+.file > .item-info > .gitignore,
+.tab-icon.gitignore,
+.file > .item-info > .git,
+.tab-icon.git,
+.file > .item-info > .gitattributes,
+.tab-icon.gitattributes {
+  background-image  : url(adxs-file-type-git.png);
+}
+
+.file > .item-info > .html,
+.tab-icon.html {
+  background-image  : url(adxs-file-type-html.png);
+}
+
+.file > .item-info > .js,
+.tab-icon.js {
+  background-image  : url(adxs-file-type-js.png);
+}
+
+.file > .item-info > .jpg,
+.tab-icon.jpg,
+.file > .item-info > .jpeg,
+.tab-icon.jpeg {
+  background-image  : url(adxs-file-type-jpg.png);
+}
+
+.file > .item-info > .json,
+.tab-icon.json {
+  background-image  : url(adxs-file-type-json.png);
+}
+
+.file > .item-info > .md,
+.tab-icon.md {
+  background-image  : url(adxs-file-type-md.png);
+}
+
+.file > .item-info > .mdb,
+.tab-icon.mdb,
+.file > .item-info > .accdb,
+.tab-icon.accdb {
+  background-image  : url(adxs-file-type-access.png);
+}
+
+.file > .item-info > .xls,
+.tab-icon.xls,
+.file > .item-info > .xlsx,
+.tab-icon.xlsx {
+  background-image  : url(adxs-file-type-excel.png);
+}
+
+.file > .item-info > .mp3,
+.tab-icon.mp3,
+.file > .item-info > .wav,
+.tab-icon.wav,
+.file > .item-info > .flac,
+.tab-icon.flac {
+  background-image  : url(adxs-file-type-audio.png);
+}
+
+.file > .item-info > .mp4,
+.tab-icon.mp4,
+.file > .item-info > .webm,
+.tab-icon.webm,
+.file > .item-info > .mov,
+.tab-icon.mov,
+.file > .item-info > .ogg,
+.tab-icon.ogg {
+  background-image  : url(adxs-file-type-video.png);
+}
+
+.file > .item-info > .psd,
+.tab-icon.psd {
+  background-image  : url(adxs-file-type-photoshop.png);
+}
+
+.file > .item-info > .ppt,
+.tab-icon.ppt,
+.file > .item-info > .pptx,
+.tab-icon.pptx {
+  background-image  : url(adxs-file-type-powerpoint.png);
+}
+
+.file > .item-info > .qes,
+.tab-icon.qes,
+.file > .item-info > .qew,
+.tab-icon.qew,
+.file > .item-info > .qex,
+.tab-icon.qex {
+  background-image  : url(adxs-file-type-qes.png);
+}
+
+.file > .item-info > .svg,
+.tab-icon.svg {
+  background-image  : url(adxs-file-type-svg.png);
+}
+
+.file > .item-info > .png,
+.tab-icon.png {
+  background-image  : url(adxs-file-type-png.png);
+}
+
+.file > .item-info > .txt,
+.tab-icon.txt,
+.file > .item-info > .sample,
+.tab-icon.sample {
+  background-image  : url(adxs-file-type-text.png);
+}
+
+.file > .item-info > .xml,
+.tab-icon.xml {
+  background-image  : url(adxs-file-type-xml.png);
+}
+
+.file > .item-info > .zip,
+.tab-icon.zip,
+.file > .item-info > .rar,
+.tab-icon.rar {
+  background-image  : url(adxs-file-type-zip.png);
+}
+
+.item-info {
+    display         : flex;
+    flex-direction  : row;
+    flex-wrap       : nowrap;
+    white-space     : nowrap;
+    padding         : 1px 0;
+    width           : 100%;
+    transition      : all ease-in .2s;
+}
+
+.item-info:not(.selected):hover {
+    background-color: #FAFAFA;
+}
+
+.name {
+  flex      : 1;
+  align-self: center;
+  font-size : 14px;
+  padding   : 0 0 0 8px;
+}
+
+.folder {
+  color     : #444;
+  cursor    : pointer;
+  transition: color ease-in .2s;
+}
+
+.folder:hover {
+  color: #000;
+}
+
+.file {
+  cursor    : pointer;
+  color     : #444;
+  transition: color ease-in .3s;
+}
+
+.file:hover {
+  color: #222;
+}
+
+.selected {
+    background-color: #FAFAFA;
+}
+
+.selected > .name {
+    color: #222;
+}
+
+/* TODO::IS THIS CLASS IS USED??? --- */
+.theDivExplorer {
+  background-color : #003050;
+}
+/* --- END TODO */
+
+
+/* ========================================
+   WorkSpace Part
+   ======================================== */
+
+.tabs-scroll {
+    width: 50px;
+    visibility: visible;
+}
+.tabs-container {
+    height  : 45px;
+    min-height: 45px;
+    margin  : 0;
+    padding : 0;
+}
+
+.tab {
+    background      : #F0F0F0;
+    border-top: 1px solid #BDC3C7;
+    border-right    : 1px solid #BDC3C7;
+    border-bottom   : 1px solid #BDC3C7;
+    cursor          : pointer;
+    font-size       : 14px;
+    color           : #999;
+    padding         : 10px;
+    position        : relative;
+    line-height     : 23px;
+    transition      : color ease-in .2s, background ease-in .2s;
+}
+
+.tabs-scroll div {
+    background      : #F0F0F0;
+    cursor          : pointer;
+    font-size       : 14px;
+    color           : #444;
+    padding         : 10px;
+    position        : relative;
+    line-height     : 23px;
+    transition      : color ease-in .2s, background ease-in .2s;
+}
+
+.tabs-scroll div    {
+    margin          : 0;
+    padding         : 10px 2px;
+    vertical-align  : middle;
+}
+
+.scroll-left, .scroll-right {
+    border: 0;
+}
+
+.tabs-scroll .scroll-left {
+    background  : url(adxs-scroll-left.png) no-repeat center center;
+    width       : 18px;
+    height      : 24px;
+    box-shadow  : 1px 0 0 0 #BDC3C7 inset, 2px 0 0 0 rgba(255,255,255,0.8) inset;
+}
+
+.tabs-scroll .scroll-right {
+    background  : url(adxs-scroll-right.png) no-repeat center center;
+    width       : 18px;
+    height      : 24px;
+}
+
+.tabs-scroll .scroll-left:hover {
+    background  : url(adxs-scroll-left-hover.png) no-repeat center center;
+}
+
+.tabs-scroll .scroll-right:hover {
+    background  : url(adxs-scroll-right-hover.png) no-repeat center center;
+}
+
+.tabs-scroll .scroll-left.disabled {
+    background  : url(adxs-scroll-left-disabled.png) no-repeat center center;
+    width       : 18px;
+    height      : 24px;
+    cursor      : default;
+    box-shadow  : none;
+}
+
+.tabs-scroll .scroll-right.disabled {
+    background  : url(adxs-scroll-right-disabled.png) no-repeat center center;
+    width       : 18px;
+    height      : 24px;
+    cursor      : default;
+}
+
+.tab-icon {
+    background-image: url(adxs-file-tab.png);
+    display         : inline-block;
+    width           : 20px;
+    height          : 20px;
+}
+
+.tab-close {
+    background-image: url(adxs-close.png);
+    width           : 20px;
+    height          : 20px;
+    visibility      : hidden;
+    transition      : visibility ease-in .2s;
+}
+
+.tab:hover .tab-close {
+    visibility: visible;
+}
+
+.tab-placeholder {
+    background: #111;
+}
+
+.tabs-scroll, .tab-end {
+    background      : #F0F0F0;
+    border-bottom   : 1px solid #BDC3C7;
+}
+
+.tab.active {
+    background          : #FAFAFA;
+    color               : #000;
+    border-bottom       : 1px solid transparent;
+}
+.tab:hover {
+    color: #000;
+}
+
+.tab.edit {
+  font-style: italic;
+}
+
+/* Sub tab bar that appear for project settings */
+.toggle-wrapper {
+    background  : #F0F0F0;
+    border-top  : 1px solid #BDC3C7;
+    padding     : 8px 18px 8px 8px;
+    text-align  : right;
+}
+
+.toggle-wrapper button:first-of-type {
+    border-color: #92989C;
+    border-width: 1px 0 1px 1px;
+    border-style: solid;
+}
+
+.toggle-wrapper button {
+    outline     : none;
+    cursor      : pointer;
+    background  : #D7DBDC;
+    color       : #444;
+    border      : 1px solid #92989C;
+    box-shadow  : 0 1px 0 rgba(255,255,255,.2) inset;
+    padding     : 6px 20px;
+    font-family : "Lucida Grande", Helvetica, Arial, sans-serif;
+    transition  : color ease-in .2s, background ease-in .2s;
+}
+
+.toggle-wrapper button:hover {
+    color       : #222;
+    background  : #E5E8E8;
+}
+
+.toggle-wrapper button.active-sub-tab,
+.toggle-wrapper button.active-sub-tab:hover {
+    background  : #7FB633;
+    color       : #FFF;
+    box-shadow  : 0 0 8px rgba(0,0,0,.5) inset;
+    border-color: #6e9d2b;
+}
+/* End of sub tab bar */
+
+.tab.active::before {
+    position        : absolute;
+    display         : block;
+    width           : 4px;
+    content         : ' ';
+    background-color: #7FB633;
+    height          : 100%;
+    top             : 0;
+    left            : 0;
+}
+
+.pane {
+    background-color: #F0F0F0;
+}
+
+.pane .placeholder {
+    text-align  : center;
+    line-height : 1.3;
+    font-size   : 2.6rem;
+    font-weight : 700;
+    color       : #D5DBDC;
+}
+
+.pane .content,
+#iframes .content {
+    background-color: #21252B;
+}
+
+
+/* ========================================
+   Preview Part
+   ======================================== */
+
+#addressURL {
+    border          : 1px solid #BDC3C7;
+    border-top      : 1px solid transparent;
+    background-color: #F0F0F0;
+    color           : #444;
+}
+
+#addressURL:focus {
+    border: 1px solid #7FB633;
+}
+
+#addressURL[readonly] {
+    color : #888;
+}
+
+.preview-button {
+    background-color: #E5E8E8;
+    border          : 1px solid #BDC3C7;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #444;
+}
+
+.preview-button:hover {
+    color           : #222;
+    background-color: #F0F0F0;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+}
+
+.preview-button:active {
+    color           : #000;
+    background-color: #E5E8E8;
+    box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
+}
+
+.tab-preview-button {
+    background-color: #F0F0F0;
+    border          : 1px solid #BDC3C7;
+    color           : #999;
+    box-shadow      : none;
+    text-align      : left;
+}
+
+.tab-preview-button:not(.selected):hover,
+.tab-preview-button:not(.selected):active {
+    color           : #000;
+    box-shadow      : none;
+}
+
+.tab-preview-button.selected:hover,
+.tab-preview-button.selected:active {
+    background-color: #FAFAFA;
+    color           : #000;
+    box-shadow      : 4px 0px 0px 0px #7FB633 inset;
+}
+
+.tab-preview-button.selected {
+    background-color: #FAFAFA;
+    color           : #000;
+    border-bottom-color: transparent;
+    box-shadow         : 4px 0px 0px 0px #7FB633 inset;
+}
+
+#reloadPreview,
+#restartInterview,
+#openPreview {
+    border-top: none;
+}
+
+#reloadPreview {
+    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, -1px 0 0 rgba(255,255,255,.1) inset;
+}
+
+#grid #reset,
+#grid #reset-theme {
+    height: 35px;
+    border-width: 1px !important;
+}
+
+#grid {
+    border-top      : 4px solid #7F8C8D;
+    background-color: #FAFAFA;
+}
+
+#grid h2 {
+    color           : #444;
+    padding         : 0;
+}
+
+#grid h3 {
+    border-top: 1px solid #BDC3C7;
+}
+
+#preview {
+    background  : #FFF;
+}
+
+/* ========================================
+   Viewer Part - Project Settings
+   ======================================== */
+.viewer-project-settings nav {
+    background-color: #FAFAFA;
+    border-right    : 1px solid #BDC3C7;
+}
+
+.viewer-project-settings nav a {
+    color           : #444;
+    background-color: #F0F0F0;
+    text-decoration : none;
+    cursor          : pointer;
+    border-bottom   : 1px solid #BDC3C7;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.5) inset;
+    transition      : background-color ease-in .2s, color ease-in .2s, box-shadow ease-in .2s;
+}
+
+.viewer-project-settings nav ul li:first-child a.active {
+    box-shadow: 0 1px 0 rgba(255,255,255,.2) inset;
+}
+
+.viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
+    color           : #FFF;
+    background-color: #7FB633;
+    box-shadow      : 0 1px 0 #8ECC38 inset;
+}
+
+.viewer-project-settings nav a:hover {
+    background-color: #FAFAFA;
+    color           : #222;
+}
+
+.viewer-project-settings #properties_table tbody tr,
+.viewer-project-settings #contents tbody tr {
+    transition: background-color ease-in .2s;
+}
+
+.viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
+.viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
+.viewer-project-settings #contents tbody tr:nth-child(odd) {
+    background-color: #F0F0F0;
+    transition      : background-color ease-in .2s;
+}
+
+.viewer-project-settings #properties_table tbody tr:hover:not(.editable),
+.viewer-project-settings #contents tbody tr:hover:not(.editable) {
+    background-color: #E3E3E3;
+}
+
+button {
+    background-color: #E5E8E8;
+    border          : 1px solid #92989C;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #444;
+}
+
+button:hover {
+    background-color: #F0F0F0;
+    color           : #222;
+}
+
+button:active {
+    background-color: #F0F0F0;
+    color           : #222;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+}
+
+button#new_output,
+button#new_category {
+    background-color: #7FB633;
+    border          : 1px solid #6E9D2B;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.3) inset;
+    color           : #EEE;
+}
+
+button#new_output:hover,
+button#new_category:hover {
+    background-color: #7FB633;
+    border          : 1px solid #6E9D2B;
+    color           : #FFF;
+}
+
+button#new_output:active,
+button#new_category:active {
+    background-color: #7FB633;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+    color           : #FFF;
+}
+
+.collapsable-row .toggle {
+    background: url('../../viewers/projectSettings/collapsed.png') no-repeat center center;
+}
+
+.editing .toggle {
+    background: url('../../viewers/projectSettings/expanded.png') no-repeat center center;
+}
+
+.error {
+  background: #e74c3c;
+  color     : #000;
+}
+
+#contents th,
+#contents td {
+    border-bottom   : 1px solid #BDC3C7;
+}
+
+#contents th,
+#properties_table th {
+    color       : #888888;
+}
+
+#properties_table th,
+#properties_table td {
+    border-bottom   : 1px solid #BDC3C7;
+}
+
+table#contents a,
+table#properties_table a:not(.add-property-option) {
+    background-color: #C0392B;
+    color           : #EEE;
+    border          : 1px solid #9E2D21;
+    box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
+}
+
+table#contents a:hover,
+table#properties_table a:hover:not(.add-property-option) {
+    background-color: #D44435;
+    color           : #FFF;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.2) inset;
+}
+
+table#contents a:active,
+table#properties_table a:active:not(.add-property-option) {
+    background-color: #C0392B;
+    color           : #FFF;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+}
+
+
+.tool {
+    background-color: #282C34;
+    border: 1px solid transparent;
+}
+
+.tool:active {
+  background-color: #343A44;
+  border: 1px inset #151505;
+}
+
+.tool:hover {
+  background-color: #343A44;
+  border: 1px solid #151505;
+}
+
+.add-property-option {
+    background-color: #E5E8E8;
+    color           : #444 !important;
+    border          : 1px solid #92989C;
+    box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
+}
+
+.add-property-option:hover {
+    background-color: #F0F0F0;
+    color           : #222;
+}
+
+.add-property-option:active {
+    background-color: #E5E8E8;
+    color           : #000;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+}
+/* ========================================
+   Viewer Part - image
+   ======================================== */
+
+.toolbar {
+    background    : #FAFAFA;
+}
+
+/* ========================================
+   ModalDialog Part
+   ======================================== */
+
+.askia-modal-lightbox {
+    background-color: rgba(66, 66, 66, 0.4);
+}
+
+.askia-modal-dialog {
+    color       : #444;
+    background  : #FAFAFA;
+    border      : 1px solid #6A6B6B !important;
+    box-shadow  : 0 0 17px 0 rgba(66,66,66,.8), 0 1px 0 white inset;
+}
+
+.askia-modal-button-ok,
+.askia-modal-button-yes {
+    background-color: #7FB633;
+    border          : 1px solid #6E9D2B;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.25) inset;
+    color           : #EEE;
+    line-height     : 0;
+}
+
+.askia-modal-button-ok:hover,
+.askia-modal-button-yes:hover {
+    color           : #FFF;
+    background-color: #7FB633;
+}
+
+.askia-modal-button-ok:active,
+.askia-modal-button-yes:active {
+    color           : #FFF;
+    background-color: #7FB633;
+    box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
+}
+
+.askia-modal-button-cancel,
+.askia-modal-button-no {
+    background-color: #E5E8E8;
+    border          : 1px solid #92989C;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #444;
+    line-height     : 0;
+}
+
+.askia-modal-button-cancel:hover,
+.askia-modal-button-no:hover {
+    color           : #222;
+    background-color: #F0F0F0;
+}
+
+.askia-modal-button-cancel:active,
+.askia-modal-button-no:active {
+    color           : #222;
+    background-color: #E5E8E8;
+    box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
+}
+
+.askia-modal-input-prompt {
+    border          : 1px solid #BDC3C7;
+    background-color: #F0F0F0;
+    color           : #444;
+}
+
+.askia-modal-input-prompt:focus {
+    border  : 1px solid #7FB633;
+}
+
+
+.askia-modal-dialog.about {
+    background-color: #F0F0F0;
+    box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 17px 4px rgba(0, 0, 0, .4);
+}
+
+.askia-modal-dialog h3 {
+    color: #222;
+}
+
+.askia-modal-dialog.about .left {
+    background: url(../../lib/askia/about-adxstudiologo.png) no-repeat center center;
+}
+
+.askia-modal-dialog.about .right {
+    color: #222;
+}
+
+.askia-modal-dialog.about  h4 {
+    color     : #888;
+}
+
+.askia-modal-dialog.about  a {
+     color: #0073EA;
+}
+
+.askia-modal-dialog.about  a:hover {
+    background  : #0073EA;
+    color       : #FFF;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts {
+    color       : #444;
+    background  : #FAFAFA;
+    border      : 1px solid #555 !important;
+    box-shadow  : 0 0 17px 0 rgba(26,26,26,.8), 0 1px 0 rgba(230,230,230,.1) inset;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts h2 {
+    color: #888;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts .left {
+    border-right: 1px solid #BDC3C7;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts  a {
+    color: #444;
+    transition: color ease-in .2s;
+}
+
+.askia-modal-dialog.Keyboard-Shortcuts  a:hover {
+    color: #222;
+}
+
+.KBshortcut {
+    color       : #7FB633;
+}
+
+.askia-modal-dialog.new-project {
+    background: #FAFAFA;
+}
+
+.askia-modal-new-project-container input,
+.askia-modal-new-project-container textarea,
+.askia-modal-new-project-container select {
+    border          : 1px solid #BDC3C7;
+    background-color: #F0F0F0;
+    color           : #444;
+}
+
+.askia-modal-new-project-container input:focus,
+.askia-modal-new-project-container textarea:focus,
+.askia-modal-new-project-container select:focus {
+    border  : 1px solid #7FB633;
+}
+
+.askia-modal-new-project-container button {
+    background-color: #E5E8E8;
+    border          : 1px solid #92989C;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #444;
+}
+
+.askia-modal-new-project-container button:hover {
+    background-color: #F0F0F0;
+    color           : #222;
+}
+
+.askia-modal-new-project-container button:active {
+    background-color: #E5E8E8;
+    color           : #000;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+}
+
+.askia-modal-dialog.preferences {
+    background: #FAFAFA;
+}
+
+.askia-modal-preferences-container input,
+.askia-modal-preferences-container textarea,
+.askia-modal-preferences-container select {
+    border          : 1px solid #BDC3C7;
+    background-color: #F0F0F0;
+    color           : #444;
+}
+
+.askia-modal-preferences-checkbox-container input:focus,
+.askia-modal-preferences-container input:focus,
+.askia-modal-preferences-container textarea:focus,
+.askia-modal-preferences-container select:focus {
+    border  : 1px solid #7FB633;
+    outline : none;
+}
+
+.askia-modal-preferences-container button {
+    background-color: #E5E8E8;
+    border          : 1px solid #92989C;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
+    color           : #444;
+}
+
+.askia-modal-preferences-container button:hover {
+    background-color: #F0F0F0;
+    color           : #222;
+}
+
+.askia-modal-preferences-container button:active {
+    background-color: #E5E8E8;
+    color           : #000;
+    box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
+}
+
+div.askia-resizer-horizontal-drag {
+    background  : #333;
+}
+
+div.askia-resizer-vertical-drag {
+    background  : #333;
+}
+
+div.askia-resizer-modal {
+    background  : transparent;
+}
+
+/* IMAGE VIEWER CONTAINER */
+
+.content .iframe-wrapper {
+    background: #FAFAFA;
+}
+
+.toolbar .tool{
+    background-color: #7F8C8D;
+}
+
+.toolbar .tool:hover {
+    background-color: #8B9798;
+    border: 1px solid #7F8C8D;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgba(255,255,255,.3);
+    background-color: rgba(170,170,170,.5);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(170,170,170,1);
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+    background-color: transparent;
+}
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+/* Scrollbar preview styling */
+#preview_frame::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+
+#preview_frame::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+#preview_frame::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgba(255,255,255,.3);
+    background-color: rgba(170,170,170,.5);
+}
+#preview_frame::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(170,170,170,1);
+}
+#preview_frame::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+    background-color: transparent;
+}
+#preview_frame::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+select#outputs_list, select#categories_list {
+    width: 60%;
+}

@@ -1,0 +1,90 @@
+/* AskiaScript theme */
+
+.CodeMirror {
+    height      : auto;
+}
+
+.CodeMirror-scroll {
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+/* ex: ' comment            */
+.cm-s-default span.cm-comment {
+    color       : #ababab;
+    font-style  : italic;
+    line-height : 1em;
+}
+
+/* ex: 1.2, 1 0 ...         */
+.cm-s-default span.cm-number {
+    color: #7800C8;
+}
+
+/* ex: "my string"          */
+.cm-s-default span.cm-string {
+    color: #00007f;
+}
+
+/* ex: and, or, has, hasnone*/
+.cm-s-default span.cm-operator {
+    color: #0000ff;
+}
+
+/* ex: .,;                  */
+.cm-s-default span.cm-punctuation {
+    color: #000000;
+}
+
+/* ex: if, then, else ...   */
+.cm-s-default span.cm-builtin-number,
+.cm-s-default span.cm-builtin-string,
+.cm-s-default span.cm-builtin-array,
+.cm-s-default span.cm-builtin-date,
+.cm-s-default span.cm-builtin-boolean,
+.cm-s-default span.cm-builtin-anytype,
+.cm-s-default span.cm-builtin-browser,
+.cm-s-default span.cm-keyword {
+    color: #0000ff;
+}
+
+/* ex: ??q1??, q1, ^q1^     */
+.cm-s-default span.cm-builtin-question,
+.cm-s-default span.cm-question  {
+    color: #007f00;
+}
+
+/* ex: s                    */
+.cm-s-default span.cm-variable,
+.cm-s-default span.cm-anytype,
+.cm-s-default span.cm-label {
+    color: #7800c8;
+}
+
+
+/* ex: q1.Answers           */
+.cm-s-default span.cm-member,
+.cm-s-default span.cm-member-string,
+.cm-s-default span.cm-member-number,
+.cm-s-default span.cm-member-array,
+.cm-s-default span.cm-member-boolean,
+.cm-s-default span.cm-member-date,
+.cm-s-default span.cm-member-anytype,
+.cm-s-default span.cm-member-question,
+.cm-s-default span.cm-member-responses,
+.cm-s-default span.cm-member-response {
+    color: #0000ff;
+}
+
+/* ex: an error             */
+.cm-s-default span.cm-error,
+.cm-s-default span.cm-questiondelimiter,
+.cm-s-default span.cm-undef-label {
+    color: #df0000;
+    border-bottom: 1px dashed #df0000;
+}
+.cm-s-default span.cm-error.helper {
+    color :#000000;
+    font-style: italic;
+    border: 1px solid #000000;
+}

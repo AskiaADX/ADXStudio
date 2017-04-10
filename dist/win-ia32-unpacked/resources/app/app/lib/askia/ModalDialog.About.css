@@ -1,0 +1,47 @@
+.askia-modal-dialog.about {
+    width           : 666px;
+    height          : 266px;
+    padding         : 0;
+    margin          : 0;
+    border-radius   : 2px !important;
+}
+
+.askia-modal-dialog.about h3,
+.askia-modal-dialog.about h4,
+.askia-modal-dialog.about div {
+    margin : 0;
+    padding: 0;
+}
+
+.askia-modal-dialog.about .left {
+    float       : left;
+    width       : 250px;
+    height      : 266px;
+}
+
+.askia-modal-dialog.about .right {
+    float   : right;
+    width   : 60%;
+    padding : 10px 8px;
+}
+
+.askia-modal-dialog.about .right p {
+    padding: 5px 0;
+}
+
+.askia-modal-dialog.about  h3 {
+    font-size   : 1.1rem;
+    font-weight : bold;
+}
+.askia-modal-dialog.about  h4 {
+    font-size : .85rem;
+}
+
+.askia-modal-dialog.about  p {
+	font-size: .75rem;
+}
+
+.askia-modal-dialog.about  a {
+     text-decoration: none;
+     transition     : color ease-in .2s, background ease-in .2s;
+}

@@ -5,7 +5,9 @@
   "main": "app/main.js",
   "scripts": {
     "start": "electron ./app/main.js",
-    "test": "jasmine-node spec/"
+    "test": "jasmine-node spec/",
+    "pack": "build --dir",
+    "dist": "build --win --x64 --ia32"
   },
   "repository": {
     "type": "git",
@@ -40,5 +42,28 @@
     "electron": "^1.6.4",
     "electron-packager": "^8.6.0",
     "jasmine-node": "^1.14.5"
+  },
+  "build": {
+    "appId": "com.askia.adxstudio",
+    "asar": false,
+    "buildVersion": "0",
+    "electronVersion": "1.6.2",
+    "copyright": "Copyright (c) Askia 2017",
+    "productName": "ADXStudio",
+    "win": {
+      "target": "nsis",
+      "icon":"app/adx-studio_icon.ico",
+      "certificateFile": "./tmp/AskiaSASCodeSigning.p12",
+      "certificatePassword": "",
+      "publisherName": "Askia"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "menuCategory": "Askia"
+    },
+    "npmSkipBuildFromSource": true
   }
 }

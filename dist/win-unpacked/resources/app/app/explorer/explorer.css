@@ -1,0 +1,57 @@
+html, body {
+    width             : 100%;
+    margin            : 0;
+    padding           : 0;
+    -webkit-touch-callout   : none;
+    -webkit-user-select     : none;
+    user-select             : none;
+}
+
+#root {
+  width         : 100%;
+  color         : #BBBBBB;
+  padding-top   : 8px;
+}
+
+.folder {
+  font-size : 11px;
+  width     : 100%;
+}
+
+.folder:hover {
+  font-size: 11px;
+}
+
+.child {
+  width: 100%;
+}
+
+.file {
+  font-size : 11px;
+  width     : 100%;
+}
+
+.file:hover {
+  font-size: 10px;
+}
+
+.toggle, .icon {
+    width   : 20px;
+    height  : 20px;
+}
+
+.icon {
+  margin-left: 3px;
+}
+
+.item-info div {
+  display: inline-block;
+}
+
+.child {
+  display: none;
+}
+
+.child.expand {
+    display:block;
+}
