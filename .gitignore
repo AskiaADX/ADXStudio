@@ -73,6 +73,7 @@ $RECYCLE.BIN/
 
 ## Directory-based project format:
 .idea/
+.vscode
 
 ## File-based project format:
 *.ipr
@@ -300,3 +301,5 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt 
+
+.eslintrc.json

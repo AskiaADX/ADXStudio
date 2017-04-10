@@ -20,6 +20,16 @@
     outline : none;
 }
 
+.askia-modal-zendesk-publisher-container input,
+.askia-modal-zendesk-publisher-container textarea,
+.askia-modal-zendesk-publisher-container select {
+    padding         : 10px;
+    width           : 300px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    margin-left     : 10px;
+}
+
 .askia-modal-zendesk-publisher-container label {
     display     : block;
     width       : 100px;
@@ -29,6 +39,10 @@
 
 .zendesk-publisher .askia-modal-buttons-container {
     padding-right: 30px !important;
+}
+
+.askia-modal-zendesk-publisher-container textarea {
+    height: 60px;
 }
 
 .askia-modal-zendesk-publisher-container button {

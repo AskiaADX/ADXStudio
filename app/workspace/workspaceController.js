@@ -6,21 +6,23 @@ const fs = require('fs');
 const dialog = electron.dialog;
 const ADXConfigurator = require('adxutil').Configurator;
 const workspace = require('./workspaceModel.js');
-const servers   = require('../modules/servers/adxServers.js');
-var workspaceView;
+const servers = require('../modules/servers/adxServers.js');
+let workspaceView;
 
 /**
  * Save the status of the workspace
  */
-function saveWorkspaceStatus() {
-    var adx = global.project.getADX();
-    if (!adx || !adx.path) {
-        return;
-    }
+function saveWorkspaceStatus () {
+  const adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    return;
+  }
 
-    fs.mkdir(path.join(adx.path, '.adxstudio'), function () {
-        fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'),  JSON.stringify(workspace.toJSON()), {encoding: 'utf8'});
+  fs.mkdir(path.join(adx.path, '.adxstudio'), () => {
+    fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'), JSON.stringify(workspace.toJSON()), { encoding: 'utf8' }, () => {
+      //If not a callback function, nodejs throw an error
     });
+  });
 }
 
 /**
@@ -28,32 +30,54 @@ function saveWorkspaceStatus() {
  * @param {Function} fn
  * @param {ADX} fn.adx Instance of the ADX
  */
-function tryIfADX(fn) {
-    var adx = global.project.getADX();
-    if (!adx || !adx.path) {
-        return;
+function tryIfADX (fn) {
+  const adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    return;
+  }
+
+  adx.load((err) => {
+    if (err) {
+      return;
+    }
+    if (!adx.configurator) {
+      return;
+    }
+    if (!adx.configurator.info) {
+      return;
     }
 
-    adx.load(function (err) {
-        if (err) {
-            return;
-        }
-        if (!adx.configurator) {
-            return;
-        }
-        if (!adx.configurator.info) {
-            return;
-        }
-
-        var info = adx.configurator.info.get();
-        if (!info || !info.name || !info.guid) {
-            return;
-        }
-        // Ok seems to be an ADX
-        fn(adx);
-    });
+    const info = adx.configurator.info.get();
+    if (!info || !info.name || !info.guid) {
+      return;
+    }
+    // Ok seems to be an ADX
+    fn(adx);
+  });
 }
 
+/**
+ * Build an array with all files in the directory
+ * @param {String} dir Path of directory
+ * @param {String[]} files Array of file name
+ * @returns {Array}
+ */
+function buildFiles (dir, files) {
+  const finalFiles = [];
+
+  for (let i = 0, l = files.length; i < l; i += 1) {
+    try {
+      const stats = fs.statSync(path.join(dir, files[i]));
+      if (stats.isFile()) {
+        finalFiles.push(files[i]);
+      }
+    } catch (e) {
+      // Do nothing
+    }
+  }
+
+  return finalFiles;
+}
 
 /**
  * Return the structure of the resources directory of the current ADX
@@ -63,49 +87,29 @@ function tryIfADX(fn) {
  * @param {String[]} callback.structure.static List of files in static directory
  * @param {String[]} callback.structure.share List of files in share directory
  */
-function getResourcesDirectoryStructure(callback) {
-    if (typeof callback !== 'function') {
-        return;
-    }
+function getResourcesDirectoryStructure (callback) {
+  if (typeof callback !== 'function') {
+    return;
+  }
 
-    var adx = global.project.getADX();
-    function buildFiles(dir, files) {
-        var stats;
-        var finalFiles = [];
-        var i, l = files.length;
+  const adx = global.project.getADX();
+  const sharePath = path.join(adx.path, 'resources/share');
+  fs.readdir(sharePath, (errShare, shareFiles) => {
+    const structure = {
+      share: (!errShare) ? (buildFiles(sharePath, shareFiles) || []) : []
+    };
 
-        for (i = 0; i < l; i++) {
-            try {
-                stats = fs.statSync(path.join(dir, files[i]));
-            }
-            catch (err2) {
-                continue;
-            }
+    const staticPath = path.join(adx.path, 'resources/static');
+    fs.readdir(staticPath, (errStatic, staticFiles) => {
+      structure.static = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
 
-            if (stats.isFile()) {
-                finalFiles.push(files[i]);
-            }
-        }
-
-        return finalFiles;
-    }
-
-    var structure = {};
-    var sharePath = path.join(adx.path, 'resources/share');
-    fs.readdir(sharePath, function onReadShareDirectory(errShare, shareFiles) {
-        structure.share = (!errShare) ? (buildFiles(sharePath, shareFiles) || []) : [];
-
-        var staticPath = path.join(adx.path, 'resources/static');
-        fs.readdir(staticPath, function onReadStaticDirectory(errStatic, staticFiles) {
-            structure.static = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
-
-            var dynamicPath = path.join(adx.path, 'resources/dynamic');
-            fs.readdir(dynamicPath, function onReadDynamicDirectory(errDynamic, dynamicFiles) {
-                structure.dynamic = (!errDynamic) ? (buildFiles(dynamicPath, dynamicFiles) || []) : [];
-                callback(structure);
-            });
-        });
+      const dynamicPath = path.join(adx.path, 'resources/dynamic');
+      fs.readdir(dynamicPath, (errDynamic, dynamicFiles) => {
+        structure.dynamic = (!errDynamic) ? (buildFiles(dynamicPath, dynamicFiles) || []) : [];
+        callback(structure);
+      });
     });
+  });
 }
 
 /**
@@ -113,101 +117,120 @@ function getResourcesDirectoryStructure(callback) {
  * @param {Tab} tab
  * @param {Function} cb
  */
-function loadProjectSettingsTab(tab, cb) {
-    var adx = global.project.getADX();
-    if (!adx || !adx.path) {
-        cb(new Error("The ADX project is not defined in the global"), tab);
-        return;
-    }
-    getResourcesDirectoryStructure(function (structure) {
-        tab.loadFile(function (err) {
-            adx.load(function (err2) {
-                tab.adxConfig = (!err2)  ? adx.configurator.get() : {};
-                tab.adxStructure = structure;
-                cb(err || err2, tab);
-            });
-        });
+function loadProjectSettingsTab (tab, cb) {
+  const adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    cb(new Error('The ADX project is not defined in the global'), tab);
+    return;
+  }
+  getResourcesDirectoryStructure((structure) => {
+    tab.loadFile((err) => {
+      adx.load((err2) => {
+        tab.adxConfig = (!err2) ? adx.configurator.get() : {};
+        tab.adxStructure = structure;
+        if (tab.adxType === 'adp') {
+          const outputs = tab.adxConfig.outputs.outputs;
+          for (let i = 0, l = outputs.length; i < l; i += 1) {
+            if (!outputs[i].contents) {
+              outputs[i].contents = [];
+            }
+          }
+        }
+        cb(err || err2, tab);
+      });
     });
+  });
 }
 
 /**
  * Open project in the workspace
  */
-function openProject() {
-    workspace.removeListener('change', saveWorkspaceStatus);
+function openProject () {
+  workspace.removeListener('change', saveWorkspaceStatus);
 
-    // Load the default path
-    fs.readFile(path.join(global.project.getPath(), '.adxstudio', 'workspace.json'), function (err, data) {
-        var json = err ? {} : JSON.parse(data.toString());
-        workspace.init(json, function () {
-            // Reload the workspace as it where before leaving the application
-            var adx = global.project.getADX(),
-                currentTabIds = {
-                    main   : workspace.panes.main.currentTabId,
-                    second : workspace.panes.second.currentTabId
-                },
-                configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
+  // Load the default path
+  fs.readFile(path.join(global.project.getPath(), '.adxstudio', 'workspace.json'), (err, data) => {
+    const json = err ? {} : JSON.parse(data.toString());
+    workspace.init(json, () => {
+      // Reload the workspace as it where before leaving the application
+      const adx = global.project.getADX();
+      const currentTabIds = {
+        main: workspace.panes.main.currentTabId,
+        second: workspace.panes.second.currentTabId
+      };
+      const configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
+      // Copy the tabs before to iterate through it
+      // the tabs could be modified by another async event
+      // .slice() ensure we are working on a static copy
+      const tabs = workspace.tabs.slice();
+      let currentTabIndex = -1;
+      let maxTabIndex = workspace.tabs.length;
 
+      function openNextTab (callback) {
+        currentTabIndex += 1;
+        if (currentTabIndex >= maxTabIndex) {
+          callback();
+          return;
+        }
+        const tab = tabs[currentTabIndex];
+        const pane = workspace.where(tab);
+        const action = tab.id === currentTabIds[pane] ? 'workspace-create-and-focus-tab' : 'workspace-create-tab';
 
-            // Copy the tabs before to iterate through it
-            // the tabs could be modified by another async event
-            // .slice() ensure we are working on a static copy
-            workspace.tabs.slice().forEach(function loadTab(tab) {
-                var pane = workspace.where(tab);
-                var action = tab.id === currentTabIds[pane] ? 'workspace-create-and-focus-tab' : 'workspace-create-tab';
+        // If the trying to open the config.xml, make sure we use the projectSettings tab
+        if (configXmlPath && tab.path.toLowerCase() === configXmlPath) {
+          tab.type = 'projectSettings';
+          tryIfADX((adx2) => {
+            if (!adx2 || !adx2.path) {
+              openNextTab(callback);
+              return;
+            }
+            tab.adxVersion = adx2.configurator.projectVersion;
+            tab.adxType = adx2.configurator.projectType;
 
-                // If the trying to open the config.xml, make sure we use the projectSettings tab
-                if (configXmlPath && tab.path.toLowerCase() === configXmlPath) {
-                    tab.type = 'projectSettings';
-                }
-
-                switch (tab.type) {
-                    // Open the preview
-                    case 'preview':
-                        if (adx) {
-                            servers.listen(function (options) {
-                                tab.name = 'Preview';
-                                tab.ports     = {
-                                    http : options.httpPort,
-                                    ws   : options.wsPort
-                                };
-                                workspaceView.send(action, err, tab, workspace.where(tab));
-                            });
-                        }
-                        break;
-
-                    // Open the project settings
-                    case 'projectSettings':
-                        if (adx) {
-                            loadProjectSettingsTab(tab, function (err) {
-                                workspaceView.send(action, err, tab, pane);
-                            });
-                        }
-                        break;
-
-                    // Open file by default
-                    case 'file':
-                    default:
-                        tab.loadFile(function (er) {
-                            if (!er) {
-                                workspaceView.send(action, er, tab, workspace.where(tab));
-                            }
-                        });
-                        break;
-                }
+            // Open the project settings
+            loadProjectSettingsTab(tab, (err) => {
+              workspaceView.send(action, err, tab, pane);
+              openNextTab(callback);
             });
+          });
+          return;
+        }
 
-            // Listen change now
-            workspace.on('change', saveWorkspaceStatus);
-        });
+        if (tab.type === 'preview') {
+          // Open the preview
+          if (!adx) {
+            openNextTab(callback);
+            return;
+          }
+          adx.checkTestsDirectory(() => {
+            startPreview();
+            openNextTab(callback);
+            return;
+          });
+        } else {
+          // Open file by default
+          tab.loadFile((er) => {
+            if (!er) {
+              workspaceView.send(action, er, tab, workspace.where(tab));
+            }
+            openNextTab(callback);
+          });
+        }
+      }
+
+      openNextTab(() => {
+        // Listen change now
+        workspace.on('change', saveWorkspaceStatus);
+      });
     });
+  });
 }
 
 /**
  * Reload the workspace
  */
-function reloadWorkspace() {
-    workspaceView.reload();
+function reloadWorkspace () {
+  workspaceView.reload();
 }
 
 /**
@@ -215,40 +238,36 @@ function reloadWorkspace() {
  *
  * @param {String} file Path of file to open
  */
-function openFile(file, fromExplorer) {
-    var adx = global.project.getADX(),
-        configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
+function openFile (file, fromExplorer) {
+  const adx = global.project.getADX();
+  const configXmlPath = (adx && adx.path) ? path.join(adx.path, 'config.xml').toLowerCase() : '';
 
-    // If the trying to open the config.xml, make sure we use the projectSettings tab
-    if (configXmlPath && file.toLowerCase() === configXmlPath) {
-        if (fromExplorer) {
-            openProjectSettings(true);
-            return;
-        }
-        openProjectSettings();
-        return;
+  // If the trying to open the config.xml, make sure we use the projectSettings tab
+  if (configXmlPath && file.toLowerCase() === configXmlPath) {
+    openProjectSettings(fromExplorer);
+    return;
+  }
+
+  workspace.find(file, (err, tab, pane) => {
+
+    // If the tab already exist only focus it
+    if (tab) {
+      // TODO::Look if the content of the tab has changed
+      // TODO::Look if the file has been removed
+      workspaceView.send('workspace-focus-tab', err, tab, pane);
+      return;
     }
 
-    workspace.find(file, function (err, tab, pane) {
-
-        // If the tab already exist only focus it
-        if (tab) {
-            // TODO::Look if the content of the tab has changed
-            // TODO::Look if the file has been removed
-            workspaceView.send('workspace-focus-tab', err, tab, pane);
-            return;
-        }
-
-        // When the tab doesn't exist, create it
-        workspace.createTab(file, function (err, tab, pane) {
-            if (err) {
-                throw err;
-            }
-            tab.loadFile(function (err) {
-                workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
-            });
-        });
+    // When the tab doesn't exist, create it
+    workspace.createTab(file, (err, tab, pane) => {
+      if (err) {
+        throw err;
+      }
+      tab.loadFile((err) => {
+        workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+      });
     });
+  });
 }
 
 /**
@@ -256,52 +275,54 @@ function openFile(file, fromExplorer) {
  * @param event
  * @param {String|Object} file File to open
  */
-function openFileFromExplorer(event, file) {
-    var filePath = (typeof file === 'string') ? file : file.path;
-    openFile(filePath, true);
+function openFileFromExplorer (event, file) {
+  const filePath = (typeof file === 'string') ? file : file.path;
+  openFile(filePath, true);
 }
 
 /**
  * Open project settings
  */
-function openProjectSettings(code) {
-    tryIfADX(function tryToOpenProjectSettings(adx) {
-        if (!adx || !adx.path) {
-            return;
+function openProjectSettings (code) {
+  tryIfADX((adx) => {
+    if (!adx || !adx.path) {
+      return;
+    }
+    const configXmlPath = path.join(adx.path, 'config.xml');
+    workspace.find(configXmlPath, (err, tab, pane) => {
+      if (code) {
+        code = 'code';
+      } else {
+        code = 'form';
+      }
+      // If the tab already exist only focus it
+      if (tab) {
+        // TODO::Look if the content of the tab has changed
+        // TODO::Look if the file has been removed
+        if (tab.mode !== code) {
+          tab.mode = code;
         }
-        var configXmlPath = path.join(adx.path, 'config.xml');
-        workspace.find(configXmlPath, function (err, tab, pane) {
-            if (code) {
-                code = "code";
-            } else {
-                code = "form";
-            }
-            // If the tab already exist only focus it
-            if (tab) {
-                // TODO::Look if the content of the tab has changed
-                // TODO::Look if the file has been removed
-                if (tab.mode !== code) {
-                    tab.mode = code;
-                }
-                workspaceView.send('workspace-focus-tab', err, tab, pane);
-                return;
-            }
-            // When the tab doesn't exist, create it
-            workspace.createTab({
-                path : configXmlPath,
-                type : 'projectSettings',
-                mode : code
-            }, function (err, tab, pane) {
-                // TODO::Don't throw the error but send it to the view
-                if (err) {
-                    throw err;
-                }
-                loadProjectSettingsTab(tab, function (err) {
-                    workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
-                });
-            });
+        workspaceView.send('workspace-focus-tab', err, tab, pane);
+        return;
+      }
+      // When the tab doesn't exist, create it
+      workspace.createTab({
+        path: configXmlPath,
+        type: 'projectSettings',
+        mode: code,
+        adxVersion: adx.configurator.projectVersion,
+        adxType: adx.configurator.projectType
+      }, (err, tab, pane) => {
+        // TODO::Don't throw the error but send it to the view
+        if (err) {
+          throw err;
+        }
+        loadProjectSettingsTab(tab, (err) => {
+          workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
         });
+      });
     });
+  });
 }
 
 /**
@@ -310,73 +331,71 @@ function openProjectSettings(code) {
  * @param {Number} options.httpPort HTTP Port listen
  * @param {Number} options.wsPort WS port listen
  */
-function openPreview(options) {
-    var adx = global.project.getADX();
-    if (!adx || !adx.path) {
-        return;
+function openPreview (options) {
+  const adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    return;
+  }
+
+  workspace.find('::preview', (err, tab, pane) => {
+    // If the tab already exist only focus it
+    if (tab) {
+      workspaceView.send('workspace-focus-tab', err, tab, pane);
+      return;
     }
-
-    workspace.find('::preview', function (err, tab, pane) {
-
-        // If the tab already exist only focus it
-        if (tab) {
-            workspaceView.send('workspace-focus-tab', err, tab, pane);
-            return;
-        }
-
-        // When the tab doesn't exist, create it
-        // and enforce his creation on the second panel by default
-        workspace.createTab({
-            name : 'Preview',
-            path : '::preview',
-            type : 'preview'
-        }, 'second',  function (err, tab, pane) {
-            if (err) {
-                throw err
-            }
-            tab.ports     = {
-                http : options.httpPort,
-                ws   : options.wsPort
-            };
-            workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
-        });
+    // When the tab doesn't exist, create it
+    // and enforce his creation on the second panel by default
+    workspace.createTab({
+      name: 'Preview',
+      path: '::preview',
+      type: 'preview'
+    }, 'second', (err, tab, pane) => {
+      if (err) {
+        throw err;
+      }
+      tab.ports = {
+        http: options.httpPort,
+        ws: options.wsPort
+      };
+      workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
     });
+  });
 }
 
 /**
  * Start the preview servers
  */
-function startPreview() {
-    tryIfADX(function tryToStartPreview(adx) {
-        if (!adx || !adx.path) {
-            return;
-        }
+function startPreview () {
+  tryIfADX((adx) => {
+    if (!adx || !adx.path) {
+      return;
+    }
 
-        adx.checkFixtures(function () {
-            servers.listen(openPreview);
-        });
+    adx.checkTestsDirectory(() => {
+      servers.listen(openPreview);
     });
+  });
 }
 
 /**
  * Save the current active file
  */
-function saveFile() {
-    workspaceView.send('workspace-save-active-file');
+function saveFile () {
+  workspaceView.send('workspace-save-active-file');
 }
 
 /**
  * Save as the current active file
  */
-function saveFileAs(){
-    workspaceView.send('workspace-save-as-active-file');
+function saveFileAs () {
+  workspaceView.send('workspace-save-as-active-file');
 }
 
 /**
  * Save all files
  */
-function saveAllFiles() {
-    workspaceView.send('workspace-save-all-files');
+function saveAllFiles () {
+  workspaceView.send('workspace-save-all-files');
 }
 
 /**
@@ -384,17 +403,17 @@ function saveAllFiles() {
  * @param event
  * @param {String} tabId Id of the tab that request the list of files
  */
-function onGetAdxStructure(event, tabId) {
-    tryIfADX(function tryToOpenProjectSettings(adx) {
-        if (!adx || !adx.path) {
-            return;
-        }
-        getResourcesDirectoryStructure(function (structure) {
-            adx.load(function (err) {
-                workspaceView.send('workspace-update-adx-structure', err, tabId, structure);
-            });
-        });
+function onGetAdxStructure (event, tabId) {
+  tryIfADX((adx) => {
+    if (!adx || !adx.path) {
+      return;
+    }
+    getResourcesDirectoryStructure((structure) => {
+      adx.load((err) => {
+        workspaceView.send('workspace-update-adx-structure', err, tabId, structure);
+      });
     });
+  });
 }
 
 /**
@@ -402,25 +421,25 @@ function onGetAdxStructure(event, tabId) {
  * @param event
  * @param {Object} content
  */
-function onConvertConfigToXml(event, content, tabId) {
-    var adx = global.project.getADX();
-    if (!adx || !adx.path) {
-        workspaceView.send('workspace-config-to-xml', new Error('Could not find ADX project in global'));
-        return;
+function onConvertConfigToXml (event, content, tabId) {
+  const adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    workspaceView.send('workspace-config-to-xml', new Error('Could not find ADX project in global'));
+    return;
+  }
+  const config = new ADXConfigurator(adx.path);
+  config.load(() => {
+    config.set(content);
+    workspaceView.send('workspace-config-to-xml', null, config.toXml());
+  });
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return;
     }
-    var config = new ADXConfigurator(adx.path);
-    config.load(function () {
-        config.set(content);
-        workspaceView.send('workspace-config-to-xml', null, config.toXml());
-    });
-    workspace.find(tabId, function (err, tab) {
-        if (err) {
-            return;
-        }
-        tab.mode = "code";
-        tab.config.mode = "code";
-        saveWorkspaceStatus();
-    });
+    tab.mode = 'code';
+    tab.config.mode = 'code';
+    saveWorkspaceStatus();
+  });
 }
 
 /**
@@ -428,25 +447,25 @@ function onConvertConfigToXml(event, content, tabId) {
  * @param event
  * @param {String} content
  */
-function onConvertXmlToConfig(event, content, tabId) {
-    var adx = global.project.getADX();
-    if (!adx || !adx.path) {
-        workspaceView.send('workspace-xml-to-config', new Error('Could not find ADX project in global'));
-        return;
+function onConvertXmlToConfig (event, content, tabId) {
+  const adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    workspaceView.send('workspace-xml-to-config', new Error('Could not find ADX project in global'));
+    return;
+  }
+  const config = new ADXConfigurator(adx.path);
+  config.load(() => {
+    config.fromXml(content);
+    workspaceView.send('workspace-xml-to-config', null, config.get());
+  });
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return;
     }
-    var config = new ADXConfigurator(adx.path);
-    config.load(function () {
-        config.fromXml(content);
-        workspaceView.send('workspace-xml-to-config', null, config.get());
-    });
-    workspace.find(tabId, function (err, tab) {
-        if (err) {
-            return;
-        }
-        tab.mode = "form";
-        tab.config.mode = "form";
-        saveWorkspaceStatus();
-    });
+    tab.mode = 'form';
+    tab.config.mode = 'form';
+    saveWorkspaceStatus();
+  });
 }
 
 /**
@@ -454,13 +473,13 @@ function onConvertXmlToConfig(event, content, tabId) {
  * @param event
  * @param {String} tabId Id of the tab
  */
-function onSetCurrentTab(event, tabId) {
-    workspace.find(tabId, function (err, tab) {
-        if (err) {
-            return;
-        }
-        workspace.currentTab(tab);
-    });
+function onSetCurrentTab (event, tabId) {
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return;
+    }
+    workspace.currentTab(tab);
+  });
 }
 
 /**
@@ -468,10 +487,10 @@ function onSetCurrentTab(event, tabId) {
  * @param event
  * @param {String} tabId Id of the tab to close
  */
-function onCloseTab(event, tabId) {
-    workspace.removeTab(tabId, function (err, tab, pane) {
-        workspaceView.send('workspace-remove-tab', err, tab, pane);
-    });
+function onCloseTab (event, tabId) {
+  workspace.removeTab(tabId, (err, tab, pane) => {
+    workspaceView.send('workspace-remove-tab', err, tab, pane);
+  });
 }
 
 /**
@@ -480,10 +499,10 @@ function onCloseTab(event, tabId) {
  * @param {Object} [options]
  * @param {String} [options.except] Id of the tab to not closed
  */
-function onCloseAllTabs(event, options) {
-    workspace.removeAllTabs(options, function (err, removedTabs) {
-        workspaceView.send('workspace-remove-tabs', err, removedTabs);
-    });
+function onCloseAllTabs (event, options) {
+  workspace.removeAllTabs(options, (err, removedTabs) => {
+    workspaceView.send('workspace-remove-tabs', err, removedTabs);
+  });
 }
 
 /**
@@ -492,13 +511,12 @@ function onCloseAllTabs(event, options) {
  * @param {String} tabId Id of the tab to move
  * @param {String} targetPane Pane to target
  */
-function onMoveTab(event, tabId, targetPane) {
-    workspace.moveTab(tabId, targetPane, function (err, tab, pane) {
-        if (err) {
-            console.warn(err);
-            return;
-        }
-    });    
+function onMoveTab (event, tabId, targetPane) {
+  workspace.moveTab(tabId, targetPane, (err) => {
+    if (err) {
+      console.warn(err);
+    }
+  });
 }
 
 /**
@@ -506,13 +524,13 @@ function onMoveTab(event, tabId, targetPane) {
  * @param event
  * @param {String} tabId Id of the tab
  */
-function onEditContent(event, tabId) {
-    workspace.find(tabId, function (err, tab) {
-        if (err) {
-            return;
-        }
-        tab.edited = true;
-    });
+function onEditContent (event, tabId) {
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return;
+    }
+    tab.edited = true;
+  });
 }
 
 /**
@@ -520,26 +538,26 @@ function onEditContent(event, tabId) {
  * @param event
  * @param {String} tabId Id of the tab
  */
-function onRestoreContent(event, tabId) {
-    workspace.find(tabId, function (err, tab) {
-        if (err) {
-            return;
-        }
-        tab.edited = false;
-    });
+function onRestoreContent (event, tabId) {
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return;
+    }
+    tab.edited = false;
+  });
 }
 
 /**
  * Send the update tab event
  * Called after saving a file
  */
-function sendUpdateTabEvent(err, tab, pane) {
-    tab.edited = false;
-    workspaceView.send('workspace-update-tab', err, tab, pane);
-    // Trigger the event in the app
-    if (!exports.hasEditingTabs()) {
-        app.emit("workspace-save-all-finish");
-    }
+function sendUpdateTabEvent (err, tab, pane) {
+  tab.edited = false;
+  workspaceView.send('workspace-update-tab', err, tab, pane);
+  // Trigger the event in the app
+  if (!exports.hasEditingTabs()) {
+    app.emit('workspace-save-all-finish');
+  }
 }
 
 /**
@@ -548,37 +566,67 @@ function sendUpdateTabEvent(err, tab, pane) {
  * @param {String} tabId Id of the tab
  * @param {String} content Content to save
  */
-function onSaveContent(event, tabId, content) {
-    workspace.find(tabId, function (err, tab, pane) {
-        if (err) {
-            sendUpdateTabEvent(err, null, null);
-            return;
-        }
-        if (tab.type === 'projectSettings') {
-            var adx = global.project.getADX();
-            if (!adx || !adx.path) {
-                return;
-            }
+function onSaveContent (event, tabId, content) {
+  workspace.find(tabId, (err, tab, pane) => {
+    if (err) {
+      sendUpdateTabEvent(err, null, null);
+      return;
+    }
+    if (tab.type === 'projectSettings') {
+      const adx = global.project.getADX();
+      if (!adx || !adx.path) {
+        return;
+      }
 
-            if (typeof content === 'string') {
-                adx.configurator.fromXml(content);
-            } else {
-                adx.configurator.set(content);
-            }
+      if (typeof content === 'string') {
+        adx.configurator.fromXml(content);
+      } else {
+        adx.configurator.set(content);
+      }
 
-            tab.saveFile(adx.configurator.toXml(), function (err) {
-                loadProjectSettingsTab(tab, function (err) {
-                    sendUpdateTabEvent(err, tab, pane);
-                });
-            });
-        }
-        else {
-            tab.saveFile(content, function (err) {
-                sendUpdateTabEvent(err, tab, pane);
-            });
-        }
-    });
+      tab.saveFile(adx.configurator.toXml(), () => {
+        loadProjectSettingsTab(tab, (err) => {
+          sendUpdateTabEvent(err, tab, pane);
+        });
+      });
+    } else {
+      tab.saveFile(content, (err) => {
+        sendUpdateTabEvent(err, tab, pane);
+      });
+    }
+  });
 }
+
+/**
+ * Show the modal dialog to save the file as ...
+ *
+ * @param {String} fileContent Content of the file to save
+ */
+function showSaveDialog (fileContent) {
+  const fileName = fileNameWithoutExt + ' - Copy' + fileExt;
+  const defaultPath = path.join(parentDir, fileName);
+
+  dialog.showSaveDialog({
+    title: 'Save As',
+    properties: ['openFile'],
+    defaultPath: defaultPath
+  }, (filePath) => {
+    if (!filePath) {
+      return;
+    }
+
+    fs.writeFile(filePath, fileContent, { encoding: 'utf8' }, (err) => {
+      if (err) {
+        app.emit('show-modal-dialog', {
+          type: 'okOnly',
+          message: err.message
+        });
+      }
+      openFile(filePath);
+    });
+  });
+}
+
 
 /**
  * Save content as
@@ -586,68 +634,35 @@ function onSaveContent(event, tabId, content) {
  * @param {String} tabId Id of the tab
  * @param {String} content Content to save
  */
-function onSaveContentAs(event, tabId, content) {
-    workspace.find(tabId, function (err, tab, pane) {
+function onSaveContentAs (event, tabId, content) {
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return; // Do nothing
+    }
+
+    if (tab.type === 'projectSettings') {
+      // Use a fresh instance of the configurator based on the same file
+      const configurator = new ADXConfigurator(tab.path);
+      configurator.load((err) => {
         if (err) {
-            return; // Do nothing
+          return; // Do nothing
         }
-
-        var fileExt,
-            fileNameWithoutExt,
-            parentDir;
-
-        function showSaveDialog(fileContent) {
-            var fileName = fileNameWithoutExt + ' - Copy' + fileExt;
-            var defaultPath = path.join(parentDir, fileName);
-
-            dialog.showSaveDialog({
-                title     : 'Save As',
-                properties: ['openFile'],
-                defaultPath : defaultPath
-            }, function onSaveDialog(filePath) {
-                if (!filePath) {
-                    return;
-                }
-
-                fs.writeFile(filePath, fileContent, { encoding : 'utf8'}, function (err) {
-                    if (err) {
-                        app.emit('show-modal-dialog', {
-                            type : 'okOnly',
-                            message : err.message
-                        });
-                    }
-                    openFile(filePath);
-                });
-            });
-        }
-
-        if (tab.type === 'projectSettings') {
-            fileExt = '.xml';
-            fileNameWithoutExt = 'Config';
-            parentDir = tab.path;
-            // Use a fresh instance of the configurator based on the same file
-            var configurator = new ADXConfigurator(tab.path);
-            configurator.load(function onLoadConfig(err) {
-                if (err) {
-                    return; // Do nothing
-                }
-                // Update the instance of the configurator with the new content
-                if (typeof content === 'string') {
-                    configurator.fromXml(content);
-                } else {
-                    configurator.set(content);
-                }
-                // Save the xml
-                showSaveDialog(configurator.toXml());
-            });
+        // Update the instance of the configurator with the new content
+        if (typeof content === 'string') {
+          configurator.fromXml(content);
         } else {
-            fileExt = path.extname(tab.path);
-            fileNameWithoutExt = path.basename(tab.path, fileExt);
-            parentDir = path.join(tab.path, '..');
-            showSaveDialog(content);
+          configurator.set(content);
         }
-    });
+        // Save the xml
+        showSaveDialog(configurator.toXml());
+      });
+      return;
+    }
+
+    showSaveDialog(content);
+  });
 }
+
 
 /**
  * Save the content and close the tab
@@ -655,74 +670,75 @@ function onSaveContentAs(event, tabId, content) {
  * @param {String} tabId Id of the tab
  * @param {String} content Content to save
  */
-function onSaveContentAndClose(event, tabId, content) {
-    workspace.find(tabId, function (err, tab) {
-        if (err) {
-            return;
-        }
-        if (tab.type === 'projectSettings') {
-            var adx = global.project.getADX();
-            if (!adx || !adx.path) {
-                return;
-            }
+function onSaveContentAndClose (event, tabId, content) {
+  workspace.find(tabId, (err, tab) => {
+    if (err) {
+      return;
+    }
+    if (tab.type === 'projectSettings') {
+      const adx = global.project.getADX();
+      if (!adx || !adx.path) {
+        return;
+      }
 
-            if (typeof content === 'string') {
-                adx.configurator.fromXml(content);
-            } else {
-                adx.configurator.set(content);
-            }
-            tab.saveFile(adx.configurator.toXml(), function (err) {
-                adx.configurator.load();
-                onCloseTab(event, tab.id);
-            });
-        }
-        else {
-            tab.saveFile(content, function () {
-                onCloseTab(event, tab.id);
-            });
-        }
-    });
+      if (typeof content === 'string') {
+        adx.configurator.fromXml(content);
+      } else {
+        adx.configurator.set(content);
+      }
+      tab.saveFile(adx.configurator.toXml(), (err) => {
+        if (err) throw err;
+        adx.configurator.load();
+        onCloseTab(event, tab.id);
+      });
+    } else {
+      tab.saveFile(content, function () {
+        onCloseTab(event, tab.id);
+      });
+    }
+  });
 }
 
 /**
  * Confirm reload tab
  */
-function onConfirmReload(event, tab, answer) {
-    if (answer === 'yes') {
-        workspace.find(tab, function (err, tab, pane) {
-            if (!tab) {
-                return;
-            }
-            tab.loadFile(function (err) {
-                workspaceView.send('workspace-reload-tab', err, tab, pane);
-            });
-        });
-    }
+function onConfirmReload (event, tab, answer) {
+  if (answer === 'yes') {
+    workspace.find(tab, (err, tab, pane) => {
+      if (err) throw err;
+      if (!tab) {
+        return;
+      }
+      tab.loadFile((err) => {
+        workspaceView.send('workspace-reload-tab', err, tab, pane);
+      });
+    });
+  }
 }
 
 /**
  * When the file has changed
  */
-function onFileChanged(tab, pane) {
-    if (!tab.edited) {
-        tab.loadFile(function (err) {
-            workspaceView.send('workspace-reload-tab', err, tab, pane);
-        });
-    } else {
-        app.emit('show-modal-dialog', {
-            message  : "The file `" + tab.path + "` has been changed, do you want to reload it? ",
-            type     : 'yesNo'
-        }, 'workspace-reload-or-not-reload', tab);
-    }
+function onFileChanged (tab, pane) {
+  if (!tab.edited) {
+    tab.loadFile((err) => {
+      workspaceView.send('workspace-reload-tab', err, tab, pane);
+    });
+  } else {
+    app.emit('show-modal-dialog', {
+      message: 'The file `' + tab.path + '` has been changed, do you want to reload it? ',
+      type: 'yesNo'
+    }, 'workspace-reload-or-not-reload', tab);
+  }
 }
 
 /**
  * When a file has removed
  */
-function onFileRemoved(tab) {
-    workspace.removeTab(tab, function (err, tab, pane) {
-        workspaceView.send('workspace-remove-tab', err, tab, pane);
-    });
+function onFileRemoved (tab) {
+  workspace.removeTab(tab, (err, tab, pane) => {
+    workspaceView.send('workspace-remove-tab', err, tab, pane);
+  });
 }
 
 /**
@@ -732,15 +748,15 @@ function onFileRemoved(tab) {
  * @param {String} oldPath Old file path (current)
  * @param {String} newPath New file path
  */
-function explorerRenamingFile(fileType, oldPath, newPath) {
-    if (fileType === 'file') {
-        workspace.find(oldPath, function (err, tab) {
-            if (err) {
-                return;
-            }
-            tab.unwatch();
-        });
-    }
+function explorerRenamingFile (fileType, oldPath) {
+  if (fileType === 'file') {
+    workspace.find(oldPath, (err, tab) => {
+      if (err) {
+        return;
+      }
+      tab.unwatch();
+    });
+  }
 }
 
 /**
@@ -751,21 +767,29 @@ function explorerRenamingFile(fileType, oldPath, newPath) {
  * @param {String} oldPath Old file path (current)
  * @param {String} newPath New file path
  */
-function explorerRenamedFile(err, fileType, oldPath, newPath) {
-    workspace.find(oldPath, function (errFind, tab, pane) {
-        if (errFind) {
-            return;
-        }
-        if (err) {
-            tab.watch();
-            return;
-        }
-
-        tab.changePath(newPath);
+function explorerRenamedFile (err, fileType, oldPath, newPath) {
+  workspace.findAll(oldPath, (errFind, tabs, panes) => {
+    if (errFind || !tabs.length) {
+      return;
+    }
+    if (err) {
+      tabs.forEach((tab) => {
         tab.watch();
-
-        workspaceView.send('workspace-rename-tab', null, tab, pane);
+      });
+      return;
+    }
+    tabs.forEach((tab) => {
+      if (fileType === 'file') {
+        tab.changePath(newPath);
+      } else {
+        const newFilePath = tab.path.replace(oldPath, newPath);
+        tab.changePath(newFilePath);
+      }
+      tab.watch();
     });
+
+    workspaceView.send('workspace-rename-tabs', null, tabs, panes);
+  });
 }
 
 /**
@@ -774,20 +798,32 @@ function explorerRenamedFile(err, fileType, oldPath, newPath) {
  * @param {String|'file'|'folder'} fileType Type of item (file or folder)
  * @param {String} filePath Path of file to remove
  */
-function explorerRemovingFile(fileType, filePath) {
-    switch (fileType) {
-        case 'file':
-            workspace.find(filePath, function (err, tab) {
-                if (err || !tab) {
-                    return;
-                }
-                tab.unwatch();
-            });
-            break;
-        case 'folder' :
-            workspace.unwatchTabsIn(filePath);
-            break;
+function explorerRemovingFile (fileType, filePath) {
+  const testPath = path.join(global.project.getPath(), 'tests').toLowerCase();
+  switch (fileType) {
+  case 'file':
+    workspace.find(filePath, (err, tab) => {
+      if (err || !tab) {
+        return;
+      }
+      tab.unwatch();
+    });
+    break;
+  case 'folder':
+      // If preview and we delete the tests directory 
+      // then close the preview tab before removing folder
+    if (testPath === filePath.toLowerCase()) {
+      workspace.find('::preview', (err, tab, pane) => {
+        if (tab) {
+          workspaceView.send('workspace-remove-tab', err, tab, pane);
+        }
+        workspace.unwatchTabsIn(filePath);
+      });
+      return;
     }
+    workspace.unwatchTabsIn(filePath);
+    break;
+  }
 }
 
 /**
@@ -797,171 +833,171 @@ function explorerRemovingFile(fileType, filePath) {
  * @param {String|'file'|'folder'} fileType Type of item (file or folder)
  * @param {String} filePath Path of file to remove
  */
-function explorerRemovedFile(err, fileType, filePath) {
-    switch (fileType) {
-        case 'file':
-            workspace.find(filePath, function (errFind, tab, pane) {                
-                // Rewatch the tab on error
-                if (err) {
-                    (tab && tab.watch());
-                    return;
-                }
-                if (tab) {
-                	onFileRemoved(tab);    
-                }
-            });
-            break;
-        case 'folder':
-            if (err) {
-                workspace.rewatchTabsIn(filePath);   
-                return;
-            }
-            workspace.findRewatchableTabsIn(filePath, function (err1, tabs) {
-                if (err1) {
-                    return;
-                }
-            	tabs.forEach(onFileRemoved);
-            });
-            break;
+function explorerRemovedFile (err, fileType, filePath) {
+  switch (fileType) {
+  case 'file':
+    workspace.find(filePath, (errFind, tab) => {
+        // Rewatch the tab on error
+      if (err) {
+        if (tab) tab.watch();
+        return;
+      }
+      if (tab) {
+        onFileRemoved(tab);
+      }
+    });
+    break;
+  case 'folder':
+    if (err) {
+      workspace.rewatchTabsIn(filePath);
+      return;
     }
+    workspace.findRewatchableTabsIn(filePath, (err1, tabs) => {
+      if (err1) {
+        return;
+      }
+      tabs.forEach(onFileRemoved);
+    });
+    break;
+  }
 }
 
-function menuNextTab() {
-    workspaceView.send('next-tab');
+function menuNextTab () {
+  workspaceView.send('next-tab');
 }
 
-function menuPrevTab() {
-    workspaceView.send('prev-tab');
+function menuPrevTab () {
+  workspaceView.send('prev-tab');
 }
 
 /**
  * Switch the current theme
  * @param {String} themeName The name of the new theme
  */
-function switchTheme(themeName) {
-    workspaceView.send('switch-theme', themeName);
+function switchTheme (themeName) {
+  workspaceView.send('switch-theme', themeName);
 }
 
-function switchFontSize(fontSize) {
-    workspaceView.send('switch-size', fontSize);
+function switchFontSize (fontSize) {
+  workspaceView.send('switch-size', fontSize);
 }
 
 
 
-ipc.on('workspace-ready', function (event) {
-    
-    // Keep the connection with the view
-    workspaceView = event.sender;
+ipc.on('workspace-ready', (event) => {
 
-    // Initialize the workspace
-    openProject();
-    
-    ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
-    ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
+  // Keep the connection with the view
+  workspaceView = event.sender;
 
-    ipc.removeListener('workspace-set-current-tab', onSetCurrentTab);
-    ipc.on('workspace-set-current-tab', onSetCurrentTab);
+  // Initialize the workspace
+  openProject();
 
-    ipc.removeListener('workspace-close-tab', onCloseTab);
-    ipc.on('workspace-close-tab', onCloseTab);
+  ipc.removeListener('explorer-load-file', openFileFromExplorer); // Remove it first to avoid duplicate event
+  ipc.on('explorer-load-file', openFileFromExplorer); // Add it back again
 
-    ipc.removeListener('workspace-close-all-tabs', onCloseAllTabs);
-    ipc.on('workspace-close-all-tabs', onCloseAllTabs);
+  ipc.removeListener('workspace-set-current-tab', onSetCurrentTab);
+  ipc.on('workspace-set-current-tab', onSetCurrentTab);
 
-    ipc.removeListener('workspace-save-content', onSaveContent);
-    ipc.on('workspace-save-content', onSaveContent);
+  ipc.removeListener('workspace-close-tab', onCloseTab);
+  ipc.on('workspace-close-tab', onCloseTab);
 
-    ipc.removeListener('workspace-save-content-as', onSaveContentAs);
-    ipc.on('workspace-save-content-as', onSaveContentAs);
+  ipc.removeListener('workspace-close-all-tabs', onCloseAllTabs);
+  ipc.on('workspace-close-all-tabs', onCloseAllTabs);
 
-    ipc.removeListener('workspace-save-content-and-close', onSaveContentAndClose);
-    ipc.on('workspace-save-content-and-close', onSaveContentAndClose);
+  ipc.removeListener('workspace-save-content', onSaveContent);
+  ipc.on('workspace-save-content', onSaveContent);
 
-    ipc.removeListener('workspace-edit-content', onEditContent);
-    ipc.on('workspace-edit-content', onEditContent);
+  ipc.removeListener('workspace-save-content-as', onSaveContentAs);
+  ipc.on('workspace-save-content-as', onSaveContentAs);
 
-    ipc.removeListener('workspace-restore-content', onRestoreContent);
-    ipc.on('workspace-restore-content', onRestoreContent);
+  ipc.removeListener('workspace-save-content-and-close', onSaveContentAndClose);
+  ipc.on('workspace-save-content-and-close', onSaveContentAndClose);
 
-    ipc.removeListener('workspace-move-tab', onMoveTab);
-    ipc.on('workspace-move-tab', onMoveTab);
+  ipc.removeListener('workspace-edit-content', onEditContent);
+  ipc.on('workspace-edit-content', onEditContent);
 
-    ipc.removeListener('workspace-get-adx-structure', onGetAdxStructure);
-    ipc.on('workspace-get-adx-structure', onGetAdxStructure);
+  ipc.removeListener('workspace-restore-content', onRestoreContent);
+  ipc.on('workspace-restore-content', onRestoreContent);
 
-    ipc.removeListener('workspace-convert-config-to-xml', onConvertConfigToXml);
-    ipc.on('workspace-convert-config-to-xml', onConvertConfigToXml);
+  ipc.removeListener('workspace-move-tab', onMoveTab);
+  ipc.on('workspace-move-tab', onMoveTab);
 
-    ipc.removeListener('workspace-convert-xml-to-config', onConvertXmlToConfig);
-    ipc.on('workspace-convert-xml-to-config', onConvertXmlToConfig);
+  ipc.removeListener('workspace-get-adx-structure', onGetAdxStructure);
+  ipc.on('workspace-get-adx-structure', onGetAdxStructure);
 
-    app.removeListener('menu-previous-tab', menuPrevTab);
-    app.on('menu-previous-tab', menuPrevTab);
-    
-    app.removeListener('menu-next-tab', menuNextTab);
-    app.on('menu-next-tab', menuNextTab);
-    
-    app.removeListener('menu-open-project', reloadWorkspace);
-    app.on('menu-open-project', reloadWorkspace);
+  ipc.removeListener('workspace-convert-config-to-xml', onConvertConfigToXml);
+  ipc.on('workspace-convert-config-to-xml', onConvertConfigToXml);
 
-    app.removeListener('menu-new-file', openFile);
-    app.on('menu-new-file', openFile);
+  ipc.removeListener('workspace-convert-xml-to-config', onConvertXmlToConfig);
+  ipc.on('workspace-convert-xml-to-config', onConvertXmlToConfig);
 
-    app.removeListener('menu-open-file', openFile);
-    app.on('menu-open-file', openFile);
+  app.removeListener('menu-previous-tab', menuPrevTab);
+  app.on('menu-previous-tab', menuPrevTab);
 
-    app.removeListener('menu-save-file', saveFile);
-    app.on('menu-save-file', saveFile);
+  app.removeListener('menu-next-tab', menuNextTab);
+  app.on('menu-next-tab', menuNextTab);
 
-    app.removeListener('menu-save-file-as', saveFileAs);
-    app.on('menu-save-file-as', saveFileAs);
+  app.removeListener('menu-open-project', reloadWorkspace);
+  app.on('menu-open-project', reloadWorkspace);
 
-    app.removeListener('menu-save-all-files', saveAllFiles);
-    app.on('menu-save-all-files', saveAllFiles);
+  app.removeListener('menu-new-file', openFile);
+  app.on('menu-new-file', openFile);
 
-    app.removeListener('menu-open-project-settings', openProjectSettings);
-    app.on('menu-open-project-settings', openProjectSettings);
+  app.removeListener('menu-open-file', openFile);
+  app.on('menu-open-file', openFile);
 
-    app.removeListener('menu-preview', startPreview);
-    app.on('menu-preview', startPreview);
+  app.removeListener('menu-save-file', saveFile);
+  app.on('menu-save-file', saveFile);
 
-    // A file is gonna to be remove in the explorer
-    app.removeListener('explorer-file-removing', explorerRemovingFile);
-    app.on('explorer-file-removing', explorerRemovingFile);
-    
-    // A file has been removed in the explorer
-    app.removeListener('explorer-file-removed', explorerRemovedFile);
-    app.on('explorer-file-removed', explorerRemovedFile);
-    
-    // A file is gonna to be rename in the explorer
-    app.removeListener('explorer-file-renaming', explorerRenamingFile);
-    app.on('explorer-file-renaming', explorerRenamingFile);
+  app.removeListener('menu-save-file-as', saveFileAs);
+  app.on('menu-save-file-as', saveFileAs);
 
-    // A file has been renamed in the explorer
-    app.removeListener('explorer-file-renamed', explorerRenamedFile);
-    app.on('explorer-file-renamed', explorerRenamedFile);
-    
-    app.removeListener('preference-switch-theme', switchTheme);
-    app.on('preference-switch-theme', switchTheme);
-    
-    app.removeListener('preference-switch-size', switchFontSize);
-    app.on('preference-switch-size', switchFontSize);
+  app.removeListener('menu-save-all-files', saveAllFiles);
+  app.on('menu-save-all-files', saveAllFiles);
 
-    workspace.removeListener('file-changed', onFileChanged);
-    workspace.on('file-changed', onFileChanged);
+  app.removeListener('menu-open-project-settings', openProjectSettings);
+  app.on('menu-open-project-settings', openProjectSettings);
 
-    workspace.removeListener('file-removed', onFileRemoved);
-    workspace.on('file-removed', onFileRemoved);
+  app.removeListener('menu-preview', startPreview);
+  app.on('menu-preview', startPreview);
 
-    ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
-    ipc.on('workspace-reload-or-not-reload', onConfirmReload);
+  // A file is gonna to be remove in the explorer
+  app.removeListener('explorer-file-removing', explorerRemovingFile);
+  app.on('explorer-file-removing', explorerRemovingFile);
+
+  // A file has been removed in the explorer
+  app.removeListener('explorer-file-removed', explorerRemovedFile);
+  app.on('explorer-file-removed', explorerRemovedFile);
+
+  // A file is gonna to be rename in the explorer
+  app.removeListener('explorer-file-renaming', explorerRenamingFile);
+  app.on('explorer-file-renaming', explorerRenamingFile);
+
+  // A file has been renamed in the explorer
+  app.removeListener('explorer-file-renamed', explorerRenamedFile);
+  app.on('explorer-file-renamed', explorerRenamedFile);
+
+  app.removeListener('preference-switch-theme', switchTheme);
+  app.on('preference-switch-theme', switchTheme);
+
+  app.removeListener('preference-switch-size', switchFontSize);
+  app.on('preference-switch-size', switchFontSize);
+
+  workspace.removeListener('file-changed', onFileChanged);
+  workspace.on('file-changed', onFileChanged);
+
+  workspace.removeListener('file-removed', onFileRemoved);
+  workspace.on('file-removed', onFileRemoved);
+
+  ipc.removeListener('workspace-reload-or-not-reload', onConfirmReload);
+  ipc.on('workspace-reload-or-not-reload', onConfirmReload);
 });
 
 /**
  * Indicates if some tabs is editing
  */
-exports.hasEditingTabs = function hasEditingTabs() {
-    return  workspace.tabs.some(function (tab) {
-        return tab.edited;
-    });
+exports.hasEditingTabs = function hasEditingTabs () {
+  return workspace.tabs.some((tab) => {
+    return tab.edited;
+  });
 };

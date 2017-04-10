@@ -11,6 +11,16 @@
     <link rel="stylesheet" type="text/css" href="../lib/askia/ModalDialog.KeyboardSummary.css"/>
     <link rel="stylesheet" type="text/css" href="../lib/askia/ModalDialog.ZendeskPublisher.css"/>
     <link rel="stylesheet" type="text/css" href="../lib/askia/Resizer.css"/>
+    <script type="text/javascript">
+        (function () {
+            const rgParam = /prefs=([^&]+)/i;
+            const prefs = decodeURIComponent(rgParam.exec(location.search)[1]);
+            const preferences = JSON.parse(prefs);
+            window.localStorage['adxstudio-initial-theme'] = preferences.theme || 'default';
+            window.localStorage['adxstudio-initial-editorFontSize'] = preferences.editorFontSize || '15';
+            window.localStorage['adxstudio-initial-useDblClick'] = preferences.useDblClickByDefault || "false";
+        }());
+    </script>
     <script type="text/javascript" src="../lib/askia/themeswitcher.js"></script>
 </head>
 <body class="grey">

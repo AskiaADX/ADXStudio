@@ -42,7 +42,7 @@
 .cm-s-default span.cm-builtin-array,
 .cm-s-default span.cm-builtin-date,
 .cm-s-default span.cm-builtin-boolean,
-.cm-s-default span.cm-builtin-variant,
+.cm-s-default span.cm-builtin-anytype,
 .cm-s-default span.cm-builtin-browser,
 .cm-s-default span.cm-keyword {
     color: #0000ff;
@@ -56,7 +56,7 @@
 
 /* ex: s                    */
 .cm-s-default span.cm-variable,
-.cm-s-default span.cm-variant,
+.cm-s-default span.cm-anytype,
 .cm-s-default span.cm-label {
     color: #7800c8;
 }
@@ -69,7 +69,7 @@
 .cm-s-default span.cm-member-array,
 .cm-s-default span.cm-member-boolean,
 .cm-s-default span.cm-member-date,
-.cm-s-default span.cm-member-variant,
+.cm-s-default span.cm-member-anytype,
 .cm-s-default span.cm-member-question,
 .cm-s-default span.cm-member-responses,
 .cm-s-default span.cm-member-response {

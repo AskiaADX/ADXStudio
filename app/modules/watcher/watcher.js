@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 const fs = require('fs');
-const util = require("util");
-const EventEmitter = require("events").EventEmitter;
+const util = require('util');
+const EventEmitter = require('events').EventEmitter;
 const path = require('path');
 const glob = require('glob');
 
@@ -44,32 +44,32 @@ From http://stackoverflow.com/questions/33086985/how-to-obtain-case-exact-path-o
  trueCasePathSync('/users/guest') // OSX: -> '/Users/Guest'
  trueCasePathSync('c:\\users\\all users') // Windows: -> 'c:\Users\All Users'
  */
-function trueCasePathSync(fsPath) {
+function trueCasePathSync (fsPath) {
 
-    // Normalize the path so as to resolve . and .. components.
-    // !! As of Node v4.1.1, a path starting with ../ is NOT resolved relative
-    // !! to the current dir, and glob.sync() below then fails.
-    // !! When in doubt, resolve with fs.realPathSync() *beforehand*.
-    let fsPathNormalized = path.normalize(fsPath);
+  // Normalize the path so as to resolve . and .. components.
+  // !! As of Node v4.1.1, a path starting with ../ is NOT resolved relative
+  // !! to the current dir, and glob.sync() below then fails.
+  // !! When in doubt, resolve with fs.realPathSync() *beforehand*.
+  let fsPathNormalized = path.normalize(fsPath);
 
-    // OSX: HFS+ stores filenames in NFD (decomposed normal form) Unicode format,
-    // so we must ensure that the input path is in that format first.
-    if (process.platform === 'darwin') {
-        fsPathNormalized = fsPathNormalized.normalize('NFD');
-    }
+  // OSX: HFS+ stores filenames in NFD (decomposed normal form) Unicode format,
+  // so we must ensure that the input path is in that format first.
+  if (process.platform === 'darwin') {
+    fsPathNormalized = fsPathNormalized.normalize('NFD');
+  }
 
-    // !! Windows: Curiously, the drive component mustn't be part of a glob,
-    // !! otherwise glob.sync() will invariably match nothing.
-    // !! Thus, we remove the drive component and instead pass it in as the 'cwd'
-    // !! (working dir.) property below.
-    const pathRoot = path.parse(fsPathNormalized).root;
-    const noDrivePath = fsPathNormalized.slice(Math.max(pathRoot.length - 1, 0));
+  // !! Windows: Curiously, the drive component mustn't be part of a glob,
+  // !! otherwise glob.sync() will invariably match nothing.
+  // !! Thus, we remove the drive component and instead pass it in as the 'cwd'
+  // !! (working dir.) property below.
+  const pathRoot = path.parse(fsPathNormalized).root;
+  const noDrivePath = fsPathNormalized.slice(Math.max(pathRoot.length - 1, 0));
 
-    // Perform case-insensitive globbing (on Windows, relative to the drive /
-    // network share) and return the 1st match, if any.
-    // Fortunately, glob() with nocase case-corrects the input even if it is
-    // a *literal* path.
-    return glob.sync(noDrivePath, { nocase: true, cwd: pathRoot })[0];
+  // Perform case-insensitive globbing (on Windows, relative to the drive /
+  // network share) and return the 1st match, if any.
+  // Fortunately, glob() with nocase case-corrects the input even if it is
+  // a *literal* path.
+  return glob.sync(noDrivePath, { nocase: true, cwd: pathRoot })[0];
 }
 
 
@@ -79,13 +79,13 @@ function trueCasePathSync(fsPath) {
  * @param {Object} [options] Watch options
  * @param {Boolean} [options.recursive=false] Recursive watch on directories
  */
-function Watcher(pattern, options) {
-    EventEmitter.call(this);
-    this._watchers = {};
-    this._timeouts = {};
-    if (pattern) {
-        this.add(pattern, options);
-    }
+function Watcher (pattern, options) {
+  EventEmitter.call(this);
+  this._watchers = {};
+  this._timeouts = {};
+  if (pattern) {
+    this.add(pattern, options);
+  }
 }
 
 util.inherits(Watcher, EventEmitter);
@@ -97,25 +97,25 @@ util.inherits(Watcher, EventEmitter);
  * @param {Object} [options] Watch options
  * @param {Boolean} [options.recursive=false] Recursive watch on directories
  */
-Watcher.prototype.add = function add(pattern, options) {
-    const resolvedPath = trueCasePathSync(path.resolve(pattern));
-    if (!resolvedPath) {
-        return;
+Watcher.prototype.add = function add (pattern, options) {
+  const resolvedPath = trueCasePathSync(path.resolve(pattern));
+  if (!resolvedPath) {
+    return;
+  }
+  const key = pattern.toLocaleLowerCase();
+  const self = this;
+  this.remove(pattern);
+  this._watchers[key] = fs.watch(resolvedPath, options);
+  this._watchers[key].on('change', function (event, filename) {
+    // The events are triggered several times, just filter it
+    if (self._timeouts[key]) {
+      return;
     }
-    const key = pattern.toLocaleLowerCase();
-    const self = this;
-    this.remove(pattern);
-    this._watchers[key] = fs.watch(resolvedPath, options);
-    this._watchers[key].on('change', function (event, filename) {
-        // The events are triggered several times, just filter it
-        if (self._timeouts[key]) {
-            return;
-        }
-        self._timeouts[key] = setTimeout(function () {
-            delete self._timeouts[key];
-        }, 500);
-        self.emit('change', event, resolvedPath, filename);
-    });
+    self._timeouts[key] = setTimeout(function () {
+      delete self._timeouts[key];
+    }, 500);
+    self.emit('change', event, resolvedPath, filename);
+  });
 };
 
 /**
@@ -124,30 +124,30 @@ Watcher.prototype.add = function add(pattern, options) {
  *
  * @param {String} pattern Path to unwatch
  */
-Watcher.prototype.remove = function remove(pattern) {
-    const key = pattern.toLocaleLowerCase();
-    // Looks to all keys that start with the specified pattern
-    // this is done to unwatch recursively all sub-folders
-    for (const k in this._watchers) {
-        if (this._watchers.hasOwnProperty(k)) {
-            if (k.indexOf(key) === 0) { // Start with
-                this._watchers[k].close();
-                delete this._watchers[k];     
-            }
-        }
+Watcher.prototype.remove = function remove (pattern) {
+  const key = pattern.toLocaleLowerCase();
+  // Looks to all keys that start with the specified pattern
+  // this is done to unwatch recursively all sub-folders
+  for (const k in this._watchers) {
+    if (this._watchers.hasOwnProperty(k)) {
+      if (k.indexOf(key) === 0) { // Start with
+        this._watchers[k].close();
+        delete this._watchers[k];
+      }
     }
+  }
 };
 
 /**
  * Close all sub-watchers and clear the list
  */
-Watcher.prototype.close = function close() {
-    for (const key in this._watchers) {
-        if (this._watchers.hasOwnProperty(key)) {
-            this._watchers[key].close();
-            delete this._watchers[key];
-        }
+Watcher.prototype.close = function close () {
+  for (const key in this._watchers) {
+    if (this._watchers.hasOwnProperty(key)) {
+      this._watchers[key].close();
+      delete this._watchers[key];
     }
+  }
 };
 
 /**
@@ -157,6 +157,6 @@ Watcher.prototype.close = function close() {
  * @param {Object} [options] Watch options
  * @param {Boolean} [options.recursive=false] Recursive watch on directories
  */
-exports.create = function create(pattern, options) {
-    return new Watcher(pattern, options);
+exports.create = function create (pattern, options) {
+  return new Watcher(pattern, options);
 };

@@ -11,24 +11,71 @@
 var askiaScript = CodeMirror.askiaScript;
 
 askiaScript.extend(askiaScript.types, {
+    "ADC" : "adc",    
+    "ADCCONTENT" : "adccontent",    
+    "ADCPROPERTY" : "adcproperty",    
     "ASSERT" : "assert",    
     "BROWSER" : "browser",    
+    "ERROR" : "error",    
+    "ERRORS" : "errors",    
     "INTERVIEW" : "interview",    
+    "LANGUAGE" : "language",    
     "QUESTION" : "question",    
     "RESPONSE" : "response",    
-    "RESPONSES" : "responses"
+    "RESPONSES" : "responses",    
+    "THEME" : "theme"
 });
 
 askiaScript.extend(askiaScript.i18n, {
     "types" : {
+        "adc" : "ADC",        
+        "adccontent" : "ADCContent",        
+        "adcproperty" : "ADCProperty",        
         "assert" : "Assert",        
         "browser" : "Browser",        
+        "error" : "Error",        
+        "errors" : "Errors",        
         "interview" : "Interview",        
+        "language" : "Language",        
         "question" : "Question",        
         "response" : "Response",        
-        "responses" : "Responses"
+        "responses" : "Responses",        
+        "theme" : "Theme"
     },    
     "core" : {
+        "adc" : {
+            "ns" : "masquelanguage",            
+            "desc" : [
+                "\tObject used to obtain information about the ADC (Askia Design Control).<br/>",                
+                "\tThis variable is on the ADC scope, so it's only available on the ADC itself.<br />",                
+                "",                
+                "\tIt is accessible through a local variable named CurrentADC<br />"
+            ],            
+            "alsoSee" : "CurrentADC",            
+            "version" : "5.3.3.0"
+        },        
+        "adccontent" : {
+            "ns" : "masquelanguage",            
+            "desc" : [
+                "\tThis object represent a content defined in the ADC.",                
+                "",                
+                "\tObject mainly used in the ADC 2.0 to retrieves the &lt;content&gt; in the current &lt;output&gt;.",                
+                "",                
+                "\tThis object is accessible through the CurrentADC.Contents[ Index ] property or the CurrentADC.GetContent( Location ) method."
+            ],            
+            "version" : "5.3.3.0"
+        },        
+        "adcproperty" : {
+            "ns" : "masquelanguage",            
+            "desc" : [
+                "\tThis object represent a property exposed by the ADC.",                
+                "",                
+                "\tIt's mainly used in the ADC 2.0 to retrieves information about a <property> defined in the ADC.",                
+                "",                
+                "\tThis object is accessible through the CurrentADC.Properties[ Index ] property or the CurrentADC.GetProperty( PropertyId ) method."
+            ],            
+            "version" : "5.3.3.0"
+        },        
         "assert" : {
             "ns" : "masquelanguage",            
             "desc" : "Object used to validate the integrity of the interviews data.",            
@@ -55,9 +102,31 @@ askiaScript.extend(askiaScript.i18n, {
             ],            
             "version" : "5.3.3.0"
         },        
+        "error" : {
+            "ns" : "masquelanguage",            
+            "desc" : [
+                " Information about an error occurred during the interview.",                
+                "",                
+                " This object is accessible via the property Errors of a question",                
+                "",                
+                " "
+            ],            
+            "examples" : "CurrentQuestion.Errors[1].Message' => \"A response is expected for question 'q1'\"",            
+            "alsoSee" : "CurrentQuestion",            
+            "version" : "5.4.1.0"
+        },        
+        "errors" : {
+            "ns" : "masquelanguage",            
+            "desc" : "Object which contains a collection of errors",            
+            "alsoSee" : [
+                "Question.Errors",                
+                "Error"
+            ],            
+            "version" : "5.4.1.0"
+        },        
         "interview" : {
             "ns" : "masquelanguage",            
-            "desc" : "Object use to obtain information about the current interview.",            
+            "desc" : "Object used to obtain information about the current interview.",            
             "remarks" : "This should be used during interview and encapsulates some properties that have been deprecated",            
             "examples" : [
                 "Interview.IPAddress ' => \"127.0.0.1\"",                
@@ -65,6 +134,13 @@ askiaScript.extend(askiaScript.i18n, {
                 "Interview.Seed ' => 123"
             ],            
             "version" : "5.3.5.0"
+        },        
+        "language" : {
+            "ns" : "masquelanguage",            
+            "desc" : "\tObject used to obtain information about a language in an interview or a questionnaire",            
+            "remarks" : "\tThis should be used during interview and encapsulates some properties that have been deprecated",            
+            "examples" : "\tInterview.Language.ID ' => 1036",            
+            "version" : "5.4.1.0"
         },        
         "question" : {
             "ns" : "masquelanguage",            
@@ -117,6 +193,12 @@ askiaScript.extend(askiaScript.i18n, {
                 "Core.Response"
             ],            
             "version" : "5.3.2.0"
+        },        
+        "theme" : {
+            "ns" : "masquelanguage",            
+            "desc" : "Object used to obtain information about the theme for HTML rendering",            
+            "examples" : "Theme.BodyBgColor ' => 1036",            
+            "version" : "5.4.2.0"
         }
     }
 }, true);
@@ -153,12 +235,12 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "Alea",            
             "ns" : "masquelanguage",            
             "base" : "function",            
-            "type" : "variant",            
+            "type" : "anytype",            
             "deprecated" : true,            
             "args" : [
                 {
                     "name" : "bound",                    
-                    "type" : "variant"
+                    "type" : "anytype"
                 }
             ],            
             "prefer" : "Random"
@@ -283,6 +365,30 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
+            "name" : "CurrentADC",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "adc",            
+            "desc" : "\tReturn the current running ADC instance.",            
+            "examples" : [
+                "\tCurrentADC.InstanceId ' => 1",                
+                "\tCurrentADC.Name ' => \"my-adc\""
+            ],            
+            "version" : "5.3.3.0"
+        },        
+        {
+            "name" : "CurrentADP",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "adc",            
+            "desc" : "\tReturn the current running ADC instance.",            
+            "examples" : [
+                "\tCurrentADP.InstanceId ' => 1",                
+                "\tCurrentADP.Name ' => \"my-adp\""
+            ],            
+            "version" : "5.4.2.0"
+        },        
+        {
             "name" : "CurrentItem",            
             "ns" : "masquelanguage",            
             "base" : "function",            
@@ -349,6 +455,18 @@ askiaScript.extend(askiaScript.lexical, {
             "desc" : "Return the start question of the routing or the question attached to the inline script context.",            
             "examples" : "CurrentQuestion.Shortcut ' => \"gender\" if the start question of the routing is gender",            
             "version" : "5.3.2.0"
+        },        
+        {
+            "name" : "CurrentQuestions",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "questions",            
+            "desc" : [
+                " Return an array of the all the questions available in a screen",                
+                " This is only available when rendering a page - not in routings"
+            ],            
+            "examples" : "CurrentQuestions[1].Shortcut ' => \"gender\" if the first question in the screen is Gender",            
+            "version" : "5.4.2.0"
         },        
         {
             "name" : "DebutInterview",            
@@ -766,11 +884,11 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "Random",            
             "ns" : "masquelanguage",            
             "base" : "function",            
-            "type" : "variant",            
+            "type" : "anytype",            
             "args" : [
                 {
                     "name" : "bound",                    
-                    "type" : "variant",                    
+                    "type" : "anytype",                    
                     "desc" : "Number which specified the upper-bound for the random selection. <br/>Or array with 2 numbers <em>n</em> and <em>m</em>: <em>n</em> for the number of values to return, <em>m</em> upper-bound for the random selection"
                 }
             ],            
@@ -1062,7 +1180,7 @@ askiaScript.extend(askiaScript.lexical, {
             "args" : [
                 {
                     "name" : "bound",                    
-                    "type" : "variant"
+                    "type" : "anytype"
                 }
             ],            
             "prefer" : [
@@ -1108,6 +1226,15 @@ askiaScript.extend(askiaScript.lexical, {
                 " StartInterview ' -> 2/1/2004 2:30:00 PM"
             ],            
             "alsoSee" : "EndInterview"
+        },        
+        {
+            "name" : "Theme",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "theme",            
+            "desc" : "\tReturn the current theme",            
+            "examples" : "\tTheme.BlackColor ' => returs the color used as balck for the current theme",            
+            "version" : "5.4.2.0"
         }
     ],    
     "members" : {
@@ -1216,6 +1343,54 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "AvailableBalancedQuota",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : [
+                    " returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to the min using the following formula ",                    
+                    "  Formula: (Target% - Observed%) / Target%"
+                ],                
+                "examples" : [
+                    " Newspapers.AvailableBalancedQuota[1] returns the quota which will make the quota closest to the target percentage",                    
+                    " Newspapers.AvailableQuota(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "AvailableQuota",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : "returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to do to the min to do using the count for the sort",                
+                "examples" : [
+                    " Newspapers.AvailableQuota()[1] returns the quota for which there is the biggest number of respondents to fill",                    
+                    " Newspapers.AvailableQuota(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2",                    
+                    " ",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
                 "name" : "AvailableResponses",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -1252,6 +1427,31 @@ askiaScript.extend(askiaScript.lexical, {
                     "Core.Response"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "BalancedQuotaList",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : [
+                    " returns the complete indexes of the responses of the TargetQuestion sorted from the max to the min using the following formula ",                    
+                    "  Formula: (Target% - Observed%) "
+                ],                
+                "examples" : [
+                    " Newspapers.BalancedQuotaList[1] returns the quota which will make the quota closest to the target percentage",                    
+                    " Newspapers.BalancedQuotaList(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
             },            
             {
                 "name" : "CurrentIteration",                
@@ -1301,11 +1501,11 @@ askiaScript.extend(askiaScript.lexical, {
                 "name" : "EntryCodeToIndex",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
-                "type" : "variant",                
+                "type" : "anytype",                
                 "args" : [
                     {
                         "name" : "entryCodes",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Entry-code(s) to convert"
                     }
                 ],                
@@ -1320,6 +1520,21 @@ askiaScript.extend(askiaScript.lexical, {
                     " country.EntryCodeToIndex({\"US\"; \"DUMMY\"; \"UK\"}) ' => {1; DK; 2}"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Errors",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "errors",                
+                "desc" : "Returns the list of errors during the interview run-time associated with the question.",                
+                "examples" : [
+                    " CurrentQuestion.Errors.Count ' => 0",                    
+                    "",                    
+                    " CurrentQuestion.Errors[1].Key ' => \"expected_answer\"",                    
+                    "",                    
+                    " CurrentQuestion.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.4.2.0"
             },            
             {
                 "name" : "HasDK",                
@@ -1350,6 +1565,26 @@ askiaScript.extend(askiaScript.lexical, {
                 ],                
                 "examples" : "gender.HasNoData ' => False",                
                 "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "HasParentChapter",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates the question have an ancestry chapter.",                    
+                    "",                    
+                    " This property look-up to the hierarchy until it reaches a parent chapter."
+                ],                
+                "examples" : [
+                    " TopLevelQuestion.HasParentChapter ' => False",                    
+                    " QuestionInDemographics.HasParentChapter '=> True"
+                ],                
+                "alsoSee" : [
+                    "ParentChapter",                    
+                    "HasParentLoop"
+                ],                
+                "version" : "5.4.1.0"
             },            
             {
                 "name" : "HasParentLoop",                
@@ -1391,11 +1626,11 @@ askiaScript.extend(askiaScript.lexical, {
                 "name" : "IndexToEntryCode",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
-                "type" : "variant",                
+                "type" : "anytype",                
                 "args" : [
                     {
                         "name" : "indexes",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Index(es) to convert (based 1)"
                     }
                 ],                
@@ -1417,11 +1652,11 @@ askiaScript.extend(askiaScript.lexical, {
                 "name" : "IndexToEntryCodeStr",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
-                "type" : "variant",                
+                "type" : "anytype",                
                 "args" : [
                     {
                         "name" : "indexes",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Index(es) to convert (based 1)"
                     }
                 ],                
@@ -1782,6 +2017,23 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "ParentChapter",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : [
+                    " Indicates the question have an ancestry chapter.",                    
+                    "",                    
+                    " This property look-up to the hierarchy until it reaches a parent chapter."
+                ],                
+                "examples" : "QuestionInDemographics.ParentChapter.Shortcut '=> \"Demographics\"",                
+                "alsoSee" : [
+                    "HasParentChapter",                    
+                    "ParentLoop"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
                 "name" : "ParentLoop",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -1792,6 +2044,29 @@ askiaScript.extend(askiaScript.lexical, {
                 ],                
                 "examples" : "Q1.ParentLoop.Caption ' => Loop",                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "QuotaList",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : "returns the complete indexes of the responses of the TargetQuestion sorted from the max to do to the min to do using the count for the sort",                
+                "examples" : [
+                    " Newspapers.QuotaList()[1] returns the quota for which there is the biggest number of respondents to fill",                    
+                    " Newspapers.QuotaList(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2",                    
+                    " ",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
             },            
             {
                 "name" : "Responses",                
@@ -1852,6 +2127,34 @@ askiaScript.extend(askiaScript.lexical, {
                 "examples" : [
                     " gender.Shortcut  ' => \"gender\"",                    
                     " ^1. appreciation^.Shortcut   ' => \"1. appreciation\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToEntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "variant",                
+                "desc" : [
+                    "\tReturns the response as an entry code for closed question",                    
+                    "\tIt returns a string if the question is single, an array of string is the question is multiple",                    
+                    "",                    
+                    "\tIt's the default property which is added when you campare a question to a string",                    
+                    "",                    
+                    "\tq1 Has {\"1\"} is transformed into q1.ToEntryCodeStr() Has {\"1\"}",                    
+                    "\t"
+                ],                
+                "examples" : [
+                    "\tgender.ToEntryCodeStr ' => \"1\"",                    
+                    "\tbrands.ToEntryCodeStr ' => {\"3\"; \"5\"; \"6\"}",                    
+                    "",                    
+                    "\t' When no value specified:",                    
+                    "",                    
+                    "\tgender.value ' => DK",                    
+                    "\tage.value ' => DK",                    
+                    "\tbrands.value ' => {}",                    
+                    "\tq1_other.value ' => \"\"",                    
+                    "\tbirthday.value ' => DK"
                 ],                
                 "version" : "5.3.2.0"
             },            
@@ -1954,6 +2257,343 @@ askiaScript.extend(askiaScript.lexical, {
                     " birthday.value ' => DK"
                 ],                
                 "version" : "5.3.2.0"
+            }
+        ],        
+        "theme" : [
+            {
+                "name" : "BaseFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the base font size",                
+                "examples" : "\tInterview.BaseFS ' => \"12px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "BlackColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the color used as \"black\" - usually the fore color",                
+                "examples" : "\tInterview.Black ' => \"0,0,0\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "BorderRadius",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the border radius",                
+                "examples" : "\tInterview.BorderRadius ' => \"5px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "BorderWidth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the border width",                
+                "examples" : "\tInterview.BorderWidth ' => \"1px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ErrorColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the error colour",                
+                "examples" : "\tInterview.ErrorColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "FontFamily",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the font family",                
+                "examples" : "\tInterview.FontFamily ' => \"Print: Arial, Helvetica, sans-serif\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "HPadding",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the horizontal padding",                
+                "examples" : "\tInterview.HPadding ' => \"0.5em\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LargeFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the large font size",                
+                "examples" : "\tInterview.LargeFS ' => \"14px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LineHeight",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the line height for text",                
+                "examples" : "\tInterview.LineHeight ' => \"1.2\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the neutral colour",                
+                "examples" : "\tInterview.NeutralColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the neutral colour",                
+                "examples" : "\tInterview.NeutralDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the neutral colour",                
+                "examples" : "\tInterview.NeutralLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NormalFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the normal font size",                
+                "examples" : "\tInterview.NormalFS ' => \"10px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the primary colour",                
+                "examples" : "\tInterview.PrimaryColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the primary colour",                
+                "examples" : "\tInterview.PrimaryDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the primary colour",                
+                "examples" : "\tInterview.PrimaryLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PropValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li></ul>"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturn the value of the theme property.",                    
+                    "\tReturn an empty string if the property is not supported."
+                ],                
+                "examples" : "\tTheme.PropValue(\"PrimaryColor\") ' => \"11.202.235\"",                
+                "alsoSee" : "Theme.Var",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the secondary colour",                
+                "examples" : "\tInterview.SecondaryColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the secondary colour",                
+                "examples" : "\tInterview.SecondaryDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the secondary colour",                
+                "examples" : "\tInterview.SecondaryLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SmallFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the small font size",                
+                "examples" : "\tInterview.SmallFS ' => \"8px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Var",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li>"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturn the value of the theme property (as a variant).",                    
+                    "\tReturn an empty string if the property is not supported."
+                ],                
+                "examples" : "\tTheme.Var(\"PrimaryColor\") ' => 11.202.235",                
+                "alsoSee" : "Theme.PropValue",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "VPadding",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the vertical padding",                
+                "examples" : "\tInterview.VPadding ' => \"1.2em\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "WhiteColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the color used as \"white\" usually the back color",                
+                "examples" : "\tInterview.WhiteColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            }
+        ],        
+        "language" : [
+            {
+                "name" : "Abbr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Three-letter abbreviation of a language",                
+                "examples" : [
+                    " Interview.Language.Abbr ' => \"ENG\" (for English)",                    
+                    " Interview.Language.Abbr ' => \"FRA\" (for French)"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "DateFormat",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Date format for a given language",                
+                "examples" : [
+                    " Interview.Language.DateFormat ' => \"dd/mm/yyyy\" ' FR",                    
+                    " Interview.Language.DateFormat ' => \"mm/dd/yyyy\" ' US"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "DecimalSeparator",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Decimal separator",                
+                "examples" : [
+                    " Interview.Language.DecimalSeparator ' => \",\" ' FR",                    
+                    " Interview.Language.DecimalSeparator ' => \".\" ' US"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "ID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "ID of the language LCID : see https://dev.askia.com/projects/askiadesign/wiki/Askiadesign_askiascript_2_0_specifications_Language#Language-codes-LCID",                
+                "examples" : [
+                    " Interview.Language.Id ' => 2057 (for English)",                    
+                    "  Interview.Language.Id ' => 1036 (for French)"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Name",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Full name of a language",                
+                "examples" : [
+                    " Interview.Language.Name ' => \"English (United Kingdom)\"",                    
+                    " Interview.Language.Name ' => \"French (France)\""
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "ThousandSeparator",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Thousand Separator for large numbers 1,000",                
+                "examples" : [
+                    " Interview.Language.ThousandSeparator ' => \" \" ' FR",                    
+                    " Interview.Language.ThousandSeparator ' => \",\" ' US"
+                ],                
+                "version" : "5.4.1.0"
+            }
+        ],        
+        "error" : [
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Return the id of the Error",                
+                "examples" : "CurrentQuestion.Errors[1].Id  ' => 1001",                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Message",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the message of the error",                
+                "examples" : [
+                    " CurrentQuestion.Errors[1].Message  ' => \"A response is expected for question 'q1'\"",                    
+                    " q2.Errors[1].Message  ' => \"You can only give one response for question 'q2'\""
+                ],                
+                "version" : "5.4.1.0"
             }
         ],        
         "response" : [
@@ -2211,104 +2851,656 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
-        "responses" : [
+        "adc" : [
             {
-                "ns" : "masquelanguage",                
-                "accessor" : "response"
-            },            
-            {
-                "name" : "Caption",                
+                "name" : "Contents",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
-                "desc" : "Returns an array with the caption of responses in the collection",                
-                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
-                "version" : "5.3.2.0"
+                "desc" : "\tList of contents in the current selected output.",                
+                "examples" : [
+                    "\tCurrentADC.Contents.Count ' => 2",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1]",                    
+                    "\t' => <ADCContent::dynamic:default.html>"
+                ],                
+                "version" : "5.3.3.0"
             },            
             {
-                "name" : "Count",                
+                "name" : "GetContent",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adccontent",                
+                "args" : [
+                    {
+                        "name" : "location",                        
+                        "type" : "string",                        
+                        "desc" : "Location of the content to obtain"
+                    }
+                ],                
+                "desc" : "\tReturns the ADC Content object with the specified location.",                
+                "examples" : [
+                    "\tCurrentADC.GetContent(\"share/jquery.js\")  ",                    
+                    "\t' => <ADCContent::share:jquery.js>",                    
+                    "",                    
+                    "\tCurrentADC.GetContent(\"static/styles.css\").Type ",                    
+                    "\t' => \"css\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "GetProperty",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adcproperty",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to obtain"
+                    }
+                ],                
+                "desc" : "\tReturns the ADC Property object with the specified id.",                
+                "examples" : [
+                    "\tCurrentADC.GetProperty(\"tickColor\")  ",                    
+                    "\t' => <ADCProperty::tickColor>",                    
+                    "",                    
+                    "\tCurrentADC.GetProperty(\"tickColor\").Name ",                    
+                    "\t' => \"Tick color\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InstanceId",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "Returns the number of items in the collection",                
-                "examples" : "gender.Responses.Count ' => 2",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code of responses in the collection",                
-                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
-                "examples" : [
-                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
-                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
+                "desc" : [
+                    "\tReturns the unique identifier of the ADC instance.",                    
+                    "\tThe same ADC could appears several times in the same page and each of it has it's own unique identifier that could be retrieve through this property."
                 ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Index",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
                 "examples" : [
-                    " gender.Responses.Index ' => {1; 2}",                    
-                    " country.AvailableResponses.Index ' => {2; 3; 1}"
+                    "\tCurrentADC.InstanceId  ",                    
+                    "\t' => 1, for the first ADC instance ",                    
+                    "\t' available in the current page"
                 ],                
-                "version" : "5.3.2.0"
+                "version" : "5.3.3.0"
             },            
             {
-                "name" : "ResourceURL",                
+                "name" : "Name",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Name of the ADC",                
+                "examples" : [
+                    " CurrentADC.Name ' => \"adc-problem\"",                    
+                    " "
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "OutputId",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the current output in use.",                
+                "examples" : "\tCurrentADC.OutputId ' => \"mobileHTMLOutput\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Properties",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "array",                
-                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
-                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
-                "version" : "5.3.2.0"
+                "desc" : "\tEntire collection of properties defined in the ADC.",                
+                "examples" : [
+                    "\tCurrentADC.Properties.Count ' => 2",                    
+                    "",                    
+                    "\tCurrentADC.Properties[1] ",                    
+                    "\t' => <ADCProperty::tickColor>"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "PropValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to read"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the value of the property as a string.",                    
+                    "\t\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
+                    "\t' => \"FlashEnable\"",                    
+                    "",                    
+                    "\tCurrentADC.PropValue(\"tickColour\") ' => \"0,255,0\"",                    
+                    "",                    
+                    "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "URLTo",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "location",                        
+                        "type" : "string",                        
+                        "desc" : "Location of the content to obtain"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the relative URL path to content file at the specify location.",                    
+                    "\tFor dynamic file:",                    
+                    "\t- It returns the path to the pre-processor component such as AskiaExt.dll.",                    
+                    "\t- It's likely to be use in AJAX query. In that case, you could also post the data of current HTML form to obtain a live output.",                    
+                    "\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.URLTo(\"static/tick.png\") ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/tick.png\"",                    
+                    "",                    
+                    "\tCurrentADC.URLTo(\"shared/jquery.js\") ",                    
+                    "\t' => \"../Resources/[Survey]/jquery.js\" ",                    
+                    "",                    
+                    "\tCurrentADC.URLTo(\"dynamic/default.js\")",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Var",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to read"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the value of the property as a variant.",                    
+                    "\t\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
+                    "\t' => \"FlashEnable\"",                    
+                    "",                    
+                    "\tCurrentADC.Var(\"tickColour\") ' => \"0,255,0\"",                    
+                    "",                    
+                    "\tCurrentADC.Var(\"booleanProp\") ' => 1"
+                ],                
+                "version" : "5.4.2.0"
+            }
+        ],        
+        "interview" : [
+            {
+                "name" : "AgentID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the identifier of the interviewing agent",                    
+                    "",                    
+                    " Only available with askiaVoice or askiaFace fieldwork, otherwise it returns 0.",                    
+                    " Cotrarily to the agent name the agent id is stored in the survey data so can be accessed by verification scripts"
+                ],                
+                "remarks" : [
+                    " @alsosee",                    
+                    " AgentName"
+                ],                
+                "examples" : "Interview.AgentID ' => 35",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "AgentName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the name of the interviewing agent",                    
+                    "",                    
+                    " Only available during askiaVoice or askiaFace fieldwork, otherwise it returns an empty string \"\".",                    
+                    " The agent name is not persisted in the survey data hence it's not available in verification script. Make sure that if you set a value to a question with it,",                    
+                    " you do no lose that information by modifying it in Supervisor or Entry (see IsCATI)"
+                ],                
+                "remarks" : [
+                    " ",                    
+                    " @alsosee",                    
+                    " IsCATI, AgentID",                    
+                    "",                    
+                    " "
+                ],                
+                "examples" : "Interview.AgentName ' => \"John Doe\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Broker",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker ID as received in askia web",                
+                "remarks" : "",                
+                "examples" : "Interview.Broker ' => \"SSI\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "BrokerPanelID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
+                "remarks" : "",                
+                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "CallID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns a Call ID of the current interview.",                    
+                    "",                    
+                    " Only available during askiaVoice fieldwork, otherwise it returns 0."
+                ],                
+                "remarks" : "This is usually only available in AskiaVoice",                
+                "examples" : "Interview.CallID ' => 123",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Duration",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "startQuestion",                        
+                        "type" : "question"
+                    },                    
+                    {
+                        "name" : "endQuestion",                        
+                        "type" : "question",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "threshold",                        
+                        "type" : "number",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the time (in seconds) spent on a question or the total time spent between a range of questions. (eg. InterviewTime)",                    
+                    " If any question duration is superior to the threshold, that question is not taken in account in the sum",                    
+                    "",                    
+                    " Parameters",                    
+                    "",                    
+                    " - startQuestion [Required] {Question} Indicates the question from where the calculation of tiem should start.",                    
+                    " - endQuestion [Optional] {Question} Indicates the question to where the calculation of time should stop should stop (included in the calculation). If the omit, the endQuestion is equal to the startQuestion",                    
+                    " - threshold [Optional] {Number} any duration superior to the threshold (for a given quetsion) will be ignored"
+                ],                
+                "examples" : [
+                    " Interview.Duration(gender) ' => 2 (seconds)",                    
+                    "",                    
+                    " Interview.Duration(gender, Age) ' => 5 (seconds)",                    
+                    "",                    
+                    " ' q1 is inside a loop = only the current iteration is returned",                    
+                    " Interview.Duration(q1) <> Interview.Duration(q1.FirstIteration,q1.LastIteration)",                    
+                    "  "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "EndTime",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the finished date/time of the current interview in the current time zone(eg. EndInterview)",                    
+                    "",                    
+                    " If the current interview is not yet finished it return the time of last screen submit"
+                ],                
+                "remarks" : "",                
+                "examples" : [
+                    " Interview.EndTime ' => #10/01/2016 11:01\"",                    
+                    "",                    
+                    " @alsosee",                    
+                    " EndTimeUTC,StartTime"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "EndTimeUTC",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the finished UTC date/time of the current interview (eg. EndInterview)",                    
+                    "",                    
+                    " If the current interview is not yet finished it return the time of last screen submit"
+                ],                
+                "remarks" : [
+                    " @alsosee",                    
+                    " EndTime,StartTimeUTC"
+                ],                
+                "examples" : "Interview.EndTimeUTC ' => #10/01/2016 10:01\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Errors",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "errors",                
+                "desc" : "Returns the list of errors during the interview run-time",                
+                "examples" : [
+                    " Interview.Errors.Count ' => 0",                    
+                    "",                    
+                    " Interview.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "GetFaceOS",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the Operating System (OS) of the AskiaFace device, if the current interviewing mode is AskiaFace.",                    
+                    "",                    
+                    " Returns an empty string if the interviewing mode is not Face.",                    
+                    "",                    
+                    " Possible return values are:",                    
+                    "",                    
+                    " \"windows\"",                    
+                    " \"ios\"",                    
+                    " \"android\"",                    
+                    "",                    
+                    " Return a String"
+                ],                
+                "examples" : [
+                    " Interview.GetFaceOS()  ' => \"windows\"",                    
+                    "",                    
+                    " Interview.GetFaceOS()  ' => \"ios\"",                    
+                    "",                    
+                    " Interview.GetFaceOS()  ' => \"android\"",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "GUID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
+                "remarks" : "",                
+                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the ID of the interview. The ID is not available during the interview but is in case of a modification in Voice or in the verification scripts",                
+                "remarks" : "This is usually only available once the interview has been saved",                
+                "examples" : "Interview.Id ' => 123",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IPAddress",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the IPAddress if available",                
+                "remarks" : "This is usually only available in askiaWeb",                
+                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "IsFace",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is AskiaFace (CAPI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsFace  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsFirstPage",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if you are on the first page",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsFirstPage ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsLastPage",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if you are on the last page - this might give you the wrong information depending on routings",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsLastPage ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsTest",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interview was started in Brief mode or Test flag",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsTest  ' => False",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsVoice",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is AskiaVoice (CATI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsVoice  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsWeb",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is in AskiaWeb (CAWI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsWeb  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Key",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the secure hash key of the current interview (used in URL) (eg. Password)",                
+                "remarks" : "",                
+                "examples" : "Interview.Key ' => \"QWERTYQWERTYQWER\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Language",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "language",                
+                "desc" : "Returns the respondent's current language.",                
+                "examples" : [
+                    " Interview.Language.Abbr ' => \"FRA\"",                    
+                    " Interview.Language.Name ' => \"French (France)\""
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Latitude",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the Latitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Latitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ListID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the identifier of the respondent list",                
+                "remarks" : "This is usually only available in askiaVoice",                
+                "examples" : "Interview.ListID ' => 22",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Longitude",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the longitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Longitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "PanelID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the askia Panel ID as received in askia web when available",                
+                "remarks" : "",                
+                "examples" : "Interview.PanelID ' => \"2356b\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Progress",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the percentage value of progress through the questionnaire.",                
+                "examples" : "Interview.Progress ' => 32",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Returns",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "offsettoutc",                
+                "desc" : [
+                    " This returns the shift in hours from the time to the",                    
+                    " "
+                ],                
+                "examples" : "Interview.StartTime - Interview.OffsetToUTC /24 ' => StartTime as UTC time",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Scenario",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the current respondent scenario (also known in design 5 as version)",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Scenario ' => \"User\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Seed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Seed ' => 133",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "StartTime",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : "Indicates the start date/time of the current interview in the current time zone (eg. StartInterview)",                
+                "remarks" : [
+                    " @alsosee",                    
+                    " StartTimeUTC"
+                ],                
+                "examples" : "Interview.StartTime ' => #10/01/2016 10:33\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "StartTimeUTC",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : "Indicates the start UTC date/time of the current interview  (eg. StartInterview)",                
+                "remarks" : [
+                    " @alsosee",                    
+                    " StartTime",                    
+                    "",                    
+                    " "
+                ],                
+                "examples" : "Interview.StartTimeUTC ' => #10/01/2016 11:33\"",                
+                "version" : "5.4.2.0"
             },            
             {
                 "name" : "ToString",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses.ToString()",                    
-                    " ' => [{",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " },{",                    
-                    " \"index\" : 2,",                    
-                    " \"entryCode\":\"002\",",                    
-                    " \"caption\":\"Woman\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Woman.png\"",                    
-                    " }]"
-                ],                
-                "version" : "5.3.2.0"
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Interview.ToString()",                
+                "version" : "5.3.5.0"
             },            
             {
                 "name" : "TypeOf",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
-                "version" : "5.3.2.0"
+                "desc" : "Returns \"interview\"",                
+                "examples" : "interview.TypeOf() ' => \"interview\"",                
+                "version" : "5.3.5.0"
             }
         ],        
         "assert" : [
@@ -2348,7 +3540,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "args" : [
                     {
                         "name" : "expression",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "An AskiaScript expression that should be evaluated as true"
                     },                    
                     {
@@ -2423,6 +3615,22 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "Returns \"assert\"",                
                 "examples" : "Assert.TypeOf() ' => \"assert\"",                
                 "version" : "5.3.5.0"
+            }
+        ],        
+        "errors" : [
+            {
+                "ns" : "masquelanguage",                
+                "accessor" : "error",                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Count",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the number of items in the collection",                
+                "examples" : "\tCurrentQuestions.Errors.Count ' => 2",                
+                "version" : "5.4.2.0"
             }
         ],        
         "browser" : [
@@ -2977,113 +4185,266 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             }
         ],        
-        "interview" : [
+        "adccontent" : [
             {
-                "name" : "Broker",                
+                "name" : "FileName",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : "Returns the Broker ID as received in askia web",                
-                "remarks" : "",                
-                "examples" : "Interview.Broker ' => \"SSI\"",                
-                "version" : "5.3.5.0"
+                "desc" : "\tReturns the file name associated with the content",                
+                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
+                "version" : "5.3.3.0"
             },            
             {
-                "name" : "BrokerPanelID",                
+                "name" : "Mode",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
-                "remarks" : "",                
-                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
-                "version" : "5.3.5.0"
+                "desc" : [
+                    "\tReturns the mode of the content.",                    
+                    "\tAvailable modes are:",                    
+                    "\t- \"share\" ",                    
+                    "\t- \"static\" ",                    
+                    "\t- \"dynamic\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
+                "version" : "5.3.3.0"
             },            
             {
-                "name" : "GUID",                
+                "name" : "Position",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
-                "remarks" : "",                
-                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
-                "version" : "5.3.5.0"
+                "desc" : [
+                    "\tReturns the position of the content.",                    
+                    "\tAvailable positions are:",                    
+                    "\t- \"none\" ",                    
+                    "\t- \"head\" ",                    
+                    "\t- \"placeholder\" ",                    
+                    "\t- \"foot\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
+                "version" : "5.3.3.0"
             },            
             {
-                "name" : "IPAddress",                
+                "name" : "ToText",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the content of the file associated with the content. ",                    
+                    "",                    
+                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
+                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToURL",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the final relative URL path to the content file",                    
+                    "",                    
+                    "\tThis is a shorthand to the method:",                    
+                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.Contents[1].ToURL() ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : "Returns the IPAddress if available",                
-                "remarks" : "This is usually only available in askiaWeb",                
-                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
-                "version" : "5.3.5.0"
+                "desc" : [
+                    " Returns the type of the content. Available types are:",                    
+                    "- \"text\" ",                    
+                    "-- \"html\" ",                    
+                    "-- \"css\" ",                    
+                    "-- \"javascript\" ",                    
+                    "- \"binary\" ",                    
+                    "-- \"image\" ",                    
+                    "-- \"audio\" ",                    
+                    "-- \"video\" ",                    
+                    "-- \"flash\""
+                ],                
+                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "responses" : [
+            {
+                "ns" : "masquelanguage",                
+                "accessor" : "response"
             },            
             {
-                "name" : "Latitude",                
+                "name" : "Caption",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the caption of responses in the collection",                
+                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Count",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "Returns the Latitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Latitude ' => 1.4",                
-                "version" : "5.3.5.0"
+                "desc" : "Returns the number of items in the collection",                
+                "examples" : "gender.Responses.Count ' => 2",                
+                "version" : "5.3.2.0"
             },            
             {
-                "name" : "Longitude",                
+                "name" : "EntryCode",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the longitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Longitude ' => 1.4",                
-                "version" : "5.3.5.0"
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code of responses in the collection",                
+                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
+                "version" : "5.3.2.0"
             },            
             {
-                "name" : "PanelID",                
+                "name" : "EntryCodeStr",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the askia Panel ID as received in askia web when available",                
-                "remarks" : "",                
-                "examples" : "Interview.PanelID ' => \"2356b\"",                
-                "version" : "5.3.5.0"
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
+                "examples" : [
+                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
+                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
+                ],                
+                "version" : "5.3.2.0"
             },            
             {
-                "name" : "Progress",                
+                "name" : "Index",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the percentage value of progress through the questionnaire.",                
-                "examples" : "Interview.Progress ' => 32",                
-                "version" : "5.3.5.0"
+                "type" : "array",                
+                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
+                "examples" : [
+                    " gender.Responses.Index ' => {1; 2}",                    
+                    " country.AvailableResponses.Index ' => {2; 3; 1}"
+                ],                
+                "version" : "5.3.2.0"
             },            
             {
-                "name" : "Seed",                
+                "name" : "ResourceURL",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
-                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
-                "examples" : "Interview.Seed ' => 133",                
-                "version" : "5.3.5.0"
+                "type" : "array",                
+                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
+                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
+                "version" : "5.3.2.0"
             },            
             {
                 "name" : "ToString",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Interview.ToString()",                
-                "version" : "5.3.5.0"
+                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses.ToString()",                    
+                    " ' => [{",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " },{",                    
+                    " \"index\" : 2,",                    
+                    " \"entryCode\":\"002\",",                    
+                    " \"caption\":\"Woman\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Woman.png\"",                    
+                    " }]"
+                ],                
+                "version" : "5.3.2.0"
             },            
             {
                 "name" : "TypeOf",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Returns \"interview\"",                
-                "examples" : "interview.TypeOf() ' => \"interview\"",                
-                "version" : "5.3.5.0"
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "adcproperty" : [
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the id of the ADC Property",                
+                "examples" : "CurrentADC.Properties[1].Id  ' => \"tickColor\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of property, available types are:",                    
+                    "- \"number\" ",                    
+                    "- \"boolean\" ",                    
+                    "- \"string\" ",                    
+                    "- \"color\" ",                    
+                    "- \"file\" ",                    
+                    "- \"question\""
+                ],                
+                "examples" : [
+                    " CurrentADC.Properties[1].Type  ' => \"color\" ",                    
+                    " CurrentADC.Properties[2].Type  ' => \"string\" ",                    
+                    " CurrentADC.Properties[3].Type '  => \"question\""
+                ],                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "questions" : [
+            {
+                "ns" : "masquelanguage",                
+                "accessor" : "question",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Count",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the number of items in the collection",                
+                "examples" : "\tCurrentQuestions.Count ' => 2",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Errors",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "errors",                
+                "desc" : "\tReturns the list of errors during the interview run-time associated with the questions.",                
+                "examples" : [
+                    "\tCurrentQuestions.Errors.Count ' => 0",                    
+                    "",                    
+                    "\tCurrentQuestions.Errors[1].Key ' => \"expected_answer\"",                    
+                    "",                    
+                    "\tCurrentQuestions.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.4.2.0"
             }
         ]
     }

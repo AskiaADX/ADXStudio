@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 
 const app = require('electron').app;
 const path = require('path');
 const fs = require('fs');
 const ADX = require('adxutil').ADX;
 
-const prefFileName = "Prefs.json";
-const mruFileName = "MRU.json";
+const prefFileName = 'Prefs.json';
+const mruFileName = 'MRU.json';
 
 /**
  * Merge two object together (recursively)
@@ -14,23 +14,23 @@ const mruFileName = "MRU.json";
  * @param {Object} source Source object (where the data will be read)
  * @return {Object} Merged object
  */
-function merge(destination, source) {
-    for (const k in source) {
-        if (source.hasOwnProperty(k)) {
-            if (!destination.hasOwnProperty(k)) {
-                if (Array.isArray(source[k])) {
-                    destination[k] = source[k].slice();
-                } else if (typeof source[k] === 'object') {
-                    destination[k] = {};
-                    merge(destination[k], source[k]);
-                } else {
-                    destination[k] = source[k];
-                }
-            }
+function merge (destination, source) {
+  for (const k in source) {
+    if (source.hasOwnProperty(k)) {
+      if (!destination.hasOwnProperty(k)) {
+        if (Array.isArray(source[k])) {
+          destination[k] = source[k].slice();
+        } else if (typeof source[k] === 'object') {
+          destination[k] = {};
+          merge(destination[k], source[k]);
+        } else {
+          destination[k] = source[k];
         }
+      }
     }
+  }
 
-    return destination;
+  return destination;
 }
 
 
@@ -38,16 +38,16 @@ function merge(destination, source) {
  * Manage the settings of the application
  * @constructor
  */
-function AppDataSettings(){
-    this.rootPath = path.join(process.env.APPDATA, 'ADXStudio');
-    this._cache  = {};
+function AppDataSettings () {
+  this.rootPath = path.join(process.env.APPDATA, 'ADXStudio');
+  this._cache = {};
 }
 
 /**
  * Return the path of the app data folder
  */
-AppDataSettings.prototype.getAppDataPath = function getAppDataPath() {
-    return this.rootPath;
+AppDataSettings.prototype.getAppDataPath = function getAppDataPath () {
+  return this.rootPath;
 };
 
 /**
@@ -63,33 +63,31 @@ AppDataSettings.prototype.getAppDataPath = function getAppDataPath() {
  * @param {String} [callback.preferences.author.company] Default Company of the ADC author (from ADCUtil)
  * @param {String} [callback.preferences.author.webSite] Default WebSite of the ADC author (from ADCUtil)
  */
-AppDataSettings.prototype.getPreferences = function getPreferences(callback) {
-    // No callback
-    if (typeof callback !== 'function') {
-        return;
-    }
+AppDataSettings.prototype.getPreferences = function getPreferences (callback) {
+  // No callback
+  if (typeof callback !== 'function') {
+    return;
+  }
+  const defaultPreferences = {
+    defaultProjectsLocation: path.join(process.env.USERPROFILE, 'Documents'),
+    openLastProjectByDefault: true
+  };
+
+  // Read the ADXUtil preferences
+  ADX.preferences.read({ silent: true }, (adxprefs) => {
+    let finalPrerences = adxprefs || {};
+    finalPrerences = merge(defaultPreferences, finalPrerences);
+    // Read the ADXStudio preferences
     const filePath = path.join(this.rootPath, prefFileName);
-    const defaultPreferences = {
-        defaultProjectsLocation  : path.join(process.env.USERPROFILE, 'Documents'),
-        openLastProjectByDefault : true
-    };
-
-    fs.readFile(filePath, function onReadPrefs(err, data) {
-        // Read the ADXUtil preferences
-        ADX.preferences.read({silent: true}, function (adxprefs) {
-            let finalPrerences = adxprefs || {};
-
-            finalPrerences = merge(defaultPreferences, finalPrerences);
-
-            if (err) {
-                callback(err, finalPrerences);
-                return;
-            }
-
-            finalPrerences = merge(data ? JSON.parse(data) : {}, finalPrerences);
-            callback(null, finalPrerences);
-        });
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        callback(finalPrerences);
+        return;
+      }
+      finalPrerences = merge(data ? JSON.parse(data) : {}, finalPrerences);
+      callback(finalPrerences);
     });
+  });
 };
 
 /**
@@ -105,71 +103,78 @@ AppDataSettings.prototype.getPreferences = function getPreferences(callback) {
  * @param {Function} callback
  * @param {Error} callback.err
  */
-AppDataSettings.prototype.setPreferences = function setPreferences(preferences, callback) {
-    const self = this;
+AppDataSettings.prototype.setPreferences = function setPreferences (preferences, callback) {
+  const self = this;
 
-    // Read the current user preferences
-    this.getPreferences(function (err, currentPrefs) {
-        // Merge the current user preferences with the preferences in the args
-        let finalPreferences = merge({}, preferences);
-        finalPreferences = merge(finalPreferences, currentPrefs);
+  // Read the current user preferences
+  this.getPreferences(function (currentPrefs) {
+    // Merge the current user preferences with the preferences in the args
+    let finalPreferences = merge({}, preferences);
+    finalPreferences = merge(finalPreferences, currentPrefs);
 
-        // Extract the preferences from ADXUtil to store it using ADXUtil
-        let adxUtilPref = null;
-        if (finalPreferences.author) {
-            // Author could come from currentPrefs
-            // If it's not define in the `preferences` in args, don't treat it
-            if (preferences.author) {
-                adxUtilPref = adxUtilPref || {};
-                adxUtilPref.author = finalPreferences.author;
-            }
-            delete finalPreferences.author;
+    // Extract the preferences from ADXUtil to store it using ADXUtil
+    let adxUtilPref = null;
+    if (finalPreferences.author) {
+      // Author could come from currentPrefs
+      // If it's not define in the `preferences` in args, don't treat it
+      if (preferences.author) {
+        adxUtilPref = adxUtilPref || {};
+        adxUtilPref.author = finalPreferences.author;
+      }
+      delete finalPreferences.author;
+    }
+
+    // Save the merged preferences
+    // Make sure the directory exist
+    fs.mkdir(self.rootPath, function () {
+      fs.writeFile(path.join(self.rootPath, prefFileName), JSON.stringify(finalPreferences), { encoding: 'utf8' }, function onWritePrefs (err) {
+        if (err) {
+          if (typeof callback === 'function') {
+            callback(err);
+          }
+          return;
         }
 
-        // Save the merged preferences
-        // Make sure the directory exist
-        fs.mkdir(self.rootPath, function () {
-            fs.writeFile(path.join(self.rootPath, prefFileName),  JSON.stringify(finalPreferences), {encoding: 'utf8'}, function onWritePrefs(err) {
-                if (err) {
-                    if (typeof callback === 'function') {
-                        callback(err);
-                    }
-                    return;
-                }
+        //if preferences changed, send an event to the app
+        if (currentPrefs.theme !== finalPreferences.theme) {
+          app.emit('preference-switch-theme', finalPreferences.theme);
+        }
 
-                //if preferences changed, send an event to the app
-                if (currentPrefs.theme !== finalPreferences.theme) {
-                    app.emit('preference-switch-theme', finalPreferences.theme);
-                }
-                
-                //if preferences changed, send an event to the app
-                if (currentPrefs.useDblClickByDefault !== finalPreferences.useDblClickByDefault) {
-                    app.emit('preference-switch-click', finalPreferences.useDblClickByDefault);
-                }
-                
-                if (currentPrefs.useZendesk !== finalPreferences.useZendesk) {
-                    app.emit('preference-switch-zendesk', finalPreferences.useZendesk);
-                }
-                
-                if (currentPrefs.editorFontSize !== finalPreferences.editorFontSize) {
-                    app.emit('preference-switch-size', finalPreferences.editorFontSize);
-                }
+        //if preferences changed, send an event to the app
+        if (currentPrefs.useDblClickByDefault !== finalPreferences.useDblClickByDefault) {
+          app.emit('preference-switch-click', finalPreferences.useDblClickByDefault);
+        }
 
-                if (!adxUtilPref) {
-                    if (typeof callback === 'function') {
-                        callback(null);
-                    }
-                    return;
-                }
+        //if preferences changed, send an event to the app
+        if (currentPrefs.useZendesk !== finalPreferences.useZendesk) {
+          app.emit('preference-switch-zendesk', finalPreferences.useZendesk);
+        }
 
-                ADX.preferences.write(adxUtilPref, function onADXUtilWritePref() {
-                    if (typeof callback === 'function') {
-                        callback(null);
-                    }
-                });
-            });
+        //if preferences changed, send an event to the app
+        if (currentPrefs.editorFontSize !== finalPreferences.editorFontSize) {
+          app.emit('preference-switch-size', finalPreferences.editorFontSize);
+        }
+
+        //if preferences changed, send an event to the app
+        if (currentPrefs.devtools !== finalPreferences.devtools) {
+          app.emit('preference-switch-devtools', finalPreferences.devtools);
+        }
+
+        if (!adxUtilPref) {
+          if (typeof callback === 'function') {
+            callback(null);
+          }
+          return;
+        }
+
+        ADX.preferences.write(adxUtilPref, function onADXUtilWritePref () {
+          if (typeof callback === 'function') {
+            callback(null);
+          }
         });
+      });
     });
+  });
 };
 
 /**
@@ -178,48 +183,48 @@ AppDataSettings.prototype.setPreferences = function setPreferences(preferences, 
  * @param {Error} callback.err
  * @param {Array} callback.mru
  */
-AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed(callback) {
-    // No callback
-    if (typeof callback !== 'function') {
-        return;
+AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed (callback) {
+  // No callback
+  if (typeof callback !== 'function') {
+    return;
+  }
+  if (this._cache.mru) {
+    callback(null, this._cache.mru);
+    return;
+  }
+  const self = this;
+  const filePath = path.join(this.rootPath, mruFileName);
+  fs.readFile(filePath, function onReadMRU (err, data) {
+    if (err) {
+      callback(err, []);
+      return;
     }
-    if (this._cache.mru) {
-        callback(null, this._cache.mru);
-        return;
+
+    const directories = data ? JSON.parse(data) : [];
+    const mru = [];
+    for (let i = 0, l = directories.length; i < l; i += 1) {
+      try {
+        let stat = fs.statSync(directories[i].path);
+        if (stat.isDirectory()) {
+          mru.push(directories[i]);
+        }
+      } catch (ex) {
+        /* Do nothing */
+      }
     }
-    const self = this;
-    const filePath = path.join(this.rootPath, mruFileName);
-    fs.readFile(filePath, function onReadMRU(err, data) {
-        if (err) {
-           callback(err, []);
-           return;
-        }
 
-        const directories = data ? JSON.parse(data) : [];
-        const mru = [];
-        for (let i = 0, l = directories.length; i < l; i += 1) {
-            try {
-                let stat = fs.statSync(directories[i].path);
-                if (stat.isDirectory()) {
-                    mru.push(directories[i]);
-                }
-            } catch (ex) {
-                /* Do nothing */
-            }
-        }
-
-        // Push in cache
-        self._cache.mru = mru;
-        // Return a copy
-        callback(null, self._cache.mru.slice());
-    });
+    // Push in cache
+    self._cache.mru = mru;
+    // Return a copy
+    callback(null, self._cache.mru.slice());
+  });
 };
 
 /**
  * Clear the cache
  */
-AppDataSettings.prototype.clearCache = function clearCache() {
-    this._cache = {};
+AppDataSettings.prototype.clearCache = function clearCache () {
+  this._cache = {};
 };
 
 /**
@@ -229,32 +234,33 @@ AppDataSettings.prototype.clearCache = function clearCache() {
  * @param {Function} callback
  * @param {Error} callback.err
  */
-AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(item, callback) {
-    const self = this;
-    this.getMostRecentlyUsed(function onGetMRU(err, mru) {
-        let indexFound = -1;
+AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed (item, callback) {
+  const self = this;
+  this.getMostRecentlyUsed(function onGetMRU (err, mru) {
+    if (err) throw err;
+    let indexFound = -1;
 
-        for (let i = 0, l = mru.length; i < l; i += 1) {
-            if (mru[i].path === item.path) {
-                indexFound = i;
-                break;
-            }
-        }
+    for (let i = 0, l = mru.length; i < l; i += 1) {
+      if (mru[i].path === item.path) {
+        indexFound = i;
+        break;
+      }
+    }
 
-        if (indexFound > -1) {
-            mru.splice(indexFound, 1);
+    if (indexFound > -1) {
+      mru.splice(indexFound, 1);
+    }
+    mru.unshift(item);
+    self._cache.mru = mru;
+    // Make sure the directory exist
+    fs.mkdir(self.rootPath, function () {
+      fs.writeFile(path.join(self.rootPath, mruFileName), JSON.stringify(mru), { encoding: 'utf8' }, function onWriteMRU (err) {
+        if (typeof callback === 'function') {
+          callback(err);
         }
-        mru.unshift(item);
-        self._cache.mru = mru;
-        // Make sure the directory exist
-        fs.mkdir(self.rootPath, function () {
-            fs.writeFile(path.join(self.rootPath, mruFileName),  JSON.stringify(mru), {encoding: 'utf8'}, function onWriteMRU(err) {
-                if (typeof callback === 'function') {
-                    callback(err);
-                }
-            });
-        });
+      });
     });
+  });
 };
 
 /**
@@ -262,21 +268,22 @@ AppDataSettings.prototype.addMostRecentlyUsed = function addMostRecentlyUsed(ite
  * @param {Function} callback
  * @param {String} callback.projectPath
  */
-AppDataSettings.prototype.getInitialProject = function getInitialProject(callback) {
-    if (typeof callback !== 'function') {
-        return;
+AppDataSettings.prototype.getInitialProject = function getInitialProject (callback) {
+  if (typeof callback !== 'function') {
+    return;
+  }
+  const self = this;
+  this.getPreferences(function (preferences) {
+    if (!preferences.openLastProjectByDefault) {
+      callback('');
+      return;
     }
-    const self = this;
-    this.getPreferences(function (err, preferences) {
-        if (!preferences.openLastProjectByDefault) {
-            callback('');
-            return;
-        }
 
-        self.getMostRecentlyUsed(function onGetMRU(err, mru) {
-            callback((mru.length)  ? mru[0].path : '');
-        });
+    self.getMostRecentlyUsed(function onGetMRU (err, mru) {
+      if (err) throw err;
+      callback((mru.length) ? mru[0].path : '');
     });
+  });
 
 };
 

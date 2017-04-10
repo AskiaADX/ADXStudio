@@ -14,7 +14,8 @@ askiaScript.extend(askiaScript.types, {
     "ARRAY" : "array",    
     "DATE" : "date",    
     "NUMBER" : "number",    
-    "STRING" : "string"
+    "STRING" : "string",    
+    "VARIANT" : "variant"
 });
 
 askiaScript.extend(askiaScript.i18n, {
@@ -22,7 +23,8 @@ askiaScript.extend(askiaScript.i18n, {
         "array" : "Array",        
         "date" : "Date",        
         "number" : "Number",        
-        "string" : "String"
+        "string" : "String",        
+        "variant" : "Variant"
     },    
     "core" : {
         "array" : {
@@ -91,6 +93,24 @@ askiaScript.extend(askiaScript.i18n, {
                 " string\""
             ],            
             "version" : "5.3.2.0"
+        },        
+        "variant" : {
+            "ns" : "askialanguage",            
+            "desc" : [
+                " Variable that contains one of the following type of values: number, string, date, array of numbers.<br/><br/>",                
+                "",                
+                " When the type of a variable could not be known by the compiler in advanced, <br />",                
+                " the AskiaScript provide a Variant type which allows you to convert the value during the run-time.<br/><br/>",                
+                "",                
+                " For example, when you iterate through an array of questions, <em>Value</em> property have different type according to the type of question (number, string, date etc...).<br />",                
+                " In that case, the value of the anonymous question is a Variant.<br/>",                
+                " You can still compare or do a conversion to an appropriate type.<br/>"
+            ],            
+            "examples" : [
+                " Dim arrQuestions = Range(Q1, Q10)",                
+                " Dim aVariant = arrQuestions[2].Value"
+            ],            
+            "version" : "5.4.2.0"
         }
     }
 }, true);
@@ -104,9 +124,29 @@ askiaScript.extend(askiaScript.lexical, {
     },    
     "versions" : [
         {
+            "name" : "5.4.5.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Functions, modules, yeah baby!"
+        },        
+        {
+            "name" : "5.4.2.0",            
+            "ns" : "askialanguage",            
+            "desc" : "AvailableQuota function, While loop, you name it"
+        },        
+        {
+            "name" : "5.4.1.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Language , Error objects"
+        },        
+        {
+            "name" : "5.3.5.4",            
+            "ns" : "askialanguage",            
+            "desc" : "Include the ToAscii, log,log 10 statements"
+        },        
+        {
             "name" : "5.3.5.0",            
             "ns" : "askialanguage",            
-            "desc" : "Include the `Assert` and `Interview` objects and `GoTo` statement"
+            "desc" : "Include the `Assert` and `Interview` objects and `GoTo` statements"
         },        
         {
             "name" : "5.3.3.0",            
@@ -185,6 +225,18 @@ askiaScript.extend(askiaScript.lexical, {
             "prefer" : "Year"
         },        
         {
+            "name" : "As",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tAllows to define the type of a parameter or the return type of a function",            
+            "examples" : [
+                "\tFunction Increment( i As Number) As Number",                
+                "\treturn i + 1",                
+                "\tEndFunction"
+            ],            
+            "version" : "5.4.5.0"
+        },        
+        {
             "name" : "AToutes",            
             "ns" : "askialanguage",            
             "base" : "operator",            
@@ -251,6 +303,24 @@ askiaScript.extend(askiaScript.lexical, {
             "remarks" : "This function uses the locale settings of the computer on which the script is running.",            
             "examples" : "CDate(”01/02/2005”) ' => Return 1st of Feb 2005.",            
             "alsoSee" : "String.ToDate"
+        },        
+        {
+            "name" : "Continue",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "Breaks the current iteration of the \"For\" loop",            
+            "examples" : [
+                "Dim i",                
+                "dim arr = {}",                
+                "For i = 1 To 4",                
+                "  If i = 3 Then",                
+                "    Continue For",                
+                "  EndIf",                
+                "  arr = arr + i",                
+                "Next",                
+                "' arr containes {1;2;4}"
+            ],            
+            "version" : "5.4.1.0"
         },        
         {
             "name" : "CvDkNa",            
@@ -521,6 +591,18 @@ askiaScript.extend(askiaScript.lexical, {
             "version" : "5.3.2.0"
         },        
         {
+            "name" : "EndFunction",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tPart of the Function / EndFunction statement. Indicates the end of the a function",            
+            "examples" : [
+                "\tFunction Increment( i As Number) As Number",                
+                "\t    return i + 1",                
+                "\t EndFunction"
+            ],            
+            "version" : "5.4.5.0"
+        },        
+        {
             "name" : "EndIf",            
             "ns" : "askialanguage",            
             "base" : "statement",            
@@ -549,6 +631,50 @@ askiaScript.extend(askiaScript.lexical, {
                 " EndIf"
             ],            
             "version" : "5.3.2.0"
+        },        
+        {
+            "name" : "EndModule",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tSignals the end of a module",            
+            "examples" : [
+                "\tModule AdvancedMath",                
+                "\tExport Dim Pi = 3.14159",                
+                "\tEnd Module"
+            ],            
+            "version" : "5.4.5.0"
+        },        
+        {
+            "name" : "EndWhile",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "open" : "While",            
+            "desc" : [
+                "Indicates the end of the loop and the start of the next iteration",                
+                "Creates a programmatic loop while the specified condition is true",                
+                "In most programming language the loop while is used to repeat an action until a certain condition is met.",                
+                "The loop iteration end when the condition becomes false or when reaching a break or return statement.",                
+                "",                
+                "Syntax:",                
+                "While [Condition]",                
+                "[Body]",                
+                "EndWhile",                
+                "",                
+                "- The [Condition] is checked at every loop iteration",                
+                "- The [Body] is any legal AskiaScript expression to repeat"
+            ],            
+            "examples" : [
+                "' Creates an array with maximum 3 answers greater than 5",                
+                "Dim IllegibleBrands = {}  '  Array with answers greater than 5",                
+                "",                
+                "While IllegibleBrands.Values.Count < 3",                
+                "",                
+                "If brands.Values[i] > 5 Then",                
+                "IllegibleBrands.Insert( brands.Values[i] )",                
+                "EndIf",                
+                "",                
+                "EndWhile"
+            ]
         },        
         {
             "name" : "Entier",            
@@ -597,6 +723,18 @@ askiaScript.extend(askiaScript.lexical, {
                 " ' Here the variable i contains the index of the value 5"
             ],            
             "version" : "5.3.2.0"
+        },        
+        {
+            "name" : "Export",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tGives access to a variable or a function outside of the module",            
+            "examples" : [
+                "\tModule AdvancedMath",                
+                "\t   Export Dim Pi = 3.14159",                
+                "    End Module"
+            ],            
+            "version" : "5.4.5.0"
         },        
         {
             "name" : "False",            
@@ -713,7 +851,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "ForMax",            
             "ns" : "askialanguage",            
             "base" : "function",            
-            "type" : "variant",            
+            "type" : "anytype",            
             "args" : [
                 {
                     "name" : "counter",                    
@@ -727,7 +865,7 @@ askiaScript.extend(askiaScript.lexical, {
                 },                
                 {
                     "name" : "expression",                    
-                    "type" : "variant",                    
+                    "type" : "anytype",                    
                     "desc" : "Expression to evaluate and used by the maximum comparison"
                 }
             ],            
@@ -770,7 +908,7 @@ askiaScript.extend(askiaScript.lexical, {
                 },                
                 {
                     "name" : "expression",                    
-                    "type" : "variant",                    
+                    "type" : "anytype",                    
                     "desc" : "Expression to evaluate and used by the minimum comparison"
                 }
             ],            
@@ -800,7 +938,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "ForSet",            
             "ns" : "askialanguage",            
             "base" : "function",            
-            "type" : "variant",            
+            "type" : "anytype",            
             "args" : [
                 {
                     "name" : "counter",                    
@@ -814,7 +952,7 @@ askiaScript.extend(askiaScript.lexical, {
                 },                
                 {
                     "name" : "expression",                    
-                    "type" : "variant",                    
+                    "type" : "anytype",                    
                     "desc" : "Expression to evaluate and append in the result array"
                 }
             ],            
@@ -840,7 +978,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "ForSum",            
             "ns" : "askialanguage",            
             "base" : "function",            
-            "type" : "variant",            
+            "type" : "anytype",            
             "args" : [
                 {
                     "name" : "counter",                    
@@ -854,7 +992,7 @@ askiaScript.extend(askiaScript.lexical, {
                 },                
                 {
                     "name" : "expression",                    
-                    "type" : "variant",                    
+                    "type" : "anytype",                    
                     "desc" : "Expression to evaluate and used in the addition"
                 }
             ],            
@@ -878,6 +1016,18 @@ askiaScript.extend(askiaScript.lexical, {
                 " ForSum(\"i\", 2, ??Q1??[i]) ' => ??Q1??[1] + ??Q1??[2]"
             ],            
             "alsoSee" : "For"
+        },        
+        {
+            "name" : "Function",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tSignals the start of a function",            
+            "examples" : [
+                "\tFunction Increment( i As Number) As Number",                
+                "\treturn i + 1",                
+                "\tEndFunction"
+            ],            
+            "version" : "5.4.5.0"
         },        
         {
             "name" : "GetParameter",            
@@ -1127,6 +1277,17 @@ askiaScript.extend(askiaScript.lexical, {
                 " EndIf"
             ],            
             "version" : "5.3.2.0"
+        },        
+        {
+            "name" : "Import",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tImports a module defined in a resource as an .asx file",            
+            "examples" : [
+                "\tImport AdvancedMath",                
+                "\treturn AdvancedMath::PI"
+            ],            
+            "version" : "5.4.5.0"
         },        
         {
             "name" : "In",            
@@ -1542,6 +1703,18 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
+            "name" : "Module",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "desc" : "\tSignals the start of a module",            
+            "examples" : [
+                "\tModule AdvancedMath",                
+                "\t   Export Dim Pi = 3.14159",                
+                "\tEnd Module"
+            ],            
+            "version" : "5.4.5.0"
+        },        
+        {
             "name" : "Mois",            
             "ns" : "askialanguage",            
             "base" : "function",            
@@ -1758,7 +1931,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "On",            
             "ns" : "askialanguage",            
             "base" : "function",            
-            "type" : "variant",            
+            "type" : "anytype",            
             "args" : [
                 {
                     "name" : "expression",                    
@@ -1767,7 +1940,7 @@ askiaScript.extend(askiaScript.lexical, {
                 },                
                 {
                     "name" : "value",                    
-                    "type" : "variant",                    
+                    "type" : "anytype",                    
                     "desc" : "Value that could be selected according the expression. The latest value is the default fallback.",                    
                     "repeatable" : true
                 }
@@ -1861,23 +2034,27 @@ askiaScript.extend(askiaScript.lexical, {
             "args" : [
                 {
                     "name" : "lowerBound",                    
-                    "type" : "number",                    
+                    "type" : "anytype",                    
                     "desc" : "Lower bound of the range to create"
                 },                
                 {
                     "name" : "upperBound",                    
-                    "type" : "number",                    
+                    "type" : "anytype",                    
                     "desc" : "Upper bound of the range to create"
                 }
             ],            
             "desc" : [
                 " Range(LowerBoud,UpperBound)",                
-                " Use this function to span across a set's values, thereby enabling you to save time, and improving the legibility of your Askia scripts."
+                " Use this function to span across a set's values, thereby enabling you to save time, and improving the legibility of your Askia scripts.",                
+                " This can be used for numbers or for questions"
             ],            
             "examples" : [
                 " Range(5,15)",                
+                " refers to the same set as: {5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15}.",                
                 "",                
-                " refers to the same set as: {5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15}."
+                " Range(q1,q50)",                
+                " contains all questions between q1 and q50",                
+                " "
             ]
         },        
         {
@@ -2293,6 +2470,38 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
+            "name" : "While",            
+            "ns" : "askialanguage",            
+            "base" : "statement",            
+            "close" : "EndWhile",            
+            "desc" : [
+                "Creates a programmatic loop while the specified condition is true",                
+                "In most programming language the loop while is used to repeat an action until a certain condition is met.",                
+                "The loop iteration end when the condition becomes false or when reaching a break or return statement.",                
+                "",                
+                "Syntax:",                
+                "While [Condition]",                
+                "[Body]",                
+                "EndWhile",                
+                "",                
+                "- The [Condition] is checked at every loop iteration",                
+                "- The [Body] is any legal AskiaScript expression to repeat"
+            ],            
+            "examples" : [
+                "' Creates an array with maximum 3 answers greater than 5",                
+                "Dim IllegibleBrands = {}  '  Array with answers greater than 5",                
+                "",                
+                "While IllegibleBrands.Values.Count < 3",                
+                "",                
+                "If brands.Values[i] > 5 Then",                
+                "IllegibleBrands.Insert( brands.Values[i] )",                
+                "EndIf",                
+                "",                
+                "EndWhile"
+            ],            
+            "version" : "5.4.2.0"
+        },        
+        {
             "name" : "Year",            
             "ns" : "askialanguage",            
             "base" : "function",            
@@ -2371,9 +2580,9 @@ askiaScript.extend(askiaScript.lexical, {
                 "type" : "string",                
                 "args" : [
                     {
-                        "name" : "format",                        
+                        "name" : "Format",                        
                         "type" : "string",                        
-                        "desc" : "Format of the date to obtain (case sensitive)"
+                        "desc" : "of the date to obtain (case sensitive)"
                     },                    
                     {
                         "name" : "string2",                        
@@ -2506,292 +2715,79 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
-        "number" : [
-            {
-                "name" : "Abs",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Returns the absolute part of a number. (Positive value)",                
-                "examples" : [
-                    " dim counter = -3",                    
-                    " counter.Abs() ' => 3",                    
-                    " '",                    
-                    " dim i = -1.5",                    
-                    " i.Abs() ' => 1.5"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Ceil",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "decimals",                        
-                        "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Returns the next highest value by rounding up value .",                
-                "examples" : [
-                    " dim counter = 1.2",                    
-                    " counter.Ceil() ' => 2",                    
-                    " '",                    
-                    " dim i = -3.14",                    
-                    " i.Ceil() ' => -3",                    
-                    " '",                    
-                    " dim j = 1.5222",                    
-                    " j.Ceil(2) ' => 1.53"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Floor",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "decimals",                        
-                        "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Returns the next lowest value by rounding down value .",                
-                "examples" : [
-                    " dim counter = 1.7",                    
-                    " counter.Floor() ' => 1",                    
-                    " '",                    
-                    " dim i = -3.84",                    
-                    " i.Floor() ' => -4",                    
-                    " '",                    
-                    " dim j = 1.5777",                    
-                    " j.Floor(2) ' => 1.57"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Format",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "format",                        
-                        "type" : "string",                        
-                        "desc" : "Representation of the desire format"
-                    },                    
-                    {
-                        "name" : "decimalSep",                        
-                        "type" : "string",                        
-                        "desc" : "Decimal separator",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "thousandSep",                        
-                        "type" : "string",                        
-                        "desc" : "Thousand separator",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Format a number to string using the format parameter",                    
-                    " When the separators are omitted, the system will use the separators from the regional settings context",                    
-                    " (language of the respondent or the regional settings of the current machine)"
-                ],                
-                "examples" : [
-                    " dim i = 3456.7",                    
-                    " i.Format(\"00000.00\")",                    
-                    " ' => \"03456.70\" or \"03456,70\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"#.##\")",                    
-                    " ' =>\"3456.7\" or \"3456,7\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"#,##0.00\")",                    
-                    " '=>  \"3,456.70\" or \"3 456,70\" or \"3.456,70\"",                    
-                    " '  depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"$#,##0.00\")",                    
-                    " '=> \"$3,456.70\" or \"$3 456,70\" or \"$3.456,70\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " '",                    
-                    " i = 0.1",                    
-                    " i.Format(\"#.##\") ' => \".1\" or \",1\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"0.##\") ' => \"0.1\" or \"0,1\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " i.Format(\"0.00\") ' => \"0.10\" or \"0,10\"",                    
-                    " ' depending on the regional settings",                    
-                    " '",                    
-                    " '",                    
-                    " i = 123456.78",                    
-                    " i.Format(\"#,##0.00\", \",\", \".\") ' => \"123.456,78\"",                    
-                    " i.Format(\"#,##0.00\", \".\", \",\") ' => \"123,456.78\"",                    
-                    " i.Format(\"#,##0.00\", \"#\", \"@\") ' => \"123@456#78\"",                    
-                    " i.Format(\"#.##\", \",\") ' => \"123456,78\"",                    
-                    " i.Format(\"#.##\", \".\") ' => \"123456.78\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Pow",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "power",                        
-                        "type" : "number",                        
-                        "desc" : "Power value"
-                    }
-                ],                
-                "desc" : "Return the power of a value",                
-                "examples" : [
-                    " dim counter = 2",                    
-                    " counter.Pow(3) ' => 8",                    
-                    " 'Same as (2 * 2 * 2)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Round",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "decimal",                        
-                        "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Round a number.",                
-                "examples" : [
-                    " dim counter = 1.2",                    
-                    " counter.Round() ' => 1",                    
-                    " '",                    
-                    " dim i = 1.5",                    
-                    " i.Round() ' => 2",                    
-                    " '",                    
-                    " dim j = 1.55555",                    
-                    " j.Round(2) ' => 1.56",                    
-                    " '",                    
-                    " dim k = 1",                    
-                    " k.Round(2) ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToDays",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to days: (number)",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToDays() ' => 2",                    
-                    " (Date1 - Date2).ToDays() ' => The number of days"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToHours",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to hours: (number * (24) )",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToHours() ' => 48",                    
-                    " (Date1 - Date2).ToHours()",                    
-                    " ' => (Date1 - Date2) * (24)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToInt",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts a number (double) to integer. This method will not round the number.",                
-                "examples" : [
-                    " dim counter = 1.2",                    
-                    " counter.ToInt() ' => 1",                    
-                    " '",                    
-                    " dim i = 1.5",                    
-                    " i.ToInt() ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToMinutes",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to minutes: (number * (24 * 60) )",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToMinutes() ' => 2880",                    
-                    " (Date1 - Date2).ToMinutes()",                    
-                    " ' => (Date1 - Date2) * (24 * 60)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToSeconds",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Converts the specified number of days to seconds: (number * (24 * 3600) )",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.ToSeconds() ' => 172800",                    
-                    " (Date1 - Date2).ToSeconds()",                    
-                    " ' => (Date1 - Date2) * (24 * 3600)"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    " Converts a number to string using the regional settings context",                    
-                    " (from the language of respondent or the current machine) to determine the decimal separator",                    
-                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the decimal separator"
-                ],                
-                "examples" : [
-                    " dim counter = 1.9",                    
-                    " counter.ToString() ' => \"1.9\" or \"1,9\"",                    
-                    " ' depending on the regional settings"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : [
-                    " dim i = 2",                    
-                    " i.TypeOf() ' => \"number\""
-                ],                
-                "version" : "5.3.2.0"
-            }
-        ],        
         "string" : [
+            {
+                "name" : "Collate",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "String",                        
+                        "type" : "string",                        
+                        "desc" : "to be compared with"
+                    },                    
+                    {
+                        "name" : "Comparison",                        
+                        "type" : "number",                        
+                        "desc" : "Type of comparison ( primary, secondary, tertiary, quartenary or identical - primary by default)",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "Language",                        
+                        "type" : "variant",                        
+                        "desc" : "(the abbreviation or the ID)"
+                    }
+                ],                
+                "desc" : [
+                    "\tCompares two strings using the locale language",                    
+                    "",                    
+                    "",                    
+                    "\tPrimary -- ignore accents and character case, comparing base letters only. For example \"facade\" and \"Façade\" are the same.",                    
+                    "\tSecondary -- ignore character case but consider accents. \"facade\" and \"façade\" are different but \"Façade\" and \"façade\" are the same.",                    
+                    "\tTertiary -- consider both case and accents: \"Façade\" and \"façade\" are different. Ignore punctuation.",                    
+                    "\tQuaternary -- consider all case, accents, and punctuation. The words must be identical in terms of Unicode representation.",                    
+                    "\tIdentical -- as quaternary, but compare code points as well."
+                ],                
+                "examples" : [
+                    "\tdim s = \"abcde\"",                    
+                    "\ts.Collate(\"fghi\") ' => negative",                    
+                    "\t",                    
+                    "\tdim s = \"gfhi\"",                    
+                    "\ts.Collate(\"abcde\") ' =>  positive",                    
+                    "",                    
+                    "\tdim s = \"abcde\"",                    
+                    "\ts.Collate(\"abcde\") ' => 0",                    
+                    "",                    
+                    "\tdim s = \"Fussballmanager\"",                    
+                    "\ts.Collate(\"fußballmanager\",1,\"DEU\") ' => 0",                    
+                    "",                    
+                    "\tdim s = \"Fussballmanager\"",                    
+                    "\ts.Collate(\"fußballmanager\",2,1031) ' => 1"
+                ],                
+                "version" : "5.4.5.0"
+            },            
+            {
+                "name" : "DLdistance",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : [
+                    "\tCalculate distance between two strings using the Damerau-Levenshtein Distance https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance",                    
+                    "\tThis distance is very useful to find spelling errors"
+                ],                
+                "examples" : [
+                    "\tdim s = \"abcde\"",                    
+                    "\ts.DLDistance(\"abce\") ' => 1",                    
+                    "",                    
+                    "\tdim s = \"abcde\"",                    
+                    "\ts.DLDistance(\"abdce\") ' => 1",                    
+                    "",                    
+                    "\tdim s = \"abcde\"",                    
+                    "\ts.DLDistance(\"abcde\") ' => 0"
+                ],                
+                "version" : "5.4.5.0"
+            },            
             {
                 "name" : "IndexOf",                
                 "ns" : "askialanguage",                
@@ -3152,6 +3148,23 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "ToAscii",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Use this function to convert a unicode string string into ASCII",                    
+                    " "
+                ],                
+                "examples" : [
+                    " dim s = \"\"ＭＴＶ\"\"",                    
+                    " s.ToAscii() ' => \"MTV\"",                    
+                    " '",                    
+                    " "
+                ],                
+                "version" : "5.3.5.4"
+            },            
+            {
                 "name" : "ToDate",                
                 "ns" : "askialanguage",                
                 "base" : "method",                
@@ -3351,10 +3364,325 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             }
         ],        
+        "number" : [
+            {
+                "name" : "Abs",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Returns the absolute part of a number. (Positive value)",                
+                "examples" : [
+                    " dim counter = -3",                    
+                    " counter.Abs() ' => 3",                    
+                    " '",                    
+                    " dim i = -1.5",                    
+                    " i.Abs() ' => 1.5"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Ceil",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "decimals",                        
+                        "type" : "number",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Returns the next highest value by rounding up value .",                
+                "examples" : [
+                    " dim counter = 1.2",                    
+                    " counter.Ceil() ' => 2",                    
+                    " '",                    
+                    " dim i = -3.14",                    
+                    " i.Ceil() ' => -3",                    
+                    " '",                    
+                    " dim j = 1.5222",                    
+                    " j.Ceil(2) ' => 1.53"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Floor",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "decimals",                        
+                        "type" : "number",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Returns the next lowest value by rounding down value .",                
+                "examples" : [
+                    " dim counter = 1.7",                    
+                    " counter.Floor() ' => 1",                    
+                    " '",                    
+                    " dim i = -3.84",                    
+                    " i.Floor() ' => -4",                    
+                    " '",                    
+                    " dim j = 1.5777",                    
+                    " j.Floor(2) ' => 1.57"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Format",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "format",                        
+                        "type" : "string",                        
+                        "desc" : "Representation of the desire format"
+                    },                    
+                    {
+                        "name" : "decimalSep",                        
+                        "type" : "string",                        
+                        "desc" : "Decimal separator",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "thousandSep",                        
+                        "type" : "string",                        
+                        "desc" : "Thousand separator",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Format a number to string using the format parameter",                    
+                    " When the separators are omitted, the system will use the separators from the regional settings context",                    
+                    " (language of the respondent or the regional settings of the current machine)"
+                ],                
+                "examples" : [
+                    " dim i = 3456.7",                    
+                    " i.Format(\"00000.00\")",                    
+                    " ' => \"03456.70\" or \"03456,70\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"#.##\")",                    
+                    " ' =>\"3456.7\" or \"3456,7\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"#,##0.00\")",                    
+                    " '=>  \"3,456.70\" or \"3 456,70\" or \"3.456,70\"",                    
+                    " '  depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"$#,##0.00\")",                    
+                    " '=> \"$3,456.70\" or \"$3 456,70\" or \"$3.456,70\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " '",                    
+                    " i = 0.1",                    
+                    " i.Format(\"#.##\") ' => \".1\" or \",1\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"0.##\") ' => \"0.1\" or \"0,1\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " i.Format(\"0.00\") ' => \"0.10\" or \"0,10\"",                    
+                    " ' depending on the regional settings",                    
+                    " '",                    
+                    " '",                    
+                    " i = 123456.78",                    
+                    " i.Format(\"#,##0.00\", \",\", \".\") ' => \"123.456,78\"",                    
+                    " i.Format(\"#,##0.00\", \".\", \",\") ' => \"123,456.78\"",                    
+                    " i.Format(\"#,##0.00\", \"#\", \"@\") ' => \"123@456#78\"",                    
+                    " i.Format(\"#.##\", \",\") ' => \"123456,78\"",                    
+                    " i.Format(\"#.##\", \".\") ' => \"123456.78\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Log",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Return the neperian logarithm of the number",                
+                "examples" : [
+                    " dim counter = 1",                    
+                    " counter.Log() ' => 0",                    
+                    " "
+                ],                
+                "alsoSee" : "Log10",                
+                "version" : "5.3.5.4"
+            },            
+            {
+                "name" : "Log",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Return the base 10 logarithm of the number",                
+                "examples" : [
+                    " dim counter = 1",                    
+                    " counter.Log10() ' => 0",                    
+                    " counter = 100",                    
+                    " counter.Log10() ' => 2",                    
+                    " "
+                ],                
+                "alsoSee" : "Log",                
+                "version" : "5.3.5.4"
+            },            
+            {
+                "name" : "Pow",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "power",                        
+                        "type" : "number",                        
+                        "desc" : "Power value"
+                    }
+                ],                
+                "desc" : "Return the power of a value",                
+                "examples" : [
+                    " dim counter = 2",                    
+                    " counter.Pow(3) ' => 8",                    
+                    " 'Same as (2 * 2 * 2)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Round",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "decimal",                        
+                        "type" : "number",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Round a number.",                
+                "examples" : [
+                    " dim counter = 1.2",                    
+                    " counter.Round() ' => 1",                    
+                    " '",                    
+                    " dim i = 1.5",                    
+                    " i.Round() ' => 2",                    
+                    " '",                    
+                    " dim j = 1.55555",                    
+                    " j.Round(2) ' => 1.56",                    
+                    " '",                    
+                    " dim k = 1",                    
+                    " k.Round(2) ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToDays",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to days: (number)",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToDays() ' => 2",                    
+                    " (Date1 - Date2).ToDays() ' => The number of days"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToHours",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to hours: (number * (24) )",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToHours() ' => 48",                    
+                    " (Date1 - Date2).ToHours()",                    
+                    " ' => (Date1 - Date2) * (24)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToInt",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts a number (double) to integer. This method will not round the number.",                
+                "examples" : [
+                    " dim counter = 1.2",                    
+                    " counter.ToInt() ' => 1",                    
+                    " '",                    
+                    " dim i = 1.5",                    
+                    " i.ToInt() ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToMinutes",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to minutes: (number * (24 * 60) )",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToMinutes() ' => 2880",                    
+                    " (Date1 - Date2).ToMinutes()",                    
+                    " ' => (Date1 - Date2) * (24 * 60)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToSeconds",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Converts the specified number of days to seconds: (number * (24 * 3600) )",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.ToSeconds() ' => 172800",                    
+                    " (Date1 - Date2).ToSeconds()",                    
+                    " ' => (Date1 - Date2) * (24 * 3600)"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Converts a number to string using the regional settings context",                    
+                    " (from the language of respondent or the current machine) to determine the decimal separator",                    
+                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the decimal separator"
+                ],                
+                "examples" : [
+                    " dim counter = 1.9",                    
+                    " counter.ToString() ' => \"1.9\" or \"1,9\"",                    
+                    " ' depending on the regional settings"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : [
+                    " dim i = 2",                    
+                    " i.TypeOf() ' => \"number\""
+                ],                
+                "version" : "5.3.2.0"
+            }
+        ],        
         "array" : [
             {
                 "ns" : "askialanguage",                
-                "accessor" : "variant"
+                "accessor" : "anytype"
             },            
             {
                 "name" : "Avg",                
@@ -3402,7 +3730,7 @@ askiaScript.extend(askiaScript.lexical, {
                     },                    
                     {
                         "name" : "value",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Value to search"
                     }
                 ],                
@@ -3487,7 +3815,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "args" : [
                     {
                         "name" : "value",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Value to add"
                     }
                 ],                
@@ -3555,12 +3883,12 @@ askiaScript.extend(askiaScript.lexical, {
                     },                    
                     {
                         "name" : "value",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Value to add"
                     }
                 ],                
                 "desc" : [
-                    " This method modify the object in place.",                    
+                    " This method modifies the object in place.",                    
                     " Use it to add a set of values/data allowing repetition (with duplicates) at the specify index",                    
                     " The usage of the calls chains must be done in a single line (no carriage return),",                    
                     " if you want to execute multiple operations in multiple lines,",                    
@@ -3753,7 +4081,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "args" : [
                     {
                         "name" : "value",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Value to add"
                     }
                 ],                
@@ -3816,12 +4144,12 @@ askiaScript.extend(askiaScript.lexical, {
                 "args" : [
                     {
                         "name" : "value",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Value to remove"
                     }
                 ],                
                 "desc" : [
-                    " This method modify the object in place.",                    
+                    " This method modifies the object in place.",                    
                     " It removes all elements which matches the data",                    
                     " The usage of the calls chains must be done in a single line (no carriage return),",                    
                     " if you want to execute multiple operations in multiple lines,",                    
@@ -3853,7 +4181,7 @@ askiaScript.extend(askiaScript.lexical, {
                     }
                 ],                
                 "desc" : [
-                    " This method modify the object in place.",                    
+                    " This method modifies the object in place.",                    
                     " It removes the element at the specify index",                    
                     " The usage of the calls chains must be done in a single line (no carriage return),",                    
                     " if you want to execute multiple operations in multiple lines,",                    
@@ -3906,11 +4234,11 @@ askiaScript.extend(askiaScript.lexical, {
                     },                    
                     {
                         "name" : "data",                        
-                        "type" : "variant",                        
+                        "type" : "anytype",                        
                         "desc" : "Data to set at the specified index"
                     }
                 ],                
-                "desc" : "Set the data at the specify index<br />This method modify the object in place. <br/>If the specified index is out of range, superior than the size of the array, the data will then be inserted at the end of the array",                
+                "desc" : "Set the data at the specify index<br />This method modifies the object in place. <br/>If the specified index is out of range, superior than the size of the array, the data will then be inserted at the end of the array",                
                 "examples" : [
                     " dim arr = {2;4}",                    
                     " arr.SetAt(2, 3) ' => arr",                    
@@ -3943,7 +4271,7 @@ askiaScript.extend(askiaScript.lexical, {
                     }
                 ],                
                 "desc" : [
-                    " This method modify the object in place.",                    
+                    " This method modifies the object in place.",                    
                     " Use this function to sort a list of data from an array into a random order.",                    
                     " Parameters",                    
                     " - seed [Optional] Any number to reapply the same order for another Shuffle in the same interview scope"
@@ -3967,7 +4295,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "base" : "method",                
                 "type" : "array",                
                 "desc" : [
-                    " This method modify the object in place.",                    
+                    " This method modifies the object in place.",                    
                     " Use this function to sort a list of data from an array into a ascending order."
                 ],                
                 "examples" : [
@@ -3983,7 +4311,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "base" : "method",                
                 "type" : "array",                
                 "desc" : [
-                    " This method modify the object in place.",                    
+                    " This method modifies the object in place.",                    
                     " Use this function to sort a list of data from an array into a descending order."
                 ],                
                 "examples" : [
@@ -4089,6 +4417,133 @@ askiaScript.extend(askiaScript.lexical, {
                     " arr.TypeOf() ' => \"array\""
                 ],                
                 "version" : "5.3.2.0"
+            }
+        ],        
+        "variant" : [
+            {
+                "name" : "InnerTypeOf",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the object inside the variant",                
+                "examples" : [
+                    " Dim arrQuestions",                    
+                    " arrQuestions = Range( Q1,Q10)",                    
+                    " return arrQuestions[3].Value.InnertTypeOf() ' => \"number\""
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToDate",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "date",                
+                "desc" : [
+                    " Converts whatever value inside the variant to a date.",                    
+                    "",                    
+                    " Return a Number"
+                ],                
+                "examples" : [
+                    " ' q1 is a numeric question with value 123",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumber() ' => 123",                    
+                    "",                    
+                    " ' q1 is a numeric question with value 1.5",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumber() ' => 1.5"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToNumArray",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : [
+                    " Converts whatever value inside the variant to an array of numbers.",                    
+                    "",                    
+                    " Return a  array of numbers"
+                ],                
+                "examples" : [
+                    " ' q1 is a numeric question with value 25",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumArray() ' => {25}",                    
+                    "",                    
+                    " ' q1 is an open-ended question with value \"1,3,5,7,9\"",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumArray() ' => {1; 3; 5; 7; 9}",                    
+                    "",                    
+                    " ' q1 is an open-ended question with value \"1;3;AA;7;BB;12\"",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumArray() ' => {1; 3; DK; 7; DK; 12} ",                    
+                    "",                    
+                    " ' q1 is an date question with value #25/03/2011 16:32:07#",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumArray() ' => {40627.688969907409}",                    
+                    "",                    
+                    " ' q1 is an open-ended question inside a loop, ",                    
+                    " ' and have all of that values: \"3\"; \"AA\"; \"\"; \"4\";\"5\"; \"6\"",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].AllValues.ToNumArray() ' => {3;DK;DK;4;5;6}"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToNumber",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : [
+                    " Converts whatever value inside the variant to a number.",                    
+                    "",                    
+                    " Return a Number"
+                ],                
+                "examples" : [
+                    " ' q1 is a numeric question with value 123",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumber() ' => 123",                    
+                    "",                    
+                    " ' q1 is a numeric question with value 1.5",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToNumber() ' => 1.5"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToStringArray",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : [
+                    " Converts whatever value inside the variant to an array of strings.",                    
+                    "",                    
+                    " Return a  array of numbers"
+                ],                
+                "examples" : [
+                    " ' q1 is a numeric question with value 25",                    
+                    " Dim questions = Range(q1, q5)",                    
+                    " questions[1].Value.ToStringArray() ' => {\"25\"}",                    
+                    "",                    
+                    " questions[1].AllValues.ToNumArray() ' => {3;DK;DK;4;5;6}"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToVariant",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "desc" : [
+                    " Converts everything into a variant ",                    
+                    "",                    
+                    " Return a  array of numbers"
+                ],                
+                "examples" : [
+                    " \"Abc\".ToVariant().ToNumber()",                    
+                    " ",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
             }
         ]
     },    

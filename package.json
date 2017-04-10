@@ -1,9 +1,10 @@
 {
   "name": "ADXStudio",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
+    "start": "electron ./app/main.js",
     "test": "jasmine-node spec/"
   },
   "repository": {
@@ -16,7 +17,8 @@
     "ADP",
     "ASKIA",
     "Design",
-    "Control"
+    "Control",
+    "Page"
   ],
   "author": "Askia SAS",
   "license": "ISC",
@@ -25,18 +27,18 @@
   },
   "homepage": "https://github.com/AskiaADX/ADXStudio",
   "dependencies": {
-    "adxutil": "^2.0.0-beta.4",
+    "adxutil": "^2.0.0-rc.1",
     "charset-detector": "0.0.2",
     "fs.extra": "^1.3.2",
-    "glob": "^6.0.1",
-    "mime-types": "^2.1.8",
-    "node-uuid": "^1.4.7",
-    "nodejs-websocket": "^1.4.1",
-    "wrench": "^1.5.8"
+    "glob": "^6.0.4",
+    "mime-types": "^2.1.15",
+    "node-uuid": "^1.4.8",
+    "nodejs-websocket": "^1.7.1",
+    "wrench": "^1.5.9"
   },
   "devDependencies": {
-    "electron-packager": "^7.0.1",
-    "electron-prebuilt": "^1.3.3",
+    "electron": "^1.6.4",
+    "electron-packager": "^8.6.0",
     "jasmine-node": "^1.14.5"
   }
 }

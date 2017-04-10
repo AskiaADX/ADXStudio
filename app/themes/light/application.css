@@ -9,12 +9,12 @@
     Share styling
    ======================================== */
 ::-moz-selection {
-    background  : #27AE60;
+    background  : #7FB633;
     color       : #FFF;
 }
 
 ::selection {
-    background  : #27AE60;
+    background  : #7FB633;
     color       : #FFF;
 }
 
@@ -46,7 +46,7 @@ body.form-viewer a {
 h3 {
     font-size   : 14px;
     font-weight : bold;
-    color       : #27AE60;
+    color       : #7FB633;
 }
 
 fieldset {
@@ -68,13 +68,13 @@ label, input[type="checkbox"] {
 input, textarea {
     border-radius   : 2px;
     border          : 1px solid #BDC3C7;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     color           : #444;
 }
 
 select {
     border          : 1px solid #BDC3C7;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     color           : #444;
     border-radius   : 2px;
     cursor          : pointer;
@@ -85,7 +85,7 @@ textarea {
 }
 
 #grid input, #grid textarea, #grid select {
-    background-color: #E7EBEC;
+    background-color: #F0F0F0;
 }
 
 input[readonly] {
@@ -93,7 +93,7 @@ input[readonly] {
 }
 
 input:focus, input:active, textarea:focus, textarea:active, select:focus, select:active {
-    border  : 1px solid #27AE60;
+    border  : 1px solid #7FB633;
     outline : none;
 }
 
@@ -110,7 +110,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 #formProjectSettings input[type="url"],
 #formProjectSettings textarea,
 #formProjectSettings select {
-    width: 60%;
+    width: 75%;
 }
 
 .splitter {
@@ -122,13 +122,13 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #panel_status.opened {
-    background      : #ECF0F1;
+    background      : #F0F0F0;
     border-bottom   : 1px solid #BDC3C7;
     color           : #444;
 }
 
 .panel-title-bar {
-    background      : #ECF0F1;
+    background      : #F0F0F0;
     border-bottom   : 1px solid #BDC3C7;
     color           : #444;
 }
@@ -142,7 +142,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #panel_output a {
-    color: #A2D6F9;
+    color: #2f7ec1;
 }
 
 #panel_output .error {
@@ -155,7 +155,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 #panel_output .success {
-    color: #27AE60;
+    color: #508704;
     background  : inherit;
 }
 
@@ -164,7 +164,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
    ======================================== */
 
 .explorer-html {
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
 }
 
 #root {
@@ -173,7 +173,9 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .toggle {
   background-image  : url(adxs-toggle-closed.png);
+  background-repeat : no-repeat;
   width             : 20px;
+  min-width         : 20px;
   height            : 20px;
 }
 
@@ -201,6 +203,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 #root > .item-info > .icon {
   background-image  : url(adxs-folder.png);
+  background-repeat : no-repeat;
   display           : inline-block;
   width             : 20px;
   height            : 20px;
@@ -209,30 +212,178 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .folder > .item-info > .icon {
   background-image  : url(adxs-folder.png);
+  background-repeat : no-repeat;
   display           : inline-block;
   width             : 20px;
   height            : 20px;
   transition        : background-image ease-in .2s;
 }
 
-.folder > .item-info:hover > .icon {
-  background-image: url(adxs-folder-hover.png);
+.folder > .item-info > .open + .icon,
+#root > .item-info > .open + .icon {
+  background-image: url(adxs-folder-opened.png);
 }
 
 .file > .item-info > .icon {
-  background-image  : url(adxs-file.png);
+  background-image  : url(adxs-file-hover.png);
+  background-repeat : no-repeat;
   display           : inline-block;
   width             : 20px;
+  min-width         : 20px;
+  max-width         : 20px; 
   height            : 20px;
   transition        : background-image ease-in .2s;
 }
 
-.file > .item-info:hover > .icon {
-  background-image: url(adxs-file-hover.png);
+.tab-icon.preview {
+  background-image  : url(adxs-file-type-preview.png);
 }
 
-.file > .selected > .icon {
-    background-image: url(adxs-file-active.png);
+.file > .item-info > .adc,
+.tab-icon.adc {
+  background-image  : url(adxs-file-type-adc.png);
+}
+
+.file > .item-info > .adp,
+.tab-icon.adp {
+  background-image  : url(adxs-file-type-adp.png);
+}
+
+.file > .item-info > .asx,
+.tab-icon.asx {
+  background-image  : url(adxs-file-type-asx.png);
+}
+
+.file > .item-info > .css,
+.tab-icon.css {
+  background-image  : url(adxs-file-type-css.png);
+}
+
+.file > .item-info > .doc,
+.tab-icon.doc,
+.file > .item-info > .docx,
+.tab-icon.docx {
+  background-image  : url(adxs-file-type-word.png);
+}
+
+.file > .item-info > .gitignore,
+.tab-icon.gitignore,
+.file > .item-info > .git,
+.tab-icon.git,
+.file > .item-info > .gitattributes,
+.tab-icon.gitattributes {
+  background-image  : url(adxs-file-type-git.png);
+}
+
+.file > .item-info > .html,
+.tab-icon.html {
+  background-image  : url(adxs-file-type-html.png);
+}
+
+.file > .item-info > .js,
+.tab-icon.js {
+  background-image  : url(adxs-file-type-js.png);
+}
+
+.file > .item-info > .jpg,
+.tab-icon.jpg,
+.file > .item-info > .jpeg,
+.tab-icon.jpeg {
+  background-image  : url(adxs-file-type-jpg.png);
+}
+
+.file > .item-info > .json,
+.tab-icon.json {
+  background-image  : url(adxs-file-type-json.png);
+}
+
+.file > .item-info > .md,
+.tab-icon.md {
+  background-image  : url(adxs-file-type-md.png);
+}
+
+.file > .item-info > .mdb,
+.tab-icon.mdb,
+.file > .item-info > .accdb,
+.tab-icon.accdb {
+  background-image  : url(adxs-file-type-access.png);
+}
+
+.file > .item-info > .xls,
+.tab-icon.xls,
+.file > .item-info > .xlsx,
+.tab-icon.xlsx {
+  background-image  : url(adxs-file-type-excel.png);
+}
+
+.file > .item-info > .mp3,
+.tab-icon.mp3,
+.file > .item-info > .wav,
+.tab-icon.wav,
+.file > .item-info > .flac,
+.tab-icon.flac {
+  background-image  : url(adxs-file-type-audio.png);
+}
+
+.file > .item-info > .mp4,
+.tab-icon.mp4,
+.file > .item-info > .webm,
+.tab-icon.webm,
+.file > .item-info > .mov,
+.tab-icon.mov,
+.file > .item-info > .ogg,
+.tab-icon.ogg {
+  background-image  : url(adxs-file-type-video.png);
+}
+
+.file > .item-info > .psd,
+.tab-icon.psd {
+  background-image  : url(adxs-file-type-photoshop.png);
+}
+
+.file > .item-info > .ppt,
+.tab-icon.ppt,
+.file > .item-info > .pptx,
+.tab-icon.pptx {
+  background-image  : url(adxs-file-type-powerpoint.png);
+}
+
+.file > .item-info > .qes,
+.tab-icon.qes,
+.file > .item-info > .qew,
+.tab-icon.qew,
+.file > .item-info > .qex,
+.tab-icon.qex {
+  background-image  : url(adxs-file-type-qes.png);
+}
+
+.file > .item-info > .svg,
+.tab-icon.svg {
+  background-image  : url(adxs-file-type-svg.png);
+}
+
+.file > .item-info > .png,
+.tab-icon.png {
+  background-image  : url(adxs-file-type-png.png);
+}
+
+.file > .item-info > .txt,
+.tab-icon.txt,
+.file > .item-info > .sample,
+.tab-icon.sample {
+  background-image  : url(adxs-file-type-text.png);
+}
+
+.file > .item-info > .xml,
+.tab-icon.xml {
+  background-image  : url(adxs-file-type-xml.png);
+}
+
+.file > .item-info > .zip,
+.tab-icon.zip,
+.file > .item-info > .rar,
+.tab-icon.rar {
+  background-image  : url(adxs-file-type-zip.png);
 }
 
 .item-info {
@@ -240,9 +391,13 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     flex-direction  : row;
     flex-wrap       : nowrap;
     white-space     : nowrap;
-    padding         : 2px 0;
+    padding         : 1px 0;
     width           : 100%;
     transition      : all ease-in .2s;
+}
+
+.item-info:not(.selected):hover {
+    background-color: #FAFAFA;
 }
 
 .name {
@@ -273,7 +428,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .selected {
-  background-color: #FEFEFE;
+    background-color: #FAFAFA;
 }
 
 .selected > .name {
@@ -298,18 +453,19 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .tabs-container {
     height  : 45px;
+    min-height: 45px;
     margin  : 0;
     padding : 0;
 }
 
 .tab {
-    background      : #ECF0F1;
+    background      : #F0F0F0;
     border-top: 1px solid #BDC3C7;
     border-right    : 1px solid #BDC3C7;
     border-bottom   : 1px solid #BDC3C7;
     cursor          : pointer;
     font-size       : 14px;
-    color           : #444;
+    color           : #999;
     padding         : 10px;
     position        : relative;
     line-height     : 23px;
@@ -317,7 +473,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll div {
-    background      : #ECF0F1;
+    background      : #F0F0F0;
     cursor          : pointer;
     font-size       : 14px;
     color           : #444;
@@ -397,14 +553,17 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .tabs-scroll, .tab-end {
-    background      : #ECF0F1;
+    background      : #F0F0F0;
     border-bottom   : 1px solid #BDC3C7;
 }
 
 .tab.active {
     background          : #FAFAFA;
-    color               : #222;
+    color               : #000;
     border-bottom       : 1px solid transparent;
+}
+.tab:hover {
+    color: #000;
 }
 
 .tab.edit {
@@ -413,7 +572,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 /* Sub tab bar that appear for project settings */
 .toggle-wrapper {
-    background  : #ECF0F1;
+    background  : #F0F0F0;
     border-top  : 1px solid #BDC3C7;
     padding     : 8px 18px 8px 8px;
     text-align  : right;
@@ -444,26 +603,26 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .toggle-wrapper button.active-sub-tab,
 .toggle-wrapper button.active-sub-tab:hover {
-    background  : #27AE60;
+    background  : #7FB633;
     color       : #FFF;
     box-shadow  : 0 0 8px rgba(0,0,0,.5) inset;
-    border-color: #166F3C;
+    border-color: #6E9D2B;
 }
 /* End of sub tab bar */
 
-.pane.focused .tab.active::before {
+.tab.active::before {
     position        : absolute;
     display         : block;
     width           : 4px;
     content         : ' ';
-    background-color: #27AE60;
+    background-color: #7FB633;
     height          : 100%;
     top             : 0;
     left            : 0;
 }
 
 .pane {
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
 }
 
 .pane .placeholder {
@@ -487,12 +646,12 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 #addressURL {
     border          : 1px solid #BDC3C7;
     border-top      : 1px solid transparent;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     color           : #444;
 }
 
 #addressURL:focus {
-    border: 1px solid #27AE60;
+    border: 1px solid #7FB633;
 }
 
 #addressURL[readonly] {
@@ -500,20 +659,50 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 }
 
 .preview-button {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     border          : 1px solid #BDC3C7;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
 }
+
 .preview-button:hover {
     color           : #222;
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
+    box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
 }
 
 .preview-button:active {
     color           : #000;
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     box-shadow      : 0px 0px 8px 0px rgba(0,0,0,.5) inset;
+}
+
+.tab-preview-button {
+    background-color: #F0F0F0;
+    border          : 1px solid #BDC3C7;
+    color           : #999;
+    box-shadow      : none;
+    text-align      : left;
+}
+
+.tab-preview-button:not(.selected):hover,
+.tab-preview-button:not(.selected):active {
+    color           : #000;
+    box-shadow      : none;
+}
+
+.tab-preview-button.selected:hover,
+.tab-preview-button.selected:active {
+    background-color: #FAFAFA;
+    color           : #000;
+    box-shadow      : 4px 0px 0px 0px #7FB633 inset;
+}
+
+.tab-preview-button.selected {
+    background-color: #FAFAFA;
+    color           : #000;
+    border-bottom-color: transparent;
+    box-shadow         : 4px 0px 0px 0px #7FB633 inset;
 }
 
 #reloadPreview,
@@ -526,14 +715,15 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
     box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, -1px 0 0 rgba(255,255,255,.1) inset;
 }
 
-#grid #reset {
+#grid #reset,
+#grid #reset-theme {
     height: 35px;
     border-width: 1px !important;
 }
 
 #grid {
     border-top      : 4px solid #7F8C8D;
-    background-color: #ECF0F1;
+    background-color: #FAFAFA;
 }
 
 #grid h2 {
@@ -559,12 +749,12 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .viewer-project-settings nav a {
     color           : #444;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     text-decoration : none;
     cursor          : pointer;
     border-bottom   : 1px solid #BDC3C7;
     box-shadow      : 0 1px 0 rgba(255,255,255,.5) inset;
-    transition      : background-color ease-in .2s, color ease-in .2s;
+    transition      : background-color ease-in .2s, color ease-in .2s, box-shadow ease-in .2s;
 }
 
 .viewer-project-settings nav ul li:first-child a.active {
@@ -573,8 +763,8 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 
 .viewer-project-settings nav a.active, .viewer-project-settings nav a.active:hover {
     color           : #FFF;
-    background-color: #27AE60;
-    box-shadow      : 0 1px 0 #2AD070 inset;
+    background-color: #7FB633;
+    box-shadow      : 0 1px 0 #8ECC38 inset;
 }
 
 .viewer-project-settings nav a:hover {
@@ -590,51 +780,51 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+1),
 .viewer-project-settings #properties_table tbody tr:nth-child(4n+2),
 .viewer-project-settings #contents tbody tr:nth-child(odd) {
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     transition      : background-color ease-in .2s;
 }
 
 .viewer-project-settings #properties_table tbody tr:hover:not(.editable),
 .viewer-project-settings #contents tbody tr:hover:not(.editable) {
-    background-color: #DADEE0;
+    background-color: #E3E3E3;
 }
 
 button {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
 }
 
 button:hover {
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
     color           : #222;
 }
 
 button:active {
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
     color           : #222;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
 
 button#new_output,
 button#new_category {
-    background-color: #27AE60;
-    border          : 1px solid #1B8246;
+    background-color: #7FB633;
+    border          : 1px solid #6E9D2B;
     box-shadow      : 0 1px 0 rgba(255,255,255,.3) inset;
     color           : #EEE;
 }
 
 button#new_output:hover,
 button#new_category:hover {
-    background-color: #2BC16A;
-    border          : 1px solid #1B8246;
+    background-color: #97d83c;
+    border          : 1px solid #6e9d2b;
     color           : #FFF;
 }
 
 button#new_output:active,
 button#new_category:active {
-    background-color: #27AE60;
+    background-color: #7FB633;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
     color           : #FFF;
 }
@@ -706,19 +896,19 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .add-property-option {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     color           : #444 !important;
     border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255, 255, 255, .2) inset;
 }
 
 .add-property-option:hover {
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
     color           : #222;
 }
 
 .add-property-option:active {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     color           : #000;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
@@ -727,7 +917,7 @@ table#properties_table a:active:not(.add-property-option) {
    ======================================== */
 
 .toolbar {
-    background    : #CCC;
+    background    : #FAFAFA;
 }
 
 /* ========================================
@@ -747,8 +937,8 @@ table#properties_table a:active:not(.add-property-option) {
 
 .askia-modal-button-ok,
 .askia-modal-button-yes {
-    background-color: #27AE60;
-    border          : 1px solid #1C8649;
+    background-color: #7FB633;
+    border          : 1px solid #6E9D2B;
     box-shadow      : 0 1px 0 rgba(255,255,255,.25) inset;
     color           : #EEE;
     line-height     : 0;
@@ -757,19 +947,19 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-button-ok:hover,
 .askia-modal-button-yes:hover {
     color           : #FFF;
-    background-color: #29BD67;
+    background-color: #7FB633;
 }
 
 .askia-modal-button-ok:active,
 .askia-modal-button-yes:active {
     color           : #FFF;
-    background-color: #27AE60;
+    background-color: #7FB633;
     box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
 }
 
 .askia-modal-button-cancel,
 .askia-modal-button-no {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
@@ -779,29 +969,29 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-button-cancel:hover,
 .askia-modal-button-no:hover {
     color           : #222;
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
 }
 
 .askia-modal-button-cancel:active,
 .askia-modal-button-no:active {
     color           : #222;
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     box-shadow      : 0 0 12px rgba(0,0,0,.6) inset;
 }
 
 .askia-modal-input-prompt {
     border          : 1px solid #BDC3C7;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     color           : #444;
 }
 
 .askia-modal-input-prompt:focus {
-    border  : 1px solid #27AE60;
+    border  : 1px solid #7FB633;
 }
 
 
 .askia-modal-dialog.about {
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     box-shadow      : inset 0 1px 0 rgba(255,255,255,.9), 0px 0px 17px 4px rgba(0, 0, 0, .4);
 }
 
@@ -855,7 +1045,7 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .KBshortcut {
-    color       : #27AE60;
+    color       : #7FB633;
 }
 
 .askia-modal-dialog.new-project {
@@ -866,30 +1056,30 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-new-project-container textarea,
 .askia-modal-new-project-container select {
     border          : 1px solid #BDC3C7;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     color           : #444;
 }
 
 .askia-modal-new-project-container input:focus,
 .askia-modal-new-project-container textarea:focus,
 .askia-modal-new-project-container select:focus {
-    border  : 1px solid #27AE60;
+    border  : 1px solid #7FB633;
 }
 
 .askia-modal-new-project-container button {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
 }
 
 .askia-modal-new-project-container button:hover {
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
     color           : #222;
 }
 
 .askia-modal-new-project-container button:active {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     color           : #000;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
@@ -902,7 +1092,7 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-preferences-container textarea,
 .askia-modal-preferences-container select {
     border          : 1px solid #BDC3C7;
-    background-color: #ECF0F1;
+    background-color: #F0F0F0;
     color           : #444;
 }
 
@@ -910,24 +1100,24 @@ table#properties_table a:active:not(.add-property-option) {
 .askia-modal-preferences-container input:focus,
 .askia-modal-preferences-container textarea:focus,
 .askia-modal-preferences-container select:focus {
-    border  : 1px solid #27AE60;
+    border  : 1px solid #7FB633;
     outline : none;
 }
 
 .askia-modal-preferences-container button {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     border          : 1px solid #92989C;
     box-shadow      : 0 1px 0 rgba(255,255,255,.4) inset;
     color           : #444;
 }
 
 .askia-modal-preferences-container button:hover {
-    background-color: #E5E8E8;
+    background-color: #F0F0F0;
     color           : #222;
 }
 
 .askia-modal-preferences-container button:active {
-    background-color: #D7DBDC;
+    background-color: #E5E8E8;
     color           : #000;
     box-shadow      : 0 0 10px 0 rgba(0,0,0,.5) inset;
 }
@@ -957,4 +1147,54 @@ div.askia-resizer-modal {
 .toolbar .tool:hover {
     background-color: #8B9798;
     border: 1px solid #7F8C8D;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgba(255,255,255,.3);
+    background-color: rgba(170,170,170,.5);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(170,170,170,1);
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+    background-color: transparent;
+}
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+/* Scrollbar preview styling */
+#preview_frame::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+
+#preview_frame::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+#preview_frame::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgba(255,255,255,.3);
+    background-color: rgba(170,170,170,.5);
+}
+#preview_frame::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(170,170,170,1);
+}
+#preview_frame::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+    background-color: transparent;
+}
+#preview_frame::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+select#outputs_list, select#categories_list {
+    width: 60%;
 }
