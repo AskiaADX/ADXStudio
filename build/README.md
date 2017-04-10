@@ -13,10 +13,7 @@ It's using electron-builder (https://github.com/electron-userland/electron-build
 
 To modify parameters, go to package.json at the root of the folder application
 
-Add also as environment variables:
-- Properties of the computer
-- Advanced system settings
-- Advanced tab
-- Environment variables button
-- Add CSC_LINK User variables and point to the *.p12 askia certificate file
-- Add CSC_KEY_PASSWORD User variables and add the password of the p12 file
+For code signing certificate:
+- create a `tmp` folder at the root app folder
+- add your .p12 file
+- modify the win.certificateFile path in package.json
