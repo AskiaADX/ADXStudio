@@ -87,7 +87,7 @@
 }
 
 .cm-s-askia span.cm-def {
-  color: rgba(233, 237, 237, 1);
+  color: rgba(220, 220, 170, 1);
 }
 
 .cm-s-askia span.cm-error {
@@ -106,7 +106,7 @@
 }
 
 .cm-s-askia span.cm-comment {
-  color: #9e9e9e;
+  color: #608B4E;
 }
 
 .cm-s-askia span.cm-variable {

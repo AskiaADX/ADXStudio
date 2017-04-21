@@ -62,7 +62,7 @@
 .cm-s-askia span.cm-builtin { color: rgba(215,186,125,1); }
 .cm-s-askia span.cm-atom { color: rgba(206,145,120,1); }
 .cm-s-askia span.cm-number { color: rgba(181,206,168,1); }
-.cm-s-askia span.cm-def { color: rgba(233, 237, 237, 1); }
+.cm-s-askia span.cm-def { color: rgba(220, 220, 170, 1); }
 .cm-s-askia span.cm-error {
   color     : #E74C3C !important;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
@@ -72,7 +72,7 @@
 
 .cm-s-askia span.cm-string { color: rgba(206,145,120,1); }
 .cm-s-askia span.cm-string-2 { color: rgba(156,220,254,1); }
-.cm-s-askia span.cm-comment { color: #9e9e9e; }
+.cm-s-askia span.cm-comment { color: #608B4E; }
 .cm-s-askia span.cm-variable { color: #82B1FF; }
 .cm-s-askia span.cm-tag { color: #80CBC4; }
 .cm-s-askia span.cm-meta { color: #80CBC4; }
