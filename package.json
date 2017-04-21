@@ -54,7 +54,7 @@
       "target": "nsis",
       "icon": "app/adx-studio_icon.ico",
       "certificateFile": "./tmp/AskiaSASCodeSigning.p12",
-      "certificatePassword": "20dadouchka!00",
+      "certificatePassword": "",
       "publisherName": "Askia"
     },
     "nsis": {
