@@ -135,7 +135,6 @@
         return obj;
     };
 
-
     askiaScript.classNames = {
         COMMENT				: 'comment',
         NUMBER				: 'number',
@@ -1941,6 +1940,7 @@
             function updateModules(mod) {
                 for (var key in mod) {
                     if (!mod[key].length) {
+                        modules[key] = mod[key];
                         continue;
                     }
                     for (var i = 0, l = mod[key].length; i < l; i++) {
@@ -1948,9 +1948,9 @@
                     }
                     modules[key] = mod[key];
                 }
-                buildModuleRegexp();
+                    buildModuleRegexp();
             }
-            
+
             function update(vars, lbls, funcs) {
                 l = vars.length;
                 localVariables = {};
@@ -1977,7 +1977,7 @@
                 result.labels    = lbls.sort(sortItems);
                 result.functions = funcs.sort(sortItems);
                 result.all       = fragment.concat(vars).concat(lbls).concat(funcs).sort(sortItems);
-            }
+        }
 
             result = {
                 all       : fragment,
@@ -2562,7 +2562,7 @@
             el.className = cl.replace(rg, '');
         }
 
-        // Update local variables declare with 'dim' keyword
+        // Update local variables declare with 'dim' keyword and functions
         function refreshVariables() {
             var regexps     = [
                     {
@@ -2580,6 +2580,10 @@
 	                {
                         type : 'function',
                         re   : /^\s*(?:export\s+)?(?:function)\s+([a-z_][a-z0-9_]*)\s*\((.*?)\)\s*(?:as)\s+([a-z]*)/mgi
+    	            },
+	                {
+                        type : 'module',
+                        re   : /^\s*(?:Import|Module)\s+([a-z_][a-z0-9_]*)/mgi
     	            }
                 ],
                 value       = instance.getValue(),
@@ -2588,6 +2592,7 @@
                 labels      = [],
                 definedLabels = {},
                 vars 		= {},
+                modules     = {},
                 re, match,
                 i, l,
                 undefinedLabelElements, el;
@@ -2654,6 +2659,12 @@
                             type : match[3].toLowerCase(),
                             args : args
                         });
+                    } else if (regexps[i].type === 'module') {
+                        //Find the word after "Module" or "Import"
+                        var key = match[1];
+
+                        //Set a null module
+                        modules[key] = [];
                     }
                     match = re.exec(value);
                 }
@@ -2673,6 +2684,10 @@
             // Refresh the dictionary
             if (options.dictionary && options.dictionary.update) {
                 options.dictionary.update(variables, labels, functions);
+            }
+            // Refresh modules
+            if (options.dictionary && options.dictionary.updateModules) {
+                options.dictionary.updateModules(modules);
             }
         }
 
@@ -2706,5 +2721,4 @@
     });
 
     CodeMirror.defineMIME("application/askiascript", "askiascript");
-
 });
