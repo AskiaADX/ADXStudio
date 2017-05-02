@@ -135,6 +135,7 @@
         return obj;
     };
 
+
     askiaScript.classNames = {
         COMMENT				: 'comment',
         NUMBER				: 'number',
@@ -1872,7 +1873,7 @@
 
         // Don't consume characters during match
             DONT_CONSUME = false,
-            modules = options.modules || {};
+            modules = options.modules || [];
         // Public dictionary for the instance of the editor
         // It's accessible through the options
         options.dictionary = (function createEditorDictionary() {
@@ -1907,28 +1908,24 @@
             function buildModuleRegexp() {
                 var funcs 	= [],
                     obj		= {};
-                for (var key in modules) {
+                for (var i = 0, l = modules.length; i < l; i++) {
                     funcs = [];
-                    var module = modules[key];
-                    if (!module.length) {
-                        continue;
+                    var module = modules[i];
+                    for (var j = 0, k = module.functions.length; j < k; j++) {
+                        funcs.push(module.functions[j].name);
                     }
-                    for (var i = 0, l = module.length; i < l; i++) {
-                        funcs.push(module[i].name);
-                    }
-                    obj[key] = buildRegexp(funcs);
+                    obj[module.name] = buildRegexp(funcs);
                 }
                 CodeMirror.askiaScript.patterns.members["module"] = obj;
             }
 
-            if (modules) {
-                for (var key in modules) {
-                    var module = modules[key];
-                    if (!module.length) {
-                        continue;
-                    }
-                    for (var i = 0, l = module.length; i < l; i++) {
-                        module[i].module = key;
+            if (modules && modules.length) {
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    var module = modules[i];
+                    var funcs = module.functions;
+                    for (var i = 0, l = funcs.length; i < l; i++) {
+                        module.functions[i].module = module.name;
+                        funcs[i].module = module.name;
                     }
                 }
                 buildModuleRegexp();
@@ -1940,22 +1937,39 @@
             function updateModules(mod) {
                 for (var key in mod) {
                     if (!mod[key].length) {
-                        modules[key] = mod[key];
                         continue;
                     }
-                    for (var i = 0, l = mod[key].length; i < l; i++) {
-                        mod[key][i].module = key;
+                    var funcs = mod[key];
+                    var index = -1;
+                    for (var i = 0, l = modules.length; i < l; i++) {
+                      if (modules[i].name == key) {
+                        index = i;
+                        break;
+                      }
                     }
-                    modules[key] = mod[key];
+                    
+                    if (index == -1) {
+                      modules.push({
+                          name : key,
+                          functions : funcs
+                      });
+                    } else {
+                      modules[i] =
+                        {
+                          name : key,
+                          functions : funcs
+                        };
+                    }
                 }
-                    buildModuleRegexp();
+                buildModuleRegexp();
             }
 
-            function update(vars, lbls, funcs) {
+            function update(vars, lbls, funcs, mods) {
                 l = vars.length;
                 localVariables = {};
                 labels = {};
                 funcNames = {};
+                var finalMods = modules;
                 if (l) {
                     while(l--) {
                         localVariables[vars[l].name.toLowerCase()] = vars[l];
@@ -1973,11 +1987,28 @@
                         funcNames[funcs[l].name.toLowerCase()] = funcs[l];
                     }
                 }
+                l = mods.length;
+                if (l) {
+                    while(l--) {
+                        var isInDictionary = false;
+                        var mod = mods[l];
+                        for (var j = 0, k = finalMods.length; j < k; j++) {
+                            if (mod.name == finalMods[j].name) {
+                                isInDictionary = true;
+                                break;
+                            }
+                        }
+                        if (!isInDictionary) {
+                            finalMods.push(mod);
+                        }
+                    }
+                }
                 result.variables = vars.sort(sortItems);
                 result.labels    = lbls.sort(sortItems);
                 result.functions = funcs.sort(sortItems);
-                result.all       = fragment.concat(vars).concat(lbls).concat(funcs).sort(sortItems);
-        }
+                result.modules   = finalMods.sort(sortItems);
+                result.all       = fragment.concat(vars).concat(lbls).concat(funcs).concat(finalMods).sort(sortItems);
+            }
 
             result = {
                 all       : fragment,
@@ -2316,7 +2347,14 @@
             if (patterns.members[type]) {
                 if (patterns.members[type][state.lastToken.content]) {
                     match = stream.match(patterns.members[type][state.lastToken.content]);
-                    var funcs = options.dictionary.modules[state.lastToken.content];
+                    var module;
+                    for (var i = 0, l = options.dictionary.modules.length; i < l; i++) {
+                        module = options.dictionary.modules[i];
+                        if (module.name == state.lastToken.content) {
+                            break;
+                        }
+                    }
+                    var funcs = module.functions;
                     for (var i = 0, l = funcs.length; i < l; i++) {
                         if (match && funcs[i].name === match[1]) {
                             type = funcs[i].type;
@@ -2392,7 +2430,12 @@
             var match = stream.match(patterns.module, DONT_CONSUME),
                 module;
             if (match && match.length > 1) {
-                module = modules[match[1]];
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    if (modules[i].name == match[1]) {
+                        module = modules[i];
+                        break;
+                    }
+                }
                 //make the stream go ahead
                 if (module) {
                     match = stream.match(patterns.module);
@@ -2562,7 +2605,7 @@
             el.className = cl.replace(rg, '');
         }
 
-        // Update local variables declare with 'dim' keyword and functions
+        // Update local variables declare with 'dim' keyword
         function refreshVariables() {
             var regexps     = [
                     {
@@ -2581,18 +2624,18 @@
                         type : 'function',
                         re   : /^\s*(?:export\s+)?(?:function)\s+([a-z_][a-z0-9_]*)\s*\((.*?)\)\s*(?:as)\s+([a-z]*)/mgi
     	            },
-	                {
+                    {
                         type : 'module',
                         re   : /^\s*(?:Import|Module)\s+([a-z_][a-z0-9_]*)/mgi
-    	            }
+                    }
                 ],
                 value       = instance.getValue(),
                 functions   = [],
                 variables   = [],
                 labels      = [],
+                modules     = [],
                 definedLabels = {},
                 vars 		= {},
-                modules     = {},
                 re, match,
                 i, l,
                 undefinedLabelElements, el;
@@ -2660,11 +2703,10 @@
                             args : args
                         });
                     } else if (regexps[i].type === 'module') {
-                        //Find the word after "Module" or "Import"
-                        var key = match[1];
-
-                        //Set a null module
-                        modules[key] = [];
+                        modules.push({
+                            name : match[1],
+                            className : classNames.MODULE,
+                       });
                     }
                     match = re.exec(value);
                 }
@@ -2683,11 +2725,7 @@
 
             // Refresh the dictionary
             if (options.dictionary && options.dictionary.update) {
-                options.dictionary.update(variables, labels, functions);
-            }
-            // Refresh modules
-            if (options.dictionary && options.dictionary.updateModules) {
-                options.dictionary.updateModules(modules);
+                options.dictionary.update(variables, labels, functions, modules);
             }
         }
 
@@ -2721,4 +2759,5 @@
     });
 
     CodeMirror.defineMIME("application/askiascript", "askiascript");
+
 });

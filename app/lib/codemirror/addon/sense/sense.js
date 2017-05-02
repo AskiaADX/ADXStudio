@@ -46,7 +46,12 @@
             member = (context.style || '').replace(patterns.prefixes, '');
             member = (context.brace && accessors[member]) || (context.curve && types.ARRAY) || member;
             if (member === "module") {
-                return instance.options.dictionary.modules[context.content.replace("::", "")];
+                for (var i = 0, l = instance.options.dictionary.modules.length; i < l; i++) {
+                    var mod = instance.options.dictionary.modules[i];
+                    if (mod.name === context.content.replace("::", "")) {
+                        return mod.functions;
+                    }
+                }
             }
             return dictionary.members[member];
         } else {

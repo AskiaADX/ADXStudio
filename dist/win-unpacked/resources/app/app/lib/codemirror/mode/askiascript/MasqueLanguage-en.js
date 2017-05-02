@@ -1673,6 +1673,30 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "InputCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tIndicates the input code - actually the position of the question in the masque",                
+                "examples" : [
+                    "\t' Single",                    
+                    "\tgender.InputCode ' => 0",                    
+                    "",                    
+                    "\t' Numeric (if it's the second question)",                    
+                    "\tage.InputCode ' => 1",                    
+                    "",                    
+                    "\t' Loop",                    
+                    "\tbrands.iteration(1).InputCode ' => 3",                    
+                    "\tbrands.iteration(2).InputCode ' => 5"
+                ],                
+                "alsoSee" : [
+                    "Question.Value",                    
+                    "Question.InputValue",                    
+                    "Response.InputName"
+                ],                
+                "version" : "5.4.6.0"
+            },            
+            {
                 "name" : "InputName",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
@@ -1813,6 +1837,15 @@ askiaScript.extend(askiaScript.lexical, {
                     " The property IsLastIteration is only available for a loop."
                 ],                
                 "examples" : "Loop1.IsLastIteration ' => True",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsLiveRoutingSource",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tIndicates if this question is a trigger for a live touting (or a live caption) indicating that the data must be sent to the server before the end of the form",                
+                "examples" : "\tGender.IsLiveRoutingSource ' => True",                
                 "version" : "5.3.2.0"
             },            
             {
@@ -2629,7 +2662,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "Returns a factor as their was entered in the value column of the scale responses",                
+                "desc" : "Returns a factor as they were entered in the value column of the scaled responses",                
                 "examples" : [
                     " gender.Responses[1].Factor ' => 3",                    
                     " country.AvailableResponses[1].Factor ' => 7"
@@ -4325,6 +4358,18 @@ askiaScript.extend(askiaScript.lexical, {
                 "examples" : [
                     " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
                     " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Factor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns all the factors of a response collection as they were entered in the value column of the scaled responses",                
+                "examples" : [
+                    "\tAge.Responses.Factor ' => {10; 20; 30; 50}",                    
+                    "\tAge.AvailableResponses.Factor ' => {20; 30; 50}"
                 ],                
                 "version" : "5.3.2.0"
             },            

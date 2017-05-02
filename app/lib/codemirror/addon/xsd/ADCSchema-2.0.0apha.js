@@ -19,7 +19,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
             "attrs": [
                 {
                     "name": "version",
-                    "desc": "Version number of the ADC format definition.\n            (Not the version of the control but the version of the ADC format)",
+                    "desc": "Version number of the ADC format definition.\r\n            (Not the version of the control but the version of the ADC format)",
                     "values": [
                         {
                             "name": "2.0.0",
@@ -54,7 +54,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
         {
             "name": "guid",
             "children": [],
-            "desc": "Unique identifier of the ADC control.\n              Should be share accross version of the same ADC."
+            "desc": "Unique identifier of the ADC control.\r\n              Should be share accross version of the same ADC."
         },
         {
             "name": "name",
@@ -64,7 +64,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
         {
             "name": "version",
             "children": [],
-            "desc": "Version of the ADC.\n              This version must contains at least one digit and maximum 3 digits separates with a dot period (ex: 1, 1.0, 1.0.1).\n              It could also contains an extra version information such as 'alpha', 'beta' or 'rc' optionally follow by a number (ex: 1.alpha2, 1.0.beta10, 1.0.1.rc3)."
+            "desc": "Version of the ADC.\r\n              This version must contains at least one digit and maximum 3 digits separates with a dot period (ex: 1, 1.0, 1.0.1).\r\n              It could also contains an extra version information such as 'alpha', 'beta' or 'rc' optionally follow by a number (ex: 1.alpha2, 1.0.beta10, 1.0.1.rc3)."
         },
         {
             "name": "date",
@@ -141,15 +141,15 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "questions",
-                            "desc": "Use to indicate the constraint on questions,\n                  such as the type of allowed questions."
+                            "desc": "Use to indicate the constraint on questions,\r\n                  such as the type of allowed questions."
                         },
                         {
                             "name": "responses",
-                            "desc": "Use to indicate the constraint on responses,\n                  such as the min and max allowed responses."
+                            "desc": "Use to indicate the constraint on responses,\r\n                  such as the min and max allowed responses."
                         },
                         {
                             "name": "controls",
-                            "desc": "Use to indicate the constraint on controls,\n                  such as the type of allowed controls."
+                            "desc": "Use to indicate the constraint on controls,\r\n                  such as the type of allowed controls."
                         }
                     ]
                 },
@@ -220,11 +220,11 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
             "children": [
                 "output"
             ],
-            "desc": "List all possible ADC's outputs.\n        A condition could be specify for each outputs to make it alternative.",
+            "desc": "List all possible ADC's outputs.\r\n        A condition could be specify for each outputs to make it alternative.",
             "attrs": [
                 {
                     "name": "defaultOutput",
-                    "desc": "Indicates the id of default output to use when none of the output conditions matches.\n            It is require as the latest output fallback."
+                    "desc": "Indicates the id of default output to use when none of the output conditions matches.\r\n            It is require as the latest output fallback."
                 }
             ]
         },
@@ -239,7 +239,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
             "attrs": [
                 {
                     "name": "id",
-                    "desc": "Unique identifier of the output.\n            It use on the defaultOutput attribute of the outputs element."
+                    "desc": "Unique identifier of the output.\r\n            It use on the defaultOutput attribute of the outputs element."
                 },
                 {
                     "name": "defaultGeneration",
@@ -247,7 +247,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                 },
                 {
                     "name": "maxIterations",
-                    "desc": "Only for question(s) inside a loop.\n            Indicates the maximum of iterations that could be handle by the ADC.\n            If a bound value is set:\n            - On the first or middle iterations, the engine will not generate remain merge controls on the page\n            - On the last iteration, the engine will generate the remain merge controls on the page"
+                    "desc": "Only for question(s) inside a loop.\r\n            Indicates the maximum of iterations that could be handle by the ADC.\r\n            If a bound value is set:\r\n            - On the first or middle iterations, the engine will not generate remain merge controls on the page\r\n            - On the last iteration, the engine will generate the remain merge controls on the page"
                 }
             ]
         },
@@ -275,43 +275,43 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                 },
                 {
                     "name": "type",
-                    "desc": "Indicates the type of content.\n            According to this type, the system will automatically generate\n            the proper HTML fragment unless the &lt;yield&gt; is specify.",
+                    "desc": "Indicates the type of content.\r\n            According to this type, the system will automatically generate\r\n            the proper HTML fragment unless the &lt;yield&gt; is specify.",
                     "values": [
                         {
                             "name": "flash",
-                            "desc": "Flash content. Will be inserted using &lt;object /&gt; tag.\n                  The content must be static or share."
+                            "desc": "Flash content. Will be inserted using &lt;object /&gt; tag.\r\n                  The content must be static or share."
                         },
                         {
                             "name": "css",
-                            "desc": "CSS content. Will be inserted using &lt;link href /&gt; tag when static or share\n                  or using the &lt;style&gt;&lt;/style&gt; tag when dynamic."
+                            "desc": "CSS content. Will be inserted using &lt;link href /&gt; tag when static or share\r\n                  or using the &lt;style&gt;&lt;/style&gt; tag when dynamic."
                         },
                         {
                             "name": "html",
-                            "desc": "HTML content.\n                  Will be inserted as it is or interpreted when it's dynamic."
+                            "desc": "HTML content.\r\n                  Will be inserted as it is or interpreted when it's dynamic."
                         },
                         {
                             "name": "javascript",
-                            "desc": "Javascript content. Will be inserted using the &lt;script src /&gt; tag when static or share\n                  or using &lt;script&gt;&lt;/script&gt; tag when dynamic."
+                            "desc": "Javascript content. Will be inserted using the &lt;script src /&gt; tag when static or share\r\n                  or using &lt;script&gt;&lt;/script&gt; tag when dynamic."
                         },
                         {
                             "name": "image",
-                            "desc": "Image content. Will be inserted using the &lt;img src /&gt; tag.\n                  The content must be static or share."
+                            "desc": "Image content. Will be inserted using the &lt;img src /&gt; tag.\r\n                  The content must be static or share."
                         },
                         {
                             "name": "video",
-                            "desc": "Video content. Will be inserted using the &lt;video src /&gt; tag.\n                  The content must be static or share."
+                            "desc": "Video content. Will be inserted using the &lt;video src /&gt; tag.\r\n                  The content must be static or share."
                         },
                         {
                             "name": "audio",
-                            "desc": "Audio content. Will be inserted using the &lt;audio src /&gt; tag.\n                  The content must be static or share."
+                            "desc": "Audio content. Will be inserted using the &lt;audio src /&gt; tag.\r\n                  The content must be static or share."
                         },
                         {
                             "name": "binary",
-                            "desc": "Arbitrary binary file.\n                  Will be inserted according to the specify &lt;yield&gt; tag.\n                  The &lt;yield&gt; should be specified using a binary content otherwize the system will not create an output."
+                            "desc": "Arbitrary binary file.\r\n                  Will be inserted according to the specify &lt;yield&gt; tag.\r\n                  The &lt;yield&gt; should be specified using a binary content otherwize the system will not create an output."
                         },
                         {
                             "name": "text",
-                            "desc": "Text-based file.\n                  Will be inserted as it is or interpreted when it's dynamic."
+                            "desc": "Text-based file.\r\n                  Will be inserted as it is or interpreted when it's dynamic."
                         }
                     ]
                 },
@@ -321,15 +321,15 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "share",
-                            "desc": "The share content is always associated with a file and must be place in the /Resources/Share/ folder of the ADC.\n                  The share content will be extract in the resources folder of the survey /Resources/SurveyName/.\n                  This kind of content, could be share accross ADCs and will not be overrides when it already exist in the folder."
+                            "desc": "The share content is always associated with a file and must be place in the /Resources/Share/ folder of the ADC.\r\n                  The share content will be extract in the resources folder of the survey /Resources/SurveyName/.\r\n                  This kind of content, could be share accross ADCs and will not be overrides when it already exist in the folder."
                         },
                         {
                             "name": "static",
-                            "desc": "The static content is always associated with a file and must be place in the /Resources/Static/ folder of the ADC.\n                  The static content will be extract in the resources folder of the ADC /Resources/SurveyName/ADCname/."
+                            "desc": "The static content is always associated with a file and must be place in the /Resources/Static/ folder of the ADC.\r\n                  The static content will be extract in the resources folder of the ADC /Resources/SurveyName/ADCname/."
                         },
                         {
                             "name": "dynamic",
-                            "desc": "The dynamic content could be file (text based) or in-line code define in the definition of the content.\n                  It could embed AskiaScript to execute.\n                  When the content is a file, it must be place in the /Resources/Dynamic folder of the ADC.\n                  The dynamic content will not be extract but load in memory."
+                            "desc": "The dynamic content could be file (text based) or in-line code define in the definition of the content.\r\n                  It could embed AskiaScript to execute.\r\n                  When the content is a file, it must be place in the /Resources/Dynamic folder of the ADC.\r\n                  The dynamic content will not be extract but load in memory."
                         }
                     ]
                 },
@@ -339,19 +339,19 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "none",
-                            "desc": "The resource will not be rendered.\n                  But it's still available through HTTP request."
+                            "desc": "The resource will not be rendered.\r\n                  But it's still available through HTTP request."
                         },
                         {
                             "name": "head",
-                            "desc": "The resource will be inserted in the head section of the HTML document.\n                  Mostly use for CSS stylesheet."
+                            "desc": "The resource will be inserted in the head section of the HTML document.\r\n                  Mostly use for CSS stylesheet."
                         },
                         {
                             "name": "placeholder",
-                            "desc": "The resource will be inserted at the position of the ADC control.\n                  Mostly use for the HTML injection."
+                            "desc": "The resource will be inserted at the position of the ADC control.\r\n                  Mostly use for the HTML injection."
                         },
                         {
                             "name": "foot",
-                            "desc": "The resource will be inserted at the end of the document, just before the end of the closed body tag.\n                  Mostly use for javascript insertion."
+                            "desc": "The resource will be inserted at the end of the document, just before the end of the closed body tag.\r\n                  Mostly use for javascript insertion."
                         }
                     ]
                 }
@@ -362,7 +362,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
             "children": [
                 "value"
             ],
-            "desc": "Additional attribute to add or to overwrite in the auto-generated tag.\n        When &lt;yield&gt; is present the attribute is not take in account.",
+            "desc": "Additional attribute to add or to overwrite in the auto-generated tag.\r\n        When &lt;yield&gt; is present the attribute is not take in account.",
             "attrs": [
                 {
                     "name": "name",
@@ -373,12 +373,12 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
         {
             "name": "value",
             "children": [],
-            "desc": "Value of the attribute.\n        This value could be dynamic, embed AskiaScript code."
+            "desc": "Value of the attribute.\r\n        This value could be dynamic, embed AskiaScript code."
         },
         {
             "name": "yield",
             "children": [],
-            "desc": "Dynamic string which indicates how the content must be rendered.\n        It override the built-in HTML render by the system.\n        Must be use for the non-manageed file, such as binary or text"
+            "desc": "Dynamic string which indicates how the content must be rendered.\r\n        It override the built-in HTML render by the system.\r\n        Must be use for the non-manageed file, such as binary or text"
         },
         {
             "name": "properties",
@@ -420,7 +420,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
             "attrs": [
                 {
                     "name": "id",
-                    "desc": "Unique id of the property to access on it using the AskiaScript.\n              This id should not be a reserved id.\n              See &lt;globalproperty&gt;"
+                    "desc": "Unique id of the property to access on it using the AskiaScript.\r\n              This id should not be a reserved id.\r\n              See &lt;globalproperty&gt;"
                 },
                 {
                     "name": "name",
@@ -432,27 +432,27 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "string",
-                            "desc": "Property as string.\n                    The string could be validate against a regular expression using the pattern attribute."
+                            "desc": "Property as string.\r\n                    The string could be validate against a regular expression using the pattern attribute."
                         },
                         {
                             "name": "number",
-                            "desc": "Property as number.\n                    The number could be restricted using the min/max/decimal attribute."
+                            "desc": "Property as number.\r\n                    The number could be restricted using the min/max/decimal attribute."
                         },
                         {
                             "name": "boolean",
-                            "desc": "Property as boolean.\n                    The value must be true or false."
+                            "desc": "Property as boolean.\r\n                    The value must be true or false."
                         },
                         {
                             "name": "color",
-                            "desc": "Property as color.\n                    The format of the color could be specify using the colorFormat attribute."
+                            "desc": "Property as color.\r\n                    The format of the color could be specify using the colorFormat attribute."
                         },
                         {
                             "name": "file",
-                            "desc": "Property as string.\n                    Indicate the name of a resource file already register.\n                    This file must be on the survey and accessible through the url ../Resources/[Survey name]/"
+                            "desc": "Property as string.\r\n                    Indicate the name of a resource file already register.\r\n                    This file must be on the survey and accessible through the url ../Resources/[Survey name]/"
                         },
                         {
                             "name": "question",
-                            "desc": "Property as question.\n                    Indicate question that could be used in the current ADC."
+                            "desc": "Property as question.\r\n                    Indicate question that could be used in the current ADC."
                         }
                     ]
                 },
@@ -466,7 +466,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                         },
                         {
                             "name": "dynamic",
-                            "desc": "The dynamic value will be evaluated before his usage.\n                    If the value return by the evaluation doesn't produce an expected value\n                    according to the min, max, decimal, pattern, fileExtension...\n                    then the default value will be used."
+                            "desc": "The dynamic value will be evaluated before his usage.\r\n                    If the value return by the evaluation doesn't produce an expected value\r\n                    according to the min, max, decimal, pattern, fileExtension...\r\n                    then the default value will be used."
                         }
                     ]
                 },
@@ -496,15 +496,15 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "rgb",
-                            "desc": "Color in RGB format (Red, Green, Blue)\n                    (RR,GG,BB)"
+                            "desc": "Color in RGB format (Red, Green, Blue)\r\n                    (RR,GG,BB)"
                         },
                         {
                             "name": "rgba",
-                            "desc": "Color in RGBA format (Red, Green, Blue, Alpha)\n                    (RR,GG,BB,AA)"
+                            "desc": "Color in RGBA format (Red, Green, Blue, Alpha)\r\n                    (RR,GG,BB,AA)"
                         },
                         {
                             "name": "hexa",
-                            "desc": "Color in Hexadecimal format\n                    (#rrggbb)"
+                            "desc": "Color in Hexadecimal format\r\n                    (#rrggbb)"
                         }
                     ]
                 },
@@ -525,7 +525,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
             "attrs": [
                 {
                     "name": "id",
-                    "desc": "Unique id of the property to access on it using the AskiaScript.\n              This id should not be a reserved id.\n              See &lt;globalproperty&gt;"
+                    "desc": "Unique id of the property to access on it using the AskiaScript.\r\n              This id should not be a reserved id.\r\n              See &lt;globalproperty&gt;"
                 },
                 {
                     "name": "name",
@@ -537,27 +537,27 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "string",
-                            "desc": "Property as string.\n                    The string could be validate against a regular expression using the pattern attribute."
+                            "desc": "Property as string.\r\n                    The string could be validate against a regular expression using the pattern attribute."
                         },
                         {
                             "name": "number",
-                            "desc": "Property as number.\n                    The number could be restricted using the min/max/decimal attribute."
+                            "desc": "Property as number.\r\n                    The number could be restricted using the min/max/decimal attribute."
                         },
                         {
                             "name": "boolean",
-                            "desc": "Property as boolean.\n                    The value must be true or false."
+                            "desc": "Property as boolean.\r\n                    The value must be true or false."
                         },
                         {
                             "name": "color",
-                            "desc": "Property as color.\n                    The format of the color could be specify using the colorFormat attribute."
+                            "desc": "Property as color.\r\n                    The format of the color could be specify using the colorFormat attribute."
                         },
                         {
                             "name": "file",
-                            "desc": "Property as string.\n                    Indicate the name of a resource file already register.\n                    This file must be on the survey and accessible through the url ../Resources/[Survey name]/"
+                            "desc": "Property as string.\r\n                    Indicate the name of a resource file already register.\r\n                    This file must be on the survey and accessible through the url ../Resources/[Survey name]/"
                         },
                         {
                             "name": "question",
-                            "desc": "Property as question.\n                    Indicate question that could be used in the current ADC."
+                            "desc": "Property as question.\r\n                    Indicate question that could be used in the current ADC."
                         }
                     ]
                 },
@@ -571,7 +571,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                         },
                         {
                             "name": "dynamic",
-                            "desc": "The dynamic value will be evaluated before his usage.\n                    If the value return by the evaluation doesn't produce an expected value\n                    according to the min, max, decimal, pattern, fileExtension...\n                    then the default value will be used."
+                            "desc": "The dynamic value will be evaluated before his usage.\r\n                    If the value return by the evaluation doesn't produce an expected value\r\n                    according to the min, max, decimal, pattern, fileExtension...\r\n                    then the default value will be used."
                         }
                     ]
                 },
@@ -601,15 +601,15 @@ CodeMirror.xsdSchemas["http://www.askia.com/ADCSchema"] = {
                     "values": [
                         {
                             "name": "rgb",
-                            "desc": "Color in RGB format (Red, Green, Blue)\n                    (RR,GG,BB)"
+                            "desc": "Color in RGB format (Red, Green, Blue)\r\n                    (RR,GG,BB)"
                         },
                         {
                             "name": "rgba",
-                            "desc": "Color in RGBA format (Red, Green, Blue, Alpha)\n                    (RR,GG,BB,AA)"
+                            "desc": "Color in RGBA format (Red, Green, Blue, Alpha)\r\n                    (RR,GG,BB,AA)"
                         },
                         {
                             "name": "hexa",
-                            "desc": "Color in Hexadecimal format\n                    (#rrggbb)"
+                            "desc": "Color in Hexadecimal format\r\n                    (#rrggbb)"
                         }
                     ]
                 },

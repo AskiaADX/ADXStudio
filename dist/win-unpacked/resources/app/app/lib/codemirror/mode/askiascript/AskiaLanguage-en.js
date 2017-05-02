@@ -1021,6 +1021,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "Function",            
             "ns" : "askialanguage",            
             "base" : "statement",            
+            "declare" : true,            
             "desc" : "\tSignals the start of a function",            
             "examples" : [
                 "\tFunction Increment( i As Number) As Number",                
@@ -1282,6 +1283,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "Import",            
             "ns" : "askialanguage",            
             "base" : "statement",            
+            "declare" : true,            
             "desc" : "\tImports a module defined in a resource as an .asx file",            
             "examples" : [
                 "\tImport AdvancedMath",                
@@ -1706,6 +1708,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "Module",            
             "ns" : "askialanguage",            
             "base" : "statement",            
+            "declare" : true,            
             "desc" : "\tSignals the start of a module",            
             "examples" : [
                 "\tModule AdvancedMath",                
@@ -2766,6 +2769,49 @@ askiaScript.extend(askiaScript.lexical, {
                     "\ts.Collate(\"fußballmanager\",2,1031) ' => 1"
                 ],                
                 "version" : "5.4.5.0"
+            },            
+            {
+                "name" : "CollateAny",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "numberarray",                
+                "args" : [
+                    {
+                        "name" : "Strings",                        
+                        "type" : "stringarray",                        
+                        "desc" : "to be compared with"
+                    },                    
+                    {
+                        "name" : "Comparison",                        
+                        "type" : "number",                        
+                        "desc" : "Type of comparison ( primary, secondary, tertiary, quartenary or identical - primary by default)",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "Language",                        
+                        "type" : "variant",                        
+                        "desc" : "(the abbreviation or the ID)"
+                    }
+                ],                
+                "desc" : [
+                    "\tCompares a string (object) with an array of strings using the locale language and returns the index of the strings that match",                    
+                    "",                    
+                    "",                    
+                    "\tPrimary -- ignore accents and character case, comparing base letters only. For example \"facade\" and \"Façade\" are the same.",                    
+                    "\tSecondary -- ignore character case but consider accents. \"facade\" and \"façade\" are different but \"Façade\" and \"façade\" are the same.",                    
+                    "\tTertiary -- consider both case and accents: \"Façade\" and \"façade\" are different. Ignore punctuation.",                    
+                    "\tQuaternary -- consider all case, accents, and punctuation. The words must be identical in terms of Unicode representation.",                    
+                    "\tIdentical -- as quaternary, but compare code points as well."
+                ],                
+                "examples" : [
+                    "\tdim s = \"abcde\"",                    
+                    "\ts.CollateAny({\"ab\"; \"abcded\"; \"fghi\"}) ' => returns {2}",                    
+                    "",                    
+                    "\t",                    
+                    "\tdim s = \"Fussballmanager\"",                    
+                    "\ts.CollateAny({\"footbal\" ; \"fussballmanager\"; \"fußballmanager\"},1,\"DEU\") ' => returns {2;3}"
+                ],                
+                "version" : "5.4.6.0"
             },            
             {
                 "name" : "DLdistance",                

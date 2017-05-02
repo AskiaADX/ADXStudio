@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
           constraints = infoConstraints[key];
           for (i = 0, l = constraints.length; i < l; i++) {
             if (key === 'responses') {
-              document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]].replace('*', '')) || '';
+              document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]]) || '';
             } else {
               document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;
             }
