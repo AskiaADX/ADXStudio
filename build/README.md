@@ -3,13 +3,13 @@ Build ADX Studio
 
 To build ADX Studio, form the root, execute this command line using powershell on windows as administrator:
 
-`build -w --x64 --ia32`
+`build --win --x64 --ia32`
 
--w is for windows
---x64 for 64 bits OS
---ia32 for 32 bits OS
+--win is for windows  
+--x64 for 64 bits OS  
+--ia32 for 32 bits OS  
 
-It's using electron-builder (https://github.com/electron-userland/electron-builder) so install it as Global using npm.
+It's using electron-builder ([https://github.com/electron-userland/electron-builder](https://github.com/electron-userland/electron-builder)) so install it as Global using npm.
 
 To modify parameters, go to package.json at the root of the folder application
 
