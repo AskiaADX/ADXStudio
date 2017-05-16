@@ -39,15 +39,17 @@
                     <label for="description">Description:</label>
                     <textarea id="description" name="description"></textarea>
                 </p>
-                <p>
-                    <label for="categories">Categories:</label>
-                    <input type="text" id="categories" name="categories"/>
-                </p>
-                <p>
-                    <label for="style_width">Size (width x height):</label>
-                    <input type="number" id="style_width" name="style[width]"/> x
-                    <input type="number" id="style_height" name="style[height]"/>
-                </p>
+                <div class="adc1-only adc-only">
+                    <p>
+                        <label for="categories">Categories:</label>
+                        <input type="text" id="categories" name="categories"/>
+                    </p>
+                    <p>
+                        <label for="style_width">Size (width x height):</label>
+                        <input type="number" id="style_width" name="style[width]"/> x
+                        <input type="number" id="style_height" name="style[height]"/>
+                    </p>
+                </div>
                 <p>
                     <label for="helpURL">Help URL:</label>
                     <input type="url" id="helpURL" name="helpURL"/>
@@ -68,7 +70,7 @@
                     <input type="url" id="site" name="site"/>
                 </p>
             </fieldset>
-            <fieldset>
+            <fieldset class="adc-only">
                 <legend>Available for</legend>
                 <h3>Questions</h3>
                 <ul>

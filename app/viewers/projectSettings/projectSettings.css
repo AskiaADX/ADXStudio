@@ -1,3 +1,8 @@
+* {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 html, body {
   margin    : 0;
   padding   : 0;
@@ -133,7 +138,7 @@ input, textarea, select {
 }
 
 #responses_min, #responses_max {
-    width: 460px;
+    max-width: 460px;
 }
 
 ul {
@@ -254,4 +259,8 @@ table#properties_table a:active:not(.add-property-option) {
 }
 .property-option-value {
     margin-right: 5px;
+}
+
+.not-visible {
+    display : none;
 }

@@ -18,9 +18,10 @@
         descClassNames    = classNames.description,
         translate   = askiaScript.translate,
         PERIOD      = '.',
+        COLON      	= ':',
     // Browser support
         browserSupport = {
-            selectstart     :  ("onselectstart" in document.createElement('div')),
+            selectstart     : ("onselectstart" in document.createElement('div')),
             selectionEvent  : (window.selectstart) ? "selectstart" : "mousedown"
         };
 
@@ -44,6 +45,14 @@
         if (context) {
             member = (context.style || '').replace(patterns.prefixes, '');
             member = (context.brace && accessors[member]) || (context.curve && types.ARRAY) || member;
+            if (member === "module") {
+                for (var i = 0, l = instance.options.dictionary.modules.length; i < l; i++) {
+                    var mod = instance.options.dictionary.modules[i];
+                    if (mod.name === context.content.replace("::", "")) {
+                        return mod.functions;
+                    }
+                }
+            }
             return dictionary.members[member];
         } else {
             return builtin;
@@ -56,7 +65,6 @@
      * @return {Array|null} Suggestions
      */
     function askiascriptHint(instance) {
-
         // Find the token at the cursor
         var cur           = instance.getCursor(),
             token         = instance.getTokenAt(cur),
@@ -64,8 +72,7 @@
             contextToken  = token,
             contextTokenState = contextToken.state.inner || contextToken.state, // State in normal or multi-mode
             context       = null,
-            isMember      = (token.string.charAt(0) === PERIOD);
-
+            isMember      = ((token.string.charAt(0) === PERIOD) || (token.string.charAt(1) === COLON));
 
         // Don't enable the hint on string
         // or on comment
@@ -86,28 +93,26 @@
 
         // If it's a member then search from what
         if (isMember) {
-
             contextToken = instance.getTokenAt({
                 line  : cur.line,
                 ch    : contextToken.start
             });
             contextTokenState = contextToken.state.inner || contextToken.state;
-
-            if (contextToken.string.charAt(0) !== PERIOD) {
+            if ((contextToken.string.charAt(0) !== PERIOD) && (contextToken.string.charAt(1) !== COLON)) {
                 return null;
             }
+
             contextToken = instance.getTokenAt({
                 line  : cur.line,
                 ch    : contextToken.start
             });
             contextTokenState = contextToken.state.inner || contextToken.state;
-
 
             // Check the context before the punctuation
             if (contextToken.type === classNames.PUNCTUATION) {
-                context =  (contextTokenState.currentScope || contextTokenState.lastToken);
+                context = (contextTokenState.currentScope || contextTokenState.lastToken);
             } else {
-                context =  contextTokenState.lastToken;
+                context = contextTokenState.lastToken || tokenState.lastToken;
             }
         }
 
@@ -252,7 +257,7 @@
         // but without to be part of the suggestion itself
         // Do it for the two first characters to handle stuff like '</' => '<?/?'
         // Be careful the . will be replace by \.
-        var start = escapeRegExp(str).replace(/^(\\\.|=|<|"|'|\/)/, '$1?').replace(/^(.\?)(\.|=|<|"|'|\/)/, '$1$2?');
+        var start = escapeRegExp(str).replace(/^(\\\.|=|<|"|'|\/|:)/, '$1?').replace(/^(.\?)(\.|=|<|"|'|\/|:)/, '$1$2?');
         if (start === '') {
             start = ".*";
         }
@@ -281,7 +286,7 @@
      * @param {Object} [scope] Execution scope
      * @return {Function} Throttle function
      */
-    function throttle(fn, interval, scope)  {
+    function throttle(fn, interval, scope) {
         var lastCallTime = 0, elapsed, lastArgs, timer;
 
         function execute() {
@@ -387,10 +392,6 @@
 
         // Search
         this.searchResults = null;
-
-        // Latest selected token/line/text
-        this.lastTokenInfo = null;
-
 
         // Listen events
         this.listen();
@@ -667,164 +668,12 @@
             buffer = setTimeout(removeOverflow, 100);
         }, 50, self));
 
-        // Manage the research of the context question token
-        function ContextualQuestionToken(line, token) {
-            this.startToken = token;
-            this.line = line;
-            this.operatorCount = 0;
-            this.currentToken = token;
-            this.questionToken = null;
-            this.countOperator(this.startToken);
-        }
+        // Enable the contextual listener (by default)
+        instance.initContextualListener();
 
-        // Increment or not the operator count
-        ContextualQuestionToken.prototype.countOperator = function countOperator(token) {
-            if (!token || token.type !== classNames.OPERATOR) {
-                return;
-            }
-            // On curve bracket don't count the TO operator {1 TO 5} for example
-            if (token.state && token.state.currentScope && token.state.currentScope.curve) {
-                return;
-            }
-            this.operatorCount++;
-        };
-
-        // Search while found a contextual question token
-        // Return the question token when it's found
-        ContextualQuestionToken.prototype.moonWalkThroughQuestion = function moonWalkThroughQuestion() {
-            if (this.startToken.type === classNames.QUESTION) {
-                return null;
-            }
-            if (!this.currentToken) {
-                return null;
-            }
-            var cur = {
-                line : this.line,
-                ch   : this.currentToken.start - 1
-            }, prev;
-
-            if (cur.ch < 0) {
-                this.currentToken = null;
-                return null;
-            }
-
-            prev = instance.getTokenAt(cur);
-            if (prev.start === this.currentToken.start) {
-                this.currentToken = null;
-                return null;
-            }
-
-            // Count the number of operator found
-            this.countOperator(prev);
-            if (this.operatorCount > 1) {
-                this.currentToken = null;
-                return null;
-            }
-
-            // Look if the current token allows to moonwalk again
-            if (prev.type === classNames.QUESTION) {
-                this.currentToken = prev;
-                this.questionToken = prev;
-                return this.questionToken;
-            }
-
-            if (prev.type && prev.type !== classNames.OPERATOR &&
-                prev.type !== classNames.PUNCTUATION &&
-                prev.type !== classNames.NUMBER &&
-                prev.type !== classNames.STRING &&
-                (prev.type || '').indexOf(classNames.MEMBER_PREFIX) === -1) {
-                this.currentToken = null;
-                return null;
-            }
-
-            this.currentToken = prev;
-            return this.moonWalkThroughQuestion();
-        };
-
-        // Compare the current token info with the latest one
-        // Return true if the token info is the same
-        function isSameTokenInfo(current) {
-            var prev = self.lastTokenInfo;
-            return !(!prev || prev.line !== current.line || prev.start !== current.start || prev.end !== current.end || prev.string !== current.string);
-        }
-
-        // Return false if the token is not valid
-        function isValidToken(token) {
-            return (token.type && token.type !== classNames.COMMENT && token.type !== classNames.STRING);
-        }
-
-
-
-        // Search (in collection) and display the right description
-        function searchAndDisplayDescription(collection, tokenInfo) {
-            collection = collection || [];
-            var string = removeQuestionDelimiters(tokenInfo.string),
-                rg = getTokenRegexp(string, true), // Exact match
-                i, l, item, match;
-
-            // Filter the match items
-            for (i = 0, l = collection.length; i < l; i += 1) {
-                item = collection[i];
-                if (shouldBeDisplay(item, rg) && !item.snippet && askiaScript.availableInNS(item, namespace)) {
-                    match = item;
-                    if (!match.deprecated) {
-                        break;
-                    }
-                }
-            }
-
-            // Display the description of the current selection
-            if (match) {
-                instance.description.display(match);
-                // Register the latest token info right now
-                self.lastTokenInfo = tokenInfo;
-            }
-        }
-
-        // Listen when the cursor change
-        instance.on('cursorActivity', function onCursorActivity() {
-            // Only for AskiaScriptMode
-            if (!instance.isAskiaScriptMode()) {
-                return;
-            }
-            var cur                 = instance.getCursor(),
-                token               = instance.getTokenAt(cur),
-                tokenInfo           = {
-                    line    : cur.line,
-                    start   : token && token.start,
-                    end     : token && token.end,
-                    string  : token && token.string
-                },
-                searchQuestion;
-
-            // Don't fire it twice
-            if (isSameTokenInfo(tokenInfo)) {
-                return;
-            }
-
-            searchQuestion = new ContextualQuestionToken(cur.line, token);
-            if (searchQuestion.moonWalkThroughQuestion()) {
-                tokenInfo.start = searchQuestion.questionToken.start;
-                tokenInfo.end = searchQuestion.questionToken.end;
-                tokenInfo.string = searchQuestion.questionToken.string;
-                // Already displayed
-                if (isSameTokenInfo(tokenInfo)) {
-                    return;
-                }
-                searchAndDisplayDescription((instance.options &&
-                instance.options.dictionary &&
-                instance.options.dictionary.questions), tokenInfo);
-                return;
-            }
-
-            if (!isValidToken(token)) {
-                return;
-            }
-
-            // Search using the current context
-            searchAndDisplayDescription(askiascriptHint(instance), tokenInfo);
+        instance.on('askiaTokenFound', function(token) {
+            instance.description.display(token);
         });
-
     };
 
     /**
@@ -883,7 +732,7 @@
             key;
 
         for (key in types) {
-            if (types.hasOwnProperty(key) && key !== 'VARIANT') {
+            if (types.hasOwnProperty(key) && key !== 'ANY_TYPE') {
                 arrMembers.push(types[key]);
             }
         }
@@ -1111,7 +960,7 @@
             questionName;
 
         // Reset the latest token info
-        this.lastTokenInfo = null;
+        this.instance.contextualListener.lastTokenInfo = null;
 
         // Use only one desc element for all questions
         // Update the desc element using the question information
@@ -1357,6 +1206,219 @@
     };
 
     /**
+     * Listen the current editor context (text selected or in the context)
+     * @param {CodeMirror} instance Instance of the CodeMirror
+     * @constructor
+     */
+    function ContextualListener(instance) {
+        this.instance       = instance;
+        // Latest selected token/line/text
+        this.lastTokenInfo  = null;
+    }
+
+    /**
+     * Return false if the token is not valid (comments or string)
+     * @param token
+     */
+    ContextualListener.prototype.isValidToken = function isValidToken(token) {
+        return (token && token.type && token.type !== classNames.COMMENT && token.type !== classNames.STRING);
+    };
+
+    /**
+     * Compare the current token info with the latest one
+     * Return true if the token info is the same
+     * @param current
+     */
+    ContextualListener.prototype.isSameTokenInfo = function isSameTokenInfo(current) {
+        var prev = this.lastTokenInfo;
+        return !(!prev || prev.line !== current.line || prev.start !== current.start || prev.end !== current.end || prev.string !== current.string);
+    };
+
+    /**
+     * Search (in collection) and trigger the `askiaTokenFound` event if the token is found
+     * @param {Array} collection Collection from where to search the token
+     * @param {Object} tokenInfo Token to find in the collection
+     */
+    ContextualListener.prototype.fireWhenFound = function fireWhenFound(collection, tokenInfo) {
+        collection = collection || [];
+        var string = removeQuestionDelimiters(tokenInfo.string),
+            rg = getTokenRegexp(string, true), // Exact match
+            i, l, item, match,
+            instance = this.instance,
+            namespace = instance.options && instance.options.namespace;
+
+        // Filter the match items
+        for (i = 0, l = collection.length; i < l; i += 1) {
+            item = collection[i];
+            if (shouldBeDisplay(item, rg) && !item.snippet && askiaScript.availableInNS(item, namespace)) {
+                match = item;
+                if (!match.deprecated) {
+                    break;
+                }
+            }
+        }
+
+        // Display the description of the current selection
+        if (match) {
+            CodeMirror.signal(instance, 'askiaTokenFound', match);
+            // Register the latest token info right now
+            this.lastTokenInfo = tokenInfo;
+        }
+    };
+
+    /**
+     * Listen the editor
+     */
+    ContextualListener.prototype.listen = function () {
+        var self = this,
+            instance = this.instance;
+
+        // Listen when the cursor change
+        instance.on('cursorActivity', function onCursorActivity() {
+            // Only for AskiaScriptMode
+            if (!instance.isAskiaScriptMode()) {
+                return;
+            }
+            var cur                 = instance.getCursor(),
+                token               = instance.getTokenAt(cur),
+                tokenInfo           = {
+                    line    : cur.line,
+                    start   : token && token.start,
+                    end     : token && token.end,
+                    string  : token && token.string
+                },
+                searchQuestion;
+
+            // Don't fire it twice
+            if (self.isSameTokenInfo(tokenInfo)) {
+                return;
+            }
+
+            searchQuestion = new ContextualQuestionToken(self, cur.line, token);
+            if (searchQuestion.moonWalkThroughQuestion()) {
+                tokenInfo.start = searchQuestion.questionToken.start;
+                tokenInfo.end = searchQuestion.questionToken.end;
+                tokenInfo.string = searchQuestion.questionToken.string;
+                // Already displayed
+                if (self.isSameTokenInfo(tokenInfo)) {
+                    return;
+                }
+                self.fireWhenFound((instance.options &&
+                                        instance.options.dictionary &&
+                                        instance.options.dictionary.questions), tokenInfo);
+                return;
+            }
+
+            if (!self.isValidToken(token)) {
+                return;
+            }
+
+            // Search using the current context
+            self.fireWhenFound(askiascriptHint(instance), tokenInfo);
+        });
+    };
+
+    /**
+     * Reset the cache
+     */
+    ContextualListener.prototype.reset = function () {
+        this.lastTokenInfo  = null;
+    };
+
+    /**
+     * Manage the research of the context question token
+     * @param {ContextualListener} contextualListener
+     * @param {Number} line
+     * @param {Object} token
+     * @constructor
+     */
+    function ContextualQuestionToken(contextualListener, line, token) {
+        this.contextualListener = contextualListener;
+        this.startToken = token;
+        this.line = line;
+        this.operatorCount = 0;
+        this.currentToken = token;
+        this.questionToken = null;
+        this.countOperator(this.startToken);
+    }
+
+    // Increment or not the operator count
+    ContextualQuestionToken.prototype.countOperator = function countOperator(token) {
+        if (!token || token.type !== classNames.OPERATOR) {
+            return;
+        }
+        // On curve bracket don't count the TO operator {1 TO 5} for example
+        if (token.state && token.state.currentScope && token.state.currentScope.curve) {
+            return;
+        }
+        this.operatorCount++;
+    };
+
+    // Search while found a contextual question token
+    // Return the question token when it's found
+    ContextualQuestionToken.prototype.moonWalkThroughQuestion = function moonWalkThroughQuestion() {
+        if (this.startToken.type === classNames.QUESTION) {
+            return null;
+        }
+        if (!this.currentToken) {
+            return null;
+        }
+        var cur = {
+            line : this.line,
+            ch   : this.currentToken.start - 1
+        }, prev,
+        instance = this.contextualListener.instance;
+
+        if (cur.ch < 0) {
+            this.currentToken = null;
+            return null;
+        }
+
+        prev = instance.getTokenAt(cur);
+        if (prev.start === this.currentToken.start) {
+            this.currentToken = null;
+            return null;
+        }
+
+        // Count the number of operator found
+        this.countOperator(prev);
+        if (this.operatorCount > 1) {
+            this.currentToken = null;
+            return null;
+        }
+
+        // Look if the current token allows to moonwalk again
+        if (prev.type === classNames.QUESTION) {
+            this.currentToken = prev;
+            this.questionToken = prev;
+            return this.questionToken;
+        }
+
+        if (prev.type && prev.type !== classNames.OPERATOR &&
+            prev.type !== classNames.PUNCTUATION &&
+            prev.type !== classNames.NUMBER &&
+            prev.type !== classNames.STRING &&
+            (prev.type || '').indexOf(classNames.MEMBER_PREFIX) === -1) {
+            this.currentToken = null;
+            return null;
+        }
+
+        this.currentToken = prev;
+        return this.moonWalkThroughQuestion();
+    };
+
+    /**
+     * Initialize the contextual listener
+     */
+    CodeMirror.prototype.initContextualListener = function () {
+        if (!this.contextualListener) {
+            this.contextualListener = new ContextualListener(this);
+            this.contextualListener.listen();
+        }
+        return this;
+    };
+
+    /**
      * Indicates if the current innerMode is 'askiascript'
      */
     CodeMirror.prototype.isAskiaScriptMode = function () {
@@ -1561,6 +1623,9 @@
      */
     CodeMirror.prototype.suggest = function suggest() {
 
+        // Enable the contextual listener (by default)
+        this.initContextualListener();
+
         // Defined the lexical if not already done
         askiaScript.defineLexical(askiaScript.lexical);
 
@@ -1581,9 +1646,8 @@
             selectedIndex   = -1,
             initialToken    = null,
 
-
         // Auto close some punctuation
-            closeChars        = {
+            closeChars      = {
                 'U+005B' : ']',
                 'U+007B' : '}',
                 // For IE
@@ -1934,6 +1998,11 @@
                 prefix     = (isMethod || item.base === bases.PROPERTY) ? '.' : '',
                 text       = prefix + item.name;
 
+            if (item.module) {
+                prefix 	= "::";
+                text 	= prefix + item.name;
+            }
+
             if (isFunction) {
                 text += '()';
             } else if (isQuestion && (~text.indexOf(' ') || initialTokenText)) { // Question with spaces or starting with delimiter
@@ -2140,8 +2209,10 @@
          */
         function isLegalChar(event) {
             var keyCode = event.keyCode,
+                key     = event.key,
                 legalChar      = (keyCode >= keyCodes.A && keyCode <= keyCodes.Z) ||
                     keyCode === keyCodes.PERIOD ||
+                	key     === COLON ||
                     keyCode === keyCodes.BACKSPACE,
                 unicode,
                 printableChar;
@@ -2259,6 +2330,7 @@
             //noinspection JSUnresolvedFunction
             var isAsMode       = instance.isAskiaScriptMode(),
                 keyCode        = event.keyCode,
+                key            = event.key,
                 cur            = instance.getCursor(),
                 token          = instance.getTokenAt(cur),
                 navKey         = (keyCode === keyCodes.DOWN ||
@@ -2310,7 +2382,7 @@
             }
 
             isAnotherToken = (range && token && range.from && range.from.ch !== token.start);
-            if (!onQuestion && (keyCode === keyCodes.PERIOD || isAnotherToken)) {
+            if (!onQuestion && ((keyCode === keyCodes.PERIOD || key === COLON) || isAnotherToken)) {
                 updatePosition({
                     line : cur.line,
                     ch	 : token.start
@@ -2339,7 +2411,6 @@
 
             // If we are on xml like language
             if (instance.isXmlLikeMode()) {
-
                 // If we are creating a tag
                 // get the previous token to know if characters before is '<' or '</'
                 // Then move the range to insert the suggestion at the right location
@@ -2482,4 +2553,12 @@
         return this.toTextArea();
     };
 
+    /**
+     *
+     */
+    CodeMirror.prototype.importAskiaScriptModules = function ImportAskiaScriptModules(module) {
+        var instance = this,
+            dictionary = instance.options.dictionary;
+        dictionary.updateModules(module);
+    };
 });

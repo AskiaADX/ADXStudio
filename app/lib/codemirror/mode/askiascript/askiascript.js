@@ -81,8 +81,8 @@
      *
      * @static
      * @param {Object} obj The object to extend.
-     * @param {...Object} [objX] The objects needed.
-     * @param {Boolean} [deep=false] Flag for recursivity.
+     * @param {Object} [objX] The objects needed.
+     * @param {Boolean} [deep=false] Flag for recursion.
      * @return {Object}
      */
     askiaScript.extend = function extend(obj, objX, deep) {
@@ -143,10 +143,11 @@
         OPERATOR			: 'operator',
         PUNCTUATION			: 'punctuation',
         KEYWORD				: 'keyword',
-        VARIABLE			: 'variant',
+        VARIABLE			: 'anytype',
         LABEL               : 'label',
         UNDEFINED_LABEL     : 'undef-label',
         QUESTION    		: 'question',
+        MODULE	  			: 'module',
         QUESTION_DELIMITER  : 'questiondelimiter',
         MEMBER_PREFIX		: 'member-',
         BUILTIN_PREFIX      : 'builtin-',
@@ -209,12 +210,12 @@
         QUESTION  : 'question',
         RESPONSES : 'responses',
         RESPONSE  : 'response',
-        VARIANT   : 'variant'
+        ANY_TYPE   : 'anytype'
     };
 
     askiaScript.i18n = {
         types       : {
-            variant     : 'Variant',
+            anytype     : 'Any',
             chapter     : 'Chapter',
             single      : 'Single',
             multiple    : 'Multiple',
@@ -345,6 +346,10 @@
     askiaScript.escapeRegExp = function escapeRegExp(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
+
+    askiaScript.buildRegexp = function buildRegexp(words) {
+        return new RegExp("^((" + words.join(")|(") + "))\\b", "i");
+    }
 
     /**
      * Event when clicking on the description link
@@ -682,7 +687,7 @@
                     // Build the full name of argument
                     elDesc = document.createElement('span');
                     elDesc.appendChild(document.createTextNode(arg.name + " - "));
-                    if (arg.type !== askiaScript.types.VARIANT) {
+                    if (arg.type !== askiaScript.types.ANY_TYPE) {
                         elDesc.appendChild(askiaScript.createDescLink(translate('types.' + arg.type), 'core.' + arg.type));
                     } else {
                         elDesc.appendChild(document.createTextNode(translate('types.' + arg.type)));
@@ -812,7 +817,6 @@
             });
         }
 
-
         /**
          * List all keywords of a given version
          * @param {Object} item Item
@@ -929,7 +933,7 @@
                 container.appendChild(el);
 
                 el = document.createElement('p');
-                if (item.type !== askiaScript.types.VARIANT) {
+                if (item.type !== askiaScript.types.ANY_TYPE) {
                     el.appendChild(askiaScript.createDescLink(translate('types.' + item.type), 'core.' + item.type));
                 } else {
                     el.appendChild(document.createTextNode(translate('types.' + item.type)));
@@ -1072,20 +1076,18 @@
          */
         askiaScript.patterns = (function initPatterns() {
 
-            function buildRegexp(words) {
-                return new RegExp("^((" + words.join(")|(") + "))\\b", "i");
-            }
-
+            var buildRegexp = askiaScript.buildRegexp;
 
             var patterns = {
                     number				: /^-?\d+\.?\d*/,
                     float				: /^-?\d+\.\d+/,
                     stringPrefix		: /^"/,
                     operator			: /^[\+\-\*\/<>=]/,
-                    punctuation			: /^[\(\)\[\]\{\},:;\.]/,
+                    punctuation			: /^::|[\(\)\[\]\{\},:;\.]/,
                     questionDelimiter   : /^(\?\?|\^|%%)/,
                     question			: /^(\?\?|\^|%%)(.*?)(\1)/,
-                    variable			: /^([_a-zA-Z][_a-zA-Z0-9]*)/,
+                	module	   			: /^([_a-zA-Z][_a-zA-Z0-9]*)/,
+                    variable			: /^([_a-zA-Z@][_a-zA-Z0-9]*)/,
                     labelDeclaration    : /^([_a-zA-Z][_a-zA-Z0-9]*:)/,
                     label               : /^([_a-zA-Z][_a-zA-Z0-9]*)/,
                     prefixes            : buildRegexp([classNames.MEMBER_PREFIX, classNames.BUILTIN_PREFIX]),
@@ -1103,10 +1105,11 @@
                 common      = [],
                 declaration = [],
                 useLabel    = [],
-                variant     = [],
+                anytype     = [],
                 commonMember  = [],
-                variantMember = {},
-                updateVariant = [],
+                anytypeMember = {},
+                updateAnytype = [],
+                types 		= [],
                 member, key, l, items, item, arr, parent, versionsItem,ver;
 
             // Prepare the versions
@@ -1211,6 +1214,7 @@
             // Add all members
             for (key in lexMembers) {
                 if (lexMembers.hasOwnProperty(key) && key !== COMMON) {
+                    types.push(key);
                     arr     = [];
                     member  = {};
                     items   = lexMembers[key];
@@ -1231,10 +1235,10 @@
                                 mergeAndPrepareDescription('members.' + key, item);
 
                                 arr.push(item.name);
-                                variant.push(item.name);
+                                anytype.push(item.name);
                                 member[item.name.toLowerCase()] = item;
-                                variantMember[item.name.toLowerCase()] = item;
-                                updateVariant.push(item); // Update the lexical too
+                                anytypeMember[item.name.toLowerCase()] = item;
+                                updateAnytype.push(item); // Update the lexical too
                             }
                         }
                     }
@@ -1242,11 +1246,14 @@
                     patterns.members[key] = buildRegexp(arr.concat(commonMember));
                 }
             }
-            patterns.members.variant = buildRegexp(variant.concat(commonMember));
-            internalDictionary.members.variant = variantMember;
 
-            // Add the variant in the lexical
-            lexical.members.variant = updateVariant;
+            patterns.types = buildRegexp(types);
+
+            patterns.members.anytype = buildRegexp(anytype.concat(commonMember));
+            internalDictionary.members.anytype = anytypeMember;
+
+            // Add the anytype in the lexical
+            lexical.members.anytype = updateAnytype;
 
 
             // Add versions
@@ -1283,7 +1290,7 @@
         }());
 
         /**
-         * Value type of accessors (array -> variant, responses -> response)
+         * Value type of accessors (array -> anytype, responses -> response)
          */
         askiaScript.accessors = accessors;
 
@@ -1482,7 +1489,7 @@
 
 
                     for (memberKey in members) {
-                        if (members.hasOwnProperty(memberKey) && memberKey !== 'variant') {
+                        if (members.hasOwnProperty(memberKey) && memberKey !== 'anytype') {
                             strInnerMembers = [];
                             forEach(members[memberKey], function forEachMembers(item) {
                                 strInnerMembers.push('\t\t' + stringifyObject(item));
@@ -1615,7 +1622,7 @@
 
 
                     /*for (memberKey in members) {
-                        if (members.hasOwnProperty(memberKey) && memberKey !== 'variant') {
+                        if (members.hasOwnProperty(memberKey) && memberKey !== 'anytype') {
                             strMembers.push("\n/**\n *\tMEMBERS " + memberKey.toUpperCase() + "\n*\/\n\n");
                             strInnerMembers = [];
                             forEach(members[memberKey], function forEachMembers(item) {
@@ -1861,15 +1868,17 @@
             dictionary  = askiaScript.dictionary,
             questions   = {},
             localVariables = {},
+            localModules   = [],
             labels      = {},
+            funcNames   = {},
 
         // Don't consume characters during match
-            DONT_CONSUME = false;
-
+            DONT_CONSUME = false,
+            modules = options.modules || [];
         // Public dictionary for the instance of the editor
         // It's accessible through the options
         options.dictionary = (function createEditorDictionary() {
-
+            var buildRegexp = askiaScript.buildRegexp;
             var l,
                 question,
                 collection = [],
@@ -1897,13 +1906,72 @@
                 }
             }
 
+            function buildModuleRegexp() {
+                var funcs 	= [],
+                    obj		= {};
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    funcs = [];
+                    var module = modules[i];
+                    for (var j = 0, k = module.functions.length; j < k; j++) {
+                        funcs.push(module.functions[j].name);
+                    }
+                    obj[module.name] = buildRegexp(funcs);
+                }
+                CodeMirror.askiaScript.patterns.members["module"] = obj;
+            }
+
+            //check if modules exist, then init the localModules array
+            if (modules && modules.length) {
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    var module = modules[i];
+                    for (var j = 0, k = module.functions.length; j < k; j++) {
+                        module.functions[j].module = module.name;
+                    }
+                }
+                localModules = JSON.parse(JSON.stringify(modules));
+                buildModuleRegexp();
+            }
+
             // All questions and builtin
             fragment = (dictionary.builtin.concat(collection)).sort(sortItems);
 
-            function update(vars, lbls) {
+            //Update modules and localModules objects
+            function updateModules(mods) {
+                if (!mods && !mods.length) {
+                    return;
+                }
+                for (var i = 0, l = mods.length; i < l; i++) {
+                    var module = mods[i];
+                    var index = -1;
+                    for (var j = 0, k = modules.length; j < k; j++) {
+                        if (mods[i].name == modules[j].name) {
+                            index = j;
+                        }
+                    }
+                    //if the modules already exist, update it. If not, add it
+                    if (index == -1) {
+                        modules.push({
+                            name        : mods[i].name,
+                            functions   : mods[i].functions
+                        });
+                    } else {
+                        modules[index] = {
+                            name        : mods[i].name,
+                            functions   : mods[i].functions
+                        }
+                    }
+                }
+                localModules = JSON.parse(JSON.stringify(modules));
+                //rebuild regex for modules
+                buildModuleRegexp();
+            }
+
+            function update(vars, lbls, funcs, mods) {
                 l = vars.length;
                 localVariables = {};
                 labels = {};
+                funcNames = {};
+                localModules = JSON.parse(JSON.stringify(modules)) || [];
                 if (l) {
                     while(l--) {
                         localVariables[vars[l].name.toLowerCase()] = vars[l];
@@ -1915,17 +1983,50 @@
                         labels[lbls[l].name.toLowerCase()] = lbls[l];
                     }
                 }
+                l = funcs.length;
+                if (l) {
+                    while(l--) {
+                        funcNames[funcs[l].name.toLowerCase()] = funcs[l];
+                    }
+                }
+                l = mods.length;
+                if (l) {
+                  while(l--) {
+                    var name = mods[l].name;
+                    for (var j = 0, k = localModules.length; j < k; j++) {
+                      if (name == localModules[j].name) {
+                        mods[l] = localModules[j];
+                      }
+                    }
+                  }
+                }
+
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    var module = modules[i];
+                    var funcs = module.functions;
+                    for (var i = 0, l = funcs.length; i < l; i++) {
+                        module.functions[i].module = module.name;
+                        funcs[i].module = module.name;
+                    }
+                }
+
                 result.variables = vars.sort(sortItems);
                 result.labels    = lbls.sort(sortItems);
-                result.all       = fragment.concat(vars).concat(lbls).sort(sortItems);
+                result.functions = funcs.sort(sortItems);
+                result.modules   = mods.sort(sortItems);
+                result.all       = fragment.concat(vars).concat(lbls).concat(funcs).concat(mods).sort(sortItems);
+
             }
 
             result = {
                 all       : fragment,
                 questions : collection.sort(sortItems),
+                modules   : modules,
                 variables : [],
                 labels    : [],
-                update    : update
+                functions : [],
+                update    : update,
+                updateModules : updateModules
             };
 
             return result;
@@ -2154,8 +2255,30 @@
             var match = stream.match(patterns.variable, DONT_CONSUME);
             if (match && match.length > 1) {
                 if (state.declaration || localVariables[match[1].toLowerCase()]) {
+                    var item = localVariables[match[1]];
                     stream.match(patterns.variable); // Eat now
-                    return classNames.VARIABLE;
+                    return  (item && item.className) || classNames.VARIABLE;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Indicates if the token match a function declaration
+         * @param stream
+         * @param state
+         * @return {String|Boolean} return 'function' or false
+         */
+        function matchFunction(stream, state) {
+            var match = stream.match(patterns.variable, DONT_CONSUME),
+                item;
+            if (match && match.length > 1) {
+                if (state.declaration || funcNames[match[1].toLowerCase()]) {
+                    item = funcNames[match[1].toLowerCase()];
+                    if (item && item.base !== bases.OPERATOR) {
+                        stream.match(patterns.variable); // Eat now
+                        return classNames.BUILTIN_PREFIX + item.type;
+                    }
                 }
             }
             return false;
@@ -2218,20 +2341,43 @@
             if (!patterns.members[type] && state.currentScope) {
                 type = state.currentScope.style || '';
                 type = type.replace(patterns.prefixes, '');
-                type = (state.currentScope.brace && accessors[type]) || (state.currentScope.curve && types.ARRAY) || types.VARIANT;
+                type = (state.currentScope.brace && accessors[type]) || (state.currentScope.curve && types.ARRAY) || types.ANY_TYPE;
             }
             // Try with the previous token
             else if (state.lastToken) {
                 if (state.lastToken.content === ')') {
-                    type = types.VARIANT;
+                    type = types.ANY_TYPE;
                 } else if (state.lastToken.content === '}') {
                     type = types.ARRAY;
                 }
             }
 
-
             if (patterns.members[type]) {
-                match = stream.match(patterns.members[type]);
+                if (patterns.members[type][state.lastToken.content]) {
+                    match = stream.match(patterns.members[type][state.lastToken.content]);
+                    var module;
+                    for (var i = 0, l = options.dictionary.modules.length; i < l; i++) {
+                        module = options.dictionary.modules[i];
+                        if (module.name == state.lastToken.content) {
+                            break;
+                        }
+                    }
+
+                    if (module) {
+                      var funcs = module.functions;
+                      if (funcs) {
+                        for (var i = 0, l = funcs.length; i < l; i++) {
+                            if (match && funcs[i].name === match[1]) {
+                                type = funcs[i].type;
+                                return classNames.MEMBER_PREFIX + type;
+                            }
+                        }
+                      }
+                    }
+                } else {
+                    match = stream.match(patterns.members[type]);
+                }
+
                 if (match) {
                     return classNames.MEMBER_PREFIX + askiaScript.find(match[1], type).type;
                 }
@@ -2270,6 +2416,16 @@
         }
 
         /**
+         * Match types
+         */
+        function matchTypes(stream) {
+            if (stream.match(patterns.types)) {
+                return classNames.KEYWORD;
+            }
+            return false;
+        }
+
+        /**
          * Indicates an error
          * @param stream
          * @return {string} return 'error'
@@ -2277,6 +2433,29 @@
         function matchError(stream) {
             stream.next();
             return classNames.ERROR;
+        }
+
+        /**
+         * Find imported modules
+         */
+        function matchModules(stream) {
+            // Search also if the variable exist
+            var match = stream.match(patterns.module, DONT_CONSUME),
+                module;
+            if (match && match.length > 1) {
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    if (modules[i].name == match[1]) {
+                        module = modules[i];
+                        break;
+                    }
+                }
+                //make the stream go ahead
+                if (module) {
+                    match = stream.match(patterns.module);
+                }
+                return (module && classNames.MODULE) || false;
+            }
+            return false;
         }
 
         // tokenizers
@@ -2289,6 +2468,7 @@
                 matchNumber(stream) ||
                 matchString(stream, state) ||
                 matchOperator(stream) ||
+                matchModules(stream) ||
                 matchPunctuation(stream) ||
                 matchOpening(stream, state) ||
                 matchMiddle(stream) ||
@@ -2298,7 +2478,9 @@
                 matchMembers(stream, state) ||
                 matchCommon(stream) ||
                 matchBuiltin(stream) ||
+                matchTypes(stream) ||
                 matchLocalVariable(stream, state) ||
+                matchFunction(stream, state) ||
                 matchLabelDeclaration(stream) ||
                 matchLabel(stream, state) ||
                 matchQuestion(stream) ||
@@ -2310,8 +2492,12 @@
             var style = state.tokenize(stream, state);
             var current = stream.current();
 
+            /**
+             * Here is the management of connectors
+             * for autocomplete
+             */
             // Handle '.' connected identifiers
-            if (current === '.') {
+            if (current === '.' || current === '::') {
                 style = state.tokenize(stream, state);
                 current = stream.current();
                 if (style && ~(style.indexOf(classNames.MEMBER_PREFIX))) {
@@ -2437,7 +2623,7 @@
             var regexps     = [
                     {
                         type : 'variable',
-                        re   : /^\s*(?:dim)\s+([a-z_][a-z0-9_]*)/mgi
+                        re   : /^(?:.*\{%)?\s*(?:dim)\s+([a-z_][a-z0-9_]*)/mgi
                     },
                     {
                         type : 'variable',
@@ -2446,12 +2632,23 @@
                     {
                         type : 'label',
                         re   : /^\s*([a-z_][a-z0-9_]*):\s*$/mgi
+                    },
+	                {
+                        type : 'function',
+                        re   : /^\s*(?:export\s+)?(?:function)\s+([a-z_][a-z0-9_]*)\s*\((.*?)\)\s*(?:as)\s+([a-z]*)/mgi
+    	            },
+                    {
+                        type : 'module',
+                        re   : /^\s*(?:Import|Module)\s+([a-z_][a-z0-9_]*)/mgi
                     }
                 ],
                 value       = instance.getValue(),
+                functions   = [],
                 variables   = [],
                 labels      = [],
+                modules     = [],
                 definedLabels = {},
+                vars 		= {},
                 re, match,
                 i, l,
                 undefinedLabelElements, el;
@@ -2463,16 +2660,67 @@
                     if (regexps[i].type === 'variable') {
                         variables.push({
                             name : match[1],
-                            type : types.VARIANT,
+                            type : types.ANY_TYPE,
+                            className : classNames.VARIABLE,
                             base : bases.VARIABLE
                         });
+                        vars[match[1].toLowerCase()] = {
+                            name : match[1],
+                            type : types.ANY_TYPE,
+                            className : classNames.VARIABLE,
+                            base : bases.VARIABLE
+                        };
                     } else if (regexps[i].type === 'label') {
                         labels.push({
                             name : match[1]
                         });
                         definedLabels[match[1].toLowerCase()] = true;
+                    } else if (regexps[i].type === 'function') {
+                        var args = []
+                        if (match[2]) {
+                            var rg = /([a-z_][a-z0-9_]*)\s+(?:as)\s+([a-z]*)/gi;
+                            var arg = rg.exec(match[2]);
+                            while (arg) {
+                                args.push({
+                                    name : arg[1],
+                                    type : arg[2]
+                                });
+                                var variable = vars[arg[1]];
+                                if (variable && variable.type !== arg[2]) {
+                                    for (var i = 0, l = variables.length; i < l; i++) {
+                                        if (variables[i].name === variable.name) {
+                                            variables[i].type = types.ANY_TYPE;
+                                        }
+                                    }
+                                } else {
+                                    variables.push({
+                                        name : arg[1],
+                                        type : arg[2],
+                                        className : classNames.BUILTIN_PREFIX + arg[2],
+                                        base : bases.VARIABLE
+                                    });
+                                    vars[arg[1].toLowerCase()] = {
+                                        name : arg[1],
+                                        type : arg[2],
+                                        className : classNames.BUILTIN_PREFIX + arg[2],
+                                        base : bases.VARIABLE
+                                    };
+                                }
+                                arg = rg.exec(match[2]);
+                            }
+                        }
+                        functions.push({
+                            base : 'function',
+                            name : match[1],
+                            type : match[3].toLowerCase(),
+                            args : args
+                        });
+                    } else if (regexps[i].type === 'module') {
+                        modules.push({
+                            name : match[1],
+                            className : classNames.MODULE,
+                       });
                     }
-
                     match = re.exec(value);
                 }
             }
@@ -2490,7 +2738,7 @@
 
             // Refresh the dictionary
             if (options.dictionary && options.dictionary.update) {
-                options.dictionary.update(variables, labels);
+                options.dictionary.update(variables, labels, functions, modules);
             }
         }
 
@@ -2525,8 +2773,4 @@
 
     CodeMirror.defineMIME("application/askiascript", "askiascript");
 
-
 });
-
-
-

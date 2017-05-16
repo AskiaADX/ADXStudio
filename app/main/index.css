@@ -87,11 +87,35 @@ webview {
     display: block;
 }
 
-#panel_output p {
+#panel_output {
     -webkit-user-select : initial;
     user-select         : initial;
     margin              : 0;
     padding             : 0 5px;
-    font-size           : 0.8rem;
-    font-weight         : bold;
+    /* font-size           : 0.8rem;
+    font-weight         : bold;*/
+}
+
+#panel_output  * {
+    -webkit-user-select : initial;
+    user-select         : initial;
+}
+
+#panel_output ul {
+    margin : 0;
+    padding: 0;
+}
+
+#panel_output ul li {
+    list-style: none;
+}
+
+#panel_output section {
+    border-bottom  : 1px solid white;
+    padding : 0 15px;
+    margin-bottom : 15px;
+}
+
+#panel_output pre {
+    font-family: inherit;
 }

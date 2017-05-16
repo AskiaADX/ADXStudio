@@ -408,7 +408,9 @@
             editorHeight = this.elEditor.offsetHeight,
             initialPattern = (!this.state.open) ? (this.elPattern.value || '') : '';
 
-        this.instance.setSize(null, (editorHeight - formHeight));
+        if (!this.isOpen) {
+            this.instance.setSize(null, (editorHeight - formHeight));
+        };
 
         if (this.instance.somethingSelected()) {
             initialPattern = this.instance.getSelection().split('\n')[0];

@@ -2,7 +2,7 @@
 describe('appSettings', function () {
     var appSettings,  fs = require('fs'),  spies, fakeStats;
     var pathHelper = require('path');
-    var ADC = require('adcutil').ADC;
+    var ADX = require('adxutil').ADX;
 
     beforeEach(function () {
         var cacheKey = require.resolve("../../app/appSettings/appSettingsModel.js");
@@ -13,9 +13,9 @@ describe('appSettings', function () {
         appSettings = require("../../app/appSettings/appSettingsModel.js");
 
         spies = {
-            ADCPref : {
-                read : spyOn(ADC.preferences, 'read'),
-                write : spyOn(ADC.preferences, 'write')
+            ADXPref : {
+                read : spyOn(ADX.preferences, 'read'),
+                write : spyOn(ADX.preferences, 'write')
             },
             fs: {
                 stat: spyOn(fs, 'stat'),
@@ -53,7 +53,7 @@ describe('appSettings', function () {
             cb(null);
         });
 
-        spies.ADCPref.read.andCallFake(function (options, cb) {
+        spies.ADXPref.read.andCallFake(function (options, cb) {
             cb({
                 author : {
                     name : 'AuthName',
@@ -64,8 +64,8 @@ describe('appSettings', function () {
             });
         });
 
-        spies.ADCPref.write.andCallFake(function (prefs, cb) {
-            ADC.preferences.read({}, cb);
+        spies.ADXPref.write.andCallFake(function (prefs, cb) {
+            ADX.preferences.read({}, cb);
         });
     });
 
@@ -323,12 +323,12 @@ describe('appSettings', function () {
             expect(readPath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'Prefs.json'));
         });
 
-        it('should read the preferences of ADCUtil', function () {
+        it('should read the preferences of ADXUtil', function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here"}');
             });
             appSettings.getPreferences(function () {});
-            expect(spies.ADCPref.read).toHaveBeenCalled();
+            expect(spies.ADXPref.read).toHaveBeenCalled();
         });
 
         it('should return an error when the Prefs.json could not be accessible', function () {
@@ -342,12 +342,12 @@ describe('appSettings', function () {
             expect(sendError).toBe(returnError);
         });
 
-        it('should return the default preferences when the Prefs.json and the ADCUtil prefs are not accessible', function () {
+        it('should return the default preferences when the Prefs.json and the ADXUtil prefs are not accessible', function () {
             var result;
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(new Error("Error"));
             });
-            spies.ADCPref.read.andCallFake(function (options, cb) {
+            spies.ADXPref.read.andCallFake(function (options, cb) {
                 cb(null);
             });
             appSettings.getPreferences(function (err, data) {
@@ -359,7 +359,7 @@ describe('appSettings', function () {
             });
         });
 
-        it('should return the preferences from the Prefs.json and the ADCUtil when it\'s accessible', function () {
+        it('should return the preferences from the Prefs.json and the ADXUtil when it\'s accessible', function () {
             var result;
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
@@ -449,7 +449,7 @@ describe('appSettings', function () {
             });
         });
 
-        it("should write the ADCUtil preferences when it's defined and when writing in Prefs.json succeed", function () {
+        it("should write the ADXUtil preferences when it's defined and when writing in Prefs.json succeed", function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
@@ -458,7 +458,7 @@ describe('appSettings', function () {
             });
 
             runSync(function (done) {
-                spies.ADCPref.write.andCallFake(function (prefs) {
+                spies.ADXPref.write.andCallFake(function (prefs) {
                     expect(prefs).toEqual({
                         author : {
                             name : 'NewAuthName',
@@ -482,7 +482,7 @@ describe('appSettings', function () {
             });
         });
 
-        it("should not write the ADCUtil preferences when it's not defined", function () {
+        it("should not write the ADXUtil preferences when it's not defined", function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
@@ -495,13 +495,13 @@ describe('appSettings', function () {
                     defaultProjectsLocation : "ElseWhere",
                     openLastProjectByDefault : true
                 }, function () {
-                    expect(spies.ADCPref.write).not.toHaveBeenCalled();
+                    expect(spies.ADXPref.write).not.toHaveBeenCalled();
                     done();
                 });
             });
         });
 
-        it("should not return an error when the prefs.json succeed and the ADCUtil.preferences.write succeed", function () {
+        it("should not return an error when the prefs.json succeed and the ADXUtil.preferences.write succeed", function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });

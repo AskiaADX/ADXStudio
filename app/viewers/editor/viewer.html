@@ -21,7 +21,6 @@
   	<link rel="stylesheet" href="../../lib/codemirror/mode/askiascript/askiascript.css" />
     <script src="../../lib/codemirror/mode/askiascript/askiascript.js"></script>
     <script src="../../lib/codemirror/mode/askiascript/AskiaLanguage-en.js"></script>
-    <script src="ADCMasqueLanguage-en.js"></script>
     <script src="../../lib/codemirror/mode/askiascript/MasqueLanguage-en.js"></script>
   	<!-- AskiaScript Embedding -->
     <script src="../../lib/codemirror/mode/askiascripthtml/askiascripthtml.js"></script>
@@ -60,8 +59,11 @@
     <script src="../../lib/codemirror/addon/hint/css-hint.js"></script>
 
     <!-- XSD -->
-    <script src="../../lib/codemirror/addon/xsd/ADCSchemaConfig.js"></script>
-    <script src="../../lib/codemirror/addon/xsd/ADCSchemaUnitTests.js"></script>
+    <script src="../../lib/codemirror/addon/xsd/ADCSchema-2.0.0.js"></script>
+    <script src="../../lib/codemirror/addon/xsd/ADCSchema-2.1.0.js"></script>
+    <script src="../../lib/codemirror/addon/xsd/ADCUnitTests-2.0.0.js"></script>
+    <script src="../../lib/codemirror/addon/xsd/ADPSchema-2.1.0.js"></script>
+    <script src="../../lib/codemirror/addon/xsd/ADXUnitTests-2.1.0.js"></script>
 
   	<!-- Sense  -->
   	<link rel="stylesheet" href="../../lib/codemirror/addon/sense/sense.css" />
@@ -94,11 +96,11 @@
                 xml  : 'askiascript/xml',
                 md   : 'text/x-markdown'
             };
-           
-            var tabs     = viewer.tabs;
-            var tab      = viewer.currentTab;
-            var textarea = document.getElementById('code');
-
+           	
+            var workspaceView = viewer.workspaceView;
+            var tab       = viewer.currentTab;
+            var textarea  = document.getElementById('code');
+            
             var matchFileExt = /\.([^\.]+)$/.exec(tab.name);
             var fileExt = (matchFileExt && matchFileExt.length) ? matchFileExt[1].toLocaleLowerCase() : '';
             var contentType = (fileExt) ? contentTypeByFileExt[fileExt] : '';
@@ -108,7 +110,7 @@
             var link = document.createElement("link");
             link.setAttribute("rel", "stylesheet");
             link.setAttribute("type", "text/css"); 
-            link.href = "../../themes/" + tabs.theme + "/editor.css";
+            link.href = "../../themes/" + workspaceView.theme + "/editor.css";
 
             document.head.appendChild(link);
 
@@ -121,23 +123,23 @@
             
             viewer.changeFontSize = function(size) {
                 lines.style.fontSize = size + "px";
-            }
+            };
             
             textarea.value = tab.content;
 
             // Map save command (CTRL+S) and the main menu
             viewer.saveContent = CodeMirror.commands.save = function () {
-                tabs.onSave(tab.id, window.editor.getValue());
+                workspaceView.onSave(tab.id, window.editor.getValue());
             };
 
             // Save as
             viewer.saveContentAs = function saveContentAs() {
-                tabs.onSaveAs(tab.id, window.editor.getValue());
+                workspaceView.onSaveAs(tab.id, window.editor.getValue());
             };
 
             // Save & Close
             viewer.saveContentAndClose = function saveContentAndClose() {
-                tabs.onSaveAndClose(tab.id, window.editor.getValue());
+                workspaceView.onSaveAndClose(tab.id, window.editor.getValue());
             };
 
             var editorOptions = {
@@ -177,7 +179,7 @@
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, editorOptions).suggest();
 
             window.editor.on('change', function onChange(instance) {
-                tabs.onContentChange(tab.id, instance.getValue());
+                workspaceView.onContentChange(tab.id, instance.getValue());
             });
 
             /* -----
