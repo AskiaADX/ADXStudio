@@ -1868,6 +1868,7 @@
             dictionary  = askiaScript.dictionary,
             questions   = {},
             localVariables = {},
+            localModules   = [],
             labels      = {},
             funcNames   = {},
 
@@ -1919,48 +1920,49 @@
                 CodeMirror.askiaScript.patterns.members["module"] = obj;
             }
 
+            //check if modules exist, then init the localModules array
             if (modules && modules.length) {
                 for (var i = 0, l = modules.length; i < l; i++) {
                     var module = modules[i];
-                    var funcs = module.functions;
-                    for (var i = 0, l = funcs.length; i < l; i++) {
-                        module.functions[i].module = module.name;
-                        funcs[i].module = module.name;
+                    for (var j = 0, k = module.functions.length; j < k; j++) {
+                        module.functions[j].module = module.name;
                     }
                 }
+                localModules = JSON.parse(JSON.stringify(modules));
                 buildModuleRegexp();
             }
 
             // All questions and builtin
             fragment = (dictionary.builtin.concat(collection)).sort(sortItems);
 
-            function updateModules(mod) {
-                for (var key in mod) {
-                    if (!mod[key].length) {
-                        continue;
-                    }
-                    var funcs = mod[key];
+            //Update modules and localModules objects
+            function updateModules(mods) {
+                if (!mods && !mods.length) {
+                    return;
+                }
+                for (var i = 0, l = mods.length; i < l; i++) {
+                    var module = mods[i];
                     var index = -1;
-                    for (var i = 0, l = modules.length; i < l; i++) {
-                      if (modules[i].name == key) {
-                        index = i;
-                        break;
-                      }
+                    for (var j = 0, k = modules.length; j < k; j++) {
+                        if (mods[i].name == modules[j].name) {
+                            index = j;
+                        }
                     }
-                    
+                    //if the modules already exist, update it. If not, add it
                     if (index == -1) {
-                      modules.push({
-                          name : key,
-                          functions : funcs
-                      });
+                        modules.push({
+                            name        : mods[i].name,
+                            functions   : mods[i].functions
+                        });
                     } else {
-                      modules[i] =
-                        {
-                          name : key,
-                          functions : funcs
-                        };
+                        modules[index] = {
+                            name        : mods[i].name,
+                            functions   : mods[i].functions
+                        }
                     }
                 }
+                localModules = JSON.parse(JSON.stringify(modules));
+                //rebuild regex for modules
                 buildModuleRegexp();
             }
 
@@ -1969,7 +1971,7 @@
                 localVariables = {};
                 labels = {};
                 funcNames = {};
-                var finalMods = modules;
+                localModules = JSON.parse(JSON.stringify(modules)) || [];
                 if (l) {
                     while(l--) {
                         localVariables[vars[l].name.toLowerCase()] = vars[l];
@@ -1989,25 +1991,31 @@
                 }
                 l = mods.length;
                 if (l) {
-                    while(l--) {
-                        var isInDictionary = false;
-                        var mod = mods[l];
-                        for (var j = 0, k = finalMods.length; j < k; j++) {
-                            if (mod.name == finalMods[j].name) {
-                                isInDictionary = true;
-                                break;
-                            }
-                        }
-                        if (!isInDictionary) {
-                            finalMods.push(mod);
-                        }
+                  while(l--) {
+                    var name = mods[l].name;
+                    for (var j = 0, k = localModules.length; j < k; j++) {
+                      if (name == localModules[j].name) {
+                        mods[l] = localModules[j];
+                      }
+                    }
+                  }
+                }
+
+                for (var i = 0, l = modules.length; i < l; i++) {
+                    var module = modules[i];
+                    var funcs = module.functions;
+                    for (var i = 0, l = funcs.length; i < l; i++) {
+                        module.functions[i].module = module.name;
+                        funcs[i].module = module.name;
                     }
                 }
+
                 result.variables = vars.sort(sortItems);
                 result.labels    = lbls.sort(sortItems);
                 result.functions = funcs.sort(sortItems);
-                result.modules   = finalMods.sort(sortItems);
-                result.all       = fragment.concat(vars).concat(lbls).concat(funcs).concat(finalMods).sort(sortItems);
+                result.modules   = mods.sort(sortItems);
+                result.all       = fragment.concat(vars).concat(lbls).concat(funcs).concat(mods).sort(sortItems);
+
             }
 
             result = {
@@ -2354,12 +2362,17 @@
                             break;
                         }
                     }
-                    var funcs = module.functions;
-                    for (var i = 0, l = funcs.length; i < l; i++) {
-                        if (match && funcs[i].name === match[1]) {
-                            type = funcs[i].type;
-                            return classNames.MEMBER_PREFIX + type;
+
+                    if (module) {
+                      var funcs = module.functions;
+                      if (funcs) {
+                        for (var i = 0, l = funcs.length; i < l; i++) {
+                            if (match && funcs[i].name === match[1]) {
+                                type = funcs[i].type;
+                                return classNames.MEMBER_PREFIX + type;
+                            }
                         }
+                      }
                     }
                 } else {
                     match = stream.match(patterns.members[type]);

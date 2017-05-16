@@ -3,7 +3,7 @@ ADX Studio
 
 ![ADX Studio](https://github.com/AskiaADX/ADXStudio/blob/develop/adxstudio.png?raw=true)
 
-This is the Windows desktop IDE to create and/or edit ADCs (Askia Design Control) and ADPs (Askia Design Pages) for [Askia](http://www.askia.com/) powered survey controls and layouts. It makes intensive use of [Electron](https://github.com/atom/electron) and [NodeJS](https://nodejs.org/en/).
+This is the Windows desktop IDE to create and/or edit ADCs (Askia Design Controls) and ADPs (Askia Design Pages) for [Askia](http://www.askia.com/) powered survey controls and layouts. It makes intensive use of [Electron](https://github.com/atom/electron) and [NodeJS](https://nodejs.org/en/).
 
 Setup
 -----
@@ -12,12 +12,11 @@ Setup
 
 Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/latest) archive.
 
-1.	After downloading the release, unzip `ADXStudio-win32-x64.zip` or `ADXStudio-win32-ia32.zip` depending on your OS environment.
-2.	Open the `ADXStudio-win32-x64` (or `ADXStudio-win32-ia32`) folder.
-3.	Double-click the `ADXStudio.exe` executable.
-4.	Try to create your ADC with the ADCTemplate (project automatically open), or create a new Project.
+1.	After downloading the release, unzip `ADXStudioSetup.zip`.
+2.	Run the `ADXStudio Setup 1.0.0.exe` executable as `administrator`.
+3.	Try to create your ADC or ADP using one of the template, or create a new Project.
 
-*Note: do not tamper with any other components of `ADXStudio-win32-x64` / `ADXStudio-win32-ia32` folder.*
+*Note: do not tamper with any other components of `ADXStudio Setup 1.0.0.exe` folder.*
 
 #### Manual installation
 

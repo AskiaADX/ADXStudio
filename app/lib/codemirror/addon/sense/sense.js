@@ -1679,7 +1679,6 @@
                 DOWN        : 40,
                 A           : 65,
                 Z           : 90,
-                COLON		: 186,
                 PERIOD      : 190
             };
 
@@ -2210,9 +2209,10 @@
          */
         function isLegalChar(event) {
             var keyCode = event.keyCode,
+                key     = event.key,
                 legalChar      = (keyCode >= keyCodes.A && keyCode <= keyCodes.Z) ||
                     keyCode === keyCodes.PERIOD ||
-                	keyCode === keyCodes.COLON ||
+                	key     === COLON ||
                     keyCode === keyCodes.BACKSPACE,
                 unicode,
                 printableChar;
@@ -2330,6 +2330,7 @@
             //noinspection JSUnresolvedFunction
             var isAsMode       = instance.isAskiaScriptMode(),
                 keyCode        = event.keyCode,
+                key            = event.key,
                 cur            = instance.getCursor(),
                 token          = instance.getTokenAt(cur),
                 navKey         = (keyCode === keyCodes.DOWN ||
@@ -2381,7 +2382,7 @@
             }
 
             isAnotherToken = (range && token && range.from && range.from.ch !== token.start);
-            if (!onQuestion && ((keyCode === keyCodes.PERIOD || keyCode === keyCodes.COLON) || isAnotherToken)) {
+            if (!onQuestion && ((keyCode === keyCodes.PERIOD || key === COLON) || isAnotherToken)) {
                 updatePosition({
                     line : cur.line,
                     ch	 : token.start

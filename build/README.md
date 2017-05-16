@@ -15,6 +15,6 @@ To modify parameters, go to package.json at the root of the folder application
 
 For code signing certificate:
 - create a `tmp` folder at the root app folder
-- add your .p12 file
+- add your `.pfx` or `.p12` file
 - modify the win.certificateFile path and win.certificatePassword in package.json
 (Make sure to delete the password in package.json after the build)
