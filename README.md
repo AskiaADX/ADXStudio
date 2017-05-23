@@ -58,3 +58,8 @@ Contributors
 ------------
 
 - [Robbe Van der Gucht](https://github.com/sir-ragna)
+
+License
+-------
+
+`ISC` see license.md
