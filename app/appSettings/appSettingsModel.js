@@ -195,7 +195,7 @@ AppDataSettings.prototype.getMostRecentlyUsed = function getMostRecentlyUsed (ca
   const self = this;
   const filePath = path.join(this.rootPath, mruFileName);
   fs.readFile(filePath, function onReadMRU (err, data) {
-    if (err) {
+    if (err && err.code !== 'ENOENT') {
       callback(err, []);
       return;
     }
