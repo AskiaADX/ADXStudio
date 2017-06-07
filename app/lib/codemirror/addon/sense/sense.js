@@ -892,6 +892,10 @@
             remainHeight -= this.elDebug.offsetHeight;
         }
 
+        if (remainHeight < 80) { // Keep 80px (approx. 3 lines of code)
+            remainHeight = 80;
+        }
+
         this.instance.setSize(null, remainHeight);
 
         this.fixContent();
@@ -1646,15 +1650,6 @@
             selectedIndex   = -1,
             initialToken    = null,
 
-        // Auto close some punctuation
-            closeChars      = {
-                'U+005B' : ']',
-                'U+007B' : '}',
-                // For IE
-                '['      : ']',
-                '{'      : '}'
-            },
-
         // Latest event type
         // Because in certain cases the keyup are triggered twice
             lastEventType,
@@ -2132,23 +2127,6 @@
         }
 
         /**
-         * Close punctuation
-         * @param {KeyboardEvent} event Event
-         * @param {Object} cur Cursor position
-         */
-        function closePunctuation(event, cur) {
-            var closeChar = closeChars[event.keyIdentifier] || closeChars[event.char] || closeChars[event.key];
-
-            if (closeChar) {
-                instance.replaceSelection(closeChar, 'end');
-                instance.setCursor({
-                    line : cur.line,
-                    ch   : cur.ch
-                });
-            }
-        }
-
-        /**
          * Change the behaviour when some special keys (ENTER, TAB, DOWN, UP) has been pressed
          * @param {Object} event Event triggered by the editor
          * @param {Object} cur Coordinates of the cursor
@@ -2348,10 +2326,6 @@
             if (keyCode === keyCodes.CTRL || keyCode === keyCodes.SHIFT || keyCode === keyCodes.ALT ||
                 keyCode === keyCodes.META_LEFT || keyCode === keyCodes.META_RIGHT) {
                 return false;
-            }
-
-            if (!isDuplicateEvent(event)) {
-                closePunctuation(event, cur);
             }
 
             // Don't display the suggestion on backspace
