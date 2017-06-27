@@ -186,6 +186,10 @@ app.once('ready', function createAppMenu () {
       app.emit('menu-shortcuts');
     }
 
+    function importClick () {
+      app.emit('menu-import-design');
+    }
+
     let template;
     if (process.platforn !== 'darwin') {
       template = [
@@ -239,6 +243,10 @@ app.once('ready', function createAppMenu () {
             {
               label: '&Project settings',
               click: projectSettingsClick
+            },
+            {
+              label: '&Import',
+              click: importClick
             },
             {
               type: 'separator'
