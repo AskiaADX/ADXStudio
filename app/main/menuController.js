@@ -244,10 +244,10 @@ app.once('ready', function createAppMenu () {
               label: '&Project settings',
               click: projectSettingsClick
             },
-            {
-              label: '&Import',
-              click: importClick
-            },
+            //{
+            //  label: '&Import',
+            //  click: importClick
+            //},
             {
               type: 'separator'
             },
