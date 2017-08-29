@@ -284,6 +284,35 @@ function publishZendesk (event, button, options) {
   });
 }
 
+/**
+ * Recover options of the importation
+ */
+function importDesign() {
+      showModalDialog({
+        type : 'import-design'
+      }, 'import-validation');
+}
+
+/**
+ * Run the importation
+ *
+ * @param {*} event
+ * @param {*} button
+ * @param {*} options
+ */
+function importValidation(event, button, options) {
+  let adx = global.project.getADX();
+  if (!adx || !adx.path) {
+    return;
+  }
+
+  clearOutput();
+  adx.adxImport(options, function(err) {
+    if (err) {
+      return;
+    }
+  });
+}
 
 /**
  * Open preferences
@@ -326,7 +355,6 @@ function savePreferences (event, button, options) {
   }
   appSettings.setPreferences(options.preferences);
 }
-
 
 /**
  * Switch the current theme
@@ -427,6 +455,12 @@ ipc.on('main-ready', function (event) {
   app.on('menu-publish-zendesk', publishZendeskProject);
   ipc.removeListener('publish-validation', publishZendesk);
   ipc.on('publish-validation', publishZendesk);
+
+    //import an askia xml in fixtures
+  app.removeListener('menu-import-design', importDesign);
+  app.on('menu-import-design', importDesign);
+  ipc.removeListener('import-validation', importValidation);
+  ipc.on('import-validation', importValidation);
 
   app.removeListener('menu-dev-tools', toggleDevTools);
   app.on('menu-dev-tools', toggleDevTools);

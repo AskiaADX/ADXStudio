@@ -124,6 +124,11 @@ askiaScript.extend(askiaScript.lexical, {
     },    
     "versions" : [
         {
+            "name" : "5.4.6.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Collate and CollateAny"
+        },        
+        {
             "name" : "5.4.5.0",            
             "ns" : "askialanguage",            
             "desc" : "Functions, modules, yeah baby!"
@@ -156,7 +161,7 @@ askiaScript.extend(askiaScript.lexical, {
         {
             "name" : "5.3.2.0",            
             "ns" : "askialanguage",            
-            "desc" : "Initialize version of the AskiaScript 2.0"
+            "desc" : "First version of the AskiaScript 2.0"
         }
     ],    
     "builtin" : [
@@ -3561,7 +3566,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.4"
             },            
             {
-                "name" : "Log",                
+                "name" : "Log10",                
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                

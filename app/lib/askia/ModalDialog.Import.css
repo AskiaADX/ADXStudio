@@ -1,0 +1,67 @@
+.askia-modal-dialog.import-design {
+    width: 600px;
+}
+
+.askia-modal-import-design-title, p.askia-modal-import-design-title {
+    font-size   : 1.4em;
+    padding-left: 20px;
+    padding-top : 0;
+    margin-top  : 0;
+}
+
+.askia-modal-import-design-container {
+    padding: 15px 0 15px 20px;
+}
+
+.askia-modal-import-design-container input,
+.askia-modal-import-design-container textarea,
+.askia-modal-import-design-container select {
+    padding         : 10px;
+    width           : 418px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    margin-left     : 10px;
+}
+
+.askia-modal-import-design-container .pathInput {
+    width: 368px;
+}
+
+.askia-modal-import-design-container input:focus,
+.askia-modal-import-design-container textarea:focus,
+.askia-modal-import-design-container select:focus {
+    outline : none;
+}
+
+.askia-modal-import-design-container label {
+    display     : block;
+    width       : 100px;
+    float       : left;
+    align-self  : center;
+}
+
+.askia-modal-import-design-container textarea {
+    height: 60px;
+}
+
+.askia-modal-import-design-container select {
+    width   : 440px;
+    cursor  : pointer;
+}
+
+.import-design .askia-modal-buttons-container {
+    padding-right: 30px !important;
+}
+
+.askia-modal-import-design-container button {
+    width           : 40px;
+    height          : 37px;
+    cursor          : pointer;
+    align-self      : center;
+    margin-left     : 10px;
+    border-radius   : 2px;
+    font-size       : 14px;
+    font-weight     : bold;
+    outline         : none;
+    transition      : background-color ease-in .2s, color ease-in .2s;
+}

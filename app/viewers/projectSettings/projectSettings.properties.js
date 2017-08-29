@@ -23,6 +23,16 @@ document.addEventListener('DOMContentLoaded', function () {
   let muteChange;
 
   /**
+   * Encode the value of a event targer value
+   */
+  function encodeEvent(e) {
+    e.target.value = Encoder.NumericalToHTML(Encoder.htmlEncode(e.target.value));
+  }
+
+innerFormEl.querySelector('#property_value').addEventListener('change', encodeEvent);
+innerFormEl.querySelector('#property_name').addEventListener('change', encodeEvent);
+
+  /**
    * Reset the global variables
    */
   function reset () {
@@ -56,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
       categoriesListEl.appendChild(opt);
       propertyIncrement += (list[i].properties && list[i].properties.length) || 0;
     }
-
     loadCategory();
   };
 
@@ -110,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return true;
       }
-      break;
     }
   }
 
@@ -226,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
    * @return {HTMLElement} Return the first created table row
    */
   function addProperty (property) {
+    property.name = Encoder.NumericalToHTML(Encoder.htmlEncode(property.name));
     const row = document.createElement('tr');
     row.property = property;
     row.className = 'collapsable-row';
@@ -272,6 +281,9 @@ document.addEventListener('DOMContentLoaded', function () {
    * @return {HTMLElement} Return the first created table row
    */
   function addPropertyOption (option) {
+    //Encode the text
+    option.text = Encoder.NumericalToHTML(Encoder.htmlEncode(option.text));
+
     const rowOption = document.createElement('span');
     rowOption.className = 'property-options-list-row';
     rowOption.option = option;
@@ -294,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inputText.setAttribute('title', 'Option text');
     inputText.className = 'property-option-text';
     inputText.value = option.text;
+    inputText.addEventListener('change', encodeEvent);
     rowOption.appendChild(inputText);
 
     elPropOptionList.appendChild(rowOption);
