@@ -34,8 +34,8 @@ function Tab (config) {
   this.content = null;
   this.edited = false;
   this.mode = this.config.mode || '';
-  this.adxType = config.adxType || null;
-  this.adxVersion = config.adxVersion || null;
+  this.adxType = this.config.adxType || null;
+  this.adxVersion = this.config.adxVersion || null;
 }
 
 /**
