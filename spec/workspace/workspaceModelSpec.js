@@ -904,24 +904,6 @@ describe("workspace", function () {
         });
     });
 
-    describe("#unwatchTabsIn", function () {
-       it("must be tested!", function () {
-           expect(true).toBe(false);
-       });
-    });
-
-    describe("#rewatchTabsIn", function () {
-        it("must be tested!", function () {
-            expect(true).toBe(false);
-        });
-    });
-
-    describe("#findRewatchableTabsIn", function () {
-        it("must be tested!", function () {
-            expect(true).toBe(false);
-        });
-    });
-
     describe('events', function () {
 
         it('Should inherit of eventListener from nodeJS.', function () {
