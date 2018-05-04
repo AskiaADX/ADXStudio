@@ -8,7 +8,7 @@ const appSettings = require('../appSettings/appSettingsModel.js');
 const ADX = require('adxutil').ADX;
 const fs = require('fs');
 const path = require('path');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const packageJson = require('../../package.json');
 let  mainView;
 

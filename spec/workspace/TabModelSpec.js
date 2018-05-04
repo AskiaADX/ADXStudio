@@ -2,7 +2,7 @@
 describe("Tab", function () {
     "use strict";
     var Tab,
-        uuid = require('node-uuid'),
+        uuid = require('uuid'),
         fs   = require('fs'),
         nodePath = require('path'),
         spies = {};

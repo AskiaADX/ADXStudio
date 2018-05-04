@@ -7,7 +7,7 @@ describe("workspace", function () {
         EventEmitter = require('events').EventEmitter,
         nodePath = require('path'),
         util = require('util'),
-        uuid = require('node-uuid'),
+        uuid = require('uuid'),
         fs   = require('fs'),
         watcher,
         fakeWatcherInstance;
