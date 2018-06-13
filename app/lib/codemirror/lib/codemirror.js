@@ -7295,7 +7295,7 @@ function defineOptions(CodeMirror) {
   option("cursorBlinkRate", 530)
   option("cursorScrollMargin", 0)
   option("cursorHeight", 1, updateSelection, true)
-  option("singleCursorHeightPerLine", true, updateSelection, true)
+  option("singleCursorHeightPerLine", false, updateSelection, true)
   option("workTime", 100)
   option("workDelay", 100)
   option("flattenSpans", true, resetModeState, true)
