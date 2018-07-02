@@ -1,0 +1,19 @@
+﻿{%
+Dim placeholder = CurrentADC.PropValue("placeholder")
+Dim attrPlaceholder = On(placeholder <> "", "placeholder=\"" + placeholder + "\"", "")
+Dim attrRequired = On(CurrentQuestion.IsAllowDK, "required=\"required\"", "")
+
+If Not(CurrentQuestion.IsTimeOnly) Then
+    Dim attrMin = On(CurrentQuestion.MinDate.ToNumber() <> DK, "min=\"" + CurrentQuestion.MinDate.Format("dd/MM/yyyy") + "\"", "")
+    Dim attrMax = On(CurrentQuestion.MaxDate.ToNumber() <> DK, "max=\"" + CurrentQuestion.MaxDate.Format("dd/MM/yyyy") + "\"", "")    
+%}
+    <input type="date" name="{%= CurrentQuestion.InputName("date") %}" value="{%= CurrentQuestion.InputValue("date") %}" {%:= attrMin %} {%:= attrMax %} {%:= attrPlaceholder %} {%:= attrRequired %}/>
+{% EndIf %}
+{% If Not(CurrentQuestion.IsDateOnly) Then
+    If Not(CurrentQuestion.IsTimeOnly) Then ' Attribute is only for date or for time but not for both
+        attrPlaceholder = ""
+        attrRequired = ""
+    EndIf 
+%}
+    <input type="time" name="{%= CurrentQuestion.InputName("time") %}" value="{%= CurrentQuestion.InputValue("time") %}"  {%:= attrPlaceholder %} {%:= attrRequired %}/>
+{% EndIf %}

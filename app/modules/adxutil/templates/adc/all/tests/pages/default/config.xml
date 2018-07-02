@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://www.askia.com/2.1.0/ADPSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/2.1.0/ADPSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.1.0/ADPSchema.xsd"
+         version="2.1.0"
+         askiaCompat="5.4.3">
+  <info>
+    <name>Default</name>
+    <guid>3358db56-8498-4dc3-b0ea-e8a00bd510af</guid>
+    <version>1.0.0</version>
+    <date>2017-03-02</date>
+    <description>
+      <![CDATA[Blank ADP]]>
+    </description>
+    <author>
+      <![CDATA[Askia SAS]]>
+    </author>
+    <company>Askia SAS</company>
+    <helpURL>http://www.askia.com</helpURL>
+    <site>http://www.askia.com</site>
+  </info>
+
+  <outputs defaultOutput="default">
+    <output id="default" masterPage="default.html">
+      <description><![CDATA[Default output]]></description>
+	  <content fileName="askia.ajax.min.js" type="javascript" mode="static" position="foot" />
+    </output>
+    <output id="nojs" masterPage="default.html">
+      <description><![CDATA[Default output]]></description>
+      <condition><![CDATA[NOT(Browser.Support("javascript"))]]></condition>
+    </output>
+  </outputs>
+  <properties>
+    <category id="general" name="General">
+      <property xsi:type="standardProperty" id="window_title" name="Window title" type="string" require="true">
+        <description><![CDATA[Title of the window]]></description>
+        <value><![CDATA[Askia Web Survey]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="display_previous" name="Display previous" type="boolean" require="true">
+        <description><![CDATA[Display previous button]]></description>
+        <value><![CDATA[false]]></value>
+      </property>
+    </category>
+  </properties>
+</page>

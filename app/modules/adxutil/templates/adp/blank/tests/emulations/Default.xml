@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fixture xmlns="http://www.askia.com/2.1.0/ADXUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/2.1.0/ADXUnitTestSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.1.0/ADXUnitTests.xsd">
+    <arrange>
+        <browser>
+            <support name="javascript" value="true" />
+        </browser>
+    </arrange>
+</fixture>
+

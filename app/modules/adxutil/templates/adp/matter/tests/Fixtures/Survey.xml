@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fixture xmlns="http://www.askia.com/2.1.0/ADXUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.askia.com/2.1.0/ADXUnitTestSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.1.0/ADXUnitTests.xsd">
+    <arrange>
+        <Survey Name="TestSurvey" CurrentQuestion="single" Version="1.0" Full="1" MaxQuestionID="4" MaxResponseID="7">
+            <Languages>
+                <Language ID="2057" Abbr="ENG" Name="English (United Kingdom)" Default="1" />
+            </Languages>
+            <Questions>
+                <Question ID="1" Shortcut="single" ADCName="default" Order="1" ElementType="question" AllowDK="0" QuestionType="closed" MaxResponse="1" MinResponse="0" Translated="0">
+                    <LongCaption>Long caption of the single closed question</LongCaption>
+                    <Modalities>
+                        <Modality ID="1">
+                            <ShortCaption>Absolutely</ShortCaption>
+                        </Modality>
+                        <Modality ID="2">
+                            <ShortCaption>Rather yes</ShortCaption>
+                        </Modality>
+                        <Modality ID="3">
+                            <ShortCaption>Rather no</ShortCaption>
+                        </Modality>
+                        <Modality ID="4">
+                            <ShortCaption>Not at all</ShortCaption>
+                        </Modality>
+                        <Modality ID="5">
+                            <ShortCaption>Don't know</ShortCaption>
+                        </Modality>
+                    </Modalities>
+                </Question>
+                <Question ID="2" Shortcut="multiple" ADCName="default"  Order="2" ElementType="question" AllowDK="0" QuestionType="closed" MaxResponse="3" MinResponse="0" Translated="0">
+                    <LongCaption>Long caption of the multi-coded question</LongCaption>
+                    <Modalities>
+                        <Modality ID="6">
+                            <ShortCaption>Product A</ShortCaption>
+                        </Modality>
+                        <Modality ID="7">
+                            <ShortCaption>Product B</ShortCaption>
+                        </Modality>
+                        <Modality ID="8">
+                            <ShortCaption>Product C</ShortCaption>
+                        </Modality>
+                        <Modality ID="9">
+                            <ShortCaption>Product D</ShortCaption>
+                        </Modality>
+                        <Modality ID="10" Exclusive="1">
+                            <ShortCaption>None of them</ShortCaption>
+                        </Modality>
+                    </Modalities>
+                </Question>
+                <Question ID="3" Shortcut="open" ADCName="default"  Order="3" ElementType="question" AllowDK="0" QuestionType="open" Translated="0">
+                    <LongCaption>Long caption of the open-ended question</LongCaption>
+                </Question>
+                <Question ID="4" Shortcut="numeric" ADCName="default"  Order="4" ElementType="question" AllowDK="0" QuestionType="numeric" Decimals="0" Translated="0">
+                    <LongCaption>Long caption of the numeric question</LongCaption>
+                </Question>
+            </Questions>
+            <ScreenGroups/>
+            <Resources />
+            <InternetOptions />
+        </Survey>
+    </arrange>
+</fixture>
+

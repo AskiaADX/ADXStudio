@@ -3,7 +3,7 @@
 const app = require('electron').app;
 const path = require('path');
 const fs = require('fs');
-const ADX = require('adxutil').ADX;
+const ADX = require('../modules/adxutil').ADX;
 
 const prefFileName = 'Prefs.json';
 const mruFileName = 'MRU.json';

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{%= CurrentADP.Var("window_title") %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <askia-head />
+    </head>
+    <body>
+        <!-- Place your code here -->
+        <askia-form>
+            <askia-questions />
+            {% If CurrentADP.Var("display_previous") = True Then %}
+            <input type="submit" name="Previous" class="" value="Previous" />
+            {% End If %}
+            <input type="submit" name="Next" class="" value="Next" />
+        </askia-form>
+        <askia-foot />
+    </body>
+</html>

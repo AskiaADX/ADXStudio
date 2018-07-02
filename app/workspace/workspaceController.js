@@ -4,7 +4,7 @@ const ipc = electron.ipcMain;
 const path = require('path');
 const fs = require('fs');
 const dialog = electron.dialog;
-const ADXConfigurator = require('adxutil').Configurator;
+const ADXConfigurator = require('../modules/adxutil').Configurator;
 const workspace = require('./workspaceModel.js');
 const servers = require('../modules/servers/adxServers.js');
 let workspaceView;
@@ -586,6 +586,7 @@ function onSaveContent (event, tabId, content) {
       }
 
       if (typeof content === 'string') {
+        content = content.replace(/&/g, '') // replace special chars by ''
         adx.configurator.fromXml(content);
       } else {
         adx.configurator.set(content);
@@ -817,7 +818,7 @@ function explorerRemovingFile (fileType, filePath) {
     });
     break;
   case 'folder':
-      // If preview and we delete the tests directory 
+      // If preview and we delete the tests directory
       // then close the preview tab before removing folder
     if (testPath === filePath.toLowerCase()) {
       workspace.find('::preview', (err, tab, pane) => {

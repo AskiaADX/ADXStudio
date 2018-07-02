@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control xmlns="http://www.askia.com/2.1.0/ADCSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.askia.com/2.1.0/ADCSchema ../../../../ADXUtil/schema/2.1.0/ADCSchema.xsd"
+          version="2.1.0"
+          askiaCompat="5.4.3">
+  <info>
+    <name>default</name>
+    <guid>feba6dd4-1a09-4470-a854-e89c59821d8e</guid>
+    <version>1.0.0</version>
+    <date>2016-04-15</date>
+    <description>
+      <![CDATA[Default ADC with all kind of questions]]>
+    </description>
+    <author>
+      <![CDATA[Mamadou Sy <mamadou@askia.com>]]>
+    </author>
+    <company>Askia SAS</company>
+    <helpURL></helpURL>
+    <site>http://www.askia.com</site>
+    <categories>
+      <category>General</category>
+    </categories>
+    <constraints>
+      <constraint on="questions" single="true" multiple="true" numeric="true" date="true" open="true" />
+      <constraint on="controls" responseblock="true" />
+    </constraints>
+  </info>
+
+  <outputs defaultOutput="default">
+    <output id="default">
+      <description><![CDATA[Default output]]></description>
+	  <content fileName="adc_default.css" type="css" mode="static" position="head" />
+      <content fileName="single.html" type="html" mode="dynamic" position="none" />
+      <content fileName="multiple.html" type="html" mode="dynamic" position="none" />
+      <content fileName="open.html" type="html" mode="dynamic" position="none" />
+      <content fileName="numeric.html" type="html" mode="dynamic" position="none" />
+      <content fileName="datetime.html" type="html" mode="dynamic" position="none" />
+      <content fileName="default.html" type="html" mode="dynamic" position="placeholder" />
+	  <content fileName="default.js" type="javascript" mode="static" position="foot" />
+      <content fileName="multiple.js" type="javascript" mode="dynamic" position="foot" />
+    </output>
+  </outputs>
+
+  <properties>
+
+    <category id="general" name="General">
+      <property xsi:type="standardProperty" id="placeholder" name="Placeholder" type="string" mode="dynamic">
+        <description>
+          <![CDATA[
+          Using HTML 5, in modern browser.
+          Helper text shows in the input when it's empty.
+        ]]>
+        </description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="useList" name="Use a selection list" type="boolean" mode="static">
+        <description>
+          <![CDATA[
+          Use a select list to enumerate all available responses.
+          This option works with closed and numeric questions.
+          For numeric question, the range between bounds should be inferior than 20. It take in account the step option.
+        ]]>
+        </description>
+        <value>false</value>
+      </property>
+    </category>
+
+    <category id="numericQuestion" name="Numeric question">
+      <property xsi:type="standardProperty" id="unitStep" name="Step for numeric" type="number" mode="static">
+        <description>
+          <![CDATA[
+          Using HTML 5, in modern browser.
+          Indicates the unit to increment or decrement the number using the stepper.
+        ]]>
+        </description>
+        <value>1</value>
+      </property>  
+    </category>
+
+    <category id="openQuestion" name="Open-ended question">
+      <property xsi:type="standardProperty" id="multiline" name="Multi-line text" type="boolean" mode="static">
+        <description>
+          <![CDATA[
+          Allow multi-line text for open-ended question.
+          Only when sub-type is text.
+        ]]>
+        </description>
+        <value>false</value>
+      </property>
+      <property xsi:type="standardProperty" id="opensubtype" name="Open-ended sub-type" type="string" mode="static">
+        <description>
+          <![CDATA[
+          Using HTML 5, in modern browser.
+          Define a sub-type for open-ended question.
+        ]]>
+        </description>
+        <value>text</value>
+        <options>
+          <option value="text" text="Text"/>
+          <option value="email" text="Email"/>
+          <option value="url" text="URL"/>
+          <option value="color" text="Color"/>
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="datalist" name="Data list" type="string" mode="dynamic">
+        <description>
+          <![CDATA[
+          Using HTML 5, in modern browser.
+          Add an auto-completion with the terms in the specified list.
+          Only available on single line.
+          Use a pipe `|` separators between each terms
+        ]]>
+        </description>
+        <value></value>
+      </property>
+    </category>
+    
+  </properties>
+</control>

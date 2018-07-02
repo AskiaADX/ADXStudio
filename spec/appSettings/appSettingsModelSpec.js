@@ -2,7 +2,7 @@
 describe('appSettings', function () {
     var appSettings,  fs = require('fs'),  spies, fakeStats;
     var pathHelper = require('path');
-    var ADX = require('adxutil').ADX;
+    var ADX = require('../modules/adxutil').ADX;
 
     beforeEach(function () {
         var cacheKey = require.resolve("../../app/appSettings/appSettingsModel.js");
@@ -48,7 +48,7 @@ describe('appSettings', function () {
                 }
             };
         });
-        
+
         spies.fs.mkdir.andCallFake(function (dir, cb) {
             cb(null);
         });

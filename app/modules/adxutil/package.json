@@ -1,0 +1,86 @@
+{
+  "_from": "adxutil@^2.0.5",
+  "_id": "adxutil@2.0.5",
+  "_inBundle": false,
+  "_integrity": "sha512-0NN4ivDlocOxwkstyV65nByyjNkD46y7koVrzdXviptHzk+AqPy7uTBcHvmT3HK8eWdeHPAZS/XxS4Zei7HycQ==",
+  "_location": "/adxutil",
+  "_phantomChildren": {
+    "caseless": "0.12.0",
+    "form-data": "2.3.2",
+    "har-validator": "5.0.3",
+    "mime-types": "2.1.18",
+    "qs": "6.5.2",
+    "safer-buffer": "2.1.2",
+    "tunnel-agent": "0.6.0",
+    "uuid": "3.2.1"
+  },
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "adxutil@^2.0.5",
+    "name": "adxutil",
+    "escapedName": "adxutil",
+    "rawSpec": "^2.0.5",
+    "saveSpec": null,
+    "fetchSpec": "^2.0.5"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/adxutil/-/adxutil-2.0.5.tgz",
+  "_shasum": "97b8fa320158f758501384876431bd5a0d8fe865",
+  "_spec": "adxutil@^2.0.5",
+  "_where": "F:\\AskiaProjects\\ADXStudioDevelop",
+  "author": {
+    "name": "Mamadou Sy",
+    "email": "mamadou@askia.com"
+  },
+  "bin": {
+    "ADXUtil": "./app/ADXUtil.js"
+  },
+  "bugs": {
+    "url": "https://github.com/AskiaADX/ADXUtil/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "cli-color": "^0.2.3",
+    "commander": "^1.3.2",
+    "elementtree": "^0.1.7",
+    "jszip": "^2.6.1",
+    "ncp": "^2.0.0",
+    "node-zendesk": "^1.3.0",
+    "request": "^2.85.0",
+    "uuid": "^3.2.1"
+  },
+  "deprecated": false,
+  "description": "Utilities tools for Askia Design eXtension",
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-shell": "^0.4.3",
+    "jasmine-node": "^1.14.5"
+  },
+  "gitHead": "8f24141069d1b761518711898cb9d7a731b875a4",
+  "homepage": "https://github.com/AskiaADX/ADXUtil#readme",
+  "keywords": [
+    "Askia",
+    "Design",
+    "Control",
+    "Extension",
+    "ADC",
+    "ADP",
+    "ADX"
+  ],
+  "license": "ISC",
+  "main": "./app/ADXUtilAPI.js",
+  "name": "adxutil",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AskiaADX/ADXUtil.git"
+  },
+  "scripts": {
+    "test": "jasmine-node spec/"
+  },
+  "version": "2.0.5"
+}
