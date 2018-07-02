@@ -586,7 +586,7 @@ function onSaveContent (event, tabId, content) {
       }
 
       if (typeof content === 'string') {
-        content = content.replace(/&/g, '') // replace special chars by ''
+        content = content.replace(/&/g, '') // replace & by ''
         adx.configurator.fromXml(content);
       } else {
         adx.configurator.set(content);
