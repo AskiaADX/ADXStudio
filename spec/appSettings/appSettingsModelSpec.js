@@ -2,7 +2,7 @@
 describe('appSettings', function () {
     var appSettings,  fs = require('fs'),  spies, fakeStats;
     var pathHelper = require('path');
-    var ADX = require('../modules/adxutil').ADX;
+    var ADX = require('../../app/modules/adxutil').ADX;
 
     beforeEach(function () {
         var cacheKey = require.resolve("../../app/appSettings/appSettingsModel.js");
