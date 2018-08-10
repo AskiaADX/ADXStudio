@@ -1201,7 +1201,8 @@ ADXOutputs.prototype.get = function get() {
     el.iter('output', (output) => {
         // Output element
         const item = {
-            id : output.get("id")
+            id : output.get("id"),
+            condition : output.get("condition")
         };
         const descEl = output.find("description");
         if (descEl) {
@@ -1677,8 +1678,14 @@ ADXProperties.prototype.get = function get() {
         const itemCategory = {
             id : category.get("id") || "",
             name : category.get("name") || "",
+            condition: category.get("condition") || "",
             properties : []
         };
+
+        const conditionEl = category.find("condition");
+        if (conditionEl) {
+            itemCategory.condition = conditionEl.text;
+        }
 
         category.iter('property', (property) => {
             const itemProperty = {};
@@ -1886,6 +1893,7 @@ ADXProperties.prototype.set = function set(data) {
 
         itemCategory.set("id", category.id || "");
         itemCategory.set("name", category.name || "");
+        itemCategory.set("condition", category.condition || "");
 
         if (category.properties && Array.isArray(category.properties)) {
             category.properties.forEach((property) => {
@@ -1951,6 +1959,11 @@ ADXProperties.prototype.toXml = function toXml() {
     if (Array.isArray(data.categories)) {
         data.categories.forEach((category) => {
             xml.push('    <category id="' + (category.id || "") + '" name="' + (category.name || "")  + '">');
+
+            if (category.condition) {
+                xml.push('      <condition><![CDATA[' + category.condition + ']]></condition>');
+            }
+
             if (Array.isArray(category.properties)) {
                 category.properties.forEach((property) => {
                     // The property question ia only available for the ADC

@@ -1,5 +1,5 @@
 {
-  "name": "ADXStudio",
+  "name": "adxstudio",
   "version": "1.0.2",
   "description": "ADXStudio",
   "main": "app/main.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AskiaADX/ADXStudio.git"
+    "url": "git+https://github.com/AskiaADX/ADXStudio.git"
   },
   "keywords": [
     "ADX",
@@ -28,11 +28,15 @@
   },
   "homepage": "https://github.com/AskiaADX/ADXStudio",
   "dependencies": {
-    "adxutil": "^2.0.5",
     "charset-detector": "0.0.2",
+    "cli-color": "^1.2.0",
+    "elementtree": "^0.1.7",
     "fs.extra": "^1.3.2",
     "glob": "^6.0.4",
+    "jszip": "^3.1.5",
     "mime-types": "^2.1.15",
+    "ncp": "^2.0.0",
+    "node-zendesk": "^1.3.0",
     "nodejs-websocket": "^1.7.1",
     "uuid": "^3.2.1",
     "wrench": "^1.5.9"
