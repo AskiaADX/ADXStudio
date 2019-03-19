@@ -248,6 +248,7 @@ Configurator.prototype.get = function get() {
  *                      description : "Third output",
  *                      maxIterations : 12,
  *                      defaultGeneration : false,
+ *                      manageLoopDepth : 0,
  *                      contents : [
  *                          {
  *                              fileName : "third.css",
@@ -351,6 +352,10 @@ Configurator.prototype.toXml = function toXml() {
     let askiaCompat;
 
     switch(projectVersion) {
+      case '2.2.0':
+          askiaCompat = "5.5.2";
+          break;
+
         case '2.1.0':
             askiaCompat = "5.4.2";
             break;
@@ -579,6 +584,7 @@ ADXInfo.prototype.get = function get() {
  * @param {Boolean} [data.constraints.questions.open] Allow or not on open-ended questions
  * @param {Boolean} [data.constraints.questions.date] Allow or not on date questions
  * @param {Boolean} [data.constraints.questions.requireParentLoop] Require or not on a parent loop question
+ * @param {Number} [data.constraints.questions.requireLoopDepth] Require or not on a parent loop question
  * @param {Object} [data.constraints.controls] Controls constraints of the ADC (ADC ONLY)
  * @param {Boolean} [data.constraints.controls.responseBlock] Allow or not on response-block
  * @param {Boolean} [data.constraints.controls.label] Allow or not on label
@@ -1358,6 +1364,7 @@ ADXOutputs.prototype.get = function get() {
  *                  description : "Third output",
  *                  maxIterations : 12,
  *                  defaultGeneration : false,
+ *                  manageLoopDepth : 0,
  *                  contents : [
  *                      {
  *                          fileName : "third.css",

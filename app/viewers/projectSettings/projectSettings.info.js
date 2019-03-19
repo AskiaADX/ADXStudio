@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (tab.adxType === 'adc') {
       // Set the constraints information
       const infoConstraints = {
-        questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop'],
+        questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop', 'requireLoopDepth'],
         responses: ['min', 'max'],
         controls: ['responseblock', 'label', 'textbox', 'listbox', 'checkbox', 'radiobutton']
       };
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (tab.adxType === 'adc') {
       // Set the constraints information
       const infoConstraints = {
-        questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop'],
+        questions: ['chapter', 'single', 'multiple', 'numeric', 'open', 'date', 'requireParentLoop', 'requireLoopDepth'],
         responses: ['min', 'max'],
         controls: ['responseblock', 'label', 'textbox', 'listbox', 'checkbox', 'radiobutton']
       };

@@ -1020,6 +1020,10 @@ describe('ADXValidator', function () {
                 on   : 'questions'
             },
             {
+                name : 'requireLoopDepth',
+                on   : 'questions'
+            },
+            {
                 name : 'min',
                 on   : 'responses'
             },

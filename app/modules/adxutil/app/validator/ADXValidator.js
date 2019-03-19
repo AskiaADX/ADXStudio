@@ -235,7 +235,7 @@ const contentSealAttr = {
 
 // Hash with the rule of the constraint attribute node.
 const constraintAttributeRules = {
-    questions : ['chapter', 'single', 'multiple', 'open', 'numeric', 'date', 'requireParentLoop'],
+    questions : ['chapter', 'single', 'multiple', 'open', 'numeric', 'date', 'requireParentLoop', 'requireLoopDepth'],
     responses : ['min', 'max'],
     controls  : ['label', 'textbox', 'checkbox', 'listbox', 'radiobutton', 'responseblock']
 };
