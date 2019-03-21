@@ -1305,13 +1305,13 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },
             {
-                "name" : "Answers",
+                "name" : "AvailableAnswers",
                 "ns" : "masquelanguage",
                 "base" : "property",
                 "type" : "responses",
                 "desc" : "Returns the list of selected responses in the selected order",
                 "examples" : [
-                    " Color.Answers",
+                    " Color.AvailableAnswers",
                     " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",
                     " List of responses:",
                     " Red",
@@ -1329,10 +1329,10 @@ askiaScript.extend(askiaScript.lexical, {
                     " The responses selected by the respondent are Purple and Red in this order",
                     " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",
                     "",
-                    " Color.Answers.Value will return 4;1",
-                    " Color.Answers.EntryCode will return 14;11",
-                    " Color.Answers.Caption will return Purple;Red",
-                    " Color.Answers[2].Value will return 1 (the second answer given)"
+                    " Color.AvailableAnswers.Value will return 4;1",
+                    " Color.AvailableAnswers.EntryCode will return 14;11",
+                    " Color.AvailableAnswers.Caption will return Purple;Red",
+                    " Color.AvailableAnswers[2].Value will return 1 (the second answer given)"
                 ],
                 "alsoSee" : [
                     "Question.AvailableResponses",
@@ -3590,7 +3590,7 @@ askiaScript.extend(askiaScript.lexical, {
                 ],
                 "examples" : [
                     " If Country has {1} Then",
-                    "     Assert.Check(Language has {1}, \"When country is 'UK', 'English' language should be selected, but was {%= Country.Answers[1].Caption%}\")",
+                    "     Assert.Check(Language has {1}, \"When country is 'UK', 'English' language should be selected, but was {%= Country.AvailableAnswers[1].Caption%}\")",
                     " EndIf",
                     " ' Example output:",
                     " ' \"When country is 'UK', 'English' language should be selected, but was 'French\"",
@@ -3605,11 +3605,11 @@ askiaScript.extend(askiaScript.lexical, {
                     " If Gender Has {1} Then",
                     "      If Assert.Check(AgeRecod.HasNA, \"AgeRecod must be skipped for 'man'\") Then",
                     "         If Age < 26 Then",
-                    "             Assert.Check(AgeRecord Has {1}, \"AgeRecod must be 'Less than 25' when Age < 25, but was {%= AgeRecord.Answers[1].Caption%}\")",
+                    "             Assert.Check(AgeRecord Has {1}, \"AgeRecod must be 'Less than 25' when Age < 25, but was {%= AgeRecord.AvailableAnswers[1].Caption%}\")",
                     "         Else If Age < 46 Then",
-                    "             Assert.Check(AgeRecord Has {2}, \"AgeRecod must be '25-45' when Age < 46, but was {%= AgeRecord.Answers[1].Caption%}\")",
+                    "             Assert.Check(AgeRecord Has {2}, \"AgeRecod must be '25-45' when Age < 46, but was {%= AgeRecord.AvailableAnswers[1].Caption%}\")",
                     "         Else",
-                    "             Assert.Check(AgeRecord Has {3}, \"AgeRecod must be 'Greater 45' when Age > 45, but was {%= AgeRecord.Answers[1].Caption%}\")",
+                    "             Assert.Check(AgeRecord Has {3}, \"AgeRecod must be 'Greater 45' when Age > 45, but was {%= AgeRecord.AvailableAnswers[1].Caption%}\")",
                     "         EndIf",
                     "      EndIf",
                     " EndIf"

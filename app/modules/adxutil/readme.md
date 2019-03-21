@@ -2,25 +2,21 @@
 
 This utilities is use to facilitate the creation and the packaging of ADX project (ADP and ADC).
 
-It contains validators and allow to display outputs of the ADX using the ADXEngine. 
+It contains validators and allow to display outputs of the ADX using the ADXEngine.
 
-ADXUtil is a CLI tools (Command Line Interface) but it also provide an API for NodeJS project. 
+ADXUtil is a CLI tools (Command Line Interface) but it also provide an API for NodeJS project.
 
 ## Setup
 
-Install NodeJs: https://nodejs.org/download/
-
-Then install the npm package adxutil:
- 
-    npm install -g adxutil
-
+No need of setup here..
+ADXUtil node dependency is removed and it is added as module.
 
 ## Run unit tests of ADXUtil
 
 Install jasmine-node for unit tests
 
     npm install jasmine-node -g
-    
+
 Then run
 
     jasmine-node spec/
@@ -28,7 +24,7 @@ Then run
 or
 
     npm test
-    
+
 
 ## CLI Usage
 
@@ -73,11 +69,11 @@ This application works through Windows PowerShell
     --sourcePath              the path of the askia xml source
     --targetName              the name of the new xml fixture
     --currentQuestion         the name of the question to use in the xml target
-    
-    
+
+
 ### Generate
 
-Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`). 
+Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`).
 Target the root directory where you want to generate the ADP or ADC (or use the *-o* or *--output* option).
 
     cd C:\Users\user_name\Documents\ADXProjects\
@@ -86,25 +82,25 @@ Then enter the following command:
 
     ADXUtil generate adc my_adc_name
 
-Or 
+Or
 
     ADXUtil generate adp my_adp_name
-    
+
 That should produce an output like:
 
 ![generate (Example output)](ADCUtilGenerate.png "generate (Example output)")
 
 
-To generate the ADX structure, ADCUtil uses templates stored under the `/ADXUtil/templates/`. 
+To generate the ADX structure, ADCUtil uses templates stored under the `/ADXUtil/templates/`.
 By default, it use the `default` template (/ADXUtil/templates/adp/default/) or (/ADXUtil/templates/adc/default/).
 
-That means that you can predefine many more templates and store them in the `/ADXUtil/templates/` folder. 
+That means that you can predefine many more templates and store them in the `/ADXUtil/templates/` folder.
 Then you only need to specify the name of the template folder you want to use to generate your ADX:
 
     ADXUtil --template my_adc_template_name generate adc my_adc_name
-    
+
 Or
-    
+
     ADXUtil --template my_adp_template_name generate adp my_adp_name
 
 #### List of possible error messages
@@ -120,11 +116,11 @@ Or
 
 ### Publish
 
-Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`). 
+Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`).
 Target your ADX directory.
 
     cd C:\Users\user_name\Documents\ADXProjects\my_adx_name
-    
+
 Then enter the following command with a platform argument and then the options you want:
 
     ADXUtil publish ZenDesk --url http://url/to/zendesk --section mySection --username myName --password secret
@@ -150,7 +146,7 @@ You can use following command line options for the ZenDesk publisher:
 
 ### Validate
 
-Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`). 
+Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`).
 Target your ADX directory (or indicates the path of your ADX after the `validate` command).
 
     cd C:\Users\user_name\Documents\ADXProjects\my_adx_name
@@ -176,10 +172,10 @@ The validation will check:
 ** The outputs, output, content and attribute nodes
 ** The properties nodes
 
-It will also run the auto-generated unit tests and all unit tests of the ADX using the @ADXShell@ tool. 
+It will also run the auto-generated unit tests and all unit tests of the ADX using the @ADXShell@ tool.
 You can skip some validations using the following options in the command line:
 
-* -T, --no-test 
+* -T, --no-test
 To skip the execution of the unit tests
 
 * -A, --no-autoTest  
@@ -227,7 +223,7 @@ To skip the validation of the config.xml file
 
 ### Build
 
-Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`). 
+Start `Windows PowerShell` (`Start > All programs > Accessories > Windows PowerShell > Windows PowerShell`).
 Target your ADC directory (or indicate the path of your ADC after the `build` command).
 
     cd C:\Users\user_name\Documents\ADXProjects\my_adx_name
@@ -240,7 +236,7 @@ That should produce an output like:
 
 ![build (Example output)](ADCUtilBuild.png "build (Example output)")
 
-The `build` command will first validate the ADX like the "validate command":#validate did (it will enforce the XML validation). 
+The `build` command will first validate the ADX like the "validate command":#validate did (it will enforce the XML validation).
 If the validation fails, the build will stop otherwise it will compress all necessary files into a zip file with the *.adc or *.adp extension.
 
 The file will be generated under the ADX directory in the `\bin\` folder.
@@ -254,7 +250,7 @@ The file will be generated under the ADX directory in the `\bin\` folder.
 
 ### Show
 
-Start @Windows PowerShell@ (@Start > All programs > Accessories > Windows PowerShell > Windows PowerShell@). 
+Start @Windows PowerShell@ (@Start > All programs > Accessories > Windows PowerShell > Windows PowerShell@).
 Target your ADX directory (or indicate the path of your ADX after the @show@ command).
 
     cd C:\Users\user_name\Documents\ADXProjects\my_adx_name
@@ -266,7 +262,7 @@ Then enter the following command:
 OR
 
     ADXUtil show -o MyADXOutputName -f TheFixtureFileName.xml
-    
+
 
 That should show the result of the `MyADXOutputName` with the specified fixture.
 
@@ -279,7 +275,7 @@ That should show the result of the `MyADXOutputName` with the specified fixture.
 
 ### Import
 
-Start @Windows PowerShell@ (@Start > All programs > Accessories > Windows PowerShell > Windows PowerShell@). 
+Start @Windows PowerShell@ (@Start > All programs > Accessories > Windows PowerShell > Windows PowerShell@).
 Target your ADX directory (or indicate the path of your ADX after the @show@ command).
 
     cd C:\Users\user_name\Documents\ADXProjects\my_adx_name
@@ -307,42 +303,42 @@ Please find the [full API documentation here](http://installers.askia.com/helpde
 Example of usage of existing ADX
 
     const ADX = require('adxutil').ADX;
-    
+
     const myAdx = new ADX('path/to/adx/dir');
-        
+
     // Validate an ADX
     const configTest = {
-        test : false, 
+        test : false,
         autoTest : false
-    }; 
+    };
     myAdx.validate(configTest, (err, report) => {
         // Callback when the ADX structure has been validated
     });
-    
+
     // Show the output of an ADX
-    const configShow = { 
-        output : 'fallback', 
+    const configShow = {
+        output : 'fallback',
         fixture : 'single.xml'  
     };
     myAdx.show(configShow,  (err, output) => {
         // Callback with the output of the ADX
     });
-    
+
     // Build the ADX (package it)
     const configBuild = {
-        test : false, 
+        test : false,
         autoTest : false
     };
     myAdx.build(configBuild, (err, path, report) => {
-        // Callback when the ADX has been built 
+        // Callback when the ADX has been built
     });
-    
+
 
 Generate and use the new ADX instance
-    
+
     const configGeneration = {
-        type : 'adc', 
-        output : '/path/of/parent/dir', 
+        type : 'adc',
+        output : '/path/of/parent/dir',
         template : 'blank'
     };
     ADX.generate('myNewADC', configGeneration , (err, adc) => {
@@ -355,13 +351,13 @@ Generate and use the new ADX instance
             console.log(adc.configurator.info.get());
         });
     });
-    
-    
+
+
 OR
 
     const configGeneration = {
-        type : 'adp', 
-        output : '/path/of/parent/dir', 
+        type : 'adp',
+        output : '/path/of/parent/dir',
         template : 'default'
     };
     ADX.generate('myNewADP', configGeneration, (err, adp) => {

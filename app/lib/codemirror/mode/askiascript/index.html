@@ -39,12 +39,12 @@ Dim message = ""
 If gender Has {2} Then
     Dim i
     Dim arr = {"You're a woman and know all following brands:"}
-    For i = 1 To brands.Answers.Count
-        arr.Push(" - " + brands.Answers[i].Caption)
+    For i = 1 To brands.AvailableAnswers.Count
+        arr.Push(" - " + brands.AvailableAnswers[i].Caption)
     Next
     message = arr.Join("\n")
 Else
-    message = "You're a man and preferred " + ^preferred brands^.Answers[1].Caption
+    message = "You're a man and preferred " + ^preferred brands^.AvailableAnswers[1].Caption
 EndIf
 
 Return message
