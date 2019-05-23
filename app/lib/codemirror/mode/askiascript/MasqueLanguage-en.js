@@ -2458,6 +2458,25 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.4.2.0"
             },
             {
+                "name" : "PropQuestion",
+                "ns" : "masquelanguage",
+                "base" : "method",
+                "type" : "question",
+                "args" : [
+                    {
+                        "name" : "property",
+                        "type" : "string",
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li></ul>"
+                    }
+                ],
+                "desc" : [
+                    "\tReturns the question associated with the ADX property (type question)."
+                ],
+                "examples" : "\tCurrentADC.PropQuestion(\"other\") ' => \"<Question::Q1_Other>\"",
+                "alsoSee" : "Theme.PropValue",
+                "version" : "5.4.2.0"
+            },
+            {
                 "name" : "SecondaryColor",
                 "ns" : "masquelanguage",
                 "base" : "property",
@@ -3018,6 +3037,24 @@ askiaScript.extend(askiaScript.lexical, {
                     "",
                     "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
                 ],
+                "version" : "5.3.3.0"
+            },
+            {
+                "name" : "PropQuestion",
+                "ns" : "masquelanguage",
+                "base" : "method",
+                "type" : "question",
+                "args" : [
+                    {
+                      "name" : "propertyId",
+                      "type" : "string",
+                      "desc" : "Id of the Property to read"
+                    }
+                ],
+                "desc" : [
+                    "\tReturns the question associated with the ADX property (type question)."
+                ],
+                "examples" : "\tCurrentADC.PropQuestion(\"other\") ' => \"<Question::Q1_Other>\"",
                 "version" : "5.3.3.0"
             },
             {
