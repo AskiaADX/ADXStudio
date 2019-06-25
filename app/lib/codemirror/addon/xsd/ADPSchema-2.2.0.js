@@ -342,7 +342,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADPSchema"] = {
         ],
         "attrs": {
             "version": [
-                "2.1.0"
+                "2.2.0"
             ],
             "askiaCompat": null
         }

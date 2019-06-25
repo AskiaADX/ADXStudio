@@ -171,7 +171,7 @@ Configurator.prototype.get = function get() {
  *          info {
  *              name : "My ADC"
  *              version : "2.2.0.beta1",
- *              date  : "2015-06-25",
+ *              date  : "2019-06-25",
  *              guid  : "the-guid",
  *              description : "Description of the ADC"
  *              author  : "The author name",
@@ -319,11 +319,11 @@ Configurator.prototype.set = function set(data) {
  *       // Serialize the config to XML
  *       configurator.toXml();
  *       // -> <?xml version="1.0" encoding="utf-8"?>
- *             <control  xmlns="http://www.askia.com/2.1.0/ADCSchema"
+ *             <control  xmlns="http://www.askia.com/2.2.0/ADCSchema"
  *             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- *             xsi:schemaLocation="http://www.askia.com/2.1.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.1.0/ADCSchema.xsd"
- *             version="2.1.0"
- *             askiaCompat="5.4.2">
+ *             xsi:schemaLocation="http://www.askia.com/2.2.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.2.0/ADCSchema.xsd"
+ *             version="2.2.0"
+ *             askiaCompat="5.5.2">
  *                 <info>
  *                     <name>My Name</name>
  *                     <guid>the-guid</guid>
@@ -352,7 +352,7 @@ Configurator.prototype.toXml = function toXml() {
     let askiaCompat;
 
     switch(projectVersion) {
-      case '2.2.0':
+        case '2.2.0':
           askiaCompat = "5.5.2";
           break;
 
@@ -402,11 +402,11 @@ Configurator.prototype.fromXml = function fromXml(xml) {
     switch (rootEl && rootEl.tag) {
         case 'control':
             this.projectType = 'adc';
-            this.projectVersion = rootEl.get("version") || "2.0.0";
+            this.projectVersion = rootEl.get("version") || "2.2.0";
             break;
         case 'page':
             this.projectType = 'adp';
-            this.projectVersion = rootEl.get("version") || "2.1.0";
+            this.projectVersion = rootEl.get("version") || "2.2.0";
             break;
         default:
             throw new Error(errMsg.invalidConfigFile);
@@ -484,7 +484,7 @@ ADXInfo.prototype.constructor = ADXInfo;
  *       // {
  *       //   name : "My ADC"
  *       //   version : "2.2.0.beta1",
- *       //   date  : "2015-06-25",
+ *       //   date  : "2019-06-25",
  *       //   guid  : "the-guid",
  *       //   description : "Description of the ADC"
  *       //   author  : "The author name",
@@ -537,7 +537,7 @@ ADXInfo.prototype.get = function get() {
  *       adxInfo.set({
  *          name : "My ADC"
  *          version : "2.2.0.beta1",
- *          date  : "2015-06-25",
+ *          date  : "2019-06-25",
  *          guid  : "the-guid",
  *          description : "Description of the ADC"
  *          author  : "The author name",
@@ -972,8 +972,14 @@ ADXInfo.prototype.constraints = function constraints(data) {
                 if (v !== '*') {
                     v = parseInt(v, 10);
                 }
+            } else if(attName === 'requireLoopDepth') {
+              if (v == 'false') {
+                  v = 0;
+              } else if (v == 'true'){
+                  v = 1;
+              }
             } else {
-                v = v !== undefined && (v !== 'false' && v !== '0' );
+              v = v !== undefined && (v !== 'false' && v !== '0' );
             }
 
             value[attName] = v;
@@ -1182,6 +1188,7 @@ ADXOutputs.prototype.defaultOutput = function defaultOutput(data) {
  *       //      id : 'main',
  *       //      description : "Description of the output"
  *       //      condition : "Condition of the output",
+ *       //      manageLoopDepth : "manageLoopDepth"
  *       //      contents  : [{
  *       //         fileName : "default.html",
  *       //         type     : "html",
@@ -1221,6 +1228,14 @@ ADXOutputs.prototype.get = function get() {
 
         // ADC Only
         if (projectType === 'adc') {
+            const manageLoopDepth = output.get("manageLoopDepth");
+            item.manageLoopDepth = parseInt(manageLoopDepth);
+
+            const manageLoopDepthEl = output.find("manageLoopDepth");
+            if (manageLoopDepthEl) {
+                item.manageLoopDepth = parseInt(manageLoopDepthEl.value);
+            }
+
             const defaultGeneration = output.get("defaultGeneration");
             if (defaultGeneration) {
                 item.defaultGeneration = (defaultGeneration === "1" || defaultGeneration === "true");
@@ -1403,6 +1418,7 @@ ADXOutputs.prototype.get = function get() {
  * @param {String} [data.outputs.masterPage] Master page to use for the ADP output
  * @param {String} [data.outputs.description] Description of the output
  * @param {String} [data.outputs.condition] AskiaScript condition to use the output
+ * @param {Number} [data.outputs.manageLoopDepth] manage loop depth of the output
  * @param {Object[]} [data.outputs.contents] List of contents (files) used by the output
  * @param {String} [data.outputs.contents.fileName] Name of the file
  * @param {String|"text"|"html"|"css"|"javascript"|"binary"|"image"|"audio"|"video"|"flash"} [data.outputs.contents.type] Name of the file
@@ -1446,6 +1462,9 @@ ADXOutputs.prototype.set = function set(data) {
             if (output.maxIterations) {
                 item.set("maxIterations", output.maxIterations);
             }
+
+            item.set("manageLoopDepth", parseInt(output.manageLoopDepth));
+
         }
         // ADP Only
         else if (projectType === 'adp') {
@@ -1531,6 +1550,7 @@ ADXOutputs.prototype.toXml = function toXml() {
                 if (output.maxIterations) {
                     outputAttr += ' maxIterations="' + output.maxIterations + '"';
                 }
+                outputAttr += ' manageLoopDepth="' + output.manageLoopDepth + '"';
             }
             // ADP Only
             else if (projectType ==='adp') {

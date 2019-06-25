@@ -31,7 +31,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
                         },
                         {
                             "name": "2.2.0",
-                            "desc": "Compatibility with 5.5.2."
+                            "desc": "Compatibility with 5.5.2 and above."
                         }
                     ]
                 },
@@ -806,7 +806,8 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
         "attrs": {
             "id": null,
             "defaultGeneration": null,
-            "maxIterations": null
+            "maxIterations": null,
+			      "manageLoopDepth": null
         }
     },
     "condition": {

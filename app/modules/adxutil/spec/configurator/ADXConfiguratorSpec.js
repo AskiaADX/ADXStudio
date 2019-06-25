@@ -200,6 +200,24 @@ describe('ADXConfigurator', function () {
             expect(configurator.projectVersion).toEqual('2.1.1');
         });
 
+        it("should set the #projectVersion with the value defined in the root node of the ADC", function () {
+            var configurator = new ADXConfigurator("an/valid/path");
+            configurator.fromXml('<control version="2.2.0"><info><guid>the-guid</guid><name>the-name</name></info></control>');
+            expect(configurator.projectVersion).toEqual('2.2.0');
+        });
+
+        it("should set the #projectVersion to '2.2.0' by default for the ADP", function () {
+            var configurator = new ADXConfigurator("an/valid/path");
+            configurator.fromXml('<page><info><guid>the-guid</guid><name>the-name</name></info></page>');
+            expect(configurator.projectVersion).toEqual('2.2.0');
+        });
+
+        it("should set the #projectVersion with the value defined in the root node of the ADP", function () {
+            var configurator = new ADXConfigurator("an/valid/path");
+            configurator.fromXml('<page version="2.2.0"><info><guid>the-guid</guid><name>the-name</name></info></page>');
+            expect(configurator.projectVersion).toEqual('2.2.0');
+        });	
+		
         it("should throw an error when the xml root node is not 'control' nor 'page'", function () {
             expect(function () {
                 var configurator = new ADXConfigurator("an/valid/path");
@@ -2650,7 +2668,6 @@ describe('ADXConfigurator', function () {
                                             colorFormat  :"rgba",
                                             description : "Test color properties",
                                             value : "255,255,255,.9"
-                                        },
                                         {
                                             id : "testFile",
                                             name : "File value",

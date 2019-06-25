@@ -160,7 +160,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (key === 'responses') {
               document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]]) || '';
             } else {
-              document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;
+			  if(constraints[i] == 'requireLoopDepth'){
+                document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]]) || 0;
+			  }else{
+				document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;				  
+			  }
             }
 
           }
@@ -215,7 +219,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (key === 'responses') {
               objInfo.constraints[key][constraints[i]] = parseInt(document.getElementById(key + '_' + constraints[i]).value) || '*';
             } else {
-              objInfo.constraints[key][constraints[i]] = document.getElementById(key + '_' + constraints[i]).checked;
+			  if(constraints[i] == 'requireLoopDepth'){
+				objInfo.constraints[key][constraints[i]] = parseInt(document.getElementById(key + '_' + constraints[i]).value) || 0;				
+			  }else{
+				objInfo.constraints[key][constraints[i]] = document.getElementById(key + '_' + constraints[i]).checked;				  
+			  }
             }
           }
         }

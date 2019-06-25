@@ -68,8 +68,25 @@ askiaScript.extend(askiaScript.lexical, {
             "examples" : [
                 "\tCalc(1) / 100 * 55000000 ' bring the percentage to 55 000 000",                
                 "\t  "
+            ]
+        },        
+        {
+            "name" : "CalcStr",            
+            "ns" : "calcarithmlanguage",            
+            "base" : "function",            
+            "type" : "string",            
+            "args" : [
+                {
+                    "name" : "inidcates",                    
+                    "type" : "number",                    
+                    "desc" : "the index of the calculation"
+                }
             ],            
-            "excludeIn" : "cleanuplanguage"
+            "desc" : [
+                "\tThis allows to access easily all other calculations related to this cell - note that you cannot refer to another arithmetic calculation placed after as the calculation has not been made when you are evaluating this",                
+                "\tThe return value is a string"
+            ],            
+            "examples" : "\tCalcStr(1) / 100 * 55000000 ' bring the percentage to 55 000 000"
         },        
         {
             "name" : "CurrentCell",            
@@ -124,6 +141,168 @@ askiaScript.extend(askiaScript.lexical, {
         }
     ],    
     "members" : {
+        "profileitem" : [
+            {
+                "name" : "Caption",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "returns the caption associated to the response",                
+                "remarks" : [
+                    "\treturns \"\" if the ProfileItem is not valid",                    
+                    "\t  "
+                ],                
+                "examples" : "\tCurrentCell.Column.Caption ' => Returns \"Male\" if gender is the question placed in columns"
+            },            
+            {
+                "name" : "Index",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " allows you to know which response you are placed on (in rows, columns or edges) whatever the row/col suppression or sorting did",                    
+                    " 0 if the index does not link to a response (a total for instance)",                    
+                    " "
+                ],                
+                "examples" : "\tDim AdvertsingSpend= On ( CurrentCell.Column.Index, 1000,1100,1234,1560,1400)",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Question",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : [
+                    " returns the question object associated to a current profile item",                    
+                    " ",                    
+                    " "
+                ],                
+                "examples" : "\tCurrentCell.Row.Question.Data.Mean()",                
+                "version" : "5.3.5.0"
+            }
+        ],        
+        "table" : [
+            {
+                "name" : "GetCell",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "method",                
+                "type" : "cell",                
+                "args" : [
+                    {
+                        "name" : "X",                        
+                        "type" : "number",                        
+                        "desc" : "indicating which column (1-based) you want to use"
+                    },                    
+                    {
+                        "name" : "Y",                        
+                        "type" : "number",                        
+                        "desc" : "indicating which row (1-based) you want to use"
+                    }
+                ],                
+                "desc" : "allows you to access the relevant cell to read or modify its content when possible",                
+                "examples" : "\tDim strTitle = CurrentTable.GetCell(1,1,).Text",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "GetColSigLetter",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "X",                        
+                        "type" : "number",                        
+                        "desc" : "indicating which column (1-based) you want to use"
+                    },                    
+                    {
+                        "name" : "Strength",                        
+                        "type" : "number",                        
+                        "desc" : "indicating how you want the col-sig letter to appear (2 is the default)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " allows you to associate a column to a letter so you can display col-sig letter calculated by hand, you lucky askia users!",                    
+                    "  Strength Output",                    
+                    "\t-1\t-a",                    
+                    "\t-2\t-A",                    
+                    "\t-3\t-A+",                    
+                    "\t1\ta",                    
+                    "\t2\tA",                    
+                    "\t3\tA+",                    
+                    " "
+                ],                
+                "examples" : [
+                    "\tDim strThisCol = CurrentTable.GetColSigLetter( CurrentCell.X )",                    
+                    "\tDim strThisColVerySig = CurrentTable.GetColSigLetter( CurrentCell.X,3 )"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "MaxX",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " indicates the last column number in your table (the width)",                    
+                    " "
+                ],                
+                "examples" : [
+                    "\tDim i",                    
+                    "\tFor i = 1 to CurrentTable.MaxX ",                    
+                    "\tNext i"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "MaxY",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " indicates the last row number in your table (the height)",                    
+                    " "
+                ],                
+                "examples" : [
+                    "\tDim j",                    
+                    "\tFor j = 1 to CurrentTable.MaxY",                    
+                    "\tNext j"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "StartX",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " indicates the first column after the title",                    
+                    " "
+                ],                
+                "examples" : [
+                    "\tDim i",                    
+                    "\tFor i = CurrentTable.StartX to CurrentTable.MaxX ",                    
+                    "\tNext i"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "StartY",                
+                "ns" : "calcarithmlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " indicates the first row number after the title",                    
+                    " "
+                ],                
+                "examples" : [
+                    "\tDim j",                    
+                    "\tFor j = CurrentTable.StartY to CurrentTable.MaxY",                    
+                    "\tNext j"
+                ],                
+                "version" : "5.3.5.0"
+            }
+        ],        
         "cell" : [
             {
                 "name" : "Column",                
@@ -367,168 +546,6 @@ askiaScript.extend(askiaScript.lexical, {
                     "FilterByEdge",                    
                     "FilterByXY",                    
                     "FilterByX"
-                ],                
-                "version" : "5.3.5.0"
-            }
-        ],        
-        "profileitem" : [
-            {
-                "name" : "Caption",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "returns the caption associated to the response",                
-                "remarks" : [
-                    "\treturns \"\" if the ProfileItem is not valid",                    
-                    "\t  "
-                ],                
-                "examples" : "\tCurrentCell.Column.Caption ' => Returns \"Male\" if gender is the question placed in columns"
-            },            
-            {
-                "name" : "Index",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " allows you to know which response you are placed on (in rows, columns or edges) whatever the row/col suppression or sorting did",                    
-                    " 0 if the index does not link to a response (a total for instance)",                    
-                    " "
-                ],                
-                "examples" : "\tDim AdvertsingSpend= On ( CurrentCell.Column.Index, 1000,1100,1234,1560,1400)",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Question",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "question",                
-                "desc" : [
-                    " returns the question object associated to a current profile item",                    
-                    " ",                    
-                    " "
-                ],                
-                "examples" : "\tCurrentCell.Row.Question.Data.Mean()",                
-                "version" : "5.3.5.0"
-            }
-        ],        
-        "table" : [
-            {
-                "name" : "GetCell",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "method",                
-                "type" : "cell",                
-                "args" : [
-                    {
-                        "name" : "X",                        
-                        "type" : "number",                        
-                        "desc" : "indicating which column (1-based) you want to use"
-                    },                    
-                    {
-                        "name" : "Y",                        
-                        "type" : "number",                        
-                        "desc" : "indicating which row (1-based) you want to use"
-                    }
-                ],                
-                "desc" : "allows you to access the relevant cell to read or modify its content when possible",                
-                "examples" : "\tDim strTitle = CurrentTable.GetCell(1,1,).Text",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "GetColSigLetter",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "X",                        
-                        "type" : "number",                        
-                        "desc" : "indicating which column (1-based) you want to use"
-                    },                    
-                    {
-                        "name" : "Strength",                        
-                        "type" : "number",                        
-                        "desc" : "indicating how you want the col-sig letter to appear (2 is the default)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " allows you to associate a column to a letter so you can display col-sig letter calculated by hand, you lucky askia users!",                    
-                    "  Strength Output",                    
-                    "\t-1\t-a",                    
-                    "\t-2\t-A",                    
-                    "\t-3\t-A+",                    
-                    "\t1\ta",                    
-                    "\t2\tA",                    
-                    "\t3\tA+",                    
-                    " "
-                ],                
-                "examples" : [
-                    "\tDim strThisCol = CurrentTable.GetColSigLetter( CurrentCell.X )",                    
-                    "\tDim strThisColVerySig = CurrentTable.GetColSigLetter( CurrentCell.X,3 )"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "MaxX",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " indicates the last column number in your table (the width)",                    
-                    " "
-                ],                
-                "examples" : [
-                    "\tDim i",                    
-                    "\tFor i = 1 to CurrentTable.MaxX ",                    
-                    "\tNext i"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "MaxY",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " indicates the last row number in your table (the height)",                    
-                    " "
-                ],                
-                "examples" : [
-                    "\tDim j",                    
-                    "\tFor j = 1 to CurrentTable.MaxY",                    
-                    "\tNext j"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "StartX",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " indicates the first column after the title",                    
-                    " "
-                ],                
-                "examples" : [
-                    "\tDim i",                    
-                    "\tFor i = CurrentTable.StartX to CurrentTable.MaxX ",                    
-                    "\tNext i"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "StartY",                
-                "ns" : "calcarithmlanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " indicates the first row number after the title",                    
-                    " "
-                ],                
-                "examples" : [
-                    "\tDim j",                    
-                    "\tFor j = CurrentTable.StartY to CurrentTable.MaxY",                    
-                    "\tNext j"
                 ],                
                 "version" : "5.3.5.0"
             }

@@ -112,10 +112,10 @@
                     <li>
                         <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
                         <label for="questions_requireParentLoop" class="checkbox-label">Require parent loop</label>
-                    </li>
+                    </li><br>
                     <li>
-                        <input type="checkbox" id="questions_requireLoopDepth" name="questions[requireLoopDepth]"/>
                         <label for="questions_requireLoopDepth" class="checkbox-label">Require loop depth</label>
+                        <input type="number" id="questions_requireLoopDepth" name="questions[requireLoopDepth]" value="0" min="0"/>
                     </li>
                 </ul>
                 <h3>Responses</h3>
@@ -178,6 +178,10 @@
                 <p>
                     <label for="output_description">Description:</label>
                     <textarea id="output_description" name="output[description]"></textarea>
+                </p>
+                <p>
+                    <label for="output_manageLoopDepth">Manage loop depth:</label>
+                    <input type="number" id="output_manageLoopDepth" name="output[manageLoopDepth]" min="0" value="0"/>
                 </p>
                 <p>
                     <input type="checkbox" id="output_default" name="output[defaultOutput]" />

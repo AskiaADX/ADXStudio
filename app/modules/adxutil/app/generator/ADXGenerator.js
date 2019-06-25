@@ -360,7 +360,7 @@ Generator.prototype.updateFiles = function updateFiles() {
             const result = common.evalTemplate(data, {
                 info : {
                     name : self.adxName ,
-                    type :	 self.adxType, 
+                    type :	 self.adxType,
                     description : self.adxDescription,
                     author : self.adxAuthor.name,
                     email : self.adxAuthor.email,

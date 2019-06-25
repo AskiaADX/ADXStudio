@@ -174,6 +174,33 @@ askiaScript.extend(askiaScript.lexical, {
     "members" : {
         "question" : [
             {
+                "name" : "ToEntryCodeStr",                
+                "ns" : "analyselanguage",                
+                "base" : "property",                
+                "type" : "variant",                
+                "desc" : [
+                    "\tReturns the response as an entry code for closed question",                    
+                    "\tIt returns a string if the question is single, an array of string is the question is multiple",                    
+                    "",                    
+                    "\tIt's the default property which is added when you campare a question to a string",                    
+                    "",                    
+                    "\tq1 Has {\"1\"} is transformed into q1.ToEntryCodeStr() Has {\"1\"}"
+                ],                
+                "examples" : [
+                    "\tgender.ToEntryCodeStr ' => \"1\"",                    
+                    "\tbrands.ToEntryCodeStr ' => {\"3\"; \"5\"; \"6\"}",                    
+                    "",                    
+                    "\t' When no value specified:",                    
+                    "",                    
+                    "\tgender.value ' => DK",                    
+                    "\tage.value ' => DK",                    
+                    "\tbrands.value ' => {}",                    
+                    "\tq1_other.value ' => \"\"",                    
+                    "\tbirthday.value ' => DK"
+                ],                
+                "version" : "5.4.5.0"
+            },            
+            {
                 "name" : "Value",                
                 "ns" : "analyselanguage",                
                 "base" : "property",                

@@ -28,13 +28,13 @@
       <category>General</category>
     </categories>
     <constraints>
-      <constraint on="questions" single="true" multiple="true" numeric="true" date="true" open="true" />
+      <constraint on="questions" single="true" multiple="true" numeric="true" date="true" open="true" requireParentLoop="true" requireLoopDepth="0"/>
       <constraint on="controls" responseblock="true" />
     </constraints>
   </info>
 
   <outputs defaultOutput="default">
-    <output id="default">
+    <output id="default" manageLoopDepth="0">
       <description><![CDATA[Default output]]></description>
       <content fileName="single.html" type="html" mode="dynamic" position="none" />
       <content fileName="multiple.html" type="html" mode="dynamic" position="none" />

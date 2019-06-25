@@ -3,7 +3,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.askia.com/2.2.0/ADCSchema ../../../../ADXUtil/schema/2.2.0/ADCSchema.xsd"
           version="2.2.0"
-          askiaCompat="5.5.3">
+          askiaCompat="5.5.2">
   <info>
     <name>default</name>
     <guid>feba6dd4-1a09-4470-a854-e89c59821d8e</guid>

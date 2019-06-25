@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-const Command = require('../node_modules/commander').Command;
+const Command = require('../../../../node_modules/commander').Command;
 const program = new Command();
 const common  = require('../app/common/common.js');
 

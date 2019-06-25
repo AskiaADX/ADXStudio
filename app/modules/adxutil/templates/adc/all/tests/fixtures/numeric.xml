@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<fixture xmlns="http://www.askia.com/2.1.0/ADXUnitTestSchema"
+<fixture xmlns="http://www.askia.com/2.2.0/ADXUnitTestSchema"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://www.askia.com/2.1.0/ADXUnitTestSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.1.0/ADXUnitTests.xsd">
+		 xsi:schemaLocation="http://www.askia.com/2.2.0/ADXUnitTestSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.2.0/ADXUnitTests.xsd">
   <arrange>
     <Survey Name="NumericSurvey" CurrentQuestion="numeric" ADPName="default" Version="1.0" Full="1" MaxQuestionID="2" MaxResponseID="52">
       <Languages>
