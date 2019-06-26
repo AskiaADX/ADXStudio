@@ -13,7 +13,7 @@ Setup
 Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/latest) archive.
 
 1.	After downloading the release, unzip `ADXStudioSetup.zip`.
-2.	Run the `ADXStudio Setup 1.0.2.exe` executable as `administrator`.
+2.	Run the `ADXStudio Setup 1.0.3.exe` executable as `administrator`.
 3.	Try to create your ADC or ADP using one of the template, or create a new Project.
 
 *Note: do not tamper with any other components of `ADXStudio Setup 1.0.2.exe` folder.*
@@ -40,7 +40,7 @@ Available resources
 
 -	[ADX specifications](https://github.com/AskiaADX/ADXStudio/wiki)
 -	[Askiascript documentation](askiascript2_introduction_to_askiascript_2)
--	[List of ADCs 2.0](https://support.askia.com/hc/en-us/sections/200009182-askia-design-control-ADC-2-0-Javascript-)
+-	[List of ADCs 3.0](https://support.askia.com/hc/en-us/sections/200009182-askia-design-control-ADC-3-0-Javascript-)
 -	[Askia website](https://askia.com/)
 
 Authors
@@ -58,6 +58,7 @@ Contributors
 ------------
 
 - [Robbe Van der Gucht](https://github.com/sir-ragna)
+- [Prabath Gamage](https://github.com/Djedj)
 
 License
 -------
