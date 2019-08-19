@@ -98,6 +98,7 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
 
   // Extract url data
   const uriParse = url.parse(request.url);
+  console.log('Request URL : '+request.url);
   const uri = decodeURIComponent(uriParse.pathname);
   const queryString = uriParse.query || '';
   const queryObj = queryToObj(queryString);
@@ -126,10 +127,12 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
   // Add .xml extension on the fixture name
   if (fixtureName && !/\.xml$/i.test(fixtureName)) {
     fixtureName += '.xml';
+    console.log("FIXTURE NAME : "+fixtureName);
   }
   options.fixture = fixtureName;
   if (emulationName && !/\.xml$/i.test(emulationName)) {
     emulationName += '.xml';
+    console.log("EMULATION NAME : "+emulationName);
   }
   options.emulation = emulationName;
   options.properties = properties;
@@ -200,7 +203,7 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
 
 /**
  * Save the modified theme parameters in Theme.json file
- * @param {String} themeURI 
+ * @param {String} themeURI
  */
 function saveTheme (themeURI) {
   const adx = global.project.getADX();

@@ -2668,7 +2668,8 @@ describe('ADXConfigurator', function () {
                                             colorFormat  :"rgba",
                                             description : "Test color properties",
                                             value : "255,255,255,.9"
-                                        {
+                                        },
+										{
                                             id : "testFile",
                                             name : "File value",
                                             type : "file",

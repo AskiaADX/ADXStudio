@@ -6,7 +6,7 @@
     <members>
         <member name="T:AskiaCore.ContextFactory">
             <summary>
-                Factory to create a <see cref="T:AskiaCore.IContext"/> to access/edit survey 
+                Factory to create a <see cref="T:AskiaCore.IContext"/> to access/edit survey
             </summary>
         </member>
         <member name="M:AskiaCore.ContextFactory.Create">
@@ -16,89 +16,89 @@
             <returns>A new context instance</returns>
         </member>
         <member name="T:AskiaCore.ICategory">
-            
+
              \brief %Category interface
-            
+
         </member>
         <member name="P:AskiaCore.ICategory.Name">
-            
+
              \brief Name of the category
-            
+
         </member>
         <member name="T:AskiaCore.ICategoryCollection">
-            
+
              \brief %Category collection
-            
+
         </member>
         <member name="P:AskiaCore.ICategoryCollection.Count">
-            
+
              \brief Number of categories in the collection
-            
+
         </member>
         <member name="P:AskiaCore.ICategoryCollection.Item(System.String)">
-            
+
              \brief Find a category by name
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryCollection.Create(System.String)">
-            
+
              \brief Create a category given its name
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryCollection.Remove(System.Int32)">
-            
+
              \brief Remove a category from the collection given its id
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryCollection.Remove(System.String)">
-            
+
              \brief Remove a category from the collection given its name
-            
+
         </member>
         <member name="T:AskiaCore.ICategoryIterator">
-            
+
              \brief %Category iterator
-            
+
         </member>
         <member name="T:AskiaCore.ICategoryRefCollection">
-            
+
              \brief %Category collection
-            
+
         </member>
         <member name="P:AskiaCore.ICategoryRefCollection.Count">
-            
+
              \brief Number of categories in the collection
-            
+
         </member>
         <member name="P:AskiaCore.ICategoryRefCollection.Item(System.Int32)">
-            
+
              \brief Find a category by id
-            
+
         </member>
         <member name="P:AskiaCore.ICategoryRefCollection.Item(System.String)">
-            
+
              \brief Find a category by name
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryRefCollection.Add(System.Int32)">
-            
+
              \brief Add a category given its id
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryRefCollection.Add(System.String)">
-            
+
              \brief Add a category given its name
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryRefCollection.Remove(System.Int32)">
-            
+
              \brief Remove a category from the collection given its id
-            
+
         </member>
         <member name="M:AskiaCore.ICategoryRefCollection.Remove(System.String)">
-            
+
              \brief Remove a category from the collection given its name
-            
+
         </member>
         <member name="T:AskiaCore.IContext">
              <summary>
@@ -110,7 +110,7 @@
                  <para>Create a new survey with one question</para>
                  <code>
                      using AskiaCore;
-             
+
                      namespace MyApp
                      {
                          public class MyProgram
@@ -119,33 +119,33 @@
                              {
                                  // Initialize the database connection string (Where the survey will be stored)
                                  Persistent.InitDatabaseConnection("connectionstring", DatabaseTypes.PORTAL);
-            
+
                                  // Create a new context
                                  IContext context = ContextFactory.Create();
                                  context.UserId = 1;
                                  context.SessionId = "xxxxx-xxxxx-xxxxx-xxxxxx";
                                  context.LanguageId = 2057; // Edit the survey with this language (English)
-                               
+
                                  // Create a new survey
                                  ISurvey survey = SurveyFactory.Create(context);
                                  survey.Name = "MySurvey";
                                  survey.SetDefaultLanguageId(2057); // English
-                               
+
                                  // Create the single closed question gender
                                  IQuestion gender = survey.Questions.Create();
                                  gender.Shortcut = "gender";
                                  gender.MainCaption ="What's your gender?";
                                  gender.Type = QuestionType.Single;
-                               
+
                                  // Create responses
                                  IResponse man = gender.Responses.Create();
                                  man.MainCaption = "Man";
                                  IResponse woman = gender.Responses.Create();
                                  woman.MainCaption = "Woman";
-                         
+
                                  // Save all changes
                                  survey.SaveAll();
-                         
+
                                  // Release the database connection
                                  Persistent.EndDatabaseConnection();
                              }
@@ -998,12 +998,12 @@
         <member name="F:AskiaCore.ErrorType.InvalidRoutingName">
             <summary>
             The supplied routing name is invalid.
-            </summary>    
+            </summary>
         </member>
         <member name="F:AskiaCore.ErrorType.NonUniqueRoutingName">
             <summary>
             The supplied routing name is not unique.
-            </summary>    
+            </summary>
         </member>
         <member name="F:AskiaCore.ErrorType.InvalidRoutingCondition">
             <summary>
@@ -1018,12 +1018,12 @@
         <member name="F:AskiaCore.ErrorType.InvalidScenarioName">
             <summary>
             The supplied scenario name is invalid.
-            </summary>    
+            </summary>
         </member>
         <member name="F:AskiaCore.ErrorType.NonUniqueScenarioName">
             <summary>
             The supplied scenario name is not unique.
-            </summary>    
+            </summary>
         </member>
         <member name="T:AskiaCore.IError">
             <summary>
@@ -1332,7 +1332,7 @@
                  <para>Interpret the AskiaScript keyword for the current date.</para>
                  <code>
                      using AskiaCore;
-             
+
                      namespace MyApp
                      {
                          public class MyProgram
@@ -1341,27 +1341,27 @@
                              {
                                  // Initialize the database connection string (Where the survey will be stored)
                                  Persistent.InitDatabaseConnection("connectionstring", DatabaseTypes.PORTAL);
-            
+
                                  // Create a context with the user 1
                                  IContext context = ContextFactory.Create();
                                  context.UserId = 1;
                                  context.SessionId = "xxxxx-xxxxx-xxxxx-xxxxxx";
                                  context.LanguageId = 2057; // Edit the survey with this language (English)
-                         
+
                                  // Get the survey with the AskiaPortal id 1
                                  ISurvey survey = SurveyFactory.Get(context, 1);
                                  IInterview interview = survey.CreateInterview();
-                                 
+
                                  // Specify the web context
                                  interview.WebInformation.Identity = "name:\"Chrome\",version:\"50.0.2661.102\",os:\"Windows\",mobile:false,tablet:false,userAgent:\"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36\",timeOffset:2";
                                  interview.WebInformation.Resolution = "screen-availWidth:2560,screen-availHeight:1334,screen-width:2560,screen-height:1440,screen-colorDepth:24,window-width:1708,window-height:1130";
                                  interview.WebInformation.Capabilities = "javascript:true";
-             
+
                                  IDictionary&lt;string, string&gt; parameters = new Dictionary&lt;string, string&gt;();
                                  interview.MoveNext(parameters);
                                  string interpretedText = interview.Interpret("The current time is: !!Now!!");
                                  Console.WriteLine(interpretedText);
-             
+
                                  // Release the database connection
                                  Persistent.EndDatabaseConnection();
                              }
@@ -2658,745 +2658,745 @@
             </summary>
         </member>
         <member name="T:AskiaCore.IQuota">
-            
+
              \brief %IQuota interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.Survey">
-            
+
              \brief Corresponding Survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.Revision">
-            
+
              \brief Revision number
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.IncludeRunningInterviews">
-            
+
              \brief Setting which indicates whether running interviews are taken into account
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.SingleTarget">
-            
+
              \brief Setting Indicating if the quota are using single target or if max and min have to be defined
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.InterviewQuotaType">
-            
+
              \brief Setting which indicates whether running interviews are taken into account
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.TrackChanges">
-            
+
              \brief Enable/disable tracking changes - necessary to support GetUpdate
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.ResetChanges">
-            
+
              \brief Reset all changes
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.MinimumTargetCount">
-            
+
              \brief Minimum target (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.MaximumTargetCount">
-            
+
              \brief Maximum target (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.MaximumTargetPercentage">
-            
+
              \brief Maximum target (percentage)
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.SetMaximumTargetEmpty">
-            
-             \brief Set empty maximum target 
-            
+
+             \brief Set empty maximum target
+
         </member>
         <member name="M:AskiaCore.IQuota.GetMaximumTargetType">
-            
+
              \brief Indicates the maximum target type
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.InterviewsCompletedCount">
-            
+
              \brief Count completed interview
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.InterviewsIncompletedCount">
-            
+
              \brief Count incompleted interviews
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.AppointmentsInQuotaCount">
-            
+
              \brief Count interviews with appointments in quota
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.AppointmentsCount">
-            
+
              \brief Count interviews with appointments
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.InterviewsRunningCount">
-            
+
              \brief Count running interviews
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.InterviewsObservedCount">
-            
+
              \brief Count observed interviews (=interviews counted in target)
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.AvailableContactsCount">
-            
+
              \brief Count available contacts
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.AvailableContactsForTelephonyCount">
-            
+
              \brief Count available contacts for telephony
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.AvailableContactsForWebCount">
-            
+
              \brief Count available contacts for web (email)
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.MinimumToDoCount">
-            
+
              \brief Number of interviews to do to reach minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.MaximumToDoCount">
-            
+
              \brief Number of interviews to do to reach minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuota.Questions">
-            
+
              \brief Questions on the root level of the quota tree
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.Update(AskiaCore.QuotaUpdateType,System.Byte[],System.Collections.Generic.ICollection{System.Int32})">
-            
+
              \brief Process quota update
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.GetUpdate(AskiaCore.QuotaUpdateType@,System.Byte[]@,System.Boolean)">
-            
+
              \brief Get quota updates
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.UpdateCountsAndPercentages">
-            
+
              \brief Recalculate counts &amp; percentages
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.EqualsTree(AskiaCore.IQuota)">
-            
+
              \brief Compare quota tree structure (ignoring settings, version, shortcuts, tokens, etc)
-            
+
         </member>
         <member name="M:AskiaCore.IQuota.QuotaVerify(System.Collections.Generic.IDictionary{System.Int32,System.Collections.Generic.ICollection{AskiaCore.IQuotaIssue}}@)">
-            
+
              \brief Verify the quota structure for sanity issues
-            
+
         </member>
         <member name="T:AskiaCore.QuotaFactory">
-            
+
              \brief %Quota factory
-            
+
         </member>
         <member name="M:AskiaCore.QuotaFactory.Create">
-            
+
              \brief Create new Quota object
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAllocation">
-            
+
              \brief %IQuotaAllocation interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAllocation.MinimumTargetCount">
-            
+
              \brief Minimum target (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAllocation.MinimumTargetPercentage">
-            
+
              \brief Minimum target (percentage)
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaAllocation.IsMinimumTargetPercentage">
-            
+
              \brief Indicates if the minimum target type is in %
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAllocation.MaximumTargetCount">
-            
+
              \brief Maximum target (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAllocation.MaximumTargetPercentage">
-            
+
              \brief Maximum target (percentage)
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaAllocation.IsMaximumTargetPercentage">
-            
+
              \brief Indicates if the maximum target type is in %
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAllocationCollection">
-            
+
              \brief %IQuotaAllocation collection
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaAllocationCollection.Create(System.Int32)">
-            
+
              \brief Add a new QuotaAllocation to the collection
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAllocationIterator">
-            
+
              \brief %IQuotaAllocation iterator
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAvailability">
-            
+
              \brief %IQuotaAvailability interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailability.Available">
-            
+
              \brief Available (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailability.AvailableNow">
-            
+
              \brief AvailableNow (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailability.OverCallback">
-            
+
              \brief Over Callback (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailability.OtherNotAvailable">
-            
+
              \brief Not available, and not over callback (count)
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAvailabilityCollection">
-            
+
              \brief %IQuotaAvailability collection
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityCollection.Count">
-            
+
              \brief Number of IQuotaAvailability in the collection
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityCollection.Item(System.Int32)">
-            
+
              \brief Find an IQuotaAvailability by token
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAvailabilityDetails">
-            
+
              \brief %IQuotaAvailabilityDetails interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.Token">
-            
+
              \brief Token
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalAvailable">
-            
+
              \brief Total Available (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalAvailableNow">
-            
+
              \brief Total AvailableNow (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalOverCallback">
-            
+
              \brief Total Over Callback (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalQuotaReached">
-            
+
              \brief Total quota reached (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalOnDNCList">
-            
+
              \brief Total on do-not-contact list (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalInvalid">
-            
+
              \brief Total phone/email invalid (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalPriority0">
-            
+
              \brief Total user priority = 0 (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalInUse">
-            
+
              \brief Total selecting/mailing/broadcasting (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalDifferentMode">
-            
+
              \brief Total not available for requested mode (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalFiltered">
-            
+
              \brief Total blocked by interview filter (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.TotalOverMaxCalls">
-            
+
              \brief Total over max calls
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaAvailabilityDetails.Availability">
-            
+
              \brief Array of IQuotaAvailability (array)
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAvailabilityDetailsCollection">
-            
+
              \brief %IQuotaQuestion collection
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaAvailabilityDetailsCollection.Add(AskiaCore.IQuotaAvailabilityDetails)">
-            
+
              \brief Add a new QuotaAvailabilityDetails to the collection
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaAvailabilityDetailsIterator">
-            
+
              \brief %QuotaAvailabilityDetails iterator
-            
+
         </member>
         <member name="T:AskiaCore.QuotaAvailabilityFactory">
-            
+
              \brief %Quota Availability factory
-            
+
         </member>
         <member name="M:AskiaCore.QuotaAvailabilityFactory.Create">
-            
+
              \brief Create new Quota Availability object
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaIssue">
-            
+
              \brief %IQuotaIssue interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaIssue.Type">
-            
+
              \brief Issue code
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaIssue.Details">
-            
+
              \brief Extra data, meaning depends on the issue code
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaNode">
-            
+
              \brief %IQuotaNode interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaNode.Root">
-            
+
              \brief Main quota object
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaNode.Token">
-            
+
              \brief Token of the node
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaNode.Parent">
-            
+
              \brief Parent node
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaNode.LineState">
-            
+
              \brief Quota Line state
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaNode.GetLineStateSummarized(AskiaCore.QuotaAvailableType,System.Boolean)">
-            
+
              \brief Quota Line state summarized
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaNode.AllocatedForWeb">
-            
+
              \brief Quota allocations for web brokers
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaNode.AllocatedForFace">
-            
+
              \brief Quota allocations for face agents
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaNode.FindNode(System.Int32,System.Boolean)">
-            
+
              \brief Find a node by token below this one
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaQuestion">
-            
+
              \brief %IQuotaQuestion interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestion.QuestionId">
-            
+
              \brief ID of question in survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestion.QuestionType">
-            
+
              \brief Type of question in survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestion.QuestionShortcut">
-            
+
              \brief Shortcut of question in survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestion.QuestionImport">
-            
+
              \brief Import of question in survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestion.QuestionImportationType">
-            
+
              \brief Import of question in survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestion.Responses">
-            
+
              \brief Responses in this quota question
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaQuestion.CreateResponseNumeric(System.Int32,System.Double,System.Double)">
-            
+
              \brief Add a numeric response to this quota question given the %param name="dRangeMin" and %param name="dRangeMax" for the new range
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaQuestion.RemoveResponseNumeric(System.Int32)">
-            
+
              \brief Remove numeric response with token %param name="lToken" from this quota question
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaQuestion.CreateResponseGroup(System.String)">
-            
+
              \brief Add a group to this QuotaQuestion
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaQuestion.RemoveResponseGroup(System.Int32)">
-            
-             \brief Remove group with token %param name="lToken" from this quota question 
-            
+
+             \brief Remove group with token %param name="lToken" from this quota question
+
         </member>
         <member name="M:AskiaCore.IQuotaQuestion.MoveResponse(System.Int32,System.Int32)">
-            
-             \brief Move response with token %param name="sourceToken" from this quota question to  %param name="targetToken". When succesfull, returns new token 
-            
+
+             \brief Move response with token %param name="sourceToken" from this quota question to  %param name="targetToken". When succesfull, returns new token
+
         </member>
         <member name="T:AskiaCore.IQuotaQuestionCollection">
-            
+
              \brief %IQuotaQuestion collection
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaQuestionCollection.Item(System.Int32)">
-            
+
              \brief Find an IQuotaQuestion by token
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaQuestionCollection.Create(System.Int32)">
-            
+
              \brief Add a new QuotaQuestion to the collection
                     Note that this will create a QuotaResponse for all responses as well
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaQuestionIterator">
-            
+
              \brief %IQuotaQuestion iterator
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaResponse">
-            
+
              \brief %IQuotaResponse interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.ResponseId">
-            
+
              \brief ID of response in survey
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.ResponseShortCaption">
-            
+
              \brief short caption of response in survey (in the default language)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MinimumTargetCount">
-            
+
              \brief Minimum target (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MinimumTargetPercentage">
-            
+
              \brief Minimum target (percentage)
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaResponse.SetMinimumTargetEmpty">
-            
-             \brief Set empty minimum target 
-            
+
+             \brief Set empty minimum target
+
         </member>
         <member name="M:AskiaCore.IQuotaResponse.GetMinimumTargetType">
-            
+
              \brief Indicates the minimum target type
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MaximumTargetCount">
-            
+
              \brief Maximum target (count)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MaximumTargetPercentage">
-            
+
              \brief Maximum target (percentage)
-            
+
         </member>
         <member name="M:AskiaCore.IQuotaResponse.SetMaximumTargetEmpty">
-            
-             \brief Set empty maximum target 
-            
+
+             \brief Set empty maximum target
+
         </member>
         <member name="M:AskiaCore.IQuotaResponse.GetMaximumTargetType">
-            
+
              \brief Indicates the maximum target type
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.Priority">
-            
+
              \brief
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.AllowOverQuotaType">
-            
+
              \brief
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.InterviewsCompletedCount">
-            
+
              \brief Count completed interview
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.InterviewsIncompletedCount">
-            
+
              \brief Count incompleted interviews
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.AppointmentsInQuotaCount">
-            
+
              \brief Count interviews with appointments in quota
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.AppointmentsCount">
-            
+
              \brief Count interviews with appointments
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.InterviewsRunningCount">
-            
+
              \brief Count running interviews
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.InterviewsObservedCount">
-            
+
              \brief Count observed interviews (=interviews counted in target)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.AvailableContactsCount">
-            
+
              \brief Count available contacts
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.AvailableContactsForTelephonyCount">
-            
+
              \brief Count available contacts for telephony
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.AvailableContactsForWebCount">
-            
+
              \brief Count available contacts for web (email)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MinimumToDoCount">
-            
+
              \brief Number of interviews to do to reach minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MaximumToDoCount">
-            
+
              \brief Number of interviews to do to reach minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.MissingContacts">
-            
+
              \brief Number of contacts missing to reach the minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponse.Questions">
-            
+
              \brief Questions on the root level of the quota tree
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaResponseCollection">
-            
+
              \brief %IQuotaResponse collection
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.Item(System.Int32)">
-            
+
              \brief Find an IQuotaResponse by token
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.TotalMinimumCount">
-            
+
              \brief
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.TotalMinimumPercentage">
-            
+
              \brief
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.TotalMaximumCount">
-            
+
              \brief
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.TotalMaximumPercentage">
-            
+
              \brief
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.InterviewsCompletedCount">
-            
+
              \brief Count completed interview
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.InterviewsIncompletedCount">
-            
+
              \brief Count incompleted interviews
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.AppointmentsInQuotaCount">
-            
+
              \brief Count interviews with appointments in quota
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.AppointmentsCount">
-            
+
              \brief Count interviews with appointments
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.InterviewsRunningCount">
-            
+
              \brief Count running interviews
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.InterviewsObservedCount">
-            
+
              \brief Count observed interviews (=interviews counted in target)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.AvailableContactsCount">
-            
+
              \brief Count available contacts
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.AvailableContactsForTelephonyCount">
-            
+
              \brief Count available contacts for telephony
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.AvailableContactsForWebCount">
-            
+
              \brief Count available contacts for web (email)
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.MinimumToDoCount">
-            
+
              \brief Number of interviews to do to reach minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.MaximumToDoCount">
-            
+
              \brief Number of interviews to do to reach minimum target
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseCollection.MissingContacts">
-            
+
              \brief Number of contacts missing to reach the minimum target
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaResponseIterator">
-            
+
              \brief %IQuotaResponse iterator
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaResponseGroup">
-            
+
              \brief %IQuotaResponseGroup interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseGroup.Name">
-            
+
              \brief Group name
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseGroup.Responses">
-            
+
              \brief responses collection for this group
-            
+
         </member>
         <member name="T:AskiaCore.IQuotaResponseNumeric">
-            
+
              \brief %IQuotaResponseNumeric interface
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseNumeric.RangeMin">
-            
+
              \brief Range Minimum
-            
+
         </member>
         <member name="P:AskiaCore.IQuotaResponseNumeric.RangeMax">
-            
+
              \brief Range Maximum
-            
+
         </member>
         <member name="T:AskiaCore.IRecordEntity">
             <summary>
@@ -3967,7 +3967,7 @@
                  <para>Create a new survey with one question</para>
                  <code>
                      using AskiaCore;
-             
+
                      namespace MyApp
                      {
                          public class MyProgram
@@ -3976,18 +3976,18 @@
                              {
                                  // Initialize the database connection string (Where the survey will be stored)
                                  Persistent.InitDatabaseConnection("connectionstring", DatabaseTypes.PORTAL);
-            
+
                                  // Create a new context
                                  IContext context = ContextFactory.Create();
                                  context.UserId = 1;
                                  context.SessionId = "xxxxx-xxxxx-xxxxx-xxxxxx";
                                  context.LanguageId = 2057; // Edit the survey with this language (English)
-                               
+
                                  // Create a new survey
                                  ISurvey survey = SurveyFactory.Create(context);
                                  survey.Name = "MySurvey";
                                  IMethodResult result = survey.SetDefaultLanguageId(2057); // English
-                               
+
                                  if (result.Success)
                                  {
                                      // Create the single closed question gender
@@ -3995,11 +3995,11 @@
                                       gender.Shortcut = "gender";
                                       gender.MainCaption ="What's your gender?";
                                       gender.Type = QuestionType.Single;
-                              
+
                                       // Save all changes
                                       survey.SaveAll();
                                   }
-                         
+
                                   // Release the database connection
                                   Persistent.EndDatabaseConnection();
                              }
@@ -4862,19 +4862,19 @@
         </member>
         <member name="F:AskiaCore.SurveyIntegrityErrorType.QuotaResponseAdded">
             <summary>
-            A reponse has been added in the quota question, 
+            A reponse has been added in the quota question,
             but no value has been assigned yet
             </summary>
         </member>
         <member name="F:AskiaCore.SurveyIntegrityErrorType.RevisionHistoryIncompatible">
             <summary>
-            The revision of the survey to update is incompatible 
+            The revision of the survey to update is incompatible
             with the current survey revision
             </summary>
         </member>
         <member name="F:AskiaCore.SurveyIntegrityErrorType.RevisionHistoryOlderVersion">
             <summary>
-            The revision of the survey to update is older 
+            The revision of the survey to update is older
             than the current survey revision
             </summary>
         </member>
@@ -4933,7 +4933,7 @@
         </member>
         <member name="F:AskiaCore.SurveyIntegrityErrorType.LastRevisionIncompatible">
             <summary>
-            The revision of the survey to update is incompatible 
+            The revision of the survey to update is incompatible
             with the last revision of the current survey
             </summary>
         </member>
@@ -5018,7 +5018,7 @@
         </member>
         <member name="F:AskiaCore.SurveyIntegrityErrorType.LinkMustBeBefore">
             <summary>
-            The question used in the link 
+            The question used in the link
             must be defined before the question that uses it
             </summary>
         </member>
@@ -5445,7 +5445,7 @@
                      they all will internally interact with the same reference of the survey data.
                  </para>
                  <para>
-                     The concurrent management of survey with context is mostly done to allows edition 
+                     The concurrent management of survey with context is mostly done to allows edition
                      by multiple users at the same time on the same survey.
                  </para>
              </remarks>
@@ -5453,7 +5453,7 @@
                  <para>Use two different survey instances to manipulate the same survey data</para>
                  <code>
                      using AskiaCore;
-             
+
                      namespace MyApp
                      {
                          public class MyProgram
@@ -5462,44 +5462,44 @@
                              {
                                  // Initialize the database connection string (Where the survey will be stored)
                                  Persistent.InitDatabaseConnection("connectionstring", DatabaseTypes.PORTAL);
-            
+
                                  // Create a context with the user 1
                                  IContext contextA = ContextFactory.Create();
                                  contextA.UserId = 1;
                                  contextA.SessionId = "xxxxx-xxxxx-xxxxx-xxxxxx";
                                  contextA.LanguageId = 2057; // Edit the survey with this language (English)
-                         
+
                                  // Get the survey with the AskiaPortal id 1
                                  // and with the contextA
                                  ISurvey surveyWithContextA = SurveyFactory.Get(contextA, 1);
                                  IQuestion ageContextA = surveyWithContextA.Questions["age"];
                                  Console.WriteLine(ageContextA.Responses.Count);
                                  // -> Output: 4
-                         
+
                                  // Create a context with the user 2
                                  IContext contextB = ContextFactory.Create();
                                  contextB.UserId = 2;
                                  contextB.SessionId = "yyyyy-yyyyy-yyyyy-yyyyy";
                                  contextB.LanguageId = 1036; // Edit the survey with this language (French)
-                         
+
                                  // Get the survey with the AskiaPortal id 1
                                  // and with the contextB
                                  ISurvey surveyWithContextB = SurveyFactory.Get(contextB, 1);
                                  IQuestion ageContextB = surveyWithContextB.Questions["age"];
                                  IResponse response ageContextB.Responses.Create();
                                  response.MainCaption = "50+";
-                         
+
                                  // Save all changes using the context B
                                  surveyWithContextB.SaveAll();
-                         
+
                                  // The survey with the context A and the survey with the context B
                                  // are both up-to-date with the additional response
-                         
+
                                  Console.WriteLine(ageContextA.Responses.Count);
                                  // -> Output: 5
                                  Console.WriteLine(ageContextB.Responses.Count);
                                  // -> Output: 5
-                         
+
                                  // Release the database connection
                                  Persistent.EndDatabaseConnection();
                              }
@@ -6209,7 +6209,7 @@
                 <para>Management of the database connection in the Global.asax of the .NET web project</para>
                 <code>
                     using AskiaCore;
-            
+
                     namespace MyApp
                     {
                         public class Global : HttpApplication
@@ -6222,7 +6222,7 @@
                                 Persistent.ResourcesPath = "C:\\Inetpub\\wwwroot\\MyApp\\Resources\\";
                                 Persistent.ResourcesUrl = "/Resources/";
                             }
-            
+
                             protected void Application_End(object sender, EventArgs e)
                             {
                                 // Release the database connection
@@ -6259,7 +6259,7 @@
                 <para>Initialise the database connection in the Global.asax of the .NET web project</para>
                 <code>
                     using AskiaCore;
-            
+
                     namespace MyApp
                     {
                         public class Global : HttpApplication
@@ -6287,7 +6287,7 @@
                 <para>Release the database connection in the Global.asax of the .NET web project</para>
                 <code>
                     using AskiaCore;
-            
+
                     namespace MyApp
                     {
                         public class Global : HttpApplication
@@ -6313,7 +6313,7 @@
                 <para>Initialise the database connection in the Global.asax of the .NET web project</para>
                 <code>
                     using AskiaCore;
-            
+
                     namespace MyApp
                     {
                         public class Global : HttpApplication
@@ -6340,7 +6340,7 @@
                 <para>Release the database connection in the Global.asax of the .NET web project</para>
                 <code>
                     using AskiaCore;
-            
+
                     namespace MyApp
                     {
                         public class Global : HttpApplication
@@ -6368,7 +6368,7 @@
                  <para>Create a new survey</para>
                  <code>
                      using AskiaCore;
-             
+
                      namespace MyApp
                      {
                          public class MyProgram
@@ -6377,23 +6377,23 @@
                              {
                                  // Initialize the database connection string (Where the survey will be stored)
                                  Persistent.InitDatabaseConnection("connectionstring", DatabaseTypes.PORTAL);
-            
+
                                  // Create a new context
                                  IContext context = ContextFactory.Create();
                                  context.UserId = 1;
                                  context.SessionId = "xxxxx-xxxxx-xxxxx-xxxxxx";
                                  context.LanguageId = 2057; // Edit the survey with this language (English)
-                               
+
                                  // Create a new survey
                                  ISurvey survey = SurveyFactory.Create(context);
                                  survey.Name = "MySurvey";
                                  survey.DefaultLanguageId = 2057; // English
-                               
+
                                  // ... Rest of the code to create questions
-                         
+
                                  // Save all changes
                                  survey.SaveAll();
-                         
+
                                  // Release the database connection
                                  Persistent.EndDatabaseConnection();
                              }
@@ -6426,7 +6426,7 @@
                  <para>Retrieves a specific survey and display its name</para>
                  <code>
                      using AskiaCore;
-             
+
                      namespace MyApp
                      {
                          public class MyProgram
@@ -6435,13 +6435,13 @@
                              {
                                  // Initialize the database connection string (Where the survey was stored)
                                  Persistent.InitDatabaseConnection("connectionstring", DatabaseTypes.PORTAL);
-            
+
                                  // Create a new context
                                  IContext context = ContextFactory.Create();
                                  context.UserId = 1;
                                  context.SessionId = "xxxxx-xxxxx-xxxxx-xxxxxx";
                                  context.LanguageId = 2057; // Edit the survey with this language (English)
-                               
+
                                  // Get the survey with the AskiaPortal Id = 1
                                  ISurvey survey = SurveyFactory.Get(context, 1);
                                  if (survey == null)
@@ -6452,7 +6452,7 @@
                                  {
                                      Console.WriteLine("The name of the survey 1 is `{0}`", survey.Name);
                                  }
-                         
+
                                  // Release the database connection
                                  Persistent.EndDatabaseConnection();
                              }
