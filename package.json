@@ -46,22 +46,22 @@
   "devDependencies": {
     "electron": "^2.0.0",
     "electron-builder": "^19.56.2",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^3.0.0"
   },
   "build": {
-      "appId": "com.askia.adxstudio",
-      "asar": false,
-      "buildVersion": "0",
-      "electronVersion": "2.0.0",
-      "copyright": "Copyright (c) Askia 2018",
-      "productName": "ADXStudio",
-      "win": {
-        "target": "nsis",
-        "icon": "app/adx-studio_icon.ico",
-        "certificateFile": "./tmp/AskiaCodeCert.pfx",
-        "certificatePassword": "",
-        "publisherName": "Askia"
-  },
+    "appId": "com.askia.adxstudio",
+    "asar": false,
+    "buildVersion": "0",
+    "electronVersion": "2.0.0",
+    "copyright": "Copyright (c) Askia 2018",
+    "productName": "ADXStudio",
+    "win": {
+      "target": "nsis",
+      "icon": "app/adx-studio_icon.ico",
+      "certificateFile": "./tmp/AskiaCodeCert.pfx",
+      "certificatePassword": "",
+      "publisherName": "Askia"
+    },
     "nsis": {
       "oneClick": false,
       "perMachine": true,
