@@ -107,8 +107,7 @@ Server.prototype.close = function close (callback) {
  */
 function getFixturesAndEmulations (callback) {
   const adx = global.project.getADX();
-  console.log(adx);
-
+  
   adx.getFixtureList((err, fixtures) => {
     if (err) throw err;
     const result = {

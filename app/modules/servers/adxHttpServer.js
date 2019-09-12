@@ -98,7 +98,6 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
 
   // Extract url data
   const uriParse = url.parse(request.url);
-  console.log('Request URL : '+request.url);
   const uri = decodeURIComponent(uriParse.pathname);
   const queryString = uriParse.query || '';
   const queryObj = queryToObj(queryString);
@@ -127,12 +126,10 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
   // Add .xml extension on the fixture name
   if (fixtureName && !/\.xml$/i.test(fixtureName)) {
     fixtureName += '.xml';
-    console.log("FIXTURE NAME : "+fixtureName);
   }
   options.fixture = fixtureName;
   if (emulationName && !/\.xml$/i.test(emulationName)) {
     emulationName += '.xml';
-    console.log("EMULATION NAME : "+emulationName);
   }
   options.emulation = emulationName;
   options.properties = properties;
@@ -195,6 +192,12 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
         'Pragma': 'no-cache',
         'Expires': '0'
       });
+
+      // Fix the output URL
+      // For legacy ADC/ADP that uses the ../../../SurveyResources/
+      // in the fixtures files, we just remove it!
+      output = output.replace(/..\/resources\/survey\/..\/..\/..\/surveyresources\//gi,
+        '../resources/survey/');
       response.write(output);
       response.end();
     }
@@ -291,55 +294,74 @@ function findResource (adx, uri, callback) {
       return;
     }
 
-    // Retry with the sub-project
+    function retryWithSubProject() {
+      // Retry with the sub-project
 
-    const subProjectType = (adx.configurator.projectType === 'adc') ? 'pages' : 'controls';
-    const subProjectRootPath = path.join(adx.path, 'tests/' + subProjectType);
-    let altUriRewrite = uri.replace(/^(\/fixture\/(?:[^\/]+))/i, '')
-      .replace(reShare, '/resources/share/$2')
-      .replace(reStatic, '/$2/resources/static/$3');
+      const subProjectType = (adx.configurator.projectType === 'adc') ? 'pages' : 'controls';
+      const subProjectRootPath = path.join(adx.path, 'tests/' + subProjectType);
+      let altUriRewrite = uri.replace(/^(\/fixture\/(?:[^\/]+))/i, '')
+        .replace(reShare, '/resources/share/$2')
+        .replace(reStatic, '/$2/resources/static/$3');
 
-    if (!/^\/resources\/share\//i.test(altUriRewrite)) {
-      const altFileStaticName = path.join(subProjectRootPath, altUriRewrite);
-      fs.stat(altFileStaticName, (err, stats) => {
-        callback(err, stats, altFileStaticName);
+      if (!/^\/resources\/share\//i.test(altUriRewrite)) {
+        const altFileStaticName = path.join(subProjectRootPath, altUriRewrite);
+        fs.stat(altFileStaticName, (err, stats) => {
+          callback(err, stats, altFileStaticName);
+        });
+        return;
+      } 
+
+      fs.readdir(subProjectRootPath, (err, files) => {
+        if (err) {
+          callback(err, stats, filename);
+          return;
+        }
+
+        const directories = files.filter((file) => {
+          return fs.statSync(path.join(subProjectRootPath, file)).isDirectory();
+        });
+
+        let current = 0;
+        const length = directories.length;
+        // Recursive function
+        function findFirst () {
+          const altFileName = path.join(subProjectRootPath, directories[current], altUriRewrite);
+
+          fs.stat(altFileName, (err, stats) => {
+            if (!err) {
+              callback(err, stats, altFileName);
+              return;
+            }
+            current++;
+            if (current < length) {
+              findFirst();
+              return;
+            }
+            callback(err, stats, filename);
+          });
+        }
+        //
+        findFirst();
       });
-      return;
     }
 
+    // Retry with the resources of the fixtures
+    if (/^\/resources\/share\//i.test(uriRewrite)) {
+      const uriRewriteFixtures = uriRewrite.replace(/(\/resources\/share\/)([^\/]+)$/i, 
+        '/tests/fixtures/Resources/$2');
+      const altFileFixtures = path.join(adx.path, uriRewriteFixtures);
+      fs.stat(altFileFixtures, (err, stats) => {
+        if (!err) {
+          callback(err, stats, altFileFixtures);
+          return;
+        }
 
-    fs.readdir(subProjectRootPath, (err, files) => {
-      if (err) {
-        callback(err, stats, filename);
-        return;
-      }
-
-      const directories = files.filter((file) => {
-        return fs.statSync(path.join(subProjectRootPath, file)).isDirectory();
+        retryWithSubProject();
       });
+      return;
+    } 
 
-      let current = 0;
-      const length = directories.length;
-      // Recursive function
-      function findFirst () {
-        const altFileName = path.join(subProjectRootPath, directories[current], altUriRewrite);
-
-        fs.stat(altFileName, (err, stats) => {
-          if (!err) {
-            callback(err, stats, altFileName);
-            return;
-          }
-          current++;
-          if (current < length) {
-            findFirst();
-            return;
-          }
-          callback(err, stats, filename);
-        });
-      }
-      //
-      findFirst();
-    });
+    retryWithSubProject();
   });
 }
 
