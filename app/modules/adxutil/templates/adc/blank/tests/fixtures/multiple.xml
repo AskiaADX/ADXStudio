@@ -57,61 +57,61 @@
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/neutral.png</Path>
+                    <Path>neutral.png</Path>
                 </Resource>
                 <Resource ID="2" Name="sad_1" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/sad_1.png</Path>
+                    <Path>sad_1.png</Path>
                 </Resource>
                 <Resource ID="3" Name="sad_2" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/sad_2.png</Path>
+                    <Path>sad_2.png</Path>
                 </Resource>
                 <Resource ID="4" Name="smile_1" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/smile_1.png</Path>
+                    <Path>smile_1.png</Path>
                 </Resource>
                 <Resource ID="5" Name="smile_2" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/smile_2.png</Path>
+                    <Path>smile_2.png</Path>
                 </Resource>
                 <Resource ID="6" Name="pa" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/pa.png</Path>
+                    <Path>pa.png</Path>
                 </Resource>
                 <Resource ID="7" Name="pb" Type="5" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/pb.png</Path>
+                    <Path>pb.png</Path>
                 </Resource>
                 <Resource ID="8" Name="pc" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/pc.png</Path>
+                    <Path>pc.png</Path>
                 </Resource>
                 <Resource ID="9" Name="pd" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/pd.png</Path>
+                    <Path>pd.png</Path>
                 </Resource>
                 <Resource ID="10" Name="none" Type="0" Code="0" LanguageID="0">
                     <InControl/>
                     <Params/>
                     <Mime/>
-                    <Path>../../../SurveyResources/none.png</Path>
+                    <Path>none.png</Path>
                 </Resource>
             </Resources>
         </Survey>
