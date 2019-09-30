@@ -206,18 +206,18 @@ describe('ADXConfigurator', function () {
             expect(configurator.projectVersion).toEqual('2.2.0');
         });
 
-        it("should set the #projectVersion to '2.2.0' by default for the ADP", function () {
+        it("should set the #projectVersion to '2.1.0' by default for the ADP", function () {
             var configurator = new ADXConfigurator("an/valid/path");
             configurator.fromXml('<page><info><guid>the-guid</guid><name>the-name</name></info></page>');
-            expect(configurator.projectVersion).toEqual('2.2.0');
+            expect(configurator.projectVersion).toEqual('2.1.0');
         });
 
         it("should set the #projectVersion with the value defined in the root node of the ADP", function () {
             var configurator = new ADXConfigurator("an/valid/path");
             configurator.fromXml('<page version="2.2.0"><info><guid>the-guid</guid><name>the-name</name></info></page>');
             expect(configurator.projectVersion).toEqual('2.2.0');
-        });	
-		
+        });
+
         it("should throw an error when the xml root node is not 'control' nor 'page'", function () {
             expect(function () {
                 var configurator = new ADXConfigurator("an/valid/path");
@@ -930,6 +930,7 @@ describe('ADXConfigurator', function () {
                     '</info>' +
                     '<outputs defaultOutput="main">' +
                     '<output id="main">' +
+                    '<condition><![CDATA[Browser.Support("javascript")]]></condition>' +
                     '<description><![CDATA[Main output]]></description>' +
                     '<content fileName="main.css" type="css" mode="static" position="head" />' +
                     '<content fileName="main.html" type="html" mode="dynamic" position="placeholder" />' +
@@ -943,9 +944,10 @@ describe('ADXConfigurator', function () {
                     '<content fileName="second.js" type="javascript" mode="static" position="foot" />' +
                     '</output>' +
                     '<output id="third" defaultGeneration="false" maxIterations="12">' +
+                    '<condition><![CDATA[Browser.Support("javascript")]]></condition>' +
                     '<description><![CDATA[Third output]]></description>' +
                     '<content fileName="third.css" type="css" mode="static" position="head" >' +
-                    ' <attribute name="rel">' +
+                    '<attribute name="rel">' +
                     '<value>alternate</value>' +
                     '</attribute>' +
                     '<attribute name="media">' +
@@ -1064,6 +1066,7 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "main",
+                                    condition : "Browser.Support(\"javascript\")",
                                     description : "Main output",
                                     contents : [
                                         {
@@ -1088,8 +1091,8 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "second",
-                                    description : "Second output",
                                     condition : "Browser.Support(\"javascript\")",
+                                    description : "Second output",
                                     contents : [
                                         {
                                             fileName : 'second.css',
@@ -1113,9 +1116,11 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "third",
+                                    condition : "Browser.Support(\"javascript\")",
                                     description : "Third output",
-                                    maxIterations : 12,
                                     defaultGeneration : false,
+                                    maxIterations : 12,
+                                    // manageLoopDepth: 0,
                                     contents : [
                                         {
                                             fileName : "third.css",
@@ -1148,6 +1153,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
+                                condition : "",
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -1179,6 +1185,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition : "",
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -1201,6 +1208,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
+                                    condition : "",
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -1275,8 +1283,9 @@ describe('ADXConfigurator', function () {
                     '</constraints>' +
                     '</info>' +
                     '<outputs defaultOutput="main">' +
-                    '<output id="main" masterPage="default_main.html">' +
                     '<description><![CDATA[Main output]]></description>' +
+                    // '<condition><![CDATA[Browser.Support("javascript")]]></condition>' +
+                    '<output id="main" masterPage="default_main.html">' +
                     '<content fileName="main.css" type="css" mode="static" position="head" />' +
                     '<content fileName="main.html" type="html" mode="dynamic" position="placeholder" />' +
                     '<content fileName="main.js" type="javascript" mode="static" position="foot" />' +
@@ -1290,6 +1299,7 @@ describe('ADXConfigurator', function () {
                     '</output>' +
                     '<output id="third" defaultGeneration="false" maxIterations="12" masterPage="default_third.html">' +
                     '<description><![CDATA[Third output]]></description>' +
+                    '<condition><![CDATA[Browser.Support("javascript")]]></condition>' +
                     '<content fileName="third.css" type="css" mode="static" position="head" >' +
                     ' <attribute name="rel">' +
                     '<value>alternate</value>' +
@@ -1390,8 +1400,9 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "main",
+                                    // description : "Main output",
+                                    // condition : "Browser.Support(\"javascript\")",
                                     masterPage : "default_main.html",
-                                    description : "Main output",
                                     contents : [
                                         {
                                             fileName : 'main.css',
@@ -1409,9 +1420,9 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "second",
-                                    masterPage : "default_second.html",
-                                    description : "Second output",
                                     condition : "Browser.Support(\"javascript\")",
+                                    description : "Second output",
+                                    masterPage : "default_second.html",
                                     contents : [
                                         {
                                             fileName : 'second.css',
@@ -1429,6 +1440,7 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "third",
+                                    condition : "Browser.Support(\"javascript\")",
                                     description : "Third output",
                                     masterPage : "default_third.html",
                                     contents : [
@@ -1463,6 +1475,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
+                                condition : "",
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -1486,6 +1499,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition : "",
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -1508,6 +1522,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
+                                    condition : "",
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -1709,6 +1724,7 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "new-main",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     description : "New Main output",
                                     contents : [
                                         {
@@ -1733,8 +1749,8 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-second",
-                                    description : "New Second output",
                                     condition : "Browser.Support(\"javascript\") and true",
+                                    description : "New Second output",
                                     contents : [
                                         {
                                             fileName : 'new-second.css',
@@ -1758,6 +1774,7 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-third",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     description : "New Third output",
                                     maxIterations : 50,
                                     defaultGeneration : true,
@@ -1965,6 +1982,7 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "new-main",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     description : "New Main output",
                                     contents : [
                                         {
@@ -1989,8 +2007,8 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-second",
-                                    description : "New Second output",
                                     condition : "Browser.Support(\"javascript\") and true",
+                                    description : "New Second output",
                                     contents : [
                                         {
                                             fileName : 'new-second.css',
@@ -2014,9 +2032,10 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-third",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     description : "New Third output",
-                                    maxIterations : 50,
                                     defaultGeneration : true,
+                                    maxIterations : 50,
                                     contents : [
                                         {
                                             fileName : "new-third.css",
@@ -2049,6 +2068,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
+                                condition : '',
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -2082,6 +2102,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition : '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -2104,6 +2125,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
+                                    condition : '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -2292,6 +2314,7 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "new-main",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     masterPage : "new_default_main.html",
                                     description : "New Main output",
                                     contents : [
@@ -2343,6 +2366,7 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-third",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     masterPage : "new_default_third.html",
                                     description : "New Third output",
                                     maxIterations : 50,
@@ -2529,8 +2553,9 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "new-main",
-                                    masterPage : "new_default_main.html",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     description : "New Main output",
+                                    masterPage : "new_default_main.html",
                                     contents : [
                                         {
                                             fileName : 'new-main.css',
@@ -2548,9 +2573,9 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-second",
-                                    masterPage : "new_default_second.html",
-                                    description : "New Second output",
                                     condition : "Browser.Support(\"javascript\") and true",
+                                    description : "New Second output",
+                                    masterPage : "new_default_second.html",
                                     contents : [
                                         {
                                             fileName : 'new-second.css',
@@ -2568,8 +2593,9 @@ describe('ADXConfigurator', function () {
                                 },
                                 {
                                     id : "new-third",
-                                    masterPage : "new_default_third.html",
+                                    condition : "Browser.Support(\"javascript\") and true",
                                     description : "New Third output",
+                                    masterPage : "new_default_third.html",
                                     contents : [
                                         {
                                             fileName : "new-third.css",
@@ -2602,6 +2628,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
+                                condition : '',
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -2625,6 +2652,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition : '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -2647,6 +2675,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
+                                    condition : '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -4989,6 +5018,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
+                                condition: '',
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -5020,6 +5050,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition: '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5042,6 +5073,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
+                                    condition: '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5123,6 +5155,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
+                                condition: '',
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -5146,6 +5179,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition: '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5168,6 +5202,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
+                                    condition: '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5340,6 +5375,7 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
+                                condition: '',
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -5373,6 +5409,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition: '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5395,6 +5432,7 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
+                                    condition: '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5628,6 +5666,8 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
+                                condition: '',
+
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -5661,6 +5701,8 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition: '',
+
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5683,6 +5725,8 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
+                                    condition: '',
+
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5866,6 +5910,8 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
+                                condition: '',
+
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -5889,6 +5935,8 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition: '',
+
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5911,6 +5959,8 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
+                                    condition: '',
+
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -6122,6 +6172,8 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
+                                condition: '',
+
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -6145,6 +6197,8 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
+                                    condition: '',
+
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -6167,6 +6221,8 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
+                                    condition: '',
+                                    
                                     properties : [
                                         {
                                             id : "testNumber",

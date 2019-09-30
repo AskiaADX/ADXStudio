@@ -248,7 +248,6 @@ Configurator.prototype.get = function get() {
  *                      description : "Third output",
  *                      maxIterations : 12,
  *                      defaultGeneration : false,
- *                      manageLoopDepth : 0,
  *                      contents : [
  *                          {
  *                              fileName : "third.css",
@@ -397,16 +396,16 @@ Configurator.prototype.toXml = function toXml() {
  */
 Configurator.prototype.fromXml = function fromXml(xml) {
     this.xmldoc = et.parse(xml);
-
     const rootEl = this.xmldoc.getroot();
+
     switch (rootEl && rootEl.tag) {
         case 'control':
             this.projectType = 'adc';
-            this.projectVersion = rootEl.get("version") || "2.2.0";
+            this.projectVersion = rootEl.get("version") || "2.0.0";
             break;
         case 'page':
             this.projectType = 'adp';
-            this.projectVersion = rootEl.get("version") || "2.2.0";
+            this.projectVersion = rootEl.get("version") || "2.1.0";
             break;
         default:
             throw new Error(errMsg.invalidConfigFile);
@@ -1204,6 +1203,7 @@ ADXOutputs.prototype.defaultOutput = function defaultOutput(data) {
 ADXOutputs.prototype.get = function get() {
     const xmldoc = this.configurator.xmldoc;
     const projectType = this.configurator.projectType;
+    const projectVersion = this.configurator.projectVersion;
     const el = xmldoc.find("outputs");
     const outputs = [];
 
@@ -1228,12 +1228,14 @@ ADXOutputs.prototype.get = function get() {
 
         // ADC Only
         if (projectType === 'adc') {
-            const manageLoopDepth = output.get("manageLoopDepth");
-            item.manageLoopDepth = parseInt(manageLoopDepth);
+            if (projectVersion == "2.2.0") {
+              const manageLoopDepth = output.get("manageLoopDepth");
+              item.manageLoopDepth = parseInt(manageLoopDepth);
 
-            const manageLoopDepthEl = output.find("manageLoopDepth");
-            if (manageLoopDepthEl) {
-                item.manageLoopDepth = parseInt(manageLoopDepthEl.value);
+              const manageLoopDepthEl = output.find("manageLoopDepth");
+              if (manageLoopDepthEl) {
+                  item.manageLoopDepth = parseInt(manageLoopDepthEl.value);
+              }
             }
 
             const defaultGeneration = output.get("defaultGeneration");
@@ -1456,21 +1458,21 @@ ADXOutputs.prototype.set = function set(data) {
         item.set("id", output.id || "");
         // ADC Only
         if (projectType === 'adc') {
-            if (typeof output.defaultGeneration === 'boolean') {
-                item.set("defaultGeneration", output.defaultGeneration.toString());
-            }
-            if (output.maxIterations) {
-                item.set("maxIterations", output.maxIterations);
-            }
-
+          if (typeof output.defaultGeneration === 'boolean') {
+            item.set("defaultGeneration", output.defaultGeneration.toString());
+          }
+          if (output.maxIterations) {
+            item.set("maxIterations", output.maxIterations);
+          }
+          if (output.manageLoopDepth) {
             item.set("manageLoopDepth", parseInt(output.manageLoopDepth));
-
+          }
         }
         // ADP Only
         else if (projectType === 'adp') {
-            if (output.masterPage) {
-                item.set("masterPage", output.masterPage);
-            }
+          if (output.masterPage) {
+              item.set("masterPage", output.masterPage);
+          }
         }
 
         // All output sub-nodes
@@ -1550,7 +1552,9 @@ ADXOutputs.prototype.toXml = function toXml() {
                 if (output.maxIterations) {
                     outputAttr += ' maxIterations="' + output.maxIterations + '"';
                 }
-                outputAttr += ' manageLoopDepth="' + output.manageLoopDepth + '"';
+                if (output.manageLoopDepth) {
+                  outputAttr += ' manageLoopDepth="' + output.manageLoopDepth + '"';
+                }
             }
             // ADP Only
             else if (projectType ==='adp') {
