@@ -915,6 +915,8 @@ ADXInfo.prototype.categories = function categories(data) {
  * @return {Object} Constraints
  */
 ADXInfo.prototype.constraints = function constraints(data) {
+    const projectVersion = this.configurator.projectVersion;
+
     if (this.configurator.projectType !== 'adc') {
         return;
     }
@@ -972,10 +974,16 @@ ADXInfo.prototype.constraints = function constraints(data) {
                     v = parseInt(v, 10);
                 }
             } else if(attName === 'requireLoopDepth') {
-              if (v == 'false') {
-                  v = 0;
-              } else if (v == 'true'){
-                  v = 1;
+              if (projectVersion !== '2.2.0') {
+                return;
+              } else {
+                // v = (v == 'true' ? 1 : 0);
+                if (v == 'false') {
+                    v = 0;
+                } else if (v == 'true'){
+                    v = 1;
+                }
+
               }
             } else {
               v = v !== undefined && (v !== 'false' && v !== '0' );
@@ -1435,6 +1443,7 @@ ADXOutputs.prototype.set = function set(data) {
     const xmldoc = this.configurator.xmldoc;
     let el = xmldoc.find("outputs");
     const projectType = this.configurator.projectType;
+    const projectVersion = this.configurator.projectVersion;
 
     if (!data) {
         return;
@@ -1464,7 +1473,7 @@ ADXOutputs.prototype.set = function set(data) {
           if (output.maxIterations) {
             item.set("maxIterations", output.maxIterations);
           }
-          if (output.manageLoopDepth) {
+          if (projectVersion == '2.2.0') {
             item.set("manageLoopDepth", parseInt(output.manageLoopDepth));
           }
         }
@@ -1535,6 +1544,7 @@ ADXOutputs.prototype.toXml = function toXml() {
     const xml = [];
     const data = this.get();
     const projectType = this.configurator.projectType;
+    const projectVersion = this.configurator.projectVersion;
 
     if (!data) {
         return '';
@@ -1552,8 +1562,12 @@ ADXOutputs.prototype.toXml = function toXml() {
                 if (output.maxIterations) {
                     outputAttr += ' maxIterations="' + output.maxIterations + '"';
                 }
-                if (output.manageLoopDepth) {
-                  outputAttr += ' manageLoopDepth="' + output.manageLoopDepth + '"';
+                if (projectVersion == '2.2.0') {
+                  let manageLoopDepth = output.manageLoopDepth;
+                  if (isNaN(manageLoopDepth)) {
+                    manageLoopDepth = 0;
+                  }
+                  outputAttr += ' manageLoopDepth="' + manageLoopDepth + '"';
                 }
             }
             // ADP Only
