@@ -16,7 +16,7 @@ Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/lat
 2.	Run the `ADXStudio Setup 1.0.3.exe` executable as `administrator`.
 3.	Try to create your ADC or ADP using one of the template, or create a new Project.
 
-*Note: do not tamper with any other components of `ADXStudio Setup 1.0.2.exe` folder.*
+*Note: do not tamper with any other components of `ADXStudio Setup 1.0.3.exe` folder.*
 
 #### Manual installation
 
@@ -58,7 +58,7 @@ Contributors
 ------------
 
 - [Robbe Van der Gucht](https://github.com/sir-ragna)
-- [Prabath Gamage](https://github.com/Djedj)
+- [Prabath Gamage](https://github.com/prabathgamage)
 
 License
 -------
