@@ -44,7 +44,7 @@
     "wrench": "^1.5.9"
   },
   "devDependencies": {
-    "electron": "^6.0.11",
+    "electron": "^4.2.11",
     "electron-builder": "^21.2.0",
     "jasmine-node": "^3.0.0"
   },
@@ -52,7 +52,7 @@
     "appId": "com.askia.adxstudio",
     "asar": false,
     "buildVersion": "0",
-    "electronVersion": "6.0.11",
+    "electronVersion": "4.2.11",
     "copyright": "Copyright (c) Askia 2019",
     "productName": "ADXStudio",
     "win": {
