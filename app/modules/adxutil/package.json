@@ -59,7 +59,7 @@
     "gulp": "^3.9.1",
     "gulp-jsdoc3": "^1.0.1",
     "gulp-shell": "^0.4.3",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.16.2"
   },
   "gitHead": "8f24141069d1b761518711898cb9d7a731b875a4",
   "homepage": "https://github.com/AskiaADX/ADXUtil#readme",
