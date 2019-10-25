@@ -1219,8 +1219,9 @@ Validator.prototype.validateADXContentAttribute = function validateADXContentAtt
  * Validate the ADX properties node
  */
 Validator.prototype.validateADXProperties = function validateADXProperties() {
-    const xmldoc = this.adxConfigurator.xmldoc;
-    const elProperties = xmldoc.find("properties");
+  const xmldoc = this.adxConfigurator.xmldoc;
+  const elProperties = xmldoc.find("properties");
+  if (elProperties !== null) {
     const categories = elProperties.findall('category');
     const properties = elProperties.findall('property');
 
@@ -1230,6 +1231,10 @@ Validator.prototype.validateADXProperties = function validateADXProperties() {
     }
     this.writeSuccess(successMsg.xmlPropertiesValidate);
     this.resume(null);
+  } else {
+    this.report.warnings++;
+    this.writeWarning(warnMsg.noProperties);
+  }
 };
 
 /**
