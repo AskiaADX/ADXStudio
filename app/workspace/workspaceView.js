@@ -948,7 +948,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
 
-      contextualMenu.popup(workspace.remote.getCurrentWindow());
+      contextualMenu.popup(workspace.remote.BrowserWindow.getAllWindows()[0]);
     }
 
     function onTabsMousedown (event) {
