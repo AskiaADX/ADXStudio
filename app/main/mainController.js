@@ -5,10 +5,10 @@ const app = electron.app;
 const util = require('util');
 const ipc = electron.ipcMain;
 const appSettings = require('../appSettings/appSettingsModel.js');
-const ADX = require('adxutil').ADX;
+const ADX = require('../modules/adxutil').ADX;
 const fs = require('fs');
 const path = require('path');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const packageJson = require('../../package.json');
 let  mainView;
 
@@ -145,7 +145,7 @@ function createNewProject (event, button, options) {
     if (err) {
       showModalDialog({
         type : 'okOnly',
-        message : err.message      
+        message : err.message
       });
       return;
     }
@@ -268,7 +268,7 @@ function publishZendesk (event, button, options) {
     if (!adx || !adx.path) {
       return;
     }
-        
+
     clearOutput();
     adx.publish('ZenDesk', {
       username 			: preferences.loginZendesk,
@@ -280,7 +280,7 @@ function publishZendesk (event, button, options) {
       disableComments 	: options.commentDisable,
       logger 				: logger,
       printMode 			: 'html'
-    });        
+    });
   });
 }
 
@@ -329,7 +329,7 @@ function openPreferences (){
         }                catch (err) {
           return;
         }
-                
+
         if (stat.isDirectory()) {
           dirs.push(file);
         }
@@ -449,7 +449,7 @@ ipc.on('main-ready', function (event) {
     // Build project
   app.removeListener('menu-build', buildProject);
   app.on('menu-build', buildProject);
-    
+
     // Publish the project on zendesk
   app.removeListener('menu-publish-zendesk', publishZendeskProject);
   app.on('menu-publish-zendesk', publishZendeskProject);

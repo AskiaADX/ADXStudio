@@ -12,18 +12,26 @@ var askiaScript = CodeMirror.askiaScript;
 
 askiaScript.extend(askiaScript.types, {
     "ARRAY" : "array",    
+    "BOOLEAN" : "boolean",    
     "DATE" : "date",    
+    "DICTIONARY" : "dictionary",    
+    "METHODRESULT" : "methodresult",    
     "NUMBER" : "number",    
     "STRING" : "string",    
+    "STRINGARRAY" : "stringarray",    
     "VARIANT" : "variant"
 });
 
 askiaScript.extend(askiaScript.i18n, {
     "types" : {
         "array" : "Array",        
+        "boolean" : "Boolean",        
         "date" : "Date",        
+        "dictionary" : "Dictionary",        
+        "methodresult" : "MethodResult",        
         "number" : "Number",        
         "string" : "String",        
+        "stringarray" : "StringArray",        
         "variant" : "Variant"
     },    
     "core" : {
@@ -44,6 +52,16 @@ askiaScript.extend(askiaScript.i18n, {
             ],            
             "version" : "5.3.2.0"
         },        
+        "boolean" : {
+            "ns" : "askialanguage",            
+            "desc" : "\tVariable which contains a boolean value (true or False).<br />T",            
+            "examples" : [
+                "\tdim myValue = True",                
+                "\tdim myNegative = False",                
+                "\tdim x As Boolean "
+            ],            
+            "version" : "5.4.8.0"
+        },        
         "date" : {
             "ns" : "askialanguage",            
             "creation" : [
@@ -63,6 +81,47 @@ askiaScript.extend(askiaScript.i18n, {
                 " dim my_date_time = #25/03/2011 16:32:07#"
             ],            
             "version" : "5.3.2.0"
+        },        
+        "dictionary" : {
+            "ns" : "askialanguage",            
+            "desc" : [
+                "A dictionary is a variable that could contains several values associated with unique keys.",                
+                "",                
+                "In AskiaScript, all dictionary keys are case sensitive String and all values are Variant.",                
+                "",                
+                "The creation of a dictionary is done by the assignment of a literal notation of a dictionary to a variable or by declaring a variable as a dictionary.",                
+                "The literal notation of the Dictionary is mostly similar and compatible with the JSON format.",                
+                "To avoid confusion with the {} which represent the AskiaScript NumberArray, we've decide to prefix the first open curly-brace by a @ character.",                
+                "All subsequents usage of the curly-brace {} and square-bracket [] doesn't require to be prefix by the @ characters and will always refer resepectively to the Dictionary and Array."
+            ],            
+            "examples" : [
+                "' Declaring a Dictionary",                
+                "Dim myValue As Dictionary",                
+                "",                
+                "",                
+                "Assign a Dictionary to a variable",                
+                "",                
+                "Dim myValue = @{",                
+                "\"key1\" : \"value1\",",                
+                "\"key2\" : 2,",                
+                "\"key3\" : [ \"a\", \"b\", \"c\" ],",                
+                "\"key4\" : True,",                
+                "\"key5\" : #31/12/2016#,",                
+                "\"key5\" : Null,",                
+                "\"key6\" : {",                
+                "\"subKey1\" : 12,",                
+                "\"subKey2\" : False"
+            ],            
+            "version" : "5.4.8.0"
+        },        
+        "methodresult" : {
+            "ns" : "askialanguage",            
+            "desc" : [
+                "The MethodResult type is mostly used for operation that could produce exception.",                
+                "For input/output exception, instead of throwing exception in the runtime, the language returns this type of value to indicates if the operation succeed."
+            ],            
+            "alsoSee" : "LoadJSON",            
+            "version" : "5.4.8.0"
         },        
         "number" : {
             "ns" : "askialanguage",            
@@ -94,15 +153,21 @@ askiaScript.extend(askiaScript.i18n, {
             ],            
             "version" : "5.3.2.0"
         },        
+        "stringarray" : {
+            "ns" : "askialanguage",            
+            "desc" : "Describe an array of strings",            
+            "examples" : "Dim arrStr as StringArray = {\"abc\"; \"def}",            
+            "version" : "5.4.5.0"
+        },        
         "variant" : {
             "ns" : "askialanguage",            
             "desc" : [
-                " Variable that contains one of the following type of values: number, string, date, array of numbers.<br/><br/>",                
+                " Variable that contains a value of an type: number, string, date, array of numbers, array of variant, object.<br/><br/>",                
                 "",                
-                " When the type of a variable could not be known by the compiler in advanced, <br />",                
-                " the AskiaScript provide a Variant type which allows you to convert the value during the run-time.<br/><br/>",                
+                " When the type of a variable could not be known by the compiler in advance, <br />",                
+                " the AskiaScript provides a Variant type which allows you to convert the value during the run-time.<br/><br/>",                
                 "",                
-                " For example, when you iterate through an array of questions, <em>Value</em> property have different type according to the type of question (number, string, date etc...).<br />",                
+                " For example, when you iterate through an array of questions, <em>Value</em> property have a different type according to the type of the question (number, string, date etc...).<br />",                
                 " In that case, the value of the anonymous question is a Variant.<br/>",                
                 " You can still compare or do a conversion to an appropriate type.<br/>"
             ],            
@@ -110,7 +175,7 @@ askiaScript.extend(askiaScript.i18n, {
                 " Dim arrQuestions = Range(Q1, Q10)",                
                 " Dim aVariant = arrQuestions[2].Value"
             ],            
-            "version" : "5.4.2.0"
+            "version" : "5.4.8.0"
         }
     }
 }, true);
@@ -123,6 +188,30 @@ askiaScript.extend(askiaScript.lexical, {
         }
     },    
     "versions" : [
+        {
+            "name" : "5.5.2.0",            
+            "ns" : "askialanguage",            
+            "desc" : [
+                "String improvement",                
+                "Loops' AvailableAnswers",                
+                "CurrentADP.ShowMessage"
+            ]
+        },        
+        {
+            "name" : "5.5.0.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Survey object, tags , ChildQuestions, ParentQuestion"
+        },        
+        {
+            "name" : "5.4.9.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Interview improvement"
+        },        
+        {
+            "name" : "5.4.8.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Json, dictionary, web-services - so good you might as well call it AskiaScript 3.0"
+        },        
         {
             "name" : "5.4.6.0",            
             "ns" : "askialanguage",            
@@ -1001,24 +1090,24 @@ askiaScript.extend(askiaScript.lexical, {
                     "desc" : "Expression to evaluate and used in the addition"
                 }
             ],            
-            "desc" : "Shorthand to perform a for-loop and to sum the result of each iteration",            
+            "desc" : "\tShorthand to perform a for-loop and to sum the result of each iteration",            
             "remarks" : [
-                " The ForSum, ForSet, ForMin, ForMax was introduced before the for-loop syntax.<br/>Thoses form of loop is more concise but less readable than his equivalent for-loop syntax.",                
-                " Even if the for-loop syntax is more verbose, we recommend you to use that syntax instead."
+                "\tThe ForSum, ForSet, ForMin, ForMax was introduced before the for-loop syntax.<br/>Thoses form of loop is more concise but less readable than his equivalent for-loop syntax.",                
+                "\tEven if the for-loop syntax is more verbose, we recommend you to use that syntax instead."
             ],            
             "examples" : [
-                " ForSum(\"i\", 3, i + 1) ' => 9 (2 + 3 + 4)",                
+                "\tForSum(\"i\", 3, i + 1) ' => 9 (2 + 3 + 4)",                
                 "",                
-                " ' Similar than:",                
-                " ' Dim i",                
-                " ' Dim sumValue = 0",                
-                " ' For i = 1 To 3",                
-                " '     sumValue = sumValue + (i + 1)",                
-                " ' Next",                
-                " ' Return sumValue",                
+                "\t' Similar than:",                
+                "\t' Dim i",                
+                "\t' Dim sumValue = 0",                
+                "\t' For i = 1 To 3",                
+                "\t'     sumValue = sumValue + (i + 1)",                
+                "\t' Next",                
+                "\t' Return sumValue",                
                 "",                
                 "",                
-                " ForSum(\"i\", 2, ??Q1??[i]) ' => ??Q1??[1] + ??Q1??[2]"
+                "\tForSum(\"i\", 2, ??Q1??[i]) ' => ??Q1??[1] + ??Q1??[2]"
             ],            
             "alsoSee" : "For"
         },        
@@ -1895,7 +1984,7 @@ askiaScript.extend(askiaScript.lexical, {
                 {
                     "name" : "expression",                    
                     "type" : "number",                    
-                    "desc" : "Expression to negate"
+                    "desc" : "Expression to negate (or boolean)"
                 }
             ],            
             "desc" : [
@@ -2347,6 +2436,22 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
+            "name" : "TrueRandom",            
+            "ns" : "askialanguage",            
+            "base" : "function",            
+            "type" : "number",            
+            "args" : [
+                {
+                    "name" : "bound",                    
+                    "type" : "number",                    
+                    "desc" : "Number which specified the upper-bound for the random selection. <br/>"
+                }
+            ],            
+            "desc" : "\tReturns a random number but unlike the function random, you will not get the same number for a given interview",            
+            "examples" : "\tTrueRandom(5)  '=> Returns 1 value among: {1; 2; 3; 4; 5}",            
+            "alsoSee" : "Random"
+        },        
+        {
             "name" : "UCase",            
             "ns" : "askialanguage",            
             "base" : "function",            
@@ -2537,192 +2642,6 @@ askiaScript.extend(askiaScript.lexical, {
         }
     ],    
     "members" : {
-        "date" : [
-            {
-                "name" : "Day",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the day of the date as number",                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.Day ' => 25"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "DayOfWeek",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the day of week (1-7) of the specified date.",                    
-                    " eg.",                    
-                    " if the day is Sunday, the property will return 1.",                    
-                    " if the day is Monday, the property will return 2.",                    
-                    " if the day is Saturday, the property will return 7, and so on."
-                ],                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.DayOfWeek ' => 6"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "DayOfYear",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the day of year (1-366) of the specified date.",                    
-                    " eg.",                    
-                    " if the date is 01/01/2012, the property will return 1.",                    
-                    " if the date is 31/12/2012, the property will return 365, and so on."
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Format",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "Format",                        
-                        "type" : "string",                        
-                        "desc" : "of the date to obtain (case sensitive)"
-                    },                    
-                    {
-                        "name" : "string2",                        
-                        "type" : "string",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "string3",                        
-                        "type" : "string",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "Format a date to string using the format parameter",                
-                "examples" : [
-                    " dim dt= #02/03/2011 16:32:07# ' March 2nd, 2011",                    
-                    " dt.Format(\"dd/MM/yyyy\") ' => \"02/03/2011\"",                    
-                    " dt.Format(\"yyyy-MM-dd\") ' => \"2011-03-02\"",                    
-                    " dt.Format(\"MM/dd/yyyy\") ' => \"03/02/2011\"",                    
-                    " dt.Format(\"dd MMM yyyy\") ' => \"02 Mar 2011\"",                    
-                    " dt.Format(\"dd MMMM yyyy\") ' => \"02 March 2011\"",                    
-                    " dt.Format(\"MMMM dd, ddd.  yyyy\") ' => \"March 02, Wed. 2011\"",                    
-                    " dt.Format(\"MMMM dd, dddd yyyy\") ' => \"March 02, Wednesday 2011\"",                    
-                    " dt.Format(\"d-M-yy\") ' => \"2-3-11\"",                    
-                    " dt.Format(\"dd/MM/yyyy HH:mm\") ' => \"02/03/2011 16:32\"",                    
-                    " dt.Format(\"dd/MM/yyyy hh:mm\") ' => \"02/03/2011 04:32\"",                    
-                    " dt.Format(\"dd/MM/yyyy hh:mmampm\") ' => \"02/03/2011 04:32pm\"",                    
-                    " dt.Format(\"dd/MM/yyyy hh:mm:ssAMPM\") ' => \"02/03/2011 04:32:07PM\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Hour",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the hour of the time as number",                
-                "examples" : [
-                    " dim tm = #16:32:07#",                    
-                    " tm.Hour ' => 16"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Minute",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the minute of the time as number",                
-                "examples" : [
-                    " dim tm = #16:32:07#",                    
-                    " tm.Minute ' => 32"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Month",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the month of the date as number",                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.Month ' => 3"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Second",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the second of the time as number",                
-                "examples" : [
-                    " dim tm = #16:32:07#",                    
-                    " tm.Second ' => 7"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToNumber",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "Try to convert the date to a number.",                
-                "examples" : [
-                    " dim dt= #25/03/2011 16:32:07#",                    
-                    " dt.ToNumber() ' => 40627.688969907409"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    " Convert a date to a string using the regional settings context",                    
-                    " (from the language of respondent or the current machine)",                    
-                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the format"
-                ],                
-                "examples" : [
-                    " dim dt= #25/03/2011 16:32:07#",                    
-                    " dt.ToString() ' => \"25/03/2011 16:32:07\" or \"3/25/2011 04:32:07 PM\"",                    
-                    " ' depending on the regional settings"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : [
-                    " dim dt= #12/01/2009#",                    
-                    " dt.TypeOf() ' => \"date\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Year",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the year of the date as number",                
-                "examples" : [
-                    " dim dt = #25/03/2011#",                    
-                    " dt.Year ' => 2011"
-                ],                
-                "version" : "5.3.2.0"
-            }
-        ],        
         "string" : [
             {
                 "name" : "Collate",                
@@ -2823,6 +2742,13 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "String",                        
+                        "type" : "string",                        
+                        "desc" : "to compare"
+                    }
+                ],                
                 "desc" : [
                     "\tCalculate distance between two strings using the Damerau-Levenshtein Distance https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance",                    
                     "\tThis distance is very useful to find spelling errors"
@@ -3079,6 +3005,66 @@ askiaScript.extend(askiaScript.lexical, {
                     " ' => \"Insensitive\""
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ReplaceRegexp",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "regexp",                        
+                        "type" : "string",                        
+                        "desc" : "Pattern to replace"
+                    },                    
+                    {
+                        "name" : "replacement",                        
+                        "type" : "string",                        
+                        "desc" : "Replacement string"
+                    },                    
+                    {
+                        "name" : "modifier",                        
+                        "type" : "string",                        
+                        "desc" : "Modifier of the regexp",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " ",                    
+                    " Returns a new string and replace the first match of the specified regexp pattern by the specified replacement.",                    
+                    " By default the text replacement is case sensitive.",                    
+                    " If there is 'i' (insensitive) modifier in the third parameter the text replacement is not case sensitive.",                    
+                    " If there is 'g' (global) modifier in the third parameter the replacement is done on all matches.",                    
+                    " "
+                ],                
+                "examples" : [
+                    " ",                    
+                    " dim case = \"Sensitive\"",                    
+                    " case.Replace(\"s.*n\", \"Insen\")",                    
+                    " ' => \"Sensitive\" Doesn't change",                    
+                    " '",                    
+                    " dim s = \"Sensitive\"",                    
+                    " s = s.ReplaceRegexp(\"s.*n\", \"Insen\", \"i\")",                    
+                    " ' => \"Insensitive\"",                    
+                    " '",                    
+                    " dim case = \"abcdef\"",                    
+                    " case.ReplaceRegexp(\"[a-e]\", \"X\")",                    
+                    " ' => \"Xbcdef\" The replacement is done only on the first match",                    
+                    " '",                    
+                    " dim case = \"abcdef\"",                    
+                    " case.ReplaceRegexp(\"[a-e]\", \"X\", \"g\")",                    
+                    " ' => \"XXXXXf\" The replacement is done on all matches",                    
+                    " '",                    
+                    " dim case = \"abcdef\"",                    
+                    " case.ReplaceRegexp(\"[A-E]\", \"X\", \"g\")",                    
+                    " ' => \"abcdef\" Doesn't change",                    
+                    " '",                    
+                    " dim case = \"abcdef\"",                    
+                    " case.ReplaceRegexp(\"[A-E]\", \"X\", \"gi\")",                    
+                    " ' => \"XXXXXf\"",                    
+                    " "
+                ],                
+                "version" : "5.5.2.0"
             },            
             {
                 "name" : "Right",                
@@ -3390,6 +3376,23 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "ToVariant",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "desc" : [
+                    " Converts a string  into a variant ",                    
+                    "",                    
+                    " Return a  array of numbers"
+                ],                
+                "examples" : [
+                    " \"Abc\".ToVariant()",                    
+                    " ",                    
+                    " "
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
                 "name" : "Trim",                
                 "ns" : "askialanguage",                
                 "base" : "method",                
@@ -3413,6 +3416,535 @@ askiaScript.extend(askiaScript.lexical, {
                     " s.TypeOf() ' => \"string\""
                 ],                
                 "version" : "5.3.2.0"
+            }
+        ],        
+        "date" : [
+            {
+                "name" : "Day",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the day of the date as number",                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.Day ' => 25"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "DayOfWeek",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the day of week (1-7) of the specified date.",                    
+                    " eg.",                    
+                    " if the day is Sunday, the property will return 1.",                    
+                    " if the day is Monday, the property will return 2.",                    
+                    " if the day is Saturday, the property will return 7, and so on."
+                ],                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.DayOfWeek ' => 6"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "DayOfYear",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the day of year (1-366) of the specified date.",                    
+                    " eg.",                    
+                    " if the date is 01/01/2012, the property will return 1.",                    
+                    " if the date is 31/12/2012, the property will return 365, and so on."
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Format",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "Format",                        
+                        "type" : "string",                        
+                        "desc" : "of the date to obtain (case sensitive)"
+                    },                    
+                    {
+                        "name" : "string2",                        
+                        "type" : "string",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "string3",                        
+                        "type" : "string",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "Format a date to string using the format parameter",                
+                "examples" : [
+                    " dim dt= #02/03/2011 16:32:07# ' March 2nd, 2011",                    
+                    " dt.Format(\"dd/MM/yyyy\") ' => \"02/03/2011\"",                    
+                    " dt.Format(\"yyyy-MM-dd\") ' => \"2011-03-02\"",                    
+                    " dt.Format(\"MM/dd/yyyy\") ' => \"03/02/2011\"",                    
+                    " dt.Format(\"dd MMM yyyy\") ' => \"02 Mar 2011\"",                    
+                    " dt.Format(\"dd MMMM yyyy\") ' => \"02 March 2011\"",                    
+                    " dt.Format(\"MMMM dd, ddd.  yyyy\") ' => \"March 02, Wed. 2011\"",                    
+                    " dt.Format(\"MMMM dd, dddd yyyy\") ' => \"March 02, Wednesday 2011\"",                    
+                    " dt.Format(\"d-M-yy\") ' => \"2-3-11\"",                    
+                    " dt.Format(\"dd/MM/yyyy HH:mm\") ' => \"02/03/2011 16:32\"",                    
+                    " dt.Format(\"dd/MM/yyyy hh:mm\") ' => \"02/03/2011 04:32\"",                    
+                    " dt.Format(\"dd/MM/yyyy hh:mmampm\") ' => \"02/03/2011 04:32pm\"",                    
+                    " dt.Format(\"dd/MM/yyyy hh:mm:ssAMPM\") ' => \"02/03/2011 04:32:07PM\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Hour",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the hour of the time as number",                
+                "examples" : [
+                    " dim tm = #16:32:07#",                    
+                    " tm.Hour ' => 16"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Minute",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the minute of the time as number",                
+                "examples" : [
+                    " dim tm = #16:32:07#",                    
+                    " tm.Minute ' => 32"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Month",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the month of the date as number",                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.Month ' => 3"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Second",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the second of the time as number",                
+                "examples" : [
+                    " dim tm = #16:32:07#",                    
+                    " tm.Second ' => 7"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToIsoString",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "\tConverts a date to its ISO string representation, according to ISO 8601.",                
+                "examples" : [
+                    "\tdim dt = #25 / 03 / 2011 16:32 : 07#",                    
+                    "\tdt.ToIsoString() ' => \"2011-03-25T16:32:07.000Z\""
+                ],                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "ToNumber",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "Try to convert the date to a number.",                
+                "examples" : [
+                    " dim dt= #25/03/2011 16:32:07#",                    
+                    " dt.ToNumber() ' => 40627.688969907409"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Convert a date to a string using the regional settings context",                    
+                    " (from the language of respondent or the current machine)",                    
+                    " Prefer the usage of \"Format\" methods if you want to enforce/fixed the format"
+                ],                
+                "examples" : [
+                    " dim dt= #25/03/2011 16:32:07#",                    
+                    " dt.ToString() ' => \"25/03/2011 16:32:07\" or \"3/25/2011 04:32:07 PM\"",                    
+                    " ' depending on the regional settings"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToVariant",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "desc" : [
+                    "Converts a date into a variant",                    
+                    "",                    
+                    "Return a  array of numbers"
+                ],                
+                "examples" : "#6/11/2001#.ToVariant()",                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : [
+                    " dim dt= #12/01/2009#",                    
+                    " dt.TypeOf() ' => \"date\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Year",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the year of the date as number",                
+                "examples" : [
+                    " dim dt = #25/03/2011#",                    
+                    " dt.Year ' => 2011"
+                ],                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "dictionary" : [
+            {
+                "name" : "Clear",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "dictionary",                
+                "desc" : "\tRemoves all properties of an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.Clear()",                    
+                    "\tmyDictionary.ContainKey(\"property2\") => 0"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ContainsKey",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "args" : [
+                    {
+                        "name" : "KeyName",                        
+                        "type" : "string"
+                    }
+                ],                
+                "desc" : "\tReturns the number of properties in an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.ContainsKey(\"property2) => True",                    
+                    "\tmyDictionary.ContainsKey(\"property10\") => False"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Count",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "\tReturns the number of properties in an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.Count() =>3"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Keys",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : "\tReturns an array of strings with the list of all property names",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\treturn myDictionary.Keys()[2] => \"Property2\""
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "LoadJSON",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "methodresult",                
+                "args" : [
+                    {
+                        "name" : "name",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    "\tUse the JSON string in argument to initialize the value of the variant.",                    
+                    "",                    
+                    "\tReturns a successful value if the operation succeeds, otherwise it returns a failed value.",                    
+                    "",                    
+                    "\tReturns a MethodResult.\t"
+                ],                
+                "examples" : [
+                    "\tDim strString = \"{\\\"property1\\\": 1, \\\"property2\\\": \\\"abc\\\", \\\"property3\\\": [1,2,3,4,5]}\"",                    
+                    "\tDim myDictionary As Dictionary",                    
+                    "\tDim Res = myDictionary.LoadJSON(strString)",                    
+                    "\treturn Res.Success"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "LoadXML",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "methodresult",                
+                "args" : [
+                    {
+                        "name" : "xmlString",                        
+                        "type" : "string",                        
+                        "desc" : "xml code to be parsed",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    "\tUse the XML string in argument to set or reset all the dictionary keys.",                    
+                    "",                    
+                    "\tTo be user-friendly as much as possible, the conversion of XML to a dictionary uses the following simple rules:",                    
+                    "",                    
+                    "\t\"tagname\": The tag name is used as it is",                    
+                    "\tand the value associated with those keys are Dictionary or Array.",                    
+                    "\t\"@attr\": The tag attribute is prefix by the @ character",                    
+                    "\tand the value associated with those keys are always String which represent the value of the attribute.",                    
+                    "\t\"#text\": The special key #text represent the text value inside the tag.",                    
+                    "",                    
+                    "\tReturns a successful value if the operation succeeds, otherwise it returns a failed value."
+                ],                
+                "examples" : [
+                    "\tDim xml As Dictionary",                    
+                    "\tDim result = xml.LoadXml(\"invalid xml format\")",                    
+                    "\t' result.Success ' => False",                    
+                    "\t' result.ErrorMessage ' => \"SyntaxError: Unexpected token i in XML at position : 0\"",                    
+                    "\t' xml.Count ' => 0",                    
+                    "",                    
+                    "",                    
+                    "",                    
+                    "\tDim xml As Dictionary",                    
+                    "\tDim result = items.LoadXml(\"<root><items><item id=\\\"1\\\">ABC</item></root>\")",                    
+                    "\t' result.Success ' => True",                    
+                    "\t' xml.Count  ' => 1",                    
+                    "\t' xml ' => @{",                    
+                    "\t'   \"root\" : {",                    
+                    "\t'       \"items\" : {",                    
+                    "\t'          \"item\" : {",                    
+                    "\t'             \"@id\" : \"1\",",                    
+                    "\t'             \"#text\" : \"ABC\"",                    
+                    "\t'          }",                    
+                    "\t'       }",                    
+                    "\t'    }",                    
+                    "\t' }",                    
+                    "\t'",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][\"@id\"] ' => \"1\"",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][\"#text\"] ' => \"ABC\"",                    
+                    "",                    
+                    "",                    
+                    "",                    
+                    "\tDim xml As Dictionary",                    
+                    "\tDim result = items.LoadXml(\"<root><items><item id=\\\"1\\\">ABC</item><item id=\\\"2\\\">DEF</item></root>\")",                    
+                    "\t' result.Success ' => True",                    
+                    "\t' xml.Count  ' => 1",                    
+                    "\t' xml ' => @{",                    
+                    "\t'   \"root\" : {",                    
+                    "\t'       \"items\" : {",                    
+                    "\t'          \"item\" : [",                    
+                    "\t'             {",                    
+                    "\t'               \"@id\" : \"1\",",                    
+                    "\t'               \"#text\" : \"ABC\"",                    
+                    "\t'             },",                    
+                    "\t'             {",                    
+                    "\t'               \"@id\" : \"2\",",                    
+                    "\t'               \"#text\" : \"DEF\"",                    
+                    "\t'             },",                    
+                    "\t'          ]",                    
+                    "\t'       }",                    
+                    "\t'    }",                    
+                    "\t' }",                    
+                    "\t'",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][1][\"@id\"] ' => \"1\"",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][1][\"#text\"] ' => \"ABC\"",                    
+                    "\t'",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][2][\"@id\"] ' => \"2\"",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][2][\"#text\"] ' => \"DEF\""
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "RemoveKey",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "dictionary",                
+                "args" : [
+                    {
+                        "name" : "KeyName",                        
+                        "type" : "string"
+                    }
+                ],                
+                "desc" : "\tRemoves the property of an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.RemoveKey(\"property2) ",                    
+                    "\tmyDictionary.ContainsKey(\"property2\") => 0"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Set",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "dictionary",                
+                "args" : [
+                    {
+                        "name" : "name",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "value",                        
+                        "type" : "variant",                        
+                        "desc" : "Value of the property (all types supported)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "\tSets or creates a property in an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Set(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Values",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : "\tReturns an array of strings with the list of all property values",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\treturn myDictionary.Values()[2].ToString() => \"abc\""
+                ],                
+                "version" : "5.4.8.0"
+            }
+        ],        
+        "methodresult" : [
+            {
+                "name" : "ErrorCode",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the code of failure. It's always DK when the Success is True, or when there is no error code provided by the API that throws the exception.",                    
+                    "",                    
+                    "\tReturn a Number."
+                ],                
+                "examples" : [
+                    "\tDim items As Variant",                    
+                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
+                    "\tresult.Success ' => False",                    
+                    "\tresult.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
+                    "\tresult.ErrorCode ' => DK"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ErrorMessage",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the reason of failure.It's always empty when the Success is True, and most of time non-empty when it's False",                    
+                    "",                    
+                    "\tReturn a String."
+                ],                
+                "examples" : [
+                    "\tDim items As Variant",                    
+                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
+                    "\tresult.Success ' => False",                    
+                    "\tresult.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
+                    "",                    
+                    "\tDim isOk As Variant",                    
+                    "\tDim result = isOk.LoadJSON(\"true\")",                    
+                    "\tresult.Success ' => True",                    
+                    "\tresult.ErrorMessage ' => \"\""
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Success",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : [
+                    "\tReturns True when the operation succeed, otherwise it return False and chance is to have an ErrorMessage which indicates the reason of failure.",                    
+                    "",                    
+                    "\tReturn a Boolean."
+                ],                
+                "examples" : [
+                    "\tDim items As Variant",                    
+                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
+                    "\tresult.Success ' => False",                    
+                    "",                    
+                    "\tDim isOk As Variant",                    
+                    "\tDim result = isOk.LoadJSON(\"true\")",                    
+                    "\tresult.Success ' => True"
+                ],                
+                "version" : "5.4.8.0"
             }
         ],        
         "number" : [
@@ -3631,6 +4163,22 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "ToBoolean",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "desc" : [
+                    "\tConverts whatever value to a boolean",                    
+                    "",                    
+                    "\tReturn a Boolean"
+                ],                
+                "examples" : [
+                    "\tDim i = 4",                    
+                    "\treturn i.ToBoolean() ' => true"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
                 "name" : "ToDays",                
                 "ns" : "askialanguage",                
                 "base" : "method",                
@@ -3716,6 +4264,19 @@ askiaScript.extend(askiaScript.lexical, {
                     " ' depending on the regional settings"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToVariant",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "desc" : [
+                    "\tConverts a number into a variant",                    
+                    "",                    
+                    "\tReturn a variant"
+                ],                
+                "examples" : "\t3.ToVariant()",                
+                "version" : "5.4.8.0"
             },            
             {
                 "name" : "TypeOf",                
@@ -4015,6 +4576,45 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "LoadJSON",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "methodresult",                
+                "args" : [
+                    {
+                        "name" : "name",                        
+                        "type" : "string",                        
+                        "desc" : "JSON string to be parsed",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "\tParses a JSON string and sets the array",                
+                "examples" : [
+                    "\tDim items As Array",                    
+                    "\tDim result = items.LoadJSON(\"invalid json format\")",                    
+                    "\t' result.Success ' => False",                    
+                    "\t' result.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
+                    "\t' items ' => @[]",                    
+                    "",                    
+                    "",                    
+                    "",                    
+                    "\tDim items As Array",                    
+                    "\tDim result = items.LoadJSON(\"{\\\"key1\\\":\\\"value1\\\", \\\"key2\\\":12}\")",                    
+                    "\t' result.Success ' => False",                    
+                    "\t' result.ErrorMessage ' => \"Type mismatch: Expected Array matching type\"",                    
+                    "\t' items ' => @[]",                    
+                    "",                    
+                    "",                    
+                    "",                    
+                    "\tDim items as Dictionary",                    
+                    "\tDim result = items.LoadJSON(\"[\\\"abc\\\", 123, true]\")",                    
+                    "\t' result.Success ' => True",                    
+                    "\t' result.ErrorMessage ' => \"\"",                    
+                    "\t' items ' => @[\"abc\", 123, True]"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
                 "name" : "Max",                
                 "ns" : "askialanguage",                
                 "base" : "method",                
@@ -4245,6 +4845,25 @@ askiaScript.extend(askiaScript.lexical, {
                     " return arr ' => {2;5;4;6}"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "RemoveDuplicates",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : [
+                    "\tThis method modifies the object in place.",                    
+                    "",                    
+                    "\tUse it to remove the duplicates values of the array.",                    
+                    "",                    
+                    "\tReturn an Array "
+                ],                
+                "examples" : [
+                    "\tdim arr = {2;4;5;2;3;4}",                    
+                    "\tarr.RemoveDuplicates() \" => arr",                    
+                    "\treturn arr \" => {2;4;5;3}"
+                ],                
+                "version" : "5.4.8.0"
             },            
             {
                 "name" : "SelectRandom",                
@@ -4482,7 +5101,62 @@ askiaScript.extend(askiaScript.lexical, {
                     " arrQuestions = Range( Q1,Q10)",                    
                     " return arrQuestions[3].Value.InnertTypeOf() ' => \"number\""
                 ],                
-                "version" : "5.4.2.0"
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "LoadJSON",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "methodresult",                
+                "args" : [
+                    {
+                        "name" : "name",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "\tParses a JSON string and sets the variant",                
+                "examples" : [
+                    "\tDim strString = \"{\\\"property1\\\": 1, \\\"property2\\\": \\\"abc\\\", \\\"property3\\\": [1,2,3,4,5]}\"",                    
+                    "\tDim myObject As Variant",                    
+                    "\tDim res = myObject.LoadJSON(strString)",                    
+                    "\treturn res.Success"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ToArray",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : [
+                    "\tConverts whatever value inside the variant into an array",                    
+                    "",                    
+                    "\tReturn an array of variant"
+                ],                
+                "examples" : [
+                    "\tDim myValue As Variant 3",                    
+                    "\tmyValue.ToArray () '-> @[3]"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ToBoolean",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "desc" : [
+                    "\tConverts whatever value inside the variant to a boolean",                    
+                    "",                    
+                    "\tReturn a Boolean"
+                ],                
+                "examples" : [
+                    "\t' q1 is a numeric question with value 123",                    
+                    "\tDim questions = Range(q1, q5)",                    
+                    "\tquestions[1].Value.ToBoolean() ' => 1"
+                ],                
+                "version" : "5.4.8.0"
             },            
             {
                 "name" : "ToDate",                
@@ -4492,52 +5166,35 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : [
                     " Converts whatever value inside the variant to a date.",                    
                     "",                    
-                    " Return a Number"
+                    " Return a date"
                 ],                
                 "examples" : [
-                    " ' q1 is a numeric question with value 123",                    
+                    " ' q1 is a date question with value 10/1/2001",                    
                     " Dim questions = Range(q1, q5)",                    
-                    " questions[1].Value.ToNumber() ' => 123",                    
+                    " questions[1].Value.ToDate() ' => 10/1/2001",                    
                     "",                    
                     " ' q1 is a numeric question with value 1.5",                    
                     " Dim questions = Range(q1, q5)",                    
-                    " questions[1].Value.ToNumber() ' => 1.5"
+                    " questions[1].Value.ToDate() ' => 1.5"
                 ],                
-                "version" : "5.4.2.0"
+                "version" : "5.4.8.0"
             },            
             {
-                "name" : "ToNumArray",                
+                "name" : "ToDictionary",                
                 "ns" : "askialanguage",                
                 "base" : "method",                
-                "type" : "array",                
+                "type" : "dictionary",                
                 "desc" : [
-                    " Converts whatever value inside the variant to an array of numbers.",                    
+                    "\tConverts a variant into a dictionary. If the variant was not already a dictionary, it's an object without any property",                    
                     "",                    
-                    " Return a  array of numbers"
+                    "\tReturn a dictionary"
                 ],                
                 "examples" : [
-                    " ' q1 is a numeric question with value 25",                    
-                    " Dim questions = Range(q1, q5)",                    
-                    " questions[1].Value.ToNumArray() ' => {25}",                    
-                    "",                    
-                    " ' q1 is an open-ended question with value \"1,3,5,7,9\"",                    
-                    " Dim questions = Range(q1, q5)",                    
-                    " questions[1].Value.ToNumArray() ' => {1; 3; 5; 7; 9}",                    
-                    "",                    
-                    " ' q1 is an open-ended question with value \"1;3;AA;7;BB;12\"",                    
-                    " Dim questions = Range(q1, q5)",                    
-                    " questions[1].Value.ToNumArray() ' => {1; 3; DK; 7; DK; 12} ",                    
-                    "",                    
-                    " ' q1 is an date question with value #25/03/2011 16:32:07#",                    
-                    " Dim questions = Range(q1, q5)",                    
-                    " questions[1].Value.ToNumArray() ' => {40627.688969907409}",                    
-                    "",                    
-                    " ' q1 is an open-ended question inside a loop, ",                    
-                    " ' and have all of that values: \"3\"; \"AA\"; \"\"; \"4\";\"5\"; \"6\"",                    
-                    " Dim questions = Range(q1, q5)",                    
-                    " questions[1].AllValues.ToNumArray() ' => {3;DK;DK;4;5;6}"
+                    "\t' q1 is a numeric question with value 123",                    
+                    "\tDim myVariant  = @{ \"property1\" : 1, \"property2\" : 2}",                    
+                    "\tdim myObject As Dictionary = myVariant.ToDictionary();"
                 ],                
-                "version" : "5.4.2.0"
+                "version" : "5.4.8.0"
             },            
             {
                 "name" : "ToNumber",                
@@ -4558,7 +5215,26 @@ askiaScript.extend(askiaScript.lexical, {
                     " Dim questions = Range(q1, q5)",                    
                     " questions[1].Value.ToNumber() ' => 1.5"
                 ],                
-                "version" : "5.4.2.0"
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ToNumberArray",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : [
+                    "\tConverts whatever value inside the variant to an array of numbers.",                    
+                    "",                    
+                    "\tReturn a  array of numbers"
+                ],                
+                "examples" : [
+                    "\t' q1 is a numeric question with value 25",                    
+                    "\tDim questions = Range(q1, q5)",                    
+                    "\tquestions[1].Value.ToNumberArray() ' => {25}",                    
+                    "",                    
+                    "\tquestions[1].AllValues.ToNumberArray() ' => {3;DK;DK;4;5;6}"
+                ],                
+                "version" : "5.4.8.0"
             },            
             {
                 "name" : "ToStringArray",                
@@ -4577,24 +5253,7 @@ askiaScript.extend(askiaScript.lexical, {
                     "",                    
                     " questions[1].AllValues.ToNumArray() ' => {3;DK;DK;4;5;6}"
                 ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "ToVariant",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "variant",                
-                "desc" : [
-                    " Converts everything into a variant ",                    
-                    "",                    
-                    " Return a  array of numbers"
-                ],                
-                "examples" : [
-                    " \"Abc\".ToVariant().ToNumber()",                    
-                    " ",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
+                "version" : "5.4.8.0"
             }
         ]
     },    

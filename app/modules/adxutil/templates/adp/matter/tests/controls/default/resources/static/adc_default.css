@@ -1,0 +1,14 @@
+.adc-default ul,
+.adc-default li
+{
+    margin  : 0;
+    padding : 2px;
+}
+.adc-default ul
+{
+    list-style-type: none;
+}
+.adc-default textarea {
+    width  : 250px;
+    height : 50px;
+}

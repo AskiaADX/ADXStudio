@@ -332,7 +332,7 @@ function itemRightClick (e) {
 
   displayMenu(files, contextualMenu, filesParent);
 
-  contextualMenu.popup(remote.getCurrentWindow());
+  contextualMenu.popup(remote.BrowserWindow.getAllWindows()[0]);
 }
 
 function itemclick (e) {

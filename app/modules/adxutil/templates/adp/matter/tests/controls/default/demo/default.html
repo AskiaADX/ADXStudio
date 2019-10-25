@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ADC Demo</title>
+    <link rel="stylesheet" type="text/css" href="../resources/static/default.css" />
+</head>
+<body>
+
+<h1>Default output demo</h1>
+
+<ul>
+    <li><a href="#single">Single</a></li>
+    <li><a href="#multiple">Multiple</a></li>
+    <li><a href="#numeric">Numeric</a></li>
+    <li><a href="#open">Open</a></li>
+    <li><a href="#datetime">Date-Time</a></li>
+</ul>
+
+<hr />
+
+<h2><a name="single">Single</a></h2>
+
+<div id="adc_1" class="adc-default">
+    <ul>
+        <li>
+            <input type="radio" name="U1" id="U1_1" value="1"  />
+            <label for="U1_1">A</label>
+        </li>
+        <li>
+            <input type="radio" name="U1" id="U1_2" value="2"  />
+            <label for="U1_2">B</label>
+        </li>
+        <li>
+            <input type="radio" name="U1" id="U1_3" value="3"  />
+            <label for="U1_3">C</label>
+        </li>
+        <li>
+            <input type="radio" name="U1" id="U1_4" value="4"  />
+            <label for="U1_4">D</label>
+        </li>
+        <li>
+            <input type="radio" name="U1" id="U1_5" value="5"  />
+            <label for="U1_5">E</label>
+        </li>
+    </ul>
+</div>
+
+<h2><a name="multiple">Multiple</a></h2>
+
+<div id="adc_2" class="adc-default">
+    <ul>
+        <li>
+            <input type="checkbox" name="M3 1" id="M3_1"  />
+            <label for="M3_1">A</label><br />
+        </li>
+        <li>
+            <input type="checkbox" name="M3 2" id="M3_2"  />
+            <label for="M3_2">B</label><br />
+        </li>
+        <li>
+            <input type="checkbox" name="M3 3" id="M3_3"  />
+            <label for="M3_3">C</label><br />
+        </li>
+        <li>
+            <input type="checkbox" name="M3 4" id="M3_4"  />
+            <label for="M3_4">D</label><br />
+        </li>
+        <li>
+            <input type="checkbox" name="M3 5" id="M3_5"  />
+            <label for="M3_5">E</label><br />
+        </li>
+    </ul>
+</div>
+
+<h2><a name="numeric">Numeric</a></h2>
+
+<div id="adc_3" class="adc-default">
+    <input type="number" name="C5" value="" min="1" max="5"   required="required"/>
+</div>
+
+<h2><a name="open">Open</a></h2>
+
+<div id="adc_4" class="adc-default">
+    <input type="text" name="S7" value=""   required="required" />
+</div>
+
+<h2><a name="datetime">Date-Time</a></h2>
+
+<div id="adc_5" class="adc-default">
+    <input type="date" name="D9" value=""    required="required"/>
+    <input type="time" name="T9" value=""   />
+</div>
+
+</body>
+</html>

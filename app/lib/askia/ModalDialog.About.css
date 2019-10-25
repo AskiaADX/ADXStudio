@@ -1,7 +1,7 @@
 .askia-modal-dialog.about {
-    width           : 666px;
-    height          : 266px;
-    padding         : 0;
+    width           : 686px;
+    height          : 276px;
+    padding         : 0 0 0 10px;
     margin          : 0;
     border-radius   : 2px !important;
 }
@@ -16,7 +16,7 @@
 .askia-modal-dialog.about .left {
     float       : left;
     width       : 250px;
-    height      : 266px;
+    height      : 276px;
 }
 
 .askia-modal-dialog.about .right {

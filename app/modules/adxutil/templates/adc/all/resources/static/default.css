@@ -1,0 +1,16 @@
+﻿.adc-default ul,
+.adc-default li
+{
+    margin  : 0;
+    padding : 0;
+}
+.adc-default ul
+{
+    list-style-type: none;
+}
+.adc-default textarea {
+    width: 100%;
+    min-width: 80%;
+    max-width: 90%;
+    height : 50px;
+}

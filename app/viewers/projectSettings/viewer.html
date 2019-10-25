@@ -6,6 +6,17 @@
     <link rel="stylesheet" href="projectSettings.css"/>
     <link rel="stylesheet" href="../../lib/askia/ModalDialog.css"/>
     <script src="../../lib/askia/ModalDialog.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">
+
+    <!-- This css segment overrides the jquery-ui.css .ui-sortable-helper class. -->
+    <style>
+      .ui-sortable-helper {
+          display: table;
+      }
+    </style>
 </head>
 <body class="form-viewer viewer-project-settings">
     <nav>
@@ -101,6 +112,10 @@
                     <li>
                         <input type="checkbox" id="questions_requireParentLoop" name="questions[requireParentLoop]"/>
                         <label for="questions_requireParentLoop" class="checkbox-label">Require parent loop</label>
+                    </li><br>
+                    <li>
+                        <label for="questions_requireLoopDepth" class="checkbox-label">Require loop depth</label>
+                        <input type="number" id="questions_requireLoopDepth" name="questions[requireLoopDepth]" value="0" min="0"/>
                     </li>
                 </ul>
                 <h3>Responses</h3>
@@ -165,6 +180,10 @@
                     <textarea id="output_description" name="output[description]"></textarea>
                 </p>
                 <p>
+                    <label for="output_manageLoopDepth">Manage loop depth:</label>
+                    <input type="number" id="output_manageLoopDepth" name="output[manageLoopDepth]" min="0" value="0"/>
+                </p>
+                <p>
                     <input type="checkbox" id="output_default" name="output[defaultOutput]" />
                     <label for="output_default" id="default_output_label">Set as default</label>
                 </p>
@@ -204,6 +223,10 @@
                     <label for="category_name">Name:</label>
                     <textarea id="category_name" name="category[name]"></textarea>
                 </p>
+                <p>
+                    <label for="category_condition">Condition:</label>
+                    <textarea id="category_condition" name="category[condition]"></textarea>
+                </p>
             </fieldset>
             <fieldset id="category_properties">
                 <legend>Properties</legend>
@@ -217,10 +240,10 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody class="properties_tbody"></tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">
+                            <td colspan="4" style="border: 1px solid white">
                                 <div id="property_inner_form">
                                     <p>
                                         <label for="property_id">Id:</label>
@@ -343,6 +366,9 @@
             </fieldset>
         </section>
     </form>
+    <script type="text/javascript">
+      $('.properties_tbody').sortable();
+    </script>
     <script src="../../lib/encode/encoder.js"></script>
     <script src="../viewer.js"></script>
     <script src="projectSettings.info.js"></script>

@@ -1197,3 +1197,9 @@ div.askia-resizer-modal {
 select#outputs_list, select#categories_list {
     width: 60%;
 }
+#panel_explorer {
+    background-color: #f0f0f0;
+}
+#panel_workspace {
+   border-left: 1px solid #bdc3c7;
+}

@@ -15,7 +15,6 @@ html, body {
     position: relative;
 }
 
-
 #panes  {
     z-index         : 0;
     display         : flex;
@@ -154,6 +153,7 @@ html, body {
 
 .content.active {
     display : block;
+    width: 100vw;
 }
 
 .content .iframe-wrapper iframe {

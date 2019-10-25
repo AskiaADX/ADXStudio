@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
       toHide[i].classList.add('not-visible');
     }
   }
-
+  
   if (tab.adxType === 'adc' && tab.adxVersion === '2.1.0') {
     const toHide = document.querySelectorAll('.adc1-only');
     for (let i = 0, l = toHide.length; i < l; i += 1) {

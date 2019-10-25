@@ -1,0 +1,988 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.askia.com/ADCUnitTestSchema"
+            xmlns="http://www.askia.com/ADCUnitTestSchema"
+            elementFormDefault="qualified">
+
+  <!-- DEFINITION -->
+  <xsd:simpleType name="errorCodes">
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="noError">
+        <xsd:annotation>
+          <xsd:documentation>
+            No error.
+            Code: 0
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="noQuestionnaire">
+        <xsd:annotation>
+          <xsd:documentation>
+            No questionnaire.
+            Code error: -1
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="noControl">
+        <xsd:annotation>
+          <xsd:documentation>
+            No ADC control.
+            Code error: -2
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="scriptingError">
+        <xsd:annotation>
+          <xsd:documentation>
+            Error during the AskiaScript interpretation.
+            Code error: -3
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="missingProperty">
+        <xsd:annotation>
+          <xsd:documentation>
+            Missing property.
+            Code error: -4
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="missingContent">
+        <xsd:annotation>
+          <xsd:documentation>
+            Missing content.
+            Code error: -5
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="invalidZip">
+        <xsd:annotation>
+          <xsd:documentation>
+            ADC zip file is not valid.
+            Code error: 1
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="invalidXmlFile">
+        <xsd:annotation>
+          <xsd:documentation>
+            Invalid config.xml file.
+            Code error: 2
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="invalidSWFFile">
+        <xsd:annotation>
+          <xsd:documentation>
+            Invalid SWF file, could not extract it.
+            Code error: 3
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="missingFile">
+        <xsd:annotation>
+          <xsd:documentation>
+            Missing file.
+            Code error: 4
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="invalidXml">
+        <xsd:annotation>
+          <xsd:documentation>
+            Invalid XML string.
+            Code error: 5
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="missingCachedFile">
+        <xsd:annotation>
+          <xsd:documentation>
+            Missing cached file.
+            Code error: 6
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="noOutput">
+        <xsd:annotation>
+          <xsd:documentation>
+            No output.
+            Code error: 7
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="outputConditionError">
+        <xsd:annotation>
+          <xsd:documentation>
+            Output condition error.
+            Code error: 8
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="binaryNoDynamic">
+        <xsd:annotation>
+          <xsd:documentation>
+            Binary file could not be dynamic.
+            Code error: 9
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="binaryNeedsYield">
+        <xsd:annotation>
+          <xsd:documentation>
+            Binary file require the &lt;yield&gt; element.
+            Code error: 10
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="cannotCreateDirectory">
+        <xsd:annotation>
+          <xsd:documentation>
+            Cannot create the ADC directory.
+            Code error: 11
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="textNoStaticOrShare">
+        <xsd:annotation>
+          <xsd:documentation>
+            Text content could not be static or share.
+            Code error: 12
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+  <!-- Fixtures -->
+  <xsd:element name="fixture">
+    <xsd:annotation>
+      <xsd:documentation>
+        A fixture is a partial definition of test.
+        It's used to create a default context for tests which implements it.
+        For the unit tests, it could be call by using the fixture attribute and the name of the file which contains the fixture.
+        For example:
+          &lt;units fixture="MyFixtureFile.xml"&gt;[tests]&lt;/units&gt;
+          This mean that by default all units tests will run under the context specified in the fixture file.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all >
+        <xsd:element ref="arrange" />
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <!-- Tests -->
+  <xsd:element name="tests">
+    <xsd:annotation>
+      <xsd:documentation>
+        Root node to manage all tests (units and integrations)
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element ref="units" minOccurs="0" />
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Unit tests-->
+  <xsd:element name="units">
+    <xsd:annotation>
+      <xsd:documentation>
+        Contains all unit test cases.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="test" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="fixture" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Fixture file to use for all tests
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Fake context -->
+  <xsd:complexType name="fakeContext">
+    <xsd:annotation>
+      <xsd:documentation>
+        Create a fake context for the ADC to run it under a knowing situation.
+        It allows the emulation of the Browser object and a Survey.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element name="output" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Simulate the selection of a given output.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:attribute name="id" type="xsd:NCName" use="required">
+            <xsd:annotation>
+              <xsd:documentation>
+                Id of the output to use
+              </xsd:documentation>
+            </xsd:annotation>  
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element ref="browser" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Survey" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Survey context to simulate
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+            <xsd:any processContents="lax" />
+          </xsd:sequence>
+          <xsd:attribute name="Name" use="required" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Name of the survey
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="CurrentQuestion" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Indicates the shortcut of the current question associated with the ADC.
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:anyAttribute processContents="lax" />
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="properties" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            List all properties to emulate
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="property" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Property to emulate
+                </xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:all>
+                  <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                      <xsd:documentation>
+                        Value of the property to set
+                      </xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:all>
+
+                <xsd:attribute name="id" use="required" type="xsd:normalizedString">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Id of the propeprty to access
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+
+  <!-- Fake browser object -->
+  <xsd:element name="browser">
+    <xsd:annotation>
+      <xsd:documentation>
+        Create a fake for the browser.
+        It allows to predefined the return value of the browser methods and properties.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:choice>
+          <xsd:element name="resolution">
+            <xsd:annotation>
+              <xsd:documentation>
+                Indicates the resolution of the browser
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:attribute name="screenAvailWidth" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the available width of the screen
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="screenAvailHeight" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the available height of the screen
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="screenWidth" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the width of the screen
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="screenHeight" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the height of the screen
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="screenColorDepth" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the color-depth of the screen
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="windowWidth" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the width of the window
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="windowHeight" type="xsd:positiveInteger">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the height of the window
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="support">
+            <xsd:annotation>
+              <xsd:documentation>
+                Indicates the return value of the Support method of the Browser object.
+                Also see: Browser.Support() method in AskiaScript 2.0
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:attribute name="name" type="xsd:normalizedString">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Name of the features to set.
+                    Like "flash", "javascript", "json", "video" ...
+                    See the documentation of the AskiaScript 2.0 for more details.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="value" type="xsd:boolean">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the value to return for that feature.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="pluginVersion">
+            <xsd:annotation>
+              <xsd:documentation>
+                Indicates the return value of the PluginVersion method of the Browser object.
+                Also see: Browser.PluginVersion() method in AskiaScript 2.0
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:attribute name="name" type="xsd:normalizedString">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Name of the plugin to set.
+                    Like "flash", "quicktime", "vlc", "silverlight" ...
+                    See the documentation of the AskiaScript 2.0 for more details.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="value" type="xsd:normalizedString">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the version of the plugin to return.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:sequence>
+
+      <xsd:attribute name="name" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Name of the browser.
+            "Chrome", "Explorer", "Mozilla", "Safari", "Opera" ...
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="version" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>
+            Version of the browser.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="os" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Name of the Operating System.
+            "Windows", "Mac", "iPhone/iPod", "Linux"
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="userAgent" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Define the user-agent identity.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="mobile" type="xsd:boolean">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates if the browser run under a mobile device
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Test case-->
+  <xsd:element name="test">
+    <xsd:annotation>
+      <xsd:documentation>
+        Unit test case.
+        List arrange and asserts of unit test.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element ref="arrange" />
+        <xsd:element ref="fake_output" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="asserts" />
+      </xsd:all>
+
+      <xsd:attribute name="id" type="xsd:normalizedString" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Unique identifier of the test case
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="description" type="xsd:normalizedString" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Describe the aim of the test case.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="fixture" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Fixture file to use for the current test
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Arrange -->
+  <xsd:element name="arrange" type="fakeContext" />
+
+  <!-- Fake output-->
+  <xsd:element name="fake_output">
+    <xsd:annotation>
+      <xsd:documentation>
+        Fake the output to validate the test
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:choice>
+          <xsd:element name="head" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Fake the output of the head section
+              </xsd:documentation>
+            </xsd:annotation>  
+          </xsd:element>
+          <xsd:element name="placeholder" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Fake the output of the placeholder section
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="foot" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Fake the output of the foot section
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:sequence>
+      
+      <xsd:attribute name="id" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Fake the Id of the output
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="errorCode" type="errorCodes">
+        <xsd:annotation>
+          <xsd:documentation>
+            Fake the error code
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <!-- Asserts -->
+  <xsd:element name="asserts">
+    <xsd:annotation>
+      <xsd:documentation>
+        List of assertions to test against the output generated by the Askia Rendering Engine (ARE)
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="assert_output" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="assert_not_output" minOccurs="0" maxOccurs="unbounded" />
+
+        <xsd:element ref="assert_error" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="assert_not_error" minOccurs="0" maxOccurs="1" />
+
+        <xsd:element ref="assert_empty" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="assert_not_empty" minOccurs="0" maxOccurs="1" />
+
+        <xsd:element ref="assert_match" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="assert_not_match" minOccurs="0" maxOccurs="1" />
+
+        <xsd:element ref="head" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="placeholder" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="foot" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Assert output-->
+  <xsd:element name="assert_output">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the selected output by the ARE is the one specified by the attribute "id"
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="id" use="required" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the identifier of the output that should be selected.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="assert_not_output">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the selected output by the ARE is not the one specified by the attribute "id"
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="id" use="required" type="xsd:normalizedString">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the identifier of the output that should not be selected.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Assert error -->
+  <xsd:element name="assert_error">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the ARE return an error
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="code" type="errorCodes">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the error message return by the ARE engine
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="assert_not_error">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the ARE doesn't return any errors
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Assert by section (head, placeholder, foot) -->
+  <xsd:complexType name="assertsBySection">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert element in the current output section.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:choice>
+        <xsd:element ref="assert_empty" />
+        <xsd:element ref="assert_not_empty" />
+
+        <xsd:element ref="assert_contains" />
+        <xsd:element ref="assert_not_contains"/>
+
+        <xsd:element ref="assert_equals" />
+        <xsd:element ref="assert_not_equals" />
+
+        <xsd:element ref="assert_match" />
+        <xsd:element ref="assert_not_match" />
+
+        <xsd:element ref="select_nodes"  />
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Section -->
+  <xsd:element name="head" type="assertsBySection" />
+  <xsd:element name="placeholder" type="assertsBySection" />
+  <xsd:element name="foot" type="assertsBySection" />
+  
+  <!-- Node selection -->
+  <xsd:element name="select_nodes">
+    <xsd:annotation>
+      <xsd:documentation>
+        Select nodes in the HTML fragment using xPath query.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded" >
+        <xsd:choice>
+          <xsd:element ref="assert_count" />
+          
+          <xsd:element ref="assert_exist" />
+          <xsd:element ref="assert_not_exist" />
+
+          <xsd:element ref="assert_empty" />
+          <xsd:element ref="assert_not_empty" />
+
+          <xsd:element ref="assert_contains" />
+          <xsd:element ref="assert_not_contains"/>
+
+          <xsd:element ref="assert_equals" />
+          <xsd:element ref="assert_not_equals" />
+
+          <xsd:element ref="assert_match" />
+          <xsd:element ref="assert_not_match" />
+          
+          <xsd:element ref="assert_has_attr" />
+          <xsd:element ref="assert_has_not_attr" />
+        </xsd:choice>
+      </xsd:sequence>
+      
+      <xsd:attribute name="xPath" type="xsd:string" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            XPath to query HTML nodes      
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <!-- Assert the existence of the selected nodes -->
+  <xsd:element name="assert_exist">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the existence of the selected nodes
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_not_exist">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the non-existence of the selected nodes
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Assert the count of the selected nodes -->
+  <xsd:element name="assert_count">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the count of the selected nodes
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="is" default="equal">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicate the type of the comparison.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:normalizedString">
+            <xsd:enumeration value="equal">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Verify if the number of selected nodes is equal than the specify value.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="different">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Verify if the number of selected nodes is difference than the specify value.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="lowerThan">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Verify if the number of selected nodes is lower than the specify value.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="lowerOrEqualThan">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Verify if the number of selected nodes is lower or equal than the specify value.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="greatherThan">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Verify if the number of selected nodes is greather than the specify value.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="greatherOrEqualThan">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Verify if the number of selected nodes is greather or equal than the specify value.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="value" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Value to test against the type of comparison
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Assert attributes -->
+  <xsd:complexType name="assertAttr">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert against the specified attribute on the selected nodes
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="name" type="xsd:normalizedString" use="required">
+      <xsd:annotation>
+        <xsd:documentation>
+          Name of the attribute to find
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="value" type="xsd:string">
+      <xsd:annotation>
+        <xsd:documentation>
+          Assert against the entire value of the attribute.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="contains" type="xsd:string">
+      <xsd:annotation>
+        <xsd:documentation>
+          Assert against the content of the attribute value.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:element name="assert_has_attr" type="assertAttr">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the specified attribute exist
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_has_not_attr" type="assertAttr">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the specified attribute not exist
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Assert empty -->
+  <xsd:element name="assert_empty">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the section or the html nodes are empty
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_not_empty">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the section or the html nodes are not empty
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Assert contains -->
+  <xsd:element name="assert_contains" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the section or the html nodes contains the specified value
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_not_contains" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the section or the html nodes doesn't contains the specified value
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Assert equals -->
+  <xsd:element name="assert_equals" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the section is equals to specified value
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_not_equals" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the section is not equals to the specified value
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Assert match -->
+  <xsd:element name="assert_match" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the specified section match the specified regular expression pattern
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_not_match" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert that the specified section don't match the specified regular expression  pattern
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  
+  <!-- Assert tags exists -->
+  <xsd:complexType name="assertTags">
+    <xsd:annotation>
+      <xsd:documentation>
+        Search the specify tags and attributes and assert against it
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="attr" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+            Specify the attribute name/value of the tag
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:attribute name="name" type="xsd:normalizedString">
+            <xsd:annotation>
+              <xsd:documentation>
+                Name of the attribute
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="value" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Validate that the attribute is equal to the specify value
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="value_contains" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Validate that the attribute contains the specify value
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+
+    <xsd:attribute name="name" type="xsd:normalizedString" use="required">
+      <xsd:annotation>
+        <xsd:documentation>
+          Name of the tag
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="count" type="xsd:positiveInteger">
+      <xsd:annotation>
+        <xsd:documentation>
+          Indicates how many tag should be found
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:element name="assert_tag_exist" type="assertTags">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the existence of the specified tag / attributes
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="assert_tag_not_exist" type="assertTags">
+    <xsd:annotation>
+      <xsd:documentation>
+        Assert the non existence of the specified tag / attributes
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+</xsd:schema>

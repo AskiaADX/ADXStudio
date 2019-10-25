@@ -14,9 +14,10 @@ askiaScript.extend(askiaScript.types, {
     "DATA" : "data",    
     "DEBUG" : "debug",    
     "QUESTION" : "question",    
-    "QUESTIONS" : "questions",    
+    "QUESTIONARRAY" : "questionarray",    
     "RESPONSE" : "response",    
-    "RESPONSES" : "responses"
+    "RESPONSES" : "responses",    
+    "SURVEY" : "survey"
 });
 
 askiaScript.extend(askiaScript.i18n, {
@@ -24,9 +25,10 @@ askiaScript.extend(askiaScript.i18n, {
         "data" : "Data",        
         "debug" : "Debug",        
         "question" : "Question",        
-        "questions" : "Questions",        
+        "questionarray" : "QuestionArray",        
         "response" : "Response",        
-        "responses" : "Responses"
+        "responses" : "Responses",        
+        "survey" : "Survey"
     },    
     "core" : {
         "data" : {
@@ -63,7 +65,7 @@ askiaScript.extend(askiaScript.i18n, {
             ],            
             "version" : "5.3.5.0"
         },        
-        "questions" : {
+        "questionarray" : {
             "ns" : "aggregatedlanguage",            
             "desc" : [
                 " Describe an array of questions",                
@@ -95,6 +97,12 @@ askiaScript.extend(askiaScript.i18n, {
             "desc" : "Object which contains a collection of responses. It's like an array of responses.",            
             "alsoSee" : "Question.Responses",            
             "version" : "5.3.4.0"
+        },        
+        "survey" : {
+            "ns" : "aggregatedlanguage",            
+            "desc" : "\tIn AskiaScript, the survey object contains all the available information about the survey itself. It is in the global scope, so is accessible everywhere within AskiaScript.",            
+            "examples" : "\tSurvey.Name ' => \"Ex.qex\"",            
+            "version" : "5.5.2.0"
         }
     }
 }, true);
@@ -122,16 +130,272 @@ askiaScript.extend(askiaScript.lexical, {
                 " "
             ],            
             "version" : "5.3.5.0"
+        },        
+        {
+            "name" : "Survey",            
+            "ns" : "aggregatedlanguage",            
+            "base" : "const",            
+            "type" : "survey",            
+            "desc" : "Object used to get information about the current Survey",            
+            "version" : "5.5.5.0"
         }
     ],    
     "members" : {
+        "questionarray" : [
+            {
+                "ns" : "aggregatedlanguage",                
+                "accessor" : "question",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "FilterByTag",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "questionarray",                
+                "args" : [
+                    {
+                        "name" : "TagArray",                        
+                        "type" : "stringarray",                        
+                        "desc" : "Specifies the tags you want to filter by"
+                    }
+                ],                
+                "desc" : "\tReturns an array of questions who have been tagged with one of the parameters",                
+                "examples" : "\tSurvey.Questions.FilterByTag({\"Likert\"; {\"Scale\"})",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "FindByShortcut",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "args" : [
+                    {
+                        "name" : "Shortcut",                        
+                        "type" : "string",                        
+                        "desc" : "Specifies the shrtcut of the quetsion you want to find"
+                    }
+                ],                
+                "desc" : "\tReturns one question having the specified shortcut - if the question is not found, a dummy question is returned with a questionID = DK",                
+                "examples" : "\tSurvey.Questions.FindByshortcut(\"Gender\")",                
+                "version" : "5.5.2.0"
+            }
+        ],        
+        "responses" : [
+            {
+                "ns" : "aggregatedlanguage",                
+                "accessor" : "response"
+            },            
+            {
+                "name" : "Caption",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the caption of responses in the collection",                
+                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses.ToString()",                    
+                    " ' => [{",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " },{",                    
+                    " \"index\" : 2,",                    
+                    " \"entryCode\":\"002\",",                    
+                    " \"caption\":\"Woman\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Woman.png\"",                    
+                    " }]"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
+                "version" : "5.3.5.0"
+            }
+        ],        
+        "response" : [
+            {
+                "name" : "Caption",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the caption of the response",                
+                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "EntryCode",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the entry code as a number",                
+                "examples" : "\tgender.Responses[1].Entrycode ' => 1",                
+                "version" : "5.4.6.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the entry code as a string",                
+                "examples" : "\tgender.Responses[1].EntryCodeStr ' => \"M\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Factor",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a factor as their was entered in the value column of the scale responses",                
+                "examples" : [
+                    " gender.Responses[1].Factor ' => 3",                    
+                    " "
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Tags",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "\tReturns the list of tags associated to a question",                
+                "examples" : "\tq1.Responses[1].Tags Has {\"Main Brand\"}  = >True",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses[1].ToString()",                    
+                    " ' => {",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"isSelected\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " }"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
+                "version" : "5.3.5.0"
+            }
+        ],        
+        "debug" : [
+            {
+                "name" : "Trace",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "debug",                
+                "args" : [
+                    {
+                        "name" : "message",                        
+                        "type" : "string"
+                    }
+                ],                
+                "desc" : "Outputs a string to the debug file to understand while your script is not (yet) doing what you want it to do",                
+                "examples" : [
+                    "\t Dim dValue = CurrentCell.Row.Question.Data.FilterByX().Size",                    
+                    "     Debug.Trace(\"*** \" + CurrentCell.X )",                    
+                    "\t Debug.Trace(\"My sig is \" + dValue )"
+                ],                
+                "version" : "5.3.5.0"
+            }
+        ],        
+        "survey" : [
+            {
+                "name" : "ChildQuestions",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the lists of top level questions (often chapters)",                
+                "examples" : "\tSurvey.ChildQuestions[1]",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "Directory",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the directory where the survey file is",                
+                "examples" : "\tSurvey.Directory ' => \"C:\\Qes\\ThisSurvey\\\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "Levels",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the lists of levels (not the interview level)",                
+                "examples" : "\tSurvey.Levels[2].Shortcut\t' -> Loop",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "Name",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the name of the survey",                
+                "remarks" : "\t@alsosee",                
+                "examples" : "\tSurvey.Name ' => \"Ex.qes\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "Questions",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the array of all questions - understand that per question we mean each survey data point - so a question within a loop will appear many times",                
+                "examples" : "\tSurvey.Questions[1].Shortcut ' => \"Demographics\"",                
+                "version" : "5.5.2.0"
+            }
+        ],        
         "question" : [
+            {
+                "name" : "ChildQuestions",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the lists of questions just below the object question",                
+                "examples" : "\tChapter1.ChildQuestions[1]",                
+                "version" : "5.5.2.0"
+            },            
             {
                 "name" : "Children",                
                 "ns" : "aggregatedlanguage",                
                 "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns all the sub-questions associated to a question - that is all the questions placed within the sub-tree defined by a question",                
+                "type" : "questionarray",                
+                "desc" : [
+                    " Returns all the sub-questions associated to a question - that is all the questions placed within the sub-tree defined by a question",                    
+                    " It's also known as the Developed Questions"
+                ],                
                 "examples" : "\t Dim arrSubQuestions = BrandEvaluation.Children",                
                 "version" : "5.3.5.0"
             },            
@@ -143,6 +407,33 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "Returns the data for a given question - could be numeric, closed or open",                
                 "examples" : "gender.Data.Counts()[1] ' => Counts for first response",                
                 "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "DevelopedQuestions",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the lists of questions in the interview level related to that question",                
+                "examples" : "\tBrandRating.DevelopedQuestions[1]",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "IsCalculated",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if a question is calculated or not",                
+                "examples" : "\tgender.IsCalculated ' => False",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "IsDeveloped",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if a question is developed - that is does it come from a question inside a loop associated to one ore more loop items",                
+                "examples" : "\tgender.RatingBrandPepsi ' => True",                
+                "version" : "5.5.2.0"
             },            
             {
                 "name" : "LongCaption",                
@@ -351,6 +642,19 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "Tags",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : [
+                    "\tReturns the list of tags associated to a question",                    
+                    "",                    
+                    "\tq1.Tags Has {\"Browsable\"}"
+                ],                
+                "examples" : "\tq1.Tags Has {\"Browsable\"}  = >True",                
+                "version" : "5.5.0.0"
+            },            
+            {
                 "name" : "ToString",                
                 "ns" : "aggregatedlanguage",                
                 "base" : "method",                
@@ -420,6 +724,18 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "aggregatedlanguage",                
                 "base" : "method",                
                 "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "Group1",                        
+                        "type" : "array",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "Group2",                        
+                        "type" : "array",                        
+                        "opt" : true
+                    }
+                ],                
                 "desc" : [
                     " Returns an array of counts for the question... in one call you have the flat counts for a whole question",                    
                     " You have the possibility of creating groups of responses (which would be usefull for mutliple responses)"
@@ -435,7 +751,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "name" : "Filter",                
                 "ns" : "aggregatedlanguage",                
                 "base" : "method",                
-                "type" : "ddata",                
+                "type" : "data",                
                 "args" : [
                     {
                         "name" : "Sub",                        
@@ -544,6 +860,33 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "SplitToNumbers",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "data",                
+                "args" : [
+                    {
+                        "name" : "Index",                        
+                        "type" : "number"
+                    },                    
+                    {
+                        "name" : "Separator",                        
+                        "type" : "string",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns an array of data from an open question which data is formed  like this",                    
+                    " Interview 1 \"1;2;10\"",                    
+                    " Interview 2 \"2;5;15\"",                    
+                    " Interview 3 \"3;8;20\"",                    
+                    " Question.Data.SplitToNumbers(2,\";\") would return a data object formed of 2,5 and 8",                    
+                    " This should only be used on an open-ended question"
+                ],                
+                "examples" : "OpenEnded.Data.SplitToNumbers(2,\";\")",                
+                "version" : "5.3.5.0"
+            },            
+            {
                 "name" : "StdDev",                
                 "ns" : "aggregatedlanguage",                
                 "base" : "method",                
@@ -602,134 +945,6 @@ askiaScript.extend(askiaScript.lexical, {
                     " "
                 ],                
                 "version" : "5.3.5.0"
-            }
-        ],        
-        "response" : [
-            {
-                "name" : "Caption",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the caption of the response",                
-                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Factor",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a factor as their was entered in the value column of the scale responses",                
-                "examples" : [
-                    " gender.Responses[1].Factor ' => 3",                    
-                    " "
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses[1].ToString()",                    
-                    " ' => {",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"isSelected\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " }"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
-                "version" : "5.3.5.0"
-            }
-        ],        
-        "debug" : [
-            {
-                "name" : "Trace",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "debug",                
-                "args" : [
-                    {
-                        "name" : "message",                        
-                        "type" : "string"
-                    }
-                ],                
-                "desc" : "Outputs a string to the debug file to understand while your script is not (yet) doing what you want it to do",                
-                "examples" : [
-                    "\t Dim dValue = CurrentCell.Row.Question.Data.FilterByX().Size",                    
-                    "     Debug.Trace(\"*** \" + CurrentCell.X )",                    
-                    "\t Debug.Trace(\"My sig is \" + dValue )"
-                ],                
-                "version" : "5.3.5.0"
-            }
-        ],        
-        "responses" : [
-            {
-                "ns" : "aggregatedlanguage",                
-                "accessor" : "response"
-            },            
-            {
-                "name" : "Caption",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the caption of responses in the collection",                
-                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses.ToString()",                    
-                    " ' => [{",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " },{",                    
-                    " \"index\" : 2,",                    
-                    " \"entryCode\":\"002\",",                    
-                    " \"caption\":\"Woman\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Woman.png\"",                    
-                    " }]"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
-                "version" : "5.3.5.0"
-            }
-        ],        
-        "questions" : [
-            {
-                "ns" : "aggregatedlanguage",                
-                "accessor" : "question"
             }
         ]
     }

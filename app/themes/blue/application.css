@@ -225,7 +225,7 @@ input:focus, input:active, textarea:focus, textarea:active, select:focus, select
   display           : inline-block;
   width             : 20px;
   min-width         : 20px;
-  max-width         : 20px; 
+  max-width         : 20px;
   height            : 20px;
   transition        : background-image ease-in .2s;
 }
@@ -699,7 +699,7 @@ div.tabs-scroll {
 
 .tab-preview-button.selected {
     background-color   : #192730;
-    color              : #FFF; 
+    color              : #FFF;
     border-bottom-color: transparent;
     box-shadow         : 4px 0px 0px 0px #7FB633 inset;
 }
@@ -1114,7 +1114,7 @@ div.askia-resizer-vertical-drag {
 div.askia-resizer-modal {
     background  : transparent;
 }
- 
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
     width: 10px;
@@ -1163,4 +1163,10 @@ div.askia-resizer-modal {
 }
 select#outputs_list, select#categories_list {
     width: 60%;
+}
+#panel_explorer {
+    background-color: #283b49;
+}
+#panel_workspace{
+   border-left: 1px solid black;
 }

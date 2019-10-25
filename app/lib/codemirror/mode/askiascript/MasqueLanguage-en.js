@@ -20,9 +20,12 @@ askiaScript.extend(askiaScript.types, {
     "ERRORS" : "errors",    
     "INTERVIEW" : "interview",    
     "LANGUAGE" : "language",    
+    "MESSAGE" : "message",    
     "QUESTION" : "question",    
+    "QUESTIONARRAY" : "questionarray",    
     "RESPONSE" : "response",    
     "RESPONSES" : "responses",    
+    "SURVEY" : "survey",    
     "THEME" : "theme"
 });
 
@@ -37,9 +40,12 @@ askiaScript.extend(askiaScript.i18n, {
         "errors" : "Errors",        
         "interview" : "Interview",        
         "language" : "Language",        
+        "message" : "Message",        
         "question" : "Question",        
+        "questionarray" : "QuestionArray",        
         "response" : "Response",        
         "responses" : "Responses",        
+        "survey" : "Survey",        
         "theme" : "Theme"
     },    
     "core" : {
@@ -142,6 +148,13 @@ askiaScript.extend(askiaScript.i18n, {
             "examples" : "\tInterview.Language.ID ' => 1036",            
             "version" : "5.4.1.0"
         },        
+        "message" : {
+            "ns" : "masquelanguage",            
+            "desc" : "\tObject used to list all the possible hardcoded messages",            
+            "remarks" : "\tThis should be used during interview and encapsulates some properties that have been deprecated",            
+            "examples" : "\t Interview.Translate(Message.other) ' => \" \"Autre\"",            
+            "version" : "5.5.2.0"
+        },        
         "question" : {
             "ns" : "masquelanguage",            
             "creation" : "Create a question / chapter or loop in the survey structure.",            
@@ -177,6 +190,12 @@ askiaScript.extend(askiaScript.i18n, {
             "alsoSee" : "CurrentQuestion",            
             "version" : "5.3.2.0"
         },        
+        "questionarray" : {
+            "ns" : "masquelanguage",            
+            "desc" : "Object which contains a collection of questions. It's like an array of questions.",            
+            "alsoSee" : "Range",            
+            "version" : "5.4.4.0"
+        },        
         "response" : {
             "ns" : "masquelanguage",            
             "desc" : "Variable which contains all information and action to execute on response item.",            
@@ -193,6 +212,15 @@ askiaScript.extend(askiaScript.i18n, {
                 "Core.Response"
             ],            
             "version" : "5.3.2.0"
+        },        
+        "survey" : {
+            "ns" : "masquelanguage",            
+            "desc" : "\tIn AskiaScript, the survey object contains all the available information about the survey itself. It is in the global scope, so is accessible everywhere within AskiaScript.",            
+            "examples" : [
+                "\tSurvey.Name ' => \"Ex.qex\"",                
+                "\tSurvey.Id ' => 123"
+            ],            
+            "version" : "5.5.0.0"
         },        
         "theme" : {
             "ns" : "masquelanguage",            
@@ -460,7 +488,7 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "CurrentQuestions",            
             "ns" : "masquelanguage",            
             "base" : "const",            
-            "type" : "questions",            
+            "type" : "questionarray",            
             "desc" : [
                 " Return an array of the all the questions available in a screen",                
                 " This is only available when rendering a page - not in routings"
@@ -787,6 +815,15 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
+            "name" : "Message",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "message",            
+            "desc" : "Object used to get the list of all hardcoded messages",            
+            "examples" : "\t Interview.Translate(Message.other) ' => \" \"Autre\"",            
+            "version" : "5.5.2.0"
+        },        
+        {
             "name" : "Mode",            
             "ns" : "masquelanguage",            
             "base" : "const",            
@@ -797,9 +834,17 @@ askiaScript.extend(askiaScript.lexical, {
             "name" : "NomEnqueteur",            
             "ns" : "masquelanguage",            
             "base" : "const",            
-            "type" : "date",            
+            "type" : "string",            
             "deprecated" : true,            
             "prefer" : "AgentName"
+        },        
+        {
+            "name" : "NowUTC",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "date",            
+            "desc" : "Returns date and time in UTC (that is universal time <=> Greenwich Meridian Time)",            
+            "version" : "5.3.5.0"
         },        
         {
             "name" : "OrderOf",            
@@ -1228,6 +1273,14 @@ askiaScript.extend(askiaScript.lexical, {
             "alsoSee" : "EndInterview"
         },        
         {
+            "name" : "Survey",            
+            "ns" : "masquelanguage",            
+            "base" : "const",            
+            "type" : "survey",            
+            "desc" : "Object used to get information about the current Survey",            
+            "version" : "5.5.5.0"
+        },        
+        {
             "name" : "Theme",            
             "ns" : "masquelanguage",            
             "base" : "const",            
@@ -1238,1297 +1291,19 @@ askiaScript.extend(askiaScript.lexical, {
         }
     ],    
     "members" : {
-        "question" : [
+        "errors" : [
             {
-                "name" : "AllIterations",                
                 "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : [
-                    " Returns all the positions of a question ",                    
-                    " "
-                ],                
-                "examples" : [
-                    " Q1 is a single question inside a loop with 3 iterations",                    
-                    " Q1.AllIterations.Count ' => 3",                    
-                    "",                    
-                    " ",                    
-                    " Q5 is a single question inside a loop of loop with respectively 3 and 2 iterations",                    
-                    " Q5.AllIterations.Count",                    
-                    " ' => 6",                    
-                    "  "
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "AllValues",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : [
-                    " Returns all values of a question in loop.",                    
-                    " The value could be an array of the question value or nested arrays when the question is inside a nested loops.",                    
-                    " This property is only available for the question in loop, otherwise it throw an error."
-                ],                
-                "examples" : [
-                    " Q1 is a single question inside a loop with 3 iterations",                    
-                    " Q1.AllValues ' => {3; 5; 2}",                    
-                    "",                    
-                    " Q2 is a multiple question inside a loop with 3 iterations",                    
-                    " Q2.AllValues",                    
-                    " ' => {{3;1;4}; {2;5;1}; {4;5;2}}",                    
-                    "",                    
-                    " Q3 is an open-ended question inside a loop with 3 iterations",                    
-                    " Q3.AllValues",                    
-                    " ' => {\"hello\"; \"hi\"; \"goodbye\"}",                    
-                    "",                    
-                    " Q4 is a numeric question inside a loop with 3 iterations",                    
-                    " Q4.AllValues",                    
-                    " ' => {32.5; 47.1; 0}",                    
-                    "",                    
-                    " Q5 is a single question inside a loop of loop with respectively 3 and 2 iterations",                    
-                    " Q5.AllValues",                    
-                    " ' => {{5;3}; {3;4}; {1;2}}",                    
-                    "",                    
-                    " Q6 is a multiple question inside a loop of loop with respectively 3 and 2 iterations",                    
-                    " Q6.AllValues",                    
-                    " ' => {{{5;3;4};{2;1;4}}; {{1;2};{2;4;3}}; {{3;2;1};{4}}}",                    
-                    "",                    
-                    " Q7 is an open-ended question inside a loop of loop with respectively 3 and 2 iterations",                    
-                    " Q7.AllValues",                    
-                    " ' => {{\"hello\";\"world\"};  {\"hi\";\"people\"};  {\"goodbye\";\"folks\"}}",                    
-                    "",                    
-                    " Q8 is a numeric question inside a loop of loop with respectively 3 and 2 iterations",                    
-                    " Q8.AllValues",                    
-                    " ' => {{13.5;12}; {0;5}; {8.3;9}}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Answers",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "responses",                
-                "desc" : "Returns the list of selected responses in the selected order",                
-                "examples" : [
-                    " Color.Answers",                    
-                    " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",                    
-                    " List of responses:",                    
-                    " Red",                    
-                    " Blue",                    
-                    " Green",                    
-                    " Purple",                    
-                    "",                    
-                    " Screen visible by the respondent",                    
-                    " (The Blue response was hidden using a routing ignore responses):",                    
-                    " Which color do you like?",                    
-                    " Green",                    
-                    " Red",                    
-                    " Purple",                    
-                    "",                    
-                    " The responses selected by the respondent are Purple and Red in this order",                    
-                    " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",                    
-                    "",                    
-                    " Color.Answers.Value will return 4;1",                    
-                    " Color.Answers.EntryCode will return 14;11",                    
-                    " Color.Answers.Caption will return Purple;Red",                    
-                    " Color.Answers[2].Value will return 1 (the second answer given)"
-                ],                
-                "alsoSee" : [
-                    "Question.AvailableResponses",                    
-                    "Question.Responses",                    
-                    "Core.Responses",                    
-                    "Core.Response"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "AvailableBalancedQuota",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "array",                
-                "args" : [
-                    {
-                        "name" : "value",                        
-                        "type" : "number",                        
-                        "desc" : "Specifies the quota branch for each",                        
-                        "repeatable" : true,                        
-                        "prefix" : "question"
-                    }
-                ],                
-                "desc" : [
-                    " returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to the min using the following formula ",                    
-                    "  Formula: (Target% - Observed%) / Target%"
-                ],                
-                "examples" : [
-                    " Newspapers.AvailableBalancedQuota[1] returns the quota which will make the quota closest to the target percentage",                    
-                    " Newspapers.AvailableQuota(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "AvailableQuota",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "array",                
-                "args" : [
-                    {
-                        "name" : "value",                        
-                        "type" : "number",                        
-                        "desc" : "Specifies the quota branch for each",                        
-                        "repeatable" : true,                        
-                        "prefix" : "question"
-                    }
-                ],                
-                "desc" : "returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to do to the min to do using the count for the sort",                
-                "examples" : [
-                    " Newspapers.AvailableQuota()[1] returns the quota for which there is the biggest number of respondents to fill",                    
-                    " Newspapers.AvailableQuota(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2",                    
-                    " ",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "AvailableResponses",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "responses",                
-                "desc" : "Returns the list of available responses in the visible order",                
-                "examples" : [
-                    " Color.AvailableResponses",                    
-                    " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",                    
-                    " List of responses:",                    
-                    " Red",                    
-                    " Blue",                    
-                    " Green",                    
-                    " Purple",                    
-                    "",                    
-                    " Screen visible by the respondent",                    
-                    " (The Blue response was hidden using a routing ignore responses):",                    
-                    " Which color do you like?",                    
-                    " Green",                    
-                    " Red",                    
-                    " Purple",                    
-                    "",                    
-                    " The responses selected by the respondent are Purple and Red in this order",                    
-                    " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",                    
-                    "",                    
-                    " Color.AvailableResponses.Value will return 3;1;4",                    
-                    " Color.AvailableResponses.EntryCode will return 13;11;14",                    
-                    " Color.AvailableResponses.Caption will return Green;Red;Purple",                    
-                    " Color.AvailableResponses[2].Value will return 1 (the second answer available)"
-                ],                
-                "alsoSee" : [
-                    "Question.Responses",                    
-                    "Question.Answers",                    
-                    "Core.Responses",                    
-                    "Core.Response"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "BalancedQuotaList",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "array",                
-                "args" : [
-                    {
-                        "name" : "value",                        
-                        "type" : "number",                        
-                        "desc" : "Specifies the quota branch for each",                        
-                        "repeatable" : true,                        
-                        "prefix" : "question"
-                    }
-                ],                
-                "desc" : [
-                    " returns the complete indexes of the responses of the TargetQuestion sorted from the max to the min using the following formula ",                    
-                    "  Formula: (Target% - Observed%) "
-                ],                
-                "examples" : [
-                    " Newspapers.BalancedQuotaList[1] returns the quota which will make the quota closest to the target percentage",                    
-                    " Newspapers.BalancedQuotaList(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "CurrentIteration",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the loop response on the current iteration.",                    
-                    " Only available for a loop, if you try to use this property for another type of element,",                    
-                    " the application should raise the following exception:",                    
-                    " The property CurrentIteration is only available for a loop."
-                ],                
-                "examples" : [
-                    " Loop1.CurrentIteration = 4",                    
-                    " ' You can also use it for the comparison",                    
-                    " If Loop1.CurrentIteration = 1 Then [...]",                    
-                    " '",                    
-                    " If Loop1.CurrentIteration.EntryCode = \"UK\" Then [...]"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Decimals",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the number of digits allowed for a decimals value.",                    
-                    " Returns 0 when no decimal is allowed."
-                ],                
-                "examples" : [
-                    " age.Decimals  ' => 0",                    
-                    " temperature.Decimals ' => 1"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "DKEntry",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Indicates special entry used to specify the \"Don't know\" answer.",                
-                "examples" : "age.DKEntry ' => \"999\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "EntryCodeToIndex",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "anytype",                
-                "args" : [
-                    {
-                        "name" : "entryCodes",                        
-                        "type" : "anytype",                        
-                        "desc" : "Entry-code(s) to convert"
-                    }
-                ],                
-                "desc" : [
-                    " Returns the index(es) (based 1) of the specify entry code(s)",                    
-                    " Return 0 if the entry code was not found.",                    
-                    " If this parameter is an array, the size of the return value will have the same size of the EntryCodes parameter,",                    
-                    " even if the entry code was not found"
-                ],                
-                "examples" : [
-                    " country.EntryCodeToIndex(\"US\") ' => 1",                    
-                    " country.EntryCodeToIndex({\"US\"; \"DUMMY\"; \"UK\"}) ' => {1; DK; 2}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Errors",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "errors",                
-                "desc" : "Returns the list of errors during the interview run-time associated with the question.",                
-                "examples" : [
-                    " CurrentQuestion.Errors.Count ' => 0",                    
-                    "",                    
-                    " CurrentQuestion.Errors[1].Key ' => \"expected_answer\"",                    
-                    "",                    
-                    " CurrentQuestion.Errors[1].Message ' => \"A response is expected for question 'q1'\""
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "HasDK",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the answer of the question is a \"Don't know\" answer",                
-                "examples" : "gender.HasDK ' => False",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "HasNA",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the question is skipped",                
-                "examples" : "gender.HasNA ' => False",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "HasNoData",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if there is some data in the question (skipped or not skipped)",                    
-                    " "
-                ],                
-                "examples" : "gender.HasNoData ' => False",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "HasParentChapter",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates the question have an ancestry chapter.",                    
-                    "",                    
-                    " This property look-up to the hierarchy until it reaches a parent chapter."
-                ],                
-                "examples" : [
-                    " TopLevelQuestion.HasParentChapter ' => False",                    
-                    " QuestionInDemographics.HasParentChapter '=> True"
-                ],                
-                "alsoSee" : [
-                    "ParentChapter",                    
-                    "HasParentLoop"
-                ],                
+                "accessor" : "error",                
                 "version" : "5.4.1.0"
             },            
             {
-                "name" : "HasParentLoop",                
+                "name" : "Count",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "Indicates the question is into a loop.",                
-                "examples" : [
-                    " Q1.HasParentLoop ' => True",                    
-                    " gender.HasParentLoop '=> False"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "HasValidData",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the answer of the question is valid for open, numeric and closed question",                    
-                    " It checks if there is a value and if that value is compatible with DK settings (for all), min /max number of responses and exclusivity (for multiple), size (for open), range (for numeric and date)"
-                ],                
-                "examples" : "gender.HasValidData ' => True",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Id",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Internal unique identifier of the question",                
-                "examples" : [
-                    " gender.id  ' => 1",                    
-                    " age.id ' => 2"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IndexToEntryCode",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "anytype",                
-                "args" : [
-                    {
-                        "name" : "indexes",                        
-                        "type" : "anytype",                        
-                        "desc" : "Index(es) to convert (based 1)"
-                    }
-                ],                
-                "desc" : [
-                    " Returns the entry code(s) of the response(s) at the specify index(es)",                    
-                    " If this parameter is an array, the size of the return value will have the same size of the Indexes parameter,",                    
-                    " even if the index is out of range"
-                ],                
-                "examples" : [
-                    " Gender question, Male with entry code 4 and Female with entry code 6",                    
-                    " Gender.IndexToEntryCode(1) ' => 4",                    
-                    " Color question, Blue with entry code 4, Red with entry code 6 and Green with entry code 8, Green and Blue selected",                    
-                    " Color.IndexToEntryCode(Color) ' => 8;4",                    
-                    " Color.IndexToEntryCode({3;2}) ' => 8;6"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IndexToEntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "anytype",                
-                "args" : [
-                    {
-                        "name" : "indexes",                        
-                        "type" : "anytype",                        
-                        "desc" : "Index(es) to convert (based 1)"
-                    }
-                ],                
-                "desc" : [
-                    " Returns the entry code(s) of the response(s) at the specify index(es)",                    
-                    " Return \"\" if the entry code was not found.",                    
-                    " If this parameter is an array, the size of the return value will have the same size of the Indexes parameter,",                    
-                    " even if the index is out of range"
-                ],                
-                "examples" : [
-                    " country.IndexToEntryCodeStr(1) ' => \"US\"",                    
-                    " country.IndexToEntryCodeStr({1; -3; 2}) ' => {\"US\"; \"\"; \"UK\"}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "InputCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tIndicates the input code - actually the position of the question in the masque",                
-                "examples" : [
-                    "\t' Single",                    
-                    "\tgender.InputCode ' => 0",                    
-                    "",                    
-                    "\t' Numeric (if it's the second question)",                    
-                    "\tage.InputCode ' => 1",                    
-                    "",                    
-                    "\t' Loop",                    
-                    "\tbrands.iteration(1).InputCode ' => 3",                    
-                    "\tbrands.iteration(2).InputCode ' => 5"
-                ],                
-                "alsoSee" : [
-                    "Question.Value",                    
-                    "Question.InputValue",                    
-                    "Response.InputName"
-                ],                
-                "version" : "5.4.6.0"
-            },            
-            {
-                "name" : "InputName",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Indicates the based name of the HTML input for this question.",                    
-                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
-                    " <ul><li><strong>date</strong>: Obtain the name of the date input for the date-time question</li><li><strong>time</strong>: Obtain the name of the time input for the date-time question</li><li><strong>list</strong>: Obtain the name of the multi-select input for the multi-coded question</li><li><strong>ranking</strong>: Obtain the partial name of the input to set the rank for the multi-coded question</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.InputName() ' => \"U0\"",                    
-                    "",                    
-                    " ' Numeric",                    
-                    " age.InputName() ' => \"C1\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.InputName() ' => \"M2\"",                    
-                    "",                    
-                    " ' Open",                    
-                    " comment.InputName() ' => \"S3\"",                    
-                    "",                    
-                    " ' Date only",                    
-                    " birthday.InputName() ' => \"D4\"",                    
-                    "",                    
-                    " ' Time only",                    
-                    " meetingHour.InputName() ' => \"T5\"",                    
-                    "",                    
-                    " ' Date-time",                    
-                    " departure.InputName(\"date\") ' => \"D6\"",                    
-                    " departure.InputName(\"time\") ' -> \"T6\"",                    
-                    "",                    
-                    " ' Multiple with ranking",                    
-                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
-                    "",                    
-                    " ' Multiple in list with multi-selection",                    
-                    " brands.InputName(\"list\") ' => \"L2\""
-                ],                
-                "alsoSee" : [
-                    "Question.Value",                    
-                    "Question.InputValue",                    
-                    "Response.InputName",                    
-                    "Response.InputValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "InputValue",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input value to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns the HTML-escaped version of the question value.<br />It prevent the usage of the special `<`,`>` and all special unicode characters.",                    
-                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
-                    " <ul><li><strong>date</strong>: Obtain the date value of the date-time question</li><li><strong>time</strong>: Obtain the time value of the date-time question</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.InputValue() ' => \"256\"",                    
-                    "",                    
-                    " ' Numeric",                    
-                    " age.InputValue() ' => \"33\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.InputValue() ' => \"257,258\"",                    
-                    "",                    
-                    " ' Open",                    
-                    " comment.InputValue() ' => \"if &amp;lt; 200 and not &amp;gt; &amp;amp; that &amp;quot;works&amp;quot;\"",                    
-                    " ' if &lt; 200 and not &gt; &amp; that \"works\"",                    
-                    "",                    
-                    " ' Date only",                    
-                    " birthday.InputValue() ' => \"01/12/2012\"",                    
-                    "",                    
-                    " ' Time only",                    
-                    " meetingHour.InputValue() ' => \"09:00:00\"",                    
-                    "",                    
-                    " ' Date-time",                    
-                    " departure.InputValue(\"date\") ' => \"24/05/2012\"",                    
-                    " departure.InputValue(\"time\") ' -> \"12:05:00\""
-                ],                
-                "alsoSee" : [
-                    "Question.Value",                    
-                    "Question.InputName",                    
-                    "Response.InputName",                    
-                    "Response.InputValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsAllowDK",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the question allow the \"Don't know\" answer.",                
-                "examples" : [
-                    " gender.IsAllowDK ' => false",                    
-                    " age.IsAllowDK ' => true"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsDateOnly",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the date question accept a date only without the time.",                
-                "examples" : [
-                    " MyDateWithoutTime.IsDateOnly ' => true",                    
-                    " MyDateWithTime.IsDateOnly ' => false"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsLastIteration",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Convenient property which indicates if we are on the latest iteration of a loop.",                    
-                    " Only available for a loop, if you try to use this property for another type of element,",                    
-                    " the application should raise the following exception:",                    
-                    " The property IsLastIteration is only available for a loop."
-                ],                
-                "examples" : "Loop1.IsLastIteration ' => True",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsLiveRoutingSource",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tIndicates if this question is a trigger for a live touting (or a live caption) indicating that the data must be sent to the server before the end of the form",                
-                "examples" : "\tGender.IsLiveRoutingSource ' => True",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsOrdered",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if a multi-coded question also record the order of response selections.",                
-                "examples" : [
-                    " rankingBrands.IsOrdered ' => true",                    
-                    " knowingBrands.IsOrdered ' => false"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsTimeOnly",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the date question accept a time only without the date.",                
-                "examples" : [
-                    " MyTimeWithoutDate.IsTimeOnly ' => true",                    
-                    " MyTimeWithDate.IsTimeOnly ' => false"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Iteration",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "question",                
-                "args" : [
-                    {
-                        "name" : "loopLevel",                        
-                        "type" : "number",                        
-                        "desc" : "Loop(s) iteration (from the first immediate to the top)",                        
-                        "repeatable" : true,                        
-                        "prefix" : "question"
-                    }
-                ],                
-                "desc" : [
-                    " Returns a question at a specify loop(s) iteration",                    
-                    " Only available for the question in loop.",                    
-                    " If you try to use it for the question outside the loop the application should raise the following exception:",                    
-                    " The method Iteration is only available for the question in loop.",                    
-                    " Parameters",                    
-                    " The number parameters of this method are dynamic and his equal to the number of the parent loops.",                    
-                    " For example if a question is inside a loop, you will have only 1 parameter.",                    
-                    " If a question is inside a loop of loop you will have 2 parameters and so on.",                    
-                    " The first parameter refer to the immediate parent loop, the second parameter refer to the next loop above and so on.",                    
-                    " - When the script condition is on the current loop flow, parameters are optional.",                    
-                    " All omits parameters are, by default, initialized with the current loop iteration.",                    
-                    " For readability, you can indicates the loop name and the value of the desired iteration using the following syntax:",                    
-                    " Question.Iteration(LoopName1 : Iteration1, LoopName2 : Iteration2).",                    
-                    " In this case the order of parameters doesn't matter.",                    
-                    " - Be careful: When the script is use outside the loop flow, all parameters are required",                    
-                    " - Warning: At least one parameter is expected, otherwise simply use the shortcut of the question to obtain the current iteration."
-                ],                
-                "examples" : [
-                    " Q1 is in a Loop",                    
-                    " Q1.Iteration(1)",                    
-                    " '=> Q1 in the first iteration",                    
-                    " Q1.Iteration(Loop : 2)",                    
-                    " ' => Q1 in the second iteration",                    
-                    " Q1",                    
-                    " '=> Q1 in the current iteration",                    
-                    "",                    
-                    " Q1 is in the SubLoop loop which is in the TopLoop loop",                    
-                    " Q1.Iteration(1)",                    
-                    " ' => Q1 in the first iteration of the 'SubLoop' loop",                    
-                    " ' and in the current iteration of the 'TopLoop' loop",                    
-                    " '",                    
-                    " Q1.Iteration(1, 2)",                    
-                    " ' => Q1 in the first iteration of the 'SubLoop' loop",                    
-                    " ' and in the second iteration of the 'TopLoop' loop",                    
-                    " '",                    
-                    " Q1.Iteration(TopLoop : 2)",                    
-                    " ' => Q1 in the second iteration of the 'TopLoop' loop",                    
-                    " ' and in the current iteration of the 'SubLoop' loop",                    
-                    " '",                    
-                    " Q1.Iteration(TopLoop : 2, SubLoop : 1)",                    
-                    " ' => Q1 in the second iteration of the 'TopLoop' loop",                    
-                    " ' and in the first iteration of the 'SubLoop' loop"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "LongCaption",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the long caption of the question in the current language",                
-                "examples" : "gender.LongCaption ' => \"Are you a:\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "MaxDate",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the maximum expected for a date question.",                    
-                    " When no maximum is expected it return DK"
-                ],                
-                "examples" : [
-                    " ' Date question with maximum date \"31/12/2013\"",                    
-                    " MyDate.MaxDate  ' => #31/12/2013#",                    
-                    " ' Date question without maximum value",                    
-                    " MyDate.MaxDate  ' => DK"
-                ],                
-                "alsoSee" : [
-                    "Question.MinDate",                    
-                    "Question.MinValue",                    
-                    "Question.MaxValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "MaxValue",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates the maximum expected for the question.",                    
-                    " It's the maximum number of allowed responses for closed question.",                    
-                    " It's the maximum expected value for a numeric question.",                    
-                    " It's the maximum expected length for an open-ended question.",                    
-                    " When no maximum is expected it return DK"
-                ],                
-                "examples" : [
-                    " ' Multi-coded question with maximum 5 responses",                    
-                    " Brands.MaxValue  ' => 5",                    
-                    " ' Numeric question with 99 as minimum value",                    
-                    " age.MaxValue  ' => 99",                    
-                    " ' Open-ended question with 5 maximum characters",                    
-                    " postalCode.MaxValue ' => 5",                    
-                    " ' Question without maximum value",                    
-                    " CurrentQuestion.MaxValue ' => DK"
-                ],                
-                "alsoSee" : [
-                    "Question.MinValue",                    
-                    "Question.MinDate",                    
-                    "Question.MaxDate"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "MinDate",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the minimum expected for a date question.",                    
-                    " When no minimum is expected it return DK"
-                ],                
-                "examples" : [
-                    " ' Date question with minimum date \"01/01/2013\"",                    
-                    " MyDate.MinDate  ' => #01/01/2013#",                    
-                    " ' Date question without minimum value",                    
-                    " MyDate.MinDate  ' => DK"
-                ],                
-                "alsoSee" : [
-                    "Question.MaxDate",                    
-                    "Question.MinValue",                    
-                    "Question.MaxValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "MinValue",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates the minimum expected for the question.",                    
-                    " It's the minimum number of allowed responses for closed question.",                    
-                    " It's the minimum expected value for a numeric question.",                    
-                    " It's the minimum expected length for an open-ended question.",                    
-                    " When no minimum is expected it return DK"
-                ],                
-                "examples" : [
-                    " ' Multi-coded question with minimum 3 responses",                    
-                    " Brands.MinValue  ' => 3",                    
-                    "",                    
-                    " ' Numeric question with 18 as minimum value",                    
-                    " age.MinValue  ' => 18",                    
-                    "",                    
-                    " ' Open-ended question with 5 minimum characters",                    
-                    " ' This example is currently fictional because the",                    
-                    " ' system doesn't have a minimum length value",                    
-                    " ' for open-ended question",                    
-                    " postalCode.MinValue ' => 5",                    
-                    "",                    
-                    " ' Question without minimum value",                    
-                    " CurrentQuestion.MinValue ' => DK"
-                ],                
-                "alsoSee" : [
-                    "Question.MaxValue",                    
-                    "Question.MinDate",                    
-                    "Question.MaxDate"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ParentChapter",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "question",                
-                "desc" : [
-                    " Indicates the question have an ancestry chapter.",                    
-                    "",                    
-                    " This property look-up to the hierarchy until it reaches a parent chapter."
-                ],                
-                "examples" : "QuestionInDemographics.ParentChapter.Shortcut '=> \"Demographics\"",                
-                "alsoSee" : [
-                    "HasParentChapter",                    
-                    "ParentLoop"
-                ],                
-                "version" : "5.4.1.0"
-            },            
-            {
-                "name" : "ParentLoop",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "question",                
-                "desc" : [
-                    " Returns the parent loop question.",                    
-                    " This property is only available for the question in loop, otherwise it throw an error."
-                ],                
-                "examples" : "Q1.ParentLoop.Caption ' => Loop",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "QuotaList",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "array",                
-                "args" : [
-                    {
-                        "name" : "value",                        
-                        "type" : "number",                        
-                        "desc" : "Specifies the quota branch for each",                        
-                        "repeatable" : true,                        
-                        "prefix" : "question"
-                    }
-                ],                
-                "desc" : "returns the complete indexes of the responses of the TargetQuestion sorted from the max to do to the min to do using the count for the sort",                
-                "examples" : [
-                    " Newspapers.QuotaList()[1] returns the quota for which there is the biggest number of respondents to fill",                    
-                    " Newspapers.QuotaList(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2",                    
-                    " ",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Responses",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "responses",                
-                "desc" : "Returns the entire list of responses for a closed question",                
-                "examples" : [
-                    " Color.Responses",                    
-                    " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",                    
-                    " List of responses:",                    
-                    " Red",                    
-                    " Blue",                    
-                    " Green",                    
-                    " Purple",                    
-                    "",                    
-                    " Screen visible by the respondent",                    
-                    " (The Blue response was hidden using a routing ignore responses):",                    
-                    " Which color do you like?",                    
-                    " Green",                    
-                    " Red",                    
-                    " Purple",                    
-                    "",                    
-                    " The responses selected by the respondent are Purple and Red in this order",                    
-                    " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",                    
-                    "",                    
-                    " Color.Responses.Value will return 1;2;3;4",                    
-                    " Color.Responses.EntryCode will return 11;12;13;14",                    
-                    " Color.Responses.Caption will return Red;Blue;Green;Purple",                    
-                    " Color.Responses[2].Value will return 2 (the second answer available)"
-                ],                
-                "alsoSee" : [
-                    "Question.AvailableResponses",                    
-                    "Question.Answers",                    
-                    "Core.Responses",                    
-                    "Core.Response"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ShortCaption",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the short caption of the question in the current language.",                    
-                    " If the ShortCaption is empty then it return the LongCaption"
-                ],                
-                "examples" : "gender.ShortCaption ' => \"Respondent Gender\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Shortcut",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the shortcut of the question (name of the variable)",                
-                "examples" : [
-                    " gender.Shortcut  ' => \"gender\"",                    
-                    " ^1. appreciation^.Shortcut   ' => \"1. appreciation\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToEntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "variant",                
-                "desc" : [
-                    "\tReturns the response as an entry code for closed question",                    
-                    "\tIt returns a string if the question is single, an array of string is the question is multiple",                    
-                    "",                    
-                    "\tIt's the default property which is added when you compare a question to a string",                    
-                    "",                    
-                    "\tq1 Has {\"1\"} is transformed into q1.ToEntryCodeStr() Has {\"1\"}",                    
-                    "\t"
-                ],                
-                "examples" : [
-                    "\tgender.ToEntryCodeStr ' => \"1\"",                    
-                    "\tbrands.ToEntryCodeStr ' => {\"3\"; \"5\"; \"6\"}",                    
-                    "",                    
-                    "\t' When no value specified:",                    
-                    "",                    
-                    "\tgender.value ' => DK",                    
-                    "\tage.value ' => DK",                    
-                    "\tbrands.value ' => {}",                    
-                    "\tq1_other.value ' => \"\"",                    
-                    "\tbirthday.value ' => DK"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the question object (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.ToString()",                    
-                    " ' => {",                    
-                    " \"shortcut\":\"gender\",",                    
-                    " \"shortCaption\":\"Respondent gender\",",                    
-                    " \"longCaption\":\"Are you?\",",                    
-                    " \"type\":\"single\"",                    
-                    " }",                    
-                    "",                    
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " ' q1 is in loop of loop",                    
-                    " q1.ToString()",                    
-                    " ' => {",                    
-                    " \"shortcut\":\"q1\",",                    
-                    " \"shortCaption\":\"Q1\",",                    
-                    " \"longCaption\":\"Q1\",",                    
-                    " \"type\":\"single\",",                    
-                    " \"iterations\":{\"parentLoop\":4,\"subLoop\":2}",                    
-                    " }"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Type",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the type of the question as string, the possible types are:",                    
-                    " \"chapter\"",                    
-                    " \"single\"",                    
-                    " \"multiple\"",                    
-                    " \"open\"",                    
-                    " \"numeric\"",                    
-                    " \"datetime\"",                    
-                    " \"loop\"",                    
-                    " For question table",                    
-                    " \"single-loop\"",                    
-                    " For loop with selection at each iteration",                    
-                    " \"multiple-loop\"",                    
-                    " For loop with preliminary selection",                    
-                    " \"numeric-loop\"",                    
-                    " For loop with iteration count entry"
-                ],                
-                "examples" : [
-                    " gender.Type ' => \"single\"",                    
-                    " brands.Type ' => \"multiple\"",                    
-                    " age.Type ' => \"numeric\"",                    
-                    " comment.Type ' => \"open\"",                    
-                    " birth.Type ' => \"datetime\"",                    
-                    " gridLoop.Type ' => \"loop\"",                    
-                    " iterationSelectionLoop.Type ' => \"single-loop\"",                    
-                    " preliminarySelectionLoop.Type ' => \"multiple-loop\"",                    
-                    " numericSelectionLoop.Type ' => \"numeric-loop\""
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.TypeOf() ' => \"question\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Value",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "variant",                
-                "desc" : [
-                    " Returns the basic value(s) (answers) of the question in the current iteration.",                    
-                    " When there is no response the value return is DK,",                    
-                    " excepted for the open-ended and multi-coded questions"
-                ],                
-                "examples" : [
-                    " gender.value ' => 1",                    
-                    " age.value ' => 33",                    
-                    " brands.value ' => {3; 5; 6}",                    
-                    " q1_other.value ' => \"bla bla bla\"",                    
-                    " birthday.value ' => #14/02/1978#",                    
-                    "",                    
-                    " ' When no value specified:",                    
-                    "",                    
-                    " gender.value ' => DK",                    
-                    " age.value ' => DK",                    
-                    " brands.value ' => {}",                    
-                    " q1_other.value ' => \"\"",                    
-                    " birthday.value ' => DK"
-                ],                
-                "version" : "5.3.2.0"
-            }
-        ],        
-        "theme" : [
-            {
-                "name" : "BaseFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the base font size",                
-                "examples" : "\tInterview.BaseFS ' => \"12px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "BlackColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the color used as \"black\" - usually the fore color",                
-                "examples" : "\tInterview.Black ' => \"0,0,0\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "BorderRadius",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the border radius",                
-                "examples" : "\tInterview.BorderRadius ' => \"5px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "BorderWidth",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the border width",                
-                "examples" : "\tInterview.BorderWidth ' => \"1px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "ErrorColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the error colour",                
-                "examples" : "\tInterview.ErrorColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "FontFamily",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the font family",                
-                "examples" : "\tInterview.FontFamily ' => \"Print: Arial, Helvetica, sans-serif\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "HPadding",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the horizontal padding",                
-                "examples" : "\tInterview.HPadding ' => \"0.5em\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "LargeFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the large font size",                
-                "examples" : "\tInterview.LargeFS ' => \"14px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "LineHeight",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the line height for text",                
-                "examples" : "\tInterview.LineHeight ' => \"1.2\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NeutralColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the neutral colour",                
-                "examples" : "\tInterview.NeutralColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NeutralDarkColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the darker version of the neutral colour",                
-                "examples" : "\tInterview.NeutralDarkColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NeutralLightColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the lighter version of the neutral colour",                
-                "examples" : "\tInterview.NeutralLightColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NormalFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the normal font size",                
-                "examples" : "\tInterview.NormalFS ' => \"10px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PrimaryColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the primary colour",                
-                "examples" : "\tInterview.PrimaryColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PrimaryDarkColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the darker version of the primary colour",                
-                "examples" : "\tInterview.PrimaryDarkColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PrimaryLightColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the lighter version of the primary colour",                
-                "examples" : "\tInterview.PrimaryLightColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PropValue",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "property",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li></ul>"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturn the value of the theme property.",                    
-                    "\tReturn an empty string if the property is not supported."
-                ],                
-                "examples" : "\tTheme.PropValue(\"PrimaryColor\") ' => \"11.202.235\"",                
-                "alsoSee" : "Theme.Var",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SecondaryColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the secondary colour",                
-                "examples" : "\tInterview.SecondaryColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SecondaryDarkColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the darker version of the secondary colour",                
-                "examples" : "\tInterview.SecondaryDarkColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SecondaryLightColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the lighter version of the secondary colour",                
-                "examples" : "\tInterview.SecondaryLightColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SmallFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the small font size",                
-                "examples" : "\tInterview.SmallFS ' => \"8px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Var",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "variant",                
-                "args" : [
-                    {
-                        "name" : "property",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li>"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturn the value of the theme property (as a variant).",                    
-                    "\tReturn an empty string if the property is not supported."
-                ],                
-                "examples" : "\tTheme.Var(\"PrimaryColor\") ' => 11.202.235",                
-                "alsoSee" : "Theme.PropValue",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "VPadding",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the vertical padding",                
-                "examples" : "\tInterview.VPadding ' => \"1.2em\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "WhiteColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the color used as \"white\" usually the back color",                
-                "examples" : "\tInterview.WhiteColor ' => \"255,255,255\"",                
+                "desc" : "\tReturns the number of items in the collection",                
+                "examples" : "\tCurrentQuestions.Errors.Count ' => 2",                
                 "version" : "5.4.2.0"
             }
         ],        
@@ -2604,631 +1379,65 @@ askiaScript.extend(askiaScript.lexical, {
                     " Interview.Language.ThousandSeparator ' => \",\" ' US"
                 ],                
                 "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Translate",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "MessageID",                        
+                        "type" : "string",                        
+                        "desc" : "Identifier of the message you want to translate - see the list below"
+                    }
+                ],                
+                "desc" : [
+                    "Return the translate string for the language",                    
+                    "",                    
+                    "\"mandatory_question_1\" -> \"A response is expected for question '%1'.\"",                    
+                    "\"only_one_response_1\"\t-> You can only give one response to question '%1'.",                    
+                    "\"1_must_be_numeric\"\t-> The response to question '%1' must be numeric.",                    
+                    "\"1_must_be_between_2_and_3\"\t-> Response to question '%1' must be between %2 and %3.",                    
+                    "\"1_must_be_above_2\"\t\t=> Response to question '%1' must be above %2.",                    
+                    "\"1_must_be_under_2\"\t\t=> Response to question '%1' must be under %2.",                    
+                    "\"only_1_response_2\"\t\t=> You can only give %1 responses to question '%2'.",                    
+                    "\"response_1_not_available_2\"\t=>\t\tYou cannot give response '%1' to question '%2'.",                    
+                    "\"specify\"\t\t\t\t\t=> Specify",                    
+                    "\"ranking_between_one_and_1_for_2\"\t=> Ranking must be between 1 and %1 for question '%2'.",                    
+                    "\"ranking_1_missing_for_2\"\t=> Rank %1 is missing for question '%2'.",                    
+                    "\"ranking_1_twice_for_2\"\t=> Rank %1 has been given more than once for question '%2'.",                    
+                    "\"other\"\t=> Other",                    
+                    "\"new\"\t=> New...",                    
+                    "\"other_specify\"\t=> Other (specify)",                    
+                    "\"dk\"\t=> Don't Know",                    
+                    "\"specify_semi_open\"\t=> You must specify a semi-open response",                    
+                    "\"1_cannot_be_decimal\"\t=> Response to question '%1' cannot be decimal",                    
+                    "\"1_must_be_date\"\t\t=> Please enter a valid date for question '%1'",                    
+                    "\"1_must_be_time\"\t\t=> Please enter a valid time for question '%1'",                    
+                    "\"quotas_closed_for_1\"\t=>\tThe quotas are closed for <b>%1</b>.",                    
+                    "\"at_least_1_responses_for_2\"\t=> Please select at least %1 responses for question '%2'",                    
+                    "\"next\"\t=> Next",                    
+                    "\"previous\"\t=> Previous",                    
+                    "\"1_completed\"\t=> 1% completed"
+                ],                
+                "examples" : "Interview.Language.Translate(Message.other) ' => \" \"Autre\"",                
+                "version" : "5.5.2.0"
             }
         ],        
-        "error" : [
+        "questionarray" : [
             {
-                "name" : "Id",                
                 "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Return the id of the Error",                
-                "examples" : "CurrentQuestion.Errors[1].Id  ' => 1001",                
-                "version" : "5.4.1.0"
-            },            
-            {
-                "name" : "Message",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Return the message of the error",                
-                "examples" : [
-                    " CurrentQuestion.Errors[1].Message  ' => \"A response is expected for question 'q1'\"",                    
-                    " q2.Errors[1].Message  ' => \"You can only give one response for question 'q2'\""
-                ],                
-                "version" : "5.4.1.0"
-            }
-        ],        
-        "response" : [
-            {
-                "name" : "Caption",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the caption of the response",                
-                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Entry-code of the response",                
-                "examples" : "brands.Responses[1].EntryCode ' => 4",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Entry-code of the response (as string)",                
-                "examples" : "country.Responses[1].EntryCodeStr ' => \"US\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Factor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a factor as they were entered in the value column of the scaled responses",                
-                "examples" : [
-                    " gender.Responses[1].Factor ' => 3",                    
-                    " country.AvailableResponses[1].Factor ' => 7"
-                ],                
-                "version" : "5.4.6.0"
-            },            
-            {
-                "name" : "Id",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Internal unique identifier of the response",                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].id  ' => 456",                    
-                    " CurrentQuestion.AvailableResponses[2].id ' => 455"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Index",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the index of response (based 1) as it was entered",                
-                "examples" : [
-                    " gender.Responses[1].Index  ' => 1",                    
-                    " gender.Responses[2].Index  ' => 2"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "InputName",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Indicates the full-name of the HTML input for this response.",                    
-                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
-                    " <ul><li><strong>ranking</strong>: Obtain the full-name of the input to set the rank of this response</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.InputName() ' => \"U0\"",                    
-                    " gender.Responses[1].InputName() ' => \"U0\"",                    
-                    " gender.Responses[2].InputName() ' => \"U0\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.InputName() ' => \"M2\"",                    
-                    " brands.Responses[1].InputName() ' => \"M2 510\"",                    
-                    " brands.Responses[2].InputName() ' => \"M2 511\"",                    
-                    " brands.Responses[3].InputName() ' => \"M2 512\"",                    
-                    "",                    
-                    " ' Multiple with ranking",                    
-                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
-                    " brands.Responses[1].InputName(\"ranking\") ' => \"R2 510\"",                    
-                    " brands.Responses[2].InputName(\"ranking\") ' => \"R2 511\"",                    
-                    " brands.Responses[3].InputName(\"ranking\") ' => \"R2 512\""
-                ],                
-                "alsoSee" : [
-                    "Question.InputName",                    
-                    "Question.InputValue",                    
-                    "Response.InputValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "InputValue",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input value to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns the HTML input value attribute for this response.",                    
-                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
-                    " <ul><li><strong>ranking</strong>: Obtain the rank value of the response input</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.Responses[1].InputValue() ' => \"256\"",                    
-                    " gender.Responses[2].InputValue() ' => \"257\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.Responses[1].InputValue() ' => \"510\"",                    
-                    " brands.Responses[2].InputValue() ' => \"511\"",                    
-                    " brands.Responses[3].InputValue() ' => \"512\"",                    
-                    "",                    
-                    " ' Multiple with ranking (return the rank)",                    
-                    " brands.Responses[1].InputValue(\"ranking\") ' => \"2\"",                    
-                    " brands.Responses[2].InputValue(\"ranking\") ' => \"1\"",                    
-                    " brands.Responses[3].InputValue(\"ranking\") ' => \"\""
-                ],                
-                "alsoSee" : [
-                    "Question.InputName",                    
-                    "Question.InputValue",                    
-                    "Response.InputName"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsExclusive",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the response is considered (flag) as \"Exclusive\" answer.",                    
-                    " It returns always True for a single closed question, even if it's linked into a multiple"
-                ],                
-                "examples" : "gender.Responses[3].IsExclusive ' => True",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsIgnored",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the response is ignored",                
-                "examples" : "brands.Responses[5].IsIgnored ' => False",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsSelected",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].IsSelected  ' => true",                    
-                    " CurrentQuestion.AvailableResponses[2].IsSelected ' => false",                    
-                    " ' Similar than",                    
-                    " ' CurrentQuestion.Value Has CurrentQuestion.AvailableResponses[2].Index"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Order",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the order of response (based 1) on display.",                    
-                    " Returns DK if the question is skipped or the response was ignored."
-                ],                
-                "examples" : [
-                    " brands.Responses[1].Order  ' => 2",                    
-                    " brands.Responses[2].Order  ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Rank",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates in which order the answer has been selected by the respondent.",                    
-                    " Sequence from 0 (when no selection) to the number of answers.<br />If the response has not been selected the value is 0.",                    
-                    " For multiple ranking question it returns the order of the selection (based 1)",                    
-                    " For classical multiple question, the order of the selection is a sequence (based 1) <br />that may be sort according to how the responses has been displayed."
-                ],                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].Rank ' => 0 (not selected)",                    
-                    " CurrentQuestion.AvailableResponses[2].Rank ' => 3 (third selected)",                    
-                    " CurrentQuestion.AvailableResponses[3].Rank ' => 1 (first selected)",                    
-                    " CurrentQuestion.AvailableResponses[4].Rank ' => 2 (second selected)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ResourceURL",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the URL of resource for the response",                
-                "examples" : "gender.Responses[1].ResourceURL  ' => \"/man.png\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses[1].ToString()",                    
-                    " ' => {",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"isSelected\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " }"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
-                "version" : "5.3.2.0"
-            }
-        ],        
-        "adc" : [
-            {
-                "name" : "Contents",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "\tList of contents in the current selected output.",                
-                "examples" : [
-                    "\tCurrentADC.Contents.Count ' => 2",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1]",                    
-                    "\t' => <ADCContent::dynamic:default.html>"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "GetContent",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adccontent",                
-                "args" : [
-                    {
-                        "name" : "location",                        
-                        "type" : "string",                        
-                        "desc" : "Location of the content to obtain"
-                    }
-                ],                
-                "desc" : "\tReturns the ADC Content object with the specified location.",                
-                "examples" : [
-                    "\tCurrentADC.GetContent(\"share/jquery.js\")  ",                    
-                    "\t' => <ADCContent::share:jquery.js>",                    
-                    "",                    
-                    "\tCurrentADC.GetContent(\"static/styles.css\").Type ",                    
-                    "\t' => \"css\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "GetProperty",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adcproperty",                
-                "args" : [
-                    {
-                        "name" : "propertyId",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to obtain"
-                    }
-                ],                
-                "desc" : "\tReturns the ADC Property object with the specified id.",                
-                "examples" : [
-                    "\tCurrentADC.GetProperty(\"tickColor\")  ",                    
-                    "\t' => <ADCProperty::tickColor>",                    
-                    "",                    
-                    "\tCurrentADC.GetProperty(\"tickColor\").Name ",                    
-                    "\t' => \"Tick color\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "InstanceId",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    "\tReturns the unique identifier of the ADC instance.",                    
-                    "\tThe same ADC could appears several times in the same page and each of it has it's own unique identifier that could be retrieve through this property."
-                ],                
-                "examples" : [
-                    "\tCurrentADC.InstanceId  ",                    
-                    "\t' => 1, for the first ADC instance ",                    
-                    "\t' available in the current page"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Name",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Name of the ADC",                
-                "examples" : [
-                    " CurrentADC.Name ' => \"adc-problem\"",                    
-                    " "
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "OutputId",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the current output in use.",                
-                "examples" : "\tCurrentADC.OutputId ' => \"mobileHTMLOutput\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Properties",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "\tEntire collection of properties defined in the ADC.",                
-                "examples" : [
-                    "\tCurrentADC.Properties.Count ' => 2",                    
-                    "",                    
-                    "\tCurrentADC.Properties[1] ",                    
-                    "\t' => <ADCProperty::tickColor>"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "PropValue",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "propertyId",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to read"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturns the value of the property as a string.",                    
-                    "\t\t"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
-                    "\t' => \"FlashEnable\"",                    
-                    "",                    
-                    "\tCurrentADC.PropValue(\"tickColour\") ' => \"0,255,0\"",                    
-                    "",                    
-                    "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "URLTo",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "location",                        
-                        "type" : "string",                        
-                        "desc" : "Location of the content to obtain"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturns the relative URL path to content file at the specify location.",                    
-                    "\tFor dynamic file:",                    
-                    "\t- It returns the path to the pre-processor component such as AskiaExt.dll.",                    
-                    "\t- It's likely to be use in AJAX query. In that case, you could also post the data of current HTML form to obtain a live output.",                    
-                    "\t"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.URLTo(\"static/tick.png\") ",                    
-                    "\t' => \"../Resources/[Survey]/[ADC]/tick.png\"",                    
-                    "",                    
-                    "\tCurrentADC.URLTo(\"shared/jquery.js\") ",                    
-                    "\t' => \"../Resources/[Survey]/jquery.js\" ",                    
-                    "",                    
-                    "\tCurrentADC.URLTo(\"dynamic/default.js\")",                    
-                    "\t' => \"\" ' Not yet implemented"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Var",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "variant",                
-                "args" : [
-                    {
-                        "name" : "propertyId",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to read"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturns the value of the property as a variant.",                    
-                    "\t\t"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
-                    "\t' => \"FlashEnable\"",                    
-                    "",                    
-                    "\tCurrentADC.Var(\"tickColour\") ' => \"0,255,0\"",                    
-                    "",                    
-                    "\tCurrentADC.Var(\"booleanProp\") ' => 1"
-                ],                
-                "version" : "5.4.2.0"
-            }
-        ],        
-        "interview" : [
-            {
-                "name" : "AgentID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the identifier of the interviewing agent",                    
-                    "",                    
-                    " Only available with askiaVoice or askiaFace fieldwork, otherwise it returns 0.",                    
-                    " Cotrarily to the agent name the agent id is stored in the survey data so can be accessed by verification scripts"
-                ],                
-                "remarks" : [
-                    " @alsosee",                    
-                    " AgentName"
-                ],                
-                "examples" : "Interview.AgentID ' => 35",                
+                "accessor" : "question",                
                 "version" : "5.4.2.0"
             },            
             {
-                "name" : "AgentName",                
+                "name" : "Count",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : [
-                    " Returns the name of the interviewing agent",                    
-                    "",                    
-                    " Only available during askiaVoice or askiaFace fieldwork, otherwise it returns an empty string \"\".",                    
-                    " The agent name is not persisted in the survey data hence it's not available in verification script. Make sure that if you set a value to a question with it,",                    
-                    " you do no lose that information by modifying it in Supervisor or Entry (see IsCATI)"
-                ],                
-                "remarks" : [
-                    " ",                    
-                    " @alsosee",                    
-                    " IsCATI, AgentID",                    
-                    "",                    
-                    " "
-                ],                
-                "examples" : "Interview.AgentName ' => \"John Doe\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Broker",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the Broker ID as received in askia web",                
-                "remarks" : "",                
-                "examples" : "Interview.Broker ' => \"SSI\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "BrokerPanelID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
-                "remarks" : "",                
-                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "CallID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns a Call ID of the current interview.",                    
-                    "",                    
-                    " Only available during askiaVoice fieldwork, otherwise it returns 0."
-                ],                
-                "remarks" : "This is usually only available in AskiaVoice",                
-                "examples" : "Interview.CallID ' => 123",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Duration",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "startQuestion",                        
-                        "type" : "question"
-                    },                    
-                    {
-                        "name" : "endQuestion",                        
-                        "type" : "question",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "threshold",                        
-                        "type" : "number",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns the time (in seconds) spent on a question or the total time spent between a range of questions. (eg. InterviewTime)",                    
-                    " If any question duration is superior to the threshold, that question is not taken in account in the sum",                    
-                    "",                    
-                    " Parameters",                    
-                    "",                    
-                    " - startQuestion [Required] {Question} Indicates the question from where the calculation of tiem should start.",                    
-                    " - endQuestion [Optional] {Question} Indicates the question to where the calculation of time should stop should stop (included in the calculation). If the omit, the endQuestion is equal to the startQuestion",                    
-                    " - threshold [Optional] {Number} any duration superior to the threshold (for a given quetsion) will be ignored"
-                ],                
-                "examples" : [
-                    " Interview.Duration(gender) ' => 2 (seconds)",                    
-                    "",                    
-                    " Interview.Duration(gender, Age) ' => 5 (seconds)",                    
-                    "",                    
-                    " ' q1 is inside a loop = only the current iteration is returned",                    
-                    " Interview.Duration(q1) <> Interview.Duration(q1.FirstIteration,q1.LastIteration)",                    
-                    "  "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "EndTime",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the finished date/time of the current interview in the current time zone(eg. EndInterview)",                    
-                    "",                    
-                    " If the current interview is not yet finished it return the time of last screen submit"
-                ],                
-                "remarks" : "",                
-                "examples" : [
-                    " Interview.EndTime ' => #10/01/2016 11:01\"",                    
-                    "",                    
-                    " @alsosee",                    
-                    " EndTimeUTC,StartTime"
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "EndTimeUTC",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the finished UTC date/time of the current interview (eg. EndInterview)",                    
-                    "",                    
-                    " If the current interview is not yet finished it return the time of last screen submit"
-                ],                
-                "remarks" : [
-                    " @alsosee",                    
-                    " EndTime,StartTimeUTC"
-                ],                
-                "examples" : "Interview.EndTimeUTC ' => #10/01/2016 10:01\"",                
+                "desc" : "\tReturns the number of items in the collection",                
+                "examples" : "\tCurrentQuestions.Count ' => 2",                
                 "version" : "5.4.2.0"
             },            
             {
@@ -3236,304 +1445,72 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "errors",                
-                "desc" : "Returns the list of errors during the interview run-time",                
+                "desc" : "\tReturns the list of errors during the interview run-time associated with the questions.",                
                 "examples" : [
-                    " Interview.Errors.Count ' => 0",                    
+                    "\tCurrentQuestions.Errors.Count ' => 0",                    
                     "",                    
-                    " Interview.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                    "\tCurrentQuestions.Errors[1].Key ' => \"expected_answer\"",                    
+                    "",                    
+                    "\tCurrentQuestions.Errors[1].Message ' => \"A response is expected for question 'q1'\""
                 ],                
-                "version" : "5.4.1.0"
+                "version" : "5.4.2.0"
             },            
             {
-                "name" : "GetFaceOS",                
+                "name" : "FilterByTag",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : [
-                    " Returns the Operating System (OS) of the AskiaFace device, if the current interviewing mode is AskiaFace.",                    
-                    "",                    
-                    " Returns an empty string if the interviewing mode is not Face.",                    
-                    "",                    
-                    " Possible return values are:",                    
-                    "",                    
-                    " \"windows\"",                    
-                    " \"ios\"",                    
-                    " \"android\"",                    
-                    "",                    
-                    " Return a String"
+                "args" : [
+                    {
+                        "name" : "Tag",                        
+                        "type" : "string",                        
+                        "desc" : "Specifies the tag you want to filter by"
+                    }
                 ],                
-                "examples" : [
-                    " Interview.GetFaceOS()  ' => \"windows\"",                    
-                    "",                    
-                    " Interview.GetFaceOS()  ' => \"ios\"",                    
-                    "",                    
-                    " Interview.GetFaceOS()  ' => \"android\"",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
+                "desc" : "\tReturns an array of questions who have been tagged with the same parameter",                
+                "examples" : "\tSurvey.Questions.FilterByTag(\"Likert\")",                
+                "version" : "5.5.0.0"
             },            
             {
-                "name" : "GUID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
-                "remarks" : "",                
-                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the ID of the interview. The ID is not available during the interview but is in case of a modification in Voice or in the verification scripts",                
-                "remarks" : "This is usually only available once the interview has been saved",                
-                "examples" : "Interview.Id ' => 123",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IPAddress",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the IPAddress if available",                
-                "remarks" : "This is usually only available in askiaWeb",                
-                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "IsFace",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interviewing mode is AskiaFace (CAPI)",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsFace  ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsFirstPage",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if you are on the first page",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsFirstPage ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsLastPage",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if you are on the last page - this might give you the wrong information depending on routings",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsLastPage ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsTest",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interview was started in Brief mode or Test flag",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsTest  ' => False",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsVoice",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interviewing mode is AskiaVoice (CATI)",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsVoice  ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsWeb",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interviewing mode is in AskiaWeb (CAWI)",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsWeb  ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Key",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the secure hash key of the current interview (used in URL) (eg. Password)",                
-                "remarks" : "",                
-                "examples" : "Interview.Key ' => \"QWERTYQWERTYQWER\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Language",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "language",                
-                "desc" : "Returns the respondent's current language.",                
-                "examples" : [
-                    " Interview.Language.Abbr ' => \"FRA\"",                    
-                    " Interview.Language.Name ' => \"French (France)\""
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Latitude",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the Latitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Latitude ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ListID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the identifier of the respondent list",                
-                "remarks" : "This is usually only available in askiaVoice",                
-                "examples" : "Interview.ListID ' => 22",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Longitude",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the longitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Longitude ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "PanelID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the askia Panel ID as received in askia web when available",                
-                "remarks" : "",                
-                "examples" : "Interview.PanelID ' => \"2356b\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Progress",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the percentage value of progress through the questionnaire.",                
-                "examples" : "Interview.Progress ' => 32",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Returns",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "offsettoutc",                
-                "desc" : [
-                    " This returns the shift in hours from the time to the",                    
-                    " "
-                ],                
-                "examples" : "Interview.StartTime - Interview.OffsetToUTC /24 ' => StartTime as UTC time",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Scenario",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the current respondent scenario (also known in design 5 as version)",                
-                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
-                "examples" : "Interview.Scenario ' => \"User\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Seed",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
-                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
-                "examples" : "Interview.Seed ' => 133",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "StartTime",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : "Indicates the start date/time of the current interview in the current time zone (eg. StartInterview)",                
-                "remarks" : [
-                    " @alsosee",                    
-                    " StartTimeUTC"
-                ],                
-                "examples" : "Interview.StartTime ' => #10/01/2016 10:33\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "StartTimeUTC",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : "Indicates the start UTC date/time of the current interview  (eg. StartInterview)",                
-                "remarks" : [
-                    " @alsosee",                    
-                    " StartTime",                    
-                    "",                    
-                    " "
-                ],                
-                "examples" : "Interview.StartTimeUTC ' => #10/01/2016 11:33\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "ToString",                
+                "name" : "FilterByTag",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Interview.ToString()",                
-                "version" : "5.3.5.0"
+                "type" : "questionarray",                
+                "args" : [
+                    {
+                        "name" : "TagArray",                        
+                        "type" : "stringarrays",                        
+                        "desc" : "Specifiss the tags you want to filter by"
+                    }
+                ],                
+                "desc" : "\tReturns an array of questions who have been tagged with one of the parameters",                
+                "examples" : "\tSurvey.Questions.FilterByTag({\"Likert\"; {\"Scale\"})",                
+                "version" : "5.5.0.0"
             },            
             {
-                "name" : "TypeOf",                
+                "name" : "FilterUnanswered",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns \"interview\"",                
-                "examples" : "interview.TypeOf() ' => \"interview\"",                
-                "version" : "5.3.5.0"
+                "type" : "questionarray",                
+                "desc" : "\tReturns an array of questions who are yet to be answered",                
+                "examples" : "\tSurvey.Questions.FilterUnanswered() > 0 ' Survey is not complete!",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "FindByShortcut",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "args" : [
+                    {
+                        "name" : "Shortcut",                        
+                        "type" : "string",                        
+                        "desc" : "Specifies the shrtcut of the quetsion you want to find"
+                    }
+                ],                
+                "desc" : "\tReturns one question having the specified shortcut - if the question is not found, a dummy question is returned with a questionID = DK",                
+                "examples" : "\tSurvey.Questions.FindByshortcut(\"Gender\")",                
+                "version" : "5.5.0.0"
             }
         ],        
         "assert" : [
@@ -3650,20 +1627,247 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             }
         ],        
-        "errors" : [
+        "responses" : [
             {
                 "ns" : "masquelanguage",                
-                "accessor" : "error",                
-                "version" : "5.4.1.0"
+                "accessor" : "response"
+            },            
+            {
+                "name" : "Caption",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the caption of responses in the collection",                
+                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
+                "version" : "5.3.2.0"
             },            
             {
                 "name" : "Count",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "\tReturns the number of items in the collection",                
-                "examples" : "\tCurrentQuestions.Errors.Count ' => 2",                
-                "version" : "5.4.2.0"
+                "desc" : "Returns the number of items in the collection",                
+                "examples" : "gender.Responses.Count ' => 2",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code of responses in the collection",                
+                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
+                "examples" : [
+                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
+                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Factor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns all the factors of a response collection as they were entered in the value column of the scaled responses",                
+                "examples" : [
+                    "\tAge.Responses.Factor ' => {10; 20; 30; 50}",                    
+                    "\tAge.AvailableResponses.Factor ' => {20; 30; 50}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Index",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
+                "examples" : [
+                    " gender.Responses.Index ' => {1; 2}",                    
+                    " country.AvailableResponses.Index ' => {2; 3; 1}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
+                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses.ToString()",                    
+                    " ' => [{",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " },{",                    
+                    " \"index\" : 2,",                    
+                    " \"entryCode\":\"002\",",                    
+                    " \"caption\":\"Woman\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Woman.png\"",                    
+                    " }]"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "error" : [
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Return the id of the Error",                
+                "examples" : "CurrentQuestion.Errors[1].Id  ' => 1001",                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Message",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the message of the error",                
+                "examples" : [
+                    " CurrentQuestion.Errors[1].Message  ' => \"A response is expected for question 'q1'\"",                    
+                    " q2.Errors[1].Message  ' => \"You can only give one response for question 'q2'\""
+                ],                
+                "version" : "5.4.1.0"
+            }
+        ],        
+        "adccontent" : [
+            {
+                "name" : "FileName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the file name associated with the content",                
+                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Mode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the mode of the content.",                    
+                    "\tAvailable modes are:",                    
+                    "\t- \"share\" ",                    
+                    "\t- \"static\" ",                    
+                    "\t- \"dynamic\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Position",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the position of the content.",                    
+                    "\tAvailable positions are:",                    
+                    "\t- \"none\" ",                    
+                    "\t- \"head\" ",                    
+                    "\t- \"placeholder\" ",                    
+                    "\t- \"foot\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToText",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the content of the file associated with the content. ",                    
+                    "",                    
+                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
+                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToURL",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the final relative URL path to the content file",                    
+                    "",                    
+                    "\tThis is a shorthand to the method:",                    
+                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.Contents[1].ToURL() ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the type of the content.",                
+                "examples" : "\tCurrentADC.Contents[1].Type ' => \"JavaScript\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of the content. Available types are:",                    
+                    "- \"text\" ",                    
+                    "-- \"html\" ",                    
+                    "-- \"css\" ",                    
+                    "-- \"javascript\" ",                    
+                    "- \"binary\" ",                    
+                    "-- \"image\" ",                    
+                    "-- \"audio\" ",                    
+                    "-- \"video\" ",                    
+                    "-- \"flash\""
+                ],                
+                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
+                "version" : "5.3.3.0"
             }
         ],        
         "browser" : [
@@ -4218,215 +2422,570 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             }
         ],        
-        "adccontent" : [
+        "theme" : [
             {
-                "name" : "FileName",                
+                "name" : "BaseFS",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : "\tReturns the file name associated with the content",                
-                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
-                "version" : "5.3.3.0"
+                "desc" : "\tReturns the base font size",                
+                "examples" : "\tInterview.BaseFS ' => \"12px\"",                
+                "version" : "5.4.2.0"
             },            
             {
-                "name" : "Mode",                
+                "name" : "BlackColor",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : [
-                    "\tReturns the mode of the content.",                    
-                    "\tAvailable modes are:",                    
-                    "\t- \"share\" ",                    
-                    "\t- \"static\" ",                    
-                    "\t- \"dynamic\""
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
-                "version" : "5.3.3.0"
+                "desc" : "\tReturns the color used as \"black\" - usually the fore color",                
+                "examples" : "\tInterview.Black ' => \"0,0,0\"",                
+                "version" : "5.4.2.0"
             },            
             {
-                "name" : "Position",                
+                "name" : "BorderRadius",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : [
-                    "\tReturns the position of the content.",                    
-                    "\tAvailable positions are:",                    
-                    "\t- \"none\" ",                    
-                    "\t- \"head\" ",                    
-                    "\t- \"placeholder\" ",                    
-                    "\t- \"foot\""
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
-                "version" : "5.3.3.0"
+                "desc" : "\tReturns the border radius",                
+                "examples" : "\tInterview.BorderRadius ' => \"5px\"",                
+                "version" : "5.4.2.0"
             },            
             {
-                "name" : "ToText",                
+                "name" : "BorderWidth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the border width",                
+                "examples" : "\tInterview.BorderWidth ' => \"1px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ErrorColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the error colour",                
+                "examples" : "\tInterview.ErrorColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "FontFamily",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the font family",                
+                "examples" : "\tInterview.FontFamily ' => \"Print: Arial, Helvetica, sans-serif\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "HPadding",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the horizontal padding",                
+                "examples" : "\tInterview.HPadding ' => \"0.5em\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LargeFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the large font size",                
+                "examples" : "\tInterview.LargeFS ' => \"14px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LineHeight",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the line height for text",                
+                "examples" : "\tInterview.LineHeight ' => \"1.2\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the neutral colour",                
+                "examples" : "\tInterview.NeutralColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the neutral colour",                
+                "examples" : "\tInterview.NeutralDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the neutral colour",                
+                "examples" : "\tInterview.NeutralLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NormalFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the normal font size",                
+                "examples" : "\tInterview.NormalFS ' => \"10px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the primary colour",                
+                "examples" : "\tInterview.PrimaryColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the primary colour",                
+                "examples" : "\tInterview.PrimaryDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the primary colour",                
+                "examples" : "\tInterview.PrimaryLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PropValue",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : [
-                    "\tReturns the content of the file associated with the content. ",                    
-                    "",                    
-                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
-                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li><li>SuccessColor</li></ul>"
+                    }
                 ],                
-                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
-                "version" : "5.3.3.0"
+                "desc" : [
+                    "\tReturn the value of the theme property.",                    
+                    "\tReturn an empty string if the property is not supported."
+                ],                
+                "examples" : "\tTheme.PropValue(\"PrimaryColor\") ' => \"11.202.235\"",                
+                "alsoSee" : "Theme.Var",                
+                "version" : "5.4.2.0"
             },            
             {
-                "name" : "ToURL",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the final relative URL path to the content file",                    
-                    "",                    
-                    "\tThis is a shorthand to the method:",                    
-                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.Contents[1].ToURL() ",                    
-                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1].ToURL()",                    
-                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1].ToURL()",                    
-                    "\t' => \"\" ' Not yet implemented"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
+                "name" : "SecondaryColor",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : [
-                    " Returns the type of the content. Available types are:",                    
-                    "- \"text\" ",                    
-                    "-- \"html\" ",                    
-                    "-- \"css\" ",                    
-                    "-- \"javascript\" ",                    
-                    "- \"binary\" ",                    
-                    "-- \"image\" ",                    
-                    "-- \"audio\" ",                    
-                    "-- \"video\" ",                    
-                    "-- \"flash\""
+                "desc" : "\tReturns the secondary colour",                
+                "examples" : "\tInterview.SecondaryColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the secondary colour",                
+                "examples" : "\tInterview.SecondaryDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the secondary colour",                
+                "examples" : "\tInterview.SecondaryLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SmallFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the small font size",                
+                "examples" : "\tInterview.SmallFS ' => \"8px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SuccessColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the success colour",                
+                "examples" : "\tInterview.SuccessColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Var",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li><li>SuccessColor></li>"
+                    }
                 ],                
-                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
-                "version" : "5.3.3.0"
+                "desc" : [
+                    "\tReturn the value of the theme property (as a variant).",                    
+                    "\tReturn an empty string if the property is not supported."
+                ],                
+                "examples" : "\tTheme.Var(\"PrimaryColor\") ' => 11.202.235",                
+                "alsoSee" : "Theme.PropValue",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "VPadding",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the vertical padding",                
+                "examples" : "\tInterview.VPadding ' => \"1.2em\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "WhiteColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the color used as \"white\" usually the back color",                
+                "examples" : "\tInterview.WhiteColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
             }
         ],        
-        "responses" : [
+        "message" : [
             {
-                "ns" : "masquelanguage",                
-                "accessor" : "response"
-            },            
-            {
-                "name" : "Caption",                
+                "name" : "continue_left_off",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the caption of responses in the collection",                
-                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Count",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the number of items in the collection",                
-                "examples" : "gender.Responses.Count ' => 2",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code of responses in the collection",                
-                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
-                "examples" : [
-                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
-                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Factor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tReturns all the factors of a response collection as they were entered in the value column of the scaled responses",                
-                "examples" : [
-                    "\tAge.Responses.Factor ' => {10; 20; 30; 50}",                    
-                    "\tAge.AvailableResponses.Factor ' => {20; 30; 50}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Index",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
-                "examples" : [
-                    " gender.Responses.Index ' => {1; 2}",                    
-                    " country.AvailableResponses.Index ' => {2; 3; 1}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ResourceURL",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
-                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
                 "type" : "string",                
-                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses.ToString()",                    
-                    " ' => [{",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " },{",                    
-                    " \"index\" : 2,",                    
-                    " \"entryCode\":\"002\",",                    
-                    " \"caption\":\"Woman\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Woman.png\"",                    
-                    " }]"
-                ],                
-                "version" : "5.3.2.0"
+                "desc" : "Returns the identifier for the continue_left_off \tContinue where you left off",                
+                "examples" : "Interview.Language.Translate(Message.continue_left_off) ' => \" \"Continue where you left off\"",                
+                "version" : "5.5.2.0"
             },            
             {
-                "name" : "TypeOf",                
+                "name" : "expected_0_answer",                
                 "ns" : "masquelanguage",                
-                "base" : "method",                
+                "base" : "property",                
                 "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
-                "version" : "5.3.2.0"
+                "desc" : "Returns the identifier for the message \"expected_0_answer\"  \tA response is expected for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer) ' => \" \"A response is expected for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_multiple",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_multiple \tPlease choose all that apply!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple) ' => \" \"Please choose all that apply!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_multiple_grid_column",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_multiple_grid_column \tPlease choose at least one answer per column(vertically)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple_grid_column) ' => \" \"Please choose at least one answer per column(vertically)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_multiple_grid_row",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_multiple_grid_row \tPlease choose at least one answer per row(horizontally)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple_grid_row) ' => \" \"Please choose at least one answer per row(horizontally)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_open_ended",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_open_ended \tPlease type in your answer!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_open_ended) ' => \" \"Please type in your answer!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_single",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_single \tPlease choose one answer!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single) ' => \" \"Please choose one answer!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_single_grid_column",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_single_grid_column \tPlease choose one answer per column(vertically)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single_grid_column) ' => \" \"Please choose one answer per column(vertically)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_single_grid_row",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_single_grid_row \tPlease choose one answer per row(horizontally)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single_grid_row) ' => \" \"Please choose one answer per row(horizontally)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_at_least_1_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_at_least_1_answer \tPlease select at least %1 for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_at_least_1_answer) ' => \" \"Please select at least %1 for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_between_1_2",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_between_1_2 \tResponse to question '%0' must be between % 1 and %2",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_between_1_2) ' => \" \"Response to question '%0' must be between % 1 and %2\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_date",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_date \tPlease enter a valid date for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_date) ' => \" \"Please enter a valid date for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_greather_than_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_greather_than_1 \tResponse to question '%0' must be above % 1",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_greather_than_1) ' => \" \"Response to question '%0' must be between % 1 and %2\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_lower_than_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_lower_than_1 \tResponse to question '%0' must be under % 1",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_lower_than_1) ' => \" \"Response to question '%0' must be under % 1\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_no_decimal",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_no_decimal \tResponse to question '%0' cannot be decimal",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_no_decimal) ' => \" \"Response to question '%0' cannot be decimal\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_numeric",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_numeric\tResponse to question '%0' must be numeric",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_numeric) ' => \" \"Response to question '%0' must be numeric\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_only_1_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_only_1_answer \tYou can only give %1 responses to '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_only_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_only_one_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_only_one_answer \tYou can only give one response for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_only_one_answer) ' => \" \"You can only give one response for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_rank_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_rank_1 \tRank % 1 is missing for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_rank_1) ' => \" \"Rank % 1 is missing for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_rank_1_once",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the 15 \texpected_0_rank_1_once \tRank % 1 has been given more than once for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_rank_1_once) ' => \" \"Rank % 1 has been given more than once for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_ranking_between_one_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_ranking_between_one_1 \tRanking must be between 1 an % 1 for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_ranking_between_one_1) ' => \" \"Ranking must be between 1 an % 1 for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_time",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_time \tPlease enter a valid time for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_time) ' => \" \"Please enter a valid time for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_answer_at_least",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_answer_at_least \tOne or more questions have not been answered and require further input.Please carefully review your responses on this page.",                
+                "examples" : "Interview.Language.Translate(Message.expected_answer_at_least) ' => \" \"One or more questions have not been answered and require further input.Please carefully review your responses on this page.\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_semi_open",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_semi_open \tYou must specify the semi - open response",                
+                "examples" : "Interview.Language.Translate(Message.expected_semi_open) ' => \" \"You must specify the semi-open response\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "interview_0_percent_completed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the interview_0_completed\t0 % completed",                
+                "examples" : "Interview.Language.Translate(Message.interview_0_completed) ' => \" \"0 % completed\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "next",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the next \tNext",                
+                "examples" : "Interview.Language.Translate(Message.next) ' => \" \"Next\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "other",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message other",                
+                "examples" : "Interview.Language.Translate(Message.other) ' => \" \"Autre\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "picture_close",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the picture_close\tPlease click on the picture to close the window!",                
+                "examples" : "Interview.Language.Translate(Message.picture_close) ' => \" \"Please click on the picture to close the window!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "picture_enlarge",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the picture_enlarge\tPlease click on the picture to enlarge!",                
+                "examples" : "Interview.Language.Translate(Message.picture_enlarge) ' => \" \"Please click on the picture to enlarge!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "picture_see",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the picture_see\tPlease click on the link to see the picture!",                
+                "examples" : "Interview.Language.Translate(Message.picture_see) ' => \" \"Please click on the link to see the picture!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "previous",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the next \tNext",                
+                "examples" : "Interview.Language.Translate(Message.previous) ' => \" \"Next\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "quota_closed_0",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the quota_closed_0 \tThe quotas are closed for '%1'",                
+                "examples" : "Interview.Language.Translate(Message.quota_closed_0) ' => \" \"The quotas are closed for '%1'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "start_survey",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the start_survey \tStart Survey",                
+                "examples" : "Interview.Language.Translate(Message.start_survey) ' => \" \"Start Survey\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "submit",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the submit  \tSubmit your answers",                
+                "examples" : "Interview.Language.Translate(Message.submit ) ' => \" \"Submit your answers\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "unexpected_0_1_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message unexpected_0_1_answer \tYou cannot give response � % 1� to question � % 0�",                
+                "examples" : "Interview.Language.Translate(Message.unexpected_0_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
+                "version" : "5.5.2.0"
             }
         ],        
         "adcproperty" : [
@@ -4437,6 +2996,15 @@ askiaScript.extend(askiaScript.lexical, {
                 "type" : "string",                
                 "desc" : "Return the id of the ADC Property",                
                 "examples" : "CurrentADC.Properties[1].Id  ' => \"tickColor\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the type of the property",                
+                "examples" : "\tCurrentADC.Properties[1].Type ' => \"string\"",                
                 "version" : "5.3.3.0"
             },            
             {
@@ -4461,19 +3029,484 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             }
         ],        
-        "questions" : [
+        "response" : [
             {
+                "name" : "Caption",                
                 "ns" : "masquelanguage",                
-                "accessor" : "question",                
-                "version" : "5.4.2.0"
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the caption of the response",                
+                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
+                "version" : "5.3.2.0"
             },            
             {
-                "name" : "Count",                
+                "name" : "EntryCode",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "\tReturns the number of items in the collection",                
-                "examples" : "\tCurrentQuestions.Count ' => 2",                
+                "desc" : "Entry-code of the response",                
+                "examples" : "brands.Responses[1].EntryCode ' => 4",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Entry-code of the response (as string)",                
+                "examples" : "country.Responses[1].EntryCodeStr ' => \"US\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Factor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a factor as they were entered in the value column of the scaled responses",                
+                "examples" : [
+                    " gender.Responses[1].Factor ' => 3",                    
+                    " country.AvailableResponses[1].Factor ' => 7"
+                ],                
+                "version" : "5.4.6.0"
+            },            
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Internal unique identifier of the response",                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].id  ' => 456",                    
+                    " CurrentQuestion.AvailableResponses[2].id ' => 455"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Index",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the index of response (based 1) as it was entered",                
+                "examples" : [
+                    " gender.Responses[1].Index  ' => 1",                    
+                    " gender.Responses[2].Index  ' => 2"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "InputName",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Indicates the full-name of the HTML input for this response.",                    
+                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
+                    " <ul><li><strong>ranking</strong>: Obtain the full-name of the input to set the rank of this response</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.InputName() ' => \"U0\"",                    
+                    " gender.Responses[1].InputName() ' => \"U0\"",                    
+                    " gender.Responses[2].InputName() ' => \"U0\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.InputName() ' => \"M2\"",                    
+                    " brands.Responses[1].InputName() ' => \"M2 510\"",                    
+                    " brands.Responses[2].InputName() ' => \"M2 511\"",                    
+                    " brands.Responses[3].InputName() ' => \"M2 512\"",                    
+                    "",                    
+                    " ' Multiple with ranking",                    
+                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
+                    " brands.Responses[1].InputName(\"ranking\") ' => \"R2 510\"",                    
+                    " brands.Responses[2].InputName(\"ranking\") ' => \"R2 511\"",                    
+                    " brands.Responses[3].InputName(\"ranking\") ' => \"R2 512\""
+                ],                
+                "alsoSee" : [
+                    "Question.InputName",                    
+                    "Question.InputValue",                    
+                    "Response.InputValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InputValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input value to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the HTML input value attribute for this response.",                    
+                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
+                    " <ul><li><strong>ranking</strong>: Obtain the rank value of the response input</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.Responses[1].InputValue() ' => \"256\"",                    
+                    " gender.Responses[2].InputValue() ' => \"257\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.Responses[1].InputValue() ' => \"510\"",                    
+                    " brands.Responses[2].InputValue() ' => \"511\"",                    
+                    " brands.Responses[3].InputValue() ' => \"512\"",                    
+                    "",                    
+                    " ' Multiple with ranking (return the rank)",                    
+                    " brands.Responses[1].InputValue(\"ranking\") ' => \"2\"",                    
+                    " brands.Responses[2].InputValue(\"ranking\") ' => \"1\"",                    
+                    " brands.Responses[3].InputValue(\"ranking\") ' => \"\""
+                ],                
+                "alsoSee" : [
+                    "Question.InputName",                    
+                    "Question.InputValue",                    
+                    "Response.InputName"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsExclusive",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the response is considered (flag) as \"Exclusive\" answer.",                    
+                    " It returns always True for a single closed question, even if it's linked into a multiple"
+                ],                
+                "examples" : "gender.Responses[3].IsExclusive ' => True",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsIgnored",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the response is ignored",                
+                "examples" : "brands.Responses[5].IsIgnored ' => False",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsSelected",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].IsSelected  ' => true",                    
+                    " CurrentQuestion.AvailableResponses[2].IsSelected ' => false",                    
+                    " ' Similar than",                    
+                    " ' CurrentQuestion.Value Has CurrentQuestion.AvailableResponses[2].Index"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Order",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the order of response (based 1) on display.",                    
+                    " Returns DK if the question is skipped or the response was ignored."
+                ],                
+                "examples" : [
+                    " brands.Responses[1].Order  ' => 2",                    
+                    " brands.Responses[2].Order  ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Rank",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates in which order the answer has been selected by the respondent.",                    
+                    " Sequence from 0 (when no selection) to the number of answers.<br />If the response has not been selected the value is 0.",                    
+                    " For multiple ranking question it returns the order of the selection (based 1)",                    
+                    " For classical multiple question, the order of the selection is a sequence (based 1) <br />that may be sort according to how the responses has been displayed."
+                ],                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].Rank ' => 0 (not selected)",                    
+                    " CurrentQuestion.AvailableResponses[2].Rank ' => 3 (third selected)",                    
+                    " CurrentQuestion.AvailableResponses[3].Rank ' => 1 (first selected)",                    
+                    " CurrentQuestion.AvailableResponses[4].Rank ' => 2 (second selected)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the URL of resource for the response",                
+                "examples" : "gender.Responses[1].ResourceURL  ' => \"/man.png\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Tags",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : [
+                    "Returns the list of tags associated to a response",                    
+                    "",                    
+                    "q1.Responses[1].Tags Has {\"Browsable\"}"
+                ],                
+                "examples" : "q1.Responses[1].Tags Has {\"Browsable\"}",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses[1].ToString()",                    
+                    " ' => {",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"isSelected\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " }"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "adp" : [
+            {
+                "name" : "Redirect",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "URL",                        
+                        "type" : "string",                        
+                        "desc" : "to redirect"
+                    },                    
+                    {
+                        "name" : "Seconds",                        
+                        "type" : "string",                        
+                        "desc" : "to redirect"
+                    }
+                ],                
+                "desc" : "\tSets the ADP property",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).Redirect(\"www.askia.com\",3).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "SetProperty",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to set"
+                    },                    
+                    {
+                        "name" : "value",                        
+                        "type" : "variant"
+                    }
+                ],                
+                "desc" : "\tSets the ADP property",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ShowMessage",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "message",                        
+                        "type" : "string",                        
+                        "desc" : "yto be shown where the questions are usually displayed"
+                    }
+                ],                
+                "desc" : "\tUses the ADP engine to generate some HTML with a message",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            }
+        ],        
+        "interview" : [
+            {
+                "name" : "AgentID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the identifier of the interviewing agent",                    
+                    "",                    
+                    " Only available with askiaVoice or askiaFace fieldwork, otherwise it returns 0.",                    
+                    " Cotrarily to the agent name the agent id is stored in the survey data so can be accessed by verification scripts"
+                ],                
+                "remarks" : [
+                    " @alsosee",                    
+                    " AgentName"
+                ],                
+                "examples" : "Interview.AgentID ' => 35",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "AgentName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the name of the interviewing agent",                    
+                    "",                    
+                    " Only available during askiaVoice or askiaFace fieldwork, otherwise it returns an empty string \"\".",                    
+                    " The agent name is not persisted in the survey data hence it's not available in verification script. Make sure that if you set a value to a question with it,",                    
+                    " you do no lose that information by modifying it in Supervisor or Entry (see IsCATI)"
+                ],                
+                "remarks" : [
+                    " ",                    
+                    " @alsosee",                    
+                    " IsCATI, AgentID",                    
+                    "",                    
+                    " "
+                ],                
+                "examples" : "Interview.AgentName ' => \"John Doe\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Broker",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker ID as received in askia web",                
+                "remarks" : "",                
+                "examples" : "Interview.Broker ' => \"SSI\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "BrokerPanelID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
+                "remarks" : "",                
+                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "CallID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns a Call ID of the current interview.",                    
+                    "",                    
+                    " Only available during askiaVoice fieldwork, otherwise it returns 0."
+                ],                
+                "remarks" : "This is usually only available in AskiaVoice",                
+                "examples" : "Interview.CallID ' => 123",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Duration",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "startQuestion",                        
+                        "type" : "question"
+                    },                    
+                    {
+                        "name" : "endQuestion",                        
+                        "type" : "question",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "threshold",                        
+                        "type" : "number",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the time (in seconds) spent on a question or the total time spent between a range of questions. (eg. InterviewTime)",                    
+                    " If any question duration is superior to the threshold, that question is not taken in account in the sum",                    
+                    "",                    
+                    " Parameters",                    
+                    "",                    
+                    " - startQuestion [Required] {Question} Indicates the question from where the calculation of tiem should start.",                    
+                    " - endQuestion [Optional] {Question} Indicates the question to where the calculation of time should stop should stop (included in the calculation). If the omit, the endQuestion is equal to the startQuestion",                    
+                    " - threshold [Optional] {Number} any duration superior to the threshold (for a given quetsion) will be ignored"
+                ],                
+                "examples" : [
+                    " Interview.Duration(gender) ' => 2 (seconds)",                    
+                    "",                    
+                    " Interview.Duration(gender, Age) ' => 5 (seconds)",                    
+                    "",                    
+                    " ' q1 is inside a loop = only the current iteration is returned",                    
+                    " Interview.Duration(q1) <> Interview.Duration(q1.FirstIteration,q1.LastIteration)",                    
+                    "  "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "EndTime",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the finished date/time of the current interview in the current time zone(eg. EndInterview)",                    
+                    "",                    
+                    " If the current interview is not yet finished it return the time of last screen submit"
+                ],                
+                "remarks" : "",                
+                "examples" : [
+                    " Interview.EndTime ' => #10/01/2016 11:01\"",                    
+                    "",                    
+                    " @alsosee",                    
+                    " EndTimeUTC,StartTime"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "EndTimeUTC",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the finished UTC date/time of the current interview (eg. EndInterview)",                    
+                    "",                    
+                    " If the current interview is not yet finished it return the time of last screen submit"
+                ],                
+                "remarks" : [
+                    " @alsosee",                    
+                    " EndTime,StartTimeUTC"
+                ],                
+                "examples" : "Interview.EndTimeUTC ' => #10/01/2016 10:01\"",                
                 "version" : "5.4.2.0"
             },            
             {
@@ -4481,30 +3514,1813 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "errors",                
-                "desc" : "\tReturns the list of errors during the interview run-time associated with the questions.",                
+                "desc" : "Returns the list of errors during the interview run-time",                
                 "examples" : [
-                    "\tCurrentQuestions.Errors.Count ' => 0",                    
+                    " Interview.Errors.Count ' => 0",                    
                     "",                    
-                    "\tCurrentQuestions.Errors[1].Key ' => \"expected_answer\"",                    
+                    " Interview.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "GetFaceOS",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the Operating System (OS) of the AskiaFace device, if the current interviewing mode is AskiaFace.",                    
                     "",                    
-                    "\tCurrentQuestions.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                    " Returns an empty string if the interviewing mode is not Face.",                    
+                    "",                    
+                    " Possible return values are:",                    
+                    "",                    
+                    " \"windows\"",                    
+                    " \"ios\"",                    
+                    " \"android\"",                    
+                    "",                    
+                    " Return a String"
+                ],                
+                "examples" : [
+                    " Interview.GetFaceOS()  ' => \"windows\"",                    
+                    "",                    
+                    " Interview.GetFaceOS()  ' => \"ios\"",                    
+                    "",                    
+                    " Interview.GetFaceOS()  ' => \"android\"",                    
+                    " "
                 ],                
                 "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "GUID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
+                "remarks" : "",                
+                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the ID of the interview. The ID is not available during the interview but is in case of a modification in Voice or in the verification scripts",                
+                "remarks" : "This is usually only available once the interview has been saved",                
+                "examples" : "Interview.Id ' => 123",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IPAddress",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the IPAddress if available",                
+                "remarks" : "This is usually only available in askiaWeb",                
+                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "IsFace",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is AskiaFace (CAPI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsFace  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsFirstPage",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if you are on the first page",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsFirstPage ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsLastPage",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if you are on the last page - this might give you the wrong information depending on routings",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsLastPage ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsTest",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interview was started in Brief mode or Test flag",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsTest  ' => False",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsVoice",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is AskiaVoice (CATI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsVoice  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsWeb",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is in AskiaWeb (CAWI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsWeb  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Key",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the secure hash key of the current interview (used in URL) (eg. Password)",                
+                "remarks" : "",                
+                "examples" : "Interview.Key ' => \"QWERTYQWERTYQWER\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Language",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "language",                
+                "desc" : "Returns the respondent's current language.",                
+                "examples" : [
+                    " Interview.Language.Abbr ' => \"FRA\"",                    
+                    " Interview.Language.Name ' => \"French (France)\""
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LastResultCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the Last result code to the call or web interview - this is only available in a routing at the end of the survey or",                    
+                    "\ton an edit routing"
+                ],                
+                "remarks" : "\tthis was added in 5.4.9 in January 2019",                
+                "examples" : "\tInterview.LastResultCode ' => 4 = hang-up",                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "LastSubResultCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the Last sub result code to the call or web interview - this is only available in a routing at the end of the survey or",                    
+                    "\ton an edit routing"
+                ],                
+                "remarks" : "\tthis was added in 5.4.9 in January 2019",                
+                "examples" : "\tInterview.LastSubResultCode ' => 3",                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "Latitude",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the Latitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Latitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ListID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the identifier of the respondent list",                
+                "remarks" : "This is usually only available in askiaVoice",                
+                "examples" : "Interview.ListID ' => 22",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Longitude",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the longitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Longitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "OutOfQuotaQuestions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "\tReturns the question (r the list of questions if the quotas are nested) that triggered the out of quota",                
+                "remarks" : "\t",                
+                "examples" : [
+                    "\tInterview.OutOfQuotaQuestions[1].Shortcut ' => Gender",                    
+                    "\tInterview.OutOfQuotaQuestions[1].Value\t' => Male"
+                ],                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "PanelID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the askia Panel ID as received in askia web when available",                
+                "remarks" : "",                
+                "examples" : "Interview.PanelID ' => \"2356b\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Progress",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the percentage value of progress through the questionnaire.",                
+                "examples" : "Interview.Progress ' => 32",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Returns",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "offsettoutc",                
+                "desc" : [
+                    " This returns the shift in hours from the time to the",                    
+                    " "
+                ],                
+                "examples" : "Interview.StartTime - Interview.OffsetToUTC /24 ' => StartTime as UTC time",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Scenario",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the current respondent scenario (also known in design 5 as version)",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Scenario ' => \"User\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Seed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Seed ' => 133",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "StartTime",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : "Indicates the start date/time of the current interview in the current time zone (eg. StartInterview)",                
+                "remarks" : [
+                    " @alsosee",                    
+                    " StartTimeUTC"
+                ],                
+                "examples" : "Interview.StartTime ' => #10/01/2016 10:33\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "StartTimeUTC",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : "Indicates the start UTC date/time of the current interview  (eg. StartInterview)",                
+                "remarks" : [
+                    " @alsosee",                    
+                    " StartTime",                    
+                    "",                    
+                    " "
+                ],                
+                "examples" : "Interview.StartTimeUTC ' => #10/01/2016 11:33\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Interview.ToString()",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns \"interview\"",                
+                "examples" : "interview.TypeOf() ' => \"interview\"",                
+                "version" : "5.3.5.0"
             }
         ],        
-        "variant" : [
+        "survey" : [
             {
-                "name" : "ToQuestion",                
+                "name" : "ChildQuestions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "questions",                
+                "desc" : [
+                    "\tReturns the array of questions at the top level of the survey (often chapters)",                    
+                    "\t"
+                ],                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tQuestions"
+                ],                
+                "examples" : "\tSurvey.ChildQuestions[1].Shortcut ' => \"Demographics\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "FileName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the file name of the survey",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tName"
+                ],                
+                "examples" : "\tSurvey.FileName ' => \"Ex.qex\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "ID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the identifier of the survey (as registered in the CCA), or 0 when not yet registered.",                
+                "examples" : "\tSurvey.Id ' => 13",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Languages",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "languagearray",                
+                "desc" : "\tReturns the revision number of the survey file",                
+                "examples" : "\tSurvey.Languages[1].Name ' => \"English\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Name",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the name of the survey (as registered in the CCA) or the filename of the survey when not yet registered.",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tFileName"
+                ],                
+                "examples" : "\tSurvey.Name ' => \"Ex\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Questions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "questions",                
+                "desc" : "\tReturns the array of all questions - understand that per question we mean each survey data point - so a question within a loop will appear many times",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tChildQuestions"
+                ],                
+                "examples" : "\tSurvey.Questions[1].Shortcut ' => \"Demographics\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Revision",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the revision number of the survey file",                
+                "examples" : "\tSurvey.Revision ' => 14",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Scenarios",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "\tReturns the list of scenarios in the survey file",                
+                "examples" : "\tSurvey.Scenarios[1] ' => \"Debug\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Tags",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "\tReturns the list of possible tags in the survey file",                
+                "examples" : "\tSurvey.Tag[1] ' => \"Demographic\"",                
+                "version" : "5.5.0.0"
+            }
+        ],        
+        "question" : [
+            {
+                "name" : "AllIterations",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : [
+                    " Returns all the positions of a question ",                    
+                    " "
+                ],                
+                "examples" : [
+                    " Q1 is a single question inside a loop with 3 iterations",                    
+                    " Q1.AllIterations.Count ' => 3",                    
+                    "",                    
+                    " ",                    
+                    " Q5 is a single question inside a loop of loop with respectively 3 and 2 iterations",                    
+                    " Q5.AllIterations.Count",                    
+                    " ' => 6",                    
+                    "  "
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "AllValues",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : [
+                    " Returns all values of a question in loop.",                    
+                    " The value could be an array of the question value or nested arrays when the question is inside a nested loops.",                    
+                    " This property is only available for the question in loop, otherwise it throw an error."
+                ],                
+                "examples" : [
+                    " Q1 is a single question inside a loop with 3 iterations",                    
+                    " Q1.AllValues ' => {3; 5; 2}",                    
+                    "",                    
+                    " Q2 is a multiple question inside a loop with 3 iterations",                    
+                    " Q2.AllValues",                    
+                    " ' => {{3;1;4}; {2;5;1}; {4;5;2}}",                    
+                    "",                    
+                    " Q3 is an open-ended question inside a loop with 3 iterations",                    
+                    " Q3.AllValues",                    
+                    " ' => {\"hello\"; \"hi\"; \"goodbye\"}",                    
+                    "",                    
+                    " Q4 is a numeric question inside a loop with 3 iterations",                    
+                    " Q4.AllValues",                    
+                    " ' => {32.5; 47.1; 0}",                    
+                    "",                    
+                    " Q5 is a single question inside a loop of loop with respectively 3 and 2 iterations",                    
+                    " Q5.AllValues",                    
+                    " ' => {{5;3}; {3;4}; {1;2}}",                    
+                    "",                    
+                    " Q6 is a multiple question inside a loop of loop with respectively 3 and 2 iterations",                    
+                    " Q6.AllValues",                    
+                    " ' => {{{5;3;4};{2;1;4}}; {{1;2};{2;4;3}}; {{3;2;1};{4}}}",                    
+                    "",                    
+                    " Q7 is an open-ended question inside a loop of loop with respectively 3 and 2 iterations",                    
+                    " Q7.AllValues",                    
+                    " ' => {{\"hello\";\"world\"};  {\"hi\";\"people\"};  {\"goodbye\";\"folks\"}}",                    
+                    "",                    
+                    " Q8 is a numeric question inside a loop of loop with respectively 3 and 2 iterations",                    
+                    " Q8.AllValues",                    
+                    " ' => {{13.5;12}; {0;5}; {8.3;9}}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Answers",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "responses",                
+                "desc" : "Returns the list of selected responses in the selected order",                
+                "examples" : [
+                    " Color.Answers",                    
+                    " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",                    
+                    " List of responses:",                    
+                    " Red",                    
+                    " Blue",                    
+                    " Green",                    
+                    " Purple",                    
+                    "",                    
+                    " Screen visible by the respondent",                    
+                    " (The Blue response was hidden using a routing ignore responses):",                    
+                    " Which color do you like?",                    
+                    " Green",                    
+                    " Red",                    
+                    " Purple",                    
+                    "",                    
+                    " The responses selected by the respondent are Purple and Red in this order",                    
+                    " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",                    
+                    "",                    
+                    " Color.Answers.Value will return 4;1",                    
+                    " Color.Answers.EntryCode will return 14;11",                    
+                    " Color.Answers.Caption will return Purple;Red",                    
+                    " Color.Answers[2].Value will return 1 (the second answer given)"
+                ],                
+                "alsoSee" : [
+                    "Question.AvailableResponses",                    
+                    "Question.Responses",                    
+                    "Core.Responses",                    
+                    "Core.Response"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "AvailableAnswers",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "responses",                
+                "desc" : [
+                    " Returns the list of available responses in the selected order and according to",                    
+                    " the MaxVisibleIterations property."
+                ],                
+                "alsoSee" : [
+                    "Question.Answers",                    
+                    "Question.MaxVisibleIterations"
+                ],                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "AvailableBalancedQuota",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : [
+                    " returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to the min using the following formula ",                    
+                    "  Formula: (Target% - Observed%) / Target%"
+                ],                
+                "examples" : [
+                    " Newspapers.AvailableBalancedQuota[1] returns the quota which will make the quota closest to the target percentage",                    
+                    " Newspapers.AvailableQuota(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "AvailableQuota",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : "returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to do to the min to do using the count for the sort",                
+                "examples" : [
+                    " Newspapers.AvailableQuota()[1] returns the quota for which there is the biggest number of respondents to fill",                    
+                    " Newspapers.AvailableQuota(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2",                    
+                    " ",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "AvailableResponses",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "responses",                
+                "desc" : "Returns the list of available responses in the visible order",                
+                "examples" : [
+                    " Color.AvailableResponses",                    
+                    " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",                    
+                    " List of responses:",                    
+                    " Red",                    
+                    " Blue",                    
+                    " Green",                    
+                    " Purple",                    
+                    "",                    
+                    " Screen visible by the respondent",                    
+                    " (The Blue response was hidden using a routing ignore responses):",                    
+                    " Which color do you like?",                    
+                    " Green",                    
+                    " Red",                    
+                    " Purple",                    
+                    "",                    
+                    " The responses selected by the respondent are Purple and Red in this order",                    
+                    " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",                    
+                    "",                    
+                    " Color.AvailableResponses.Value will return 3;1;4",                    
+                    " Color.AvailableResponses.EntryCode will return 13;11;14",                    
+                    " Color.AvailableResponses.Caption will return Green;Red;Purple",                    
+                    " Color.AvailableResponses[2].Value will return 1 (the second answer available)"
+                ],                
+                "alsoSee" : [
+                    "Question.Responses",                    
+                    "Question.Answers",                    
+                    "Core.Responses",                    
+                    "Core.Response"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "BalancedQuotaList",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : [
+                    " returns the complete indexes of the responses of the TargetQuestion sorted from the max to the min using the following formula ",                    
+                    "  Formula: (Target% - Observed%) "
+                ],                
+                "examples" : [
+                    " Newspapers.BalancedQuotaList[1] returns the quota which will make the quota closest to the target percentage",                    
+                    " Newspapers.BalancedQuotaList(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ChildQuestions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the lists of questions just below the object question",                
+                "examples" : "\tChapter1.ChildQuestions[1].SetValue(\"ABC\")",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "CurrentIteration",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "response",                
+                "desc" : [
+                    " Returns the loop response on the current iteration.",                    
+                    " Only available for a loop, if you try to use this property for another type of element,",                    
+                    " the application should raise the following exception:",                    
+                    " The property CurrentIteration is only available for a loop.",                    
+                    " "
+                ],                
+                "examples" : [
+                    "  ' You can also use it for comparisons",                    
+                    " If Loop1.CurrentIteration = 1 Then [...]",                    
+                    " or",                    
+                    " If Loop1.CurrentIteration.Index = 1 Then [...]",                    
+                    " '",                    
+                    " If Loop1.CurrentIteration.EntryCode = \"UK\" Then [...]"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Decimals",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the number of digits allowed for a decimals value.",                    
+                    " Returns 0 when no decimal is allowed."
+                ],                
+                "examples" : [
+                    " age.Decimals  ' => 0",                    
+                    " temperature.Decimals ' => 1"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "DKEntry",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Indicates special entry used to specify the \"Don't know\" answer.",                
+                "examples" : "age.DKEntry ' => \"999\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "EntryCodeToIndex",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "anytype",                
+                "args" : [
+                    {
+                        "name" : "entryCodes",                        
+                        "type" : "anytype",                        
+                        "desc" : "Entry-code(s) to convert"
+                    }
+                ],                
+                "desc" : [
+                    " Returns the index(es) (based 1) of the specify entry code(s)",                    
+                    " Return 0 if the entry code was not found.",                    
+                    " If this parameter is an array, the size of the return value will have the same size of the EntryCodes parameter,",                    
+                    " even if the entry code was not found"
+                ],                
+                "examples" : [
+                    " country.EntryCodeToIndex(\"US\") ' => 1",                    
+                    " country.EntryCodeToIndex({\"US\"; \"DUMMY\"; \"UK\"}) ' => {1; DK; 2}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Errors",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "errors",                
+                "desc" : "Returns the list of errors during the interview run-time associated with the question.",                
+                "examples" : [
+                    " CurrentQuestion.Errors.Count ' => 0",                    
+                    "",                    
+                    " CurrentQuestion.Errors[1].Key ' => \"expected_answer\"",                    
+                    "",                    
+                    " CurrentQuestion.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "GotoURL",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the URL to be used to reposition the survey at this question",                
+                "examples" : "\tgender.GotoURL ' => \"http://localhost/Webprod/AskiaExt.dll?Reposition=3",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "HasAnswered",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : [
+                    "\tIndicates whether the question already has an answer (has already been asked)",                    
+                    "",                    
+                    "\tReturns a Boolean"
+                ],                
+                "examples" : "\tgender.HasAnswered ' => True",                
+                "version" : "5.4.6.0"
+            },            
+            {
+                "name" : "HasDK",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the answer of the question is a \"Don't know\" answer",                
+                "examples" : "gender.HasDK ' => False",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "HasNA",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the question is skipped",                
+                "examples" : "gender.HasNA ' => False",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "HasNoData",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if there is some data in the question (skipped or not skipped)",                    
+                    " "
+                ],                
+                "examples" : "gender.HasNoData ' => False",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "HasParentChapter",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates the question have an ancestry chapter.",                    
+                    "",                    
+                    " This property look-up to the hierarchy until it reaches a parent chapter."
+                ],                
+                "examples" : [
+                    " TopLevelQuestion.HasParentChapter ' => False",                    
+                    " QuestionInDemographics.HasParentChapter '=> True"
+                ],                
+                "alsoSee" : [
+                    "ParentChapter",                    
+                    "HasParentLoop"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "HasParentLoop",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates the question is into a loop.",                
+                "examples" : [
+                    " Q1.HasParentLoop ' => True",                    
+                    " gender.HasParentLoop '=> False"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "HasValidData",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the answer of the question is valid for open, numeric and closed question",                    
+                    " It checks if there is a value and if that value is compatible with DK settings (for all), min /max number of responses and exclusivity (for multiple), size (for open), range (for numeric and date)"
+                ],                
+                "examples" : "gender.HasValidData ' => True",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Internal unique identifier of the question",                
+                "examples" : [
+                    " gender.id  ' => 1",                    
+                    " age.id ' => 2"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IndexToEntryCode",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "anytype",                
+                "args" : [
+                    {
+                        "name" : "indexes",                        
+                        "type" : "anytype",                        
+                        "desc" : "Index(es) to convert (based 1)"
+                    }
+                ],                
+                "desc" : [
+                    " Returns the entry code(s) of the response(s) at the specify index(es)",                    
+                    " If this parameter is an array, the size of the return value will have the same size of the Indexes parameter,",                    
+                    " even if the index is out of range"
+                ],                
+                "examples" : [
+                    " Gender question, Male with entry code 4 and Female with entry code 6",                    
+                    " Gender.IndexToEntryCode(1) ' => 4",                    
+                    " Color question, Blue with entry code 4, Red with entry code 6 and Green with entry code 8, Green and Blue selected",                    
+                    " Color.IndexToEntryCode(Color) ' => 8;4",                    
+                    " Color.IndexToEntryCode({3;2}) ' => 8;6"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IndexToEntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "anytype",                
+                "args" : [
+                    {
+                        "name" : "indexes",                        
+                        "type" : "anytype",                        
+                        "desc" : "Index(es) to convert (based 1)"
+                    }
+                ],                
+                "desc" : [
+                    " Returns the entry code(s) of the response(s) at the specify index(es)",                    
+                    " Return \"\" if the entry code was not found.",                    
+                    " If this parameter is an array, the size of the return value will have the same size of the Indexes parameter,",                    
+                    " even if the index is out of range"
+                ],                
+                "examples" : [
+                    " country.IndexToEntryCodeStr(1) ' => \"US\"",                    
+                    " country.IndexToEntryCodeStr({1; -3; 2}) ' => {\"US\"; \"\"; \"UK\"}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "InputCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tIndicates the input code - actually the position of the question in the masque",                
+                "examples" : [
+                    "\t' Single",                    
+                    "\tgender.InputCode ' => 0",                    
+                    "",                    
+                    "\t' Numeric (if it's the second question)",                    
+                    "\tage.InputCode ' => 1",                    
+                    "",                    
+                    "\t' Loop",                    
+                    "\tbrands.iteration(1).InputCode ' => 3",                    
+                    "\tbrands.iteration(2).InputCode ' => 5"
+                ],                
+                "alsoSee" : [
+                    "Question.Value",                    
+                    "Question.InputValue",                    
+                    "Response.InputName"
+                ],                
+                "version" : "5.4.6.0"
+            },            
+            {
+                "name" : "InputName",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Indicates the based name of the HTML input for this question.",                    
+                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
+                    " <ul><li><strong>date</strong>: Obtain the name of the date input for the date-time question</li><li><strong>time</strong>: Obtain the name of the time input for the date-time question</li><li><strong>list</strong>: Obtain the name of the multi-select input for the multi-coded question</li><li><strong>ranking</strong>: Obtain the partial name of the input to set the rank for the multi-coded question</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.InputName() ' => \"U0\"",                    
+                    "",                    
+                    " ' Numeric",                    
+                    " age.InputName() ' => \"C1\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.InputName() ' => \"M2\"",                    
+                    "",                    
+                    " ' Open",                    
+                    " comment.InputName() ' => \"S3\"",                    
+                    "",                    
+                    " ' Date only",                    
+                    " birthday.InputName() ' => \"D4\"",                    
+                    "",                    
+                    " ' Time only",                    
+                    " meetingHour.InputName() ' => \"T5\"",                    
+                    "",                    
+                    " ' Date-time",                    
+                    " departure.InputName(\"date\") ' => \"D6\"",                    
+                    " departure.InputName(\"time\") ' -> \"T6\"",                    
+                    "",                    
+                    " ' Multiple with ranking",                    
+                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
+                    "",                    
+                    " ' Multiple in list with multi-selection",                    
+                    " brands.InputName(\"list\") ' => \"L2\""
+                ],                
+                "alsoSee" : [
+                    "Question.Value",                    
+                    "Question.InputValue",                    
+                    "Response.InputName",                    
+                    "Response.InputValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InputValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input value to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the HTML-escaped version of the question value.<br />It prevent the usage of the special `<`,`>` and all special unicode characters.",                    
+                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
+                    " <ul><li><strong>date</strong>: Obtain the date value of the date-time question</li><li><strong>time</strong>: Obtain the time value of the date-time question</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.InputValue() ' => \"256\"",                    
+                    "",                    
+                    " ' Numeric",                    
+                    " age.InputValue() ' => \"33\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.InputValue() ' => \"257,258\"",                    
+                    "",                    
+                    " ' Open",                    
+                    " comment.InputValue() ' => \"if &amp;lt; 200 and not &amp;gt; &amp;amp; that &amp;quot;works&amp;quot;\"",                    
+                    " ' if &lt; 200 and not &gt; &amp; that \"works\"",                    
+                    "",                    
+                    " ' Date only",                    
+                    " birthday.InputValue() ' => \"01/12/2012\"",                    
+                    "",                    
+                    " ' Time only",                    
+                    " meetingHour.InputValue() ' => \"09:00:00\"",                    
+                    "",                    
+                    " ' Date-time",                    
+                    " departure.InputValue(\"date\") ' => \"24/05/2012\"",                    
+                    " departure.InputValue(\"time\") ' -> \"12:05:00\""
+                ],                
+                "alsoSee" : [
+                    "Question.Value",                    
+                    "Question.InputName",                    
+                    "Response.InputName",                    
+                    "Response.InputValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsAllowDK",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the question allow the \"Don't know\" answer.",                
+                "examples" : [
+                    " gender.IsAllowDK ' => false",                    
+                    " age.IsAllowDK ' => true"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsDateOnly",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the date question accept a date only without the time.",                
+                "examples" : [
+                    " MyDateWithoutTime.IsDateOnly ' => true",                    
+                    " MyDateWithTime.IsDateOnly ' => false"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsLastIteration",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Convenient property which indicates if we are on the latest iteration of a loop.",                    
+                    " Only available for a loop, if you try to use this property for another type of element,",                    
+                    " the application should raise the following exception:",                    
+                    " The property IsLastIteration is only available for a loop."
+                ],                
+                "examples" : "Loop1.IsLastIteration ' => True",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsLiveRoutingSource",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tIndicates if this question is a trigger for a live touting (or a live caption) indicating that the data must be sent to the server before the end of the form",                
+                "examples" : "\tGender.IsLiveRoutingSource ' => True",                
+                "version" : "5.4.5.0"
+            },            
+            {
+                "name" : "IsOrdered",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if a multi-coded question also record the order of response selections.",                
+                "examples" : [
+                    " rankingBrands.IsOrdered ' => true",                    
+                    " knowingBrands.IsOrdered ' => false"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsSkipped",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if the questions is skipped through routing",                
+                "examples" : "\tCurrentQuestion.IsSkipped  ' => true",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "IsTimeOnly",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the date question accept a time only without the date.",                
+                "examples" : [
+                    " MyTimeWithoutDate.IsTimeOnly ' => true",                    
+                    " MyTimeWithDate.IsTimeOnly ' => false"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Iteration",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
                 "type" : "question",                
-                "desc" : [
-                    "\tConverts a variant into a question. ",                    
-                    "\tThis often used when reading properties from ADC/ADP which are defined as questions.",                    
-                    "\tTo check if the question is valid you can use ToQuestion().ID <> DK"
+                "args" : [
+                    {
+                        "name" : "loopLevel",                        
+                        "type" : "number",                        
+                        "desc" : "Loop(s) iteration (from the first immediate to the top)",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
                 ],                
-                "examples" : "\tCurrentAdc.Var(\"Semiopen\").ToQuestion().Shortcut",                
+                "desc" : [
+                    " Returns a question at a specify loop(s) iteration",                    
+                    " Only available for the question in loop.",                    
+                    " If you try to use it for the question outside the loop the application should raise the following exception:",                    
+                    " The method Iteration is only available for the question in loop.",                    
+                    " Parameters",                    
+                    " The number parameters of this method are dynamic and his equal to the number of the parent loops.",                    
+                    " For example if a question is inside a loop, you will have only 1 parameter.",                    
+                    " If a question is inside a loop of loop you will have 2 parameters and so on.",                    
+                    " The first parameter refer to the immediate parent loop, the second parameter refer to the next loop above and so on.",                    
+                    " - When the script condition is on the current loop flow, parameters are optional.",                    
+                    " All omits parameters are, by default, initialized with the current loop iteration.",                    
+                    " For readability, you can indicates the loop name and the value of the desired iteration using the following syntax:",                    
+                    " Question.Iteration(LoopName1 : Iteration1, LoopName2 : Iteration2).",                    
+                    " In this case the order of parameters doesn't matter.",                    
+                    " - Be careful: When the script is use outside the loop flow, all parameters are required",                    
+                    " - Warning: At least one parameter is expected, otherwise simply use the shortcut of the question to obtain the current iteration."
+                ],                
+                "examples" : [
+                    " Q1 is in a Loop",                    
+                    " Q1.Iteration(1)",                    
+                    " '=> Q1 in the first iteration",                    
+                    " Q1.Iteration(Loop : 2)",                    
+                    " ' => Q1 in the second iteration",                    
+                    " Q1",                    
+                    " '=> Q1 in the current iteration",                    
+                    "",                    
+                    " Q1 is in the SubLoop loop which is in the TopLoop loop",                    
+                    " Q1.Iteration(1)",                    
+                    " ' => Q1 in the first iteration of the 'SubLoop' loop",                    
+                    " ' and in the current iteration of the 'TopLoop' loop",                    
+                    " '",                    
+                    " Q1.Iteration(1, 2)",                    
+                    " ' => Q1 in the first iteration of the 'SubLoop' loop",                    
+                    " ' and in the second iteration of the 'TopLoop' loop",                    
+                    " '",                    
+                    " Q1.Iteration(TopLoop : 2)",                    
+                    " ' => Q1 in the second iteration of the 'TopLoop' loop",                    
+                    " ' and in the current iteration of the 'SubLoop' loop",                    
+                    " '",                    
+                    " Q1.Iteration(TopLoop : 2, SubLoop : 1)",                    
+                    " ' => Q1 in the second iteration of the 'TopLoop' loop",                    
+                    " ' and in the first iteration of the 'SubLoop' loop"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "LongCaption",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the long caption of the question in the current language",                
+                "examples" : "gender.LongCaption ' => \"Are you a:\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "MaxDate",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the maximum expected for a date question.",                    
+                    " When no maximum is expected it return DK"
+                ],                
+                "examples" : [
+                    " ' Date question with maximum date \"31/12/2013\"",                    
+                    " MyDate.MaxDate  ' => #31/12/2013#",                    
+                    " ' Date question without maximum value",                    
+                    " MyDate.MaxDate  ' => DK"
+                ],                
+                "alsoSee" : [
+                    "Question.MinDate",                    
+                    "Question.MinValue",                    
+                    "Question.MaxValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "MaxValue",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates the maximum expected for the question.",                    
+                    " It's the maximum number of allowed responses for closed question.",                    
+                    " It's the maximum expected value for a numeric question.",                    
+                    " It's the maximum expected length for an open-ended question.",                    
+                    " When no maximum is expected it return DK"
+                ],                
+                "examples" : [
+                    " ' Multi-coded question with maximum 5 responses",                    
+                    " Brands.MaxValue  ' => 5",                    
+                    " ' Numeric question with 99 as minimum value",                    
+                    " age.MaxValue  ' => 99",                    
+                    " ' Open-ended question with 5 maximum characters",                    
+                    " postalCode.MaxValue ' => 5",                    
+                    " ' Question without maximum value",                    
+                    " CurrentQuestion.MaxValue ' => DK"
+                ],                
+                "alsoSee" : [
+                    "Question.MinValue",                    
+                    "Question.MinDate",                    
+                    "Question.MaxDate"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "MaxVisibleIterations",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates the maximum number of visible iterations per screen.",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "MinDate",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the minimum expected for a date question.",                    
+                    " When no minimum is expected it return DK"
+                ],                
+                "examples" : [
+                    " ' Date question with minimum date \"01/01/2013\"",                    
+                    " MyDate.MinDate  ' => #01/01/2013#",                    
+                    " ' Date question without minimum value",                    
+                    " MyDate.MinDate  ' => DK"
+                ],                
+                "alsoSee" : [
+                    "Question.MaxDate",                    
+                    "Question.MinValue",                    
+                    "Question.MaxValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "MinValue",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates the minimum expected for the question.",                    
+                    " It's the minimum number of allowed responses for closed question.",                    
+                    " It's the minimum expected value for a numeric question.",                    
+                    " It's the minimum expected length for an open-ended question.",                    
+                    " When no minimum is expected it return DK"
+                ],                
+                "examples" : [
+                    " ' Multi-coded question with minimum 3 responses",                    
+                    " Brands.MinValue  ' => 3",                    
+                    "",                    
+                    " ' Numeric question with 18 as minimum value",                    
+                    " age.MinValue  ' => 18",                    
+                    "",                    
+                    " ' Open-ended question with 5 minimum characters",                    
+                    " ' This example is currently fictional because the",                    
+                    " ' system doesn't have a minimum length value",                    
+                    " ' for open-ended question",                    
+                    " postalCode.MinValue ' => 5",                    
+                    "",                    
+                    " ' Question without minimum value",                    
+                    " CurrentQuestion.MinValue ' => DK"
+                ],                
+                "alsoSee" : [
+                    "Question.MaxValue",                    
+                    "Question.MinDate",                    
+                    "Question.MaxDate"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ParentChapter",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : [
+                    " Indicates the question have an ancestry chapter.",                    
+                    "",                    
+                    " This property look-up to the hierarchy until it reaches a parent chapter."
+                ],                
+                "examples" : "QuestionInDemographics.ParentChapter.Shortcut '=> \"Demographics\"",                
+                "alsoSee" : [
+                    "HasParentChapter",                    
+                    "ParentLoop"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "ParentLoop",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : [
+                    " Returns the parent loop question.",                    
+                    " This property is only available for the question in loop, otherwise it throw an error."
+                ],                
+                "examples" : "Q1.ParentLoop.Caption ' => Loop",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ParentQuestion",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "\tReturns the parent question in the survey tree",                
+                "examples" : "\tGender.ParentQuestion.Shortcut =>\" Demographics chapter\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Questions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the array of all sub-questions - understand that per question we mean each survey data point",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tChildQuestions"
+                ],                
+                "examples" : "\tDemographics.Questions[3].Shortcut ' => \"QuestionInLoop\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "QuotaList",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : "returns the complete indexes of the responses of the TargetQuestion sorted from the max to do to the min to do using the count for the sort",                
+                "examples" : [
+                    " Newspapers.QuotaList()[1] returns the quota for which there is the biggest number of respondents to fill",                    
+                    " Newspapers.QuotaList(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2",                    
+                    " ",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Responses",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "responses",                
+                "desc" : "Returns the entire list of responses for a closed question",                
+                "examples" : [
+                    " Color.Responses",                    
+                    " Design definition: Shortcut: Color, Type: Multiple, Rotation: yes random, LongCaption: Which color do you like?",                    
+                    " List of responses:",                    
+                    " Red",                    
+                    " Blue",                    
+                    " Green",                    
+                    " Purple",                    
+                    "",                    
+                    " Screen visible by the respondent",                    
+                    " (The Blue response was hidden using a routing ignore responses):",                    
+                    " Which color do you like?",                    
+                    " Green",                    
+                    " Red",                    
+                    " Purple",                    
+                    "",                    
+                    " The responses selected by the respondent are Purple and Red in this order",                    
+                    " (the EntryCode of Red is 11, Blue is 12, Green is 13 and Purple is 14)",                    
+                    "",                    
+                    " Color.Responses.Value will return 1;2;3;4",                    
+                    " Color.Responses.EntryCode will return 11;12;13;14",                    
+                    " Color.Responses.Caption will return Red;Blue;Green;Purple",                    
+                    " Color.Responses[2].Value will return 2 (the second answer available)"
+                ],                
+                "alsoSee" : [
+                    "Question.AvailableResponses",                    
+                    "Question.Answers",                    
+                    "Core.Responses",                    
+                    "Core.Response"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ShortCaption",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the short caption of the question in the current language.",                    
+                    " If the ShortCaption is empty then it return the LongCaption"
+                ],                
+                "examples" : "gender.ShortCaption ' => \"Respondent Gender\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Shortcut",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the shortcut of the question (name of the variable)",                
+                "examples" : [
+                    " gender.Shortcut  ' => \"gender\"",                    
+                    " ^1. appreciation^.Shortcut   ' => \"1. appreciation\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Tags",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : [
+                    "\tReturns the list of tags associated to a question",                    
+                    "\t",                    
+                    "\tq1.Tags Has {\"Browsable\"} "
+                ],                
+                "examples" : "\tq1.Tags Has {\"Browsable\"}  = >True",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "ToEntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "variant",                
+                "desc" : [
+                    "\tReturns the response as an entry code for closed question",                    
+                    "\tIt returns a string if the question is single, an array of string is the question is multiple",                    
+                    "",                    
+                    "\tIt's the default property which is added when you compare a question to a string",                    
+                    "",                    
+                    "\tq1 Has {\"1\"} is transformed into q1.ToEntryCodeStr() Has {\"1\"}",                    
+                    "\t"
+                ],                
+                "examples" : [
+                    "\tgender.ToEntryCodeStr ' => \"1\"",                    
+                    "\tbrands.ToEntryCodeStr ' => {\"3\"; \"5\"; \"6\"}",                    
+                    "",                    
+                    "\t' When no value specified:",                    
+                    "",                    
+                    "\tgender.value ' => DK",                    
+                    "\tage.value ' => DK",                    
+                    "\tbrands.value ' => {}",                    
+                    "\tq1_other.value ' => \"\"",                    
+                    "\tbirthday.value ' => DK"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the question object (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.ToString()",                    
+                    " ' => {",                    
+                    " \"shortcut\":\"gender\",",                    
+                    " \"shortCaption\":\"Respondent gender\",",                    
+                    " \"longCaption\":\"Are you?\",",                    
+                    " \"type\":\"single\"",                    
+                    " }",                    
+                    "",                    
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " ' q1 is in loop of loop",                    
+                    " q1.ToString()",                    
+                    " ' => {",                    
+                    " \"shortcut\":\"q1\",",                    
+                    " \"shortCaption\":\"Q1\",",                    
+                    " \"longCaption\":\"Q1\",",                    
+                    " \"type\":\"single\",",                    
+                    " \"iterations\":{\"parentLoop\":4,\"subLoop\":2}",                    
+                    " }"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of the question as string, the possible types are:",                    
+                    " \"chapter\"",                    
+                    " \"single\"",                    
+                    " \"multiple\"",                    
+                    " \"open\"",                    
+                    " \"numeric\"",                    
+                    " \"datetime\"",                    
+                    " \"loop\"",                    
+                    " For question table",                    
+                    " \"single-loop\"",                    
+                    " For loop with selection at each iteration",                    
+                    " \"multiple-loop\"",                    
+                    " For loop with preliminary selection",                    
+                    " \"numeric-loop\"",                    
+                    " For loop with iteration count entry"
+                ],                
+                "examples" : [
+                    " gender.Type ' => \"single\"",                    
+                    " brands.Type ' => \"multiple\"",                    
+                    " age.Type ' => \"numeric\"",                    
+                    " comment.Type ' => \"open\"",                    
+                    " birth.Type ' => \"datetime\"",                    
+                    " gridLoop.Type ' => \"loop\"",                    
+                    " iterationSelectionLoop.Type ' => \"single-loop\"",                    
+                    " preliminarySelectionLoop.Type ' => \"multiple-loop\"",                    
+                    " numericSelectionLoop.Type ' => \"numeric-loop\""
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.TypeOf() ' => \"question\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Value",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "variant",                
+                "desc" : [
+                    " Returns the basic value(s) (answers) of the question in the current iteration.",                    
+                    " When there is no response the value return is DK,",                    
+                    " excepted for the open-ended and multi-coded questions"
+                ],                
+                "examples" : [
+                    " gender.value ' => 1",                    
+                    " age.value ' => 33",                    
+                    " brands.value ' => {3; 5; 6}",                    
+                    " q1_other.value ' => \"bla bla bla\"",                    
+                    " birthday.value ' => #14/02/1978#",                    
+                    "",                    
+                    " ' When no value specified:",                    
+                    "",                    
+                    " gender.value ' => DK",                    
+                    " age.value ' => DK",                    
+                    " brands.value ' => {}",                    
+                    " q1_other.value ' => \"\"",                    
+                    " birthday.value ' => DK"
+                ],                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "adc" : [
+            {
+                "name" : "Contents",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "\tList of contents in the current selected output.",                
+                "examples" : [
+                    "\tCurrentADC.Contents.Count ' => 2",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1]",                    
+                    "\t' => <ADCContent::dynamic:default.html>"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "GetContent",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adccontent",                
+                "args" : [
+                    {
+                        "name" : "location",                        
+                        "type" : "string",                        
+                        "desc" : "Location of the content to obtain"
+                    }
+                ],                
+                "desc" : "\tReturns the ADC Content object with the specified location.",                
+                "examples" : [
+                    "\tCurrentADC.GetContent(\"share/jquery.js\")  ",                    
+                    "\t' => <ADCContent::share:jquery.js>",                    
+                    "",                    
+                    "\tCurrentADC.GetContent(\"static/styles.css\").Type ",                    
+                    "\t' => \"css\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "GetProperty",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adcproperty",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to obtain"
+                    }
+                ],                
+                "desc" : "\tReturns the ADC Property object with the specified id.",                
+                "examples" : [
+                    "\tCurrentADC.GetProperty(\"tickColor\")  ",                    
+                    "\t' => <ADCProperty::tickColor>",                    
+                    "",                    
+                    "\tCurrentADC.GetProperty(\"tickColor\").Name ",                    
+                    "\t' => \"Tick color\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InstanceId",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the unique identifier of the ADC instance.",                    
+                    "\tThe same ADC could appears several times in the same page and each of it has it's own unique identifier that could be retrieve through this property."
+                ],                
+                "examples" : [
+                    "\tCurrentADC.InstanceId  ",                    
+                    "\t' => 1, for the first ADC instance ",                    
+                    "\t' available in the current page"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Name",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Name of the ADC",                
+                "examples" : [
+                    " CurrentADC.Name ' => \"adc-problem\"",                    
+                    " "
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "OutputId",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the current output in use.",                
+                "examples" : "\tCurrentADC.OutputId ' => \"mobileHTMLOutput\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Properties",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "\tEntire collection of properties defined in the ADC.",                
+                "examples" : [
+                    "\tCurrentADC.Properties.Count ' => 2",                    
+                    "",                    
+                    "\tCurrentADC.Properties[1] ",                    
+                    "\t' => <ADCProperty::tickColor>"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "PropQuestion",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "questions",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to read"
+                    }
+                ],                
+                "desc" : "\tReturns the value of the property as a questions - use only for ADC properties defined as question",                
+                "examples" : [
+                    "\tCurrentADC.PropQuestion(\"SideQuestion\")",                    
+                    "\tCurrentADC.PropQuestion(\"SideQuestion\").shortcut",                    
+                    "\t"
+                ],                
                 "version" : "5.4.6.0"
+            },            
+            {
+                "name" : "PropValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to read"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the value of the property as a string.",                    
+                    "\t\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
+                    "\t' => \"FlashEnable\"",                    
+                    "",                    
+                    "\tCurrentADC.PropValue(\"tickColour\") ' => \"0,255,0\"",                    
+                    "",                    
+                    "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "URLTo",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "location",                        
+                        "type" : "string",                        
+                        "desc" : "Location of the content to obtain"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the relative URL path to content file at the specify location.",                    
+                    "\tFor dynamic file:",                    
+                    "\t- It returns the path to the pre-processor component such as AskiaExt.dll.",                    
+                    "\t- It's likely to be use in AJAX query. In that case, you could also post the data of current HTML form to obtain a live output.",                    
+                    "\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.URLTo(\"static/tick.png\") ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/tick.png\"",                    
+                    "",                    
+                    "\tCurrentADC.URLTo(\"shared/jquery.js\") ",                    
+                    "\t' => \"../Resources/[Survey]/jquery.js\" ",                    
+                    "",                    
+                    "\tCurrentADC.URLTo(\"dynamic/default.js\")",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Var",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "args" : [
+                    {
+                        "name" : "propertyId",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to read"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturns the value of the property as a variant.",                    
+                    "\t\t"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.PropValue(\"defaultDisplay\")",                    
+                    "\t' => \"FlashEnable\"",                    
+                    "",                    
+                    "\tCurrentADC.Var(\"tickColour\") ' => \"0,255,0\"",                    
+                    "",                    
+                    "\tCurrentADC.Var(\"booleanProp\") ' => 1"
+                ],                
+                "version" : "5.4.2.0"
             }
         ]
     }

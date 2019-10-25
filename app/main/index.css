@@ -24,11 +24,12 @@ html, body {
 #panel_explorer {
     min-width   : 100px;
     width       : 250px;
+    background-color: #252526;
 }
 
 #panel_workspace {
     flex        : 1;
-    margin-left : 4px;
+//    margin-left : 4px;
 }
 
 webview {

@@ -1,0 +1,38 @@
+﻿{% 
+Dim useList    =  (CurrentADC.PropValue("useList") = "true") ' Convert to boolean
+
+Dim inputName  = CurrentQuestion.InputName()
+Dim inputValue = CurrentQuestion.InputValue()
+Dim minValue  = CurrentQuestion.MinValue
+Dim maxValue  = CurrentQuestion.MaxValue
+Dim rangeLength = 0
+
+Dim attrMin = On(minValue <> DK, "min=\"" + minValue + "\"", "")
+Dim attrMax = On(maxValue <> DK, "max=\"" + maxValue + "\"", "")
+
+Dim placeholder = CurrentADC.PropValue("placeholder")
+Dim attrPlaceholder = On(placeholder <> "", "placeholder=\"" + placeholder + "\"", "")
+
+Dim attrRequired = On(CurrentQuestion.IsAllowDK, "required=\"required\"", "")
+
+Dim unitStep = CurrentADC.PropValue("unitStep").ToNumber()
+Dim attrStep = On(unitStep > 1, "step=\"" + unitStep + "\"", "")
+
+If useList And minValue <> DK And maxValue <> DK Then
+    rangeLength = (maxValue - minValue) / unitStep
+EndIf
+
+If rangeLength > 0 And rangeLength <= 20 Then
+    Dim i
+    Dim x = minValue
+%}
+    <select name="{%= inputName %}">
+        <option value=""></option>    
+    {% For i = 0 To rangeLength %}
+        <option value="{%= x %}">{%= x %}</option>
+        {% x = x + unitStep %}
+    {% Next %}
+    </select>
+{% Else %}
+    <input type="number" name="{%= inputName %}" value="{%= inputValue %}" {%:= attrMin %} {%:= attrMax %} {%:= attrStep %} {%:= attrPlaceholder %} {%:= attrRequired %}/>
+{% EndIf %}

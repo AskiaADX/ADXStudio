@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" content="text/html" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matter ADP - Askia - Software for Zombies</title>
+    <link href="css/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="css/updatedstyles.min.css" rel="stylesheet" type="text/css">
+    <meta name="theme-color" content="#DF4335">
+    <link rel="apple-touch-icon" sizes="57x57" href="apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicon-194x194.png" sizes="194x194">
+    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="manifest.json">
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#df4335">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="mstile-144x144.png">
+</head>
+
+<body>
+    <header id="nav" class="large">
+        <h2>Survey name</h2>
+        <div class="progressWrapper">
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </header>
+    <div class="ribbon"></div>
+    <div class="main">
+        <div class="question">
+            <h3>Zombie demographics</h3>
+            <div class="caption">
+                <p>Zombies reversus ab inferno, nam malum cerebro. De carne animata corpora quaeritis. Summus sit​​, morbo vel maleficia? De Apocalypsi undead dictum mauris.</p>
+                <p>Hi mortuis soulless creaturas, imo monstra adventus vultus comedat cerebella viventium. Qui offenderit rapto, terribilem incessu.</p>
+                <p>The voodoo sacerdos suscitat mortuos comedere carnem. Search for solum oculi eorum defunctis cerebro. Nescio an Undead zombies. Sicut malus movie horror?</p>
+            </div>
+            <div class="instruction">
+                <p>Nescio brains an Undead cervello zombies</p>
+            </div>
+            <div class="responses">
+                <ul>
+                    <li>
+                        <input type='checkbox' id="item1"><label class="controlHack" for="item1"></label><label for="item1" class="responseLabel">Zombie flesh</label>
+                    </li>
+                    <li>
+                        <input type='checkbox' id="item2"><label class="controlHack" for="item2"></label><label for="item2" class="responseLabel">Brain splatter</label>
+                    </li>
+                    <li>
+                        <input type='checkbox' id="item3"><label class="controlHack" for="item3"></label><label for="item3" class="responseLabel">Black blood</label>
+                    </li>
+                    <li>
+                        <input type='checkbox' id="item4"><label class="controlHack" for="item4"></label><label for="item4" class="responseLabel">Dried entrails</label>
+                    </li>
+                    <li>
+                        <input type='checkbox' id="item5"><label class="controlHack" for="item5"></label><label for="item5" class="responseLabel">Stab wounds</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button class="btn secondary keyframe disabled">Back</button>
+                <button class="btn primary keyframe" onclick="window.location.href='index_4.html'">Next</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footerLeft"><a href="http://askia.com/privacy" target="_blank">Privacy policy</a></div>
+        <div class="footerRight">Copyright &copy; 2016 Askia, all rights reserved.</div>
+    </footer>
+    <script>
+        var fixed = false,
+            nav = document.getElementById('nav'),
+            position = nav.offsetTop;
+
+        function stick() {
+            var scrollY = window.scrollY || window.pageYOffset
+            if (scrollY > position && !fixed) {
+                fixed = true;
+                nav.className = nav.className + ' fixed';
+            } else if (scrollY <= position && fixed) {
+                fixed = false;
+                nav.classList.remove('fixed');
+            }
+        }
+
+        window.onscroll = stick;
+    </script>
+</body>
+
+</html>

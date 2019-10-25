@@ -107,7 +107,7 @@ Server.prototype.close = function close (callback) {
  */
 function getFixturesAndEmulations (callback) {
   const adx = global.project.getADX();
-
+  
   adx.getFixtureList((err, fixtures) => {
     if (err) throw err;
     const result = {
@@ -149,4 +149,3 @@ function getFixturesAndEmulations (callback) {
 
 exports.Server = Server;
 exports.getFixturesAndEmulations = getFixturesAndEmulations;
-

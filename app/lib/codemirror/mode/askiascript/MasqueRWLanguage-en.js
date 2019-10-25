@@ -45,67 +45,6 @@ askiaScript.extend(askiaScript.lexical, {
         }
     ],    
     "members" : {
-        "question" : [
-            {
-                "name" : "ChangeSubQuestionsOrder",                
-                "ns" : "masquerwlanguage",                
-                "base" : "method",                
-                "type" : "question",                
-                "desc" : "Skips a question",                
-                "examples" : [
-                    " Dim randomOrder = {1; 2; 3}.Shuffle()",                    
-                    " ChapterQuestionnaire.ChangeSubQuestionsOrder(randomOrder)"
-                ],                
-                "version" : "5.4.1.0"
-            },            
-            {
-                "name" : "SetValue",                
-                "ns" : "masquerwlanguage",                
-                "base" : "method",                
-                "type" : "question",                
-                "args" : [
-                    {
-                        "name" : "value",                        
-                        "type" : "anytype",                        
-                        "desc" : "to set"
-                    }
-                ],                
-                "desc" : "Sets a value to a question",                
-                "examples" : [
-                    " age.SetValue(21) ' => Set age to 21",                    
-                    " gender.SetValue(2) ' => set to female",                    
-                    " newspapers.SetValue({1;5}) ' => set a set",                    
-                    " name.SetValue(\"Peter Holmes\") ' => set a string",                    
-                    " today.SetValue(#10/3/1999#) ' => set to female",                    
-                    " rating.Iteration(3).SetValue(2) => set a question within a loop"
-                ],                
-                "version" : "5.4.1.0"
-            },            
-            {
-                "name" : "Skip",                
-                "ns" : "masquerwlanguage",                
-                "base" : "method",                
-                "type" : "question",                
-                "desc" : "Skips a question",                
-                "examples" : [
-                    " age.Skip() ' => Skip a question",                    
-                    " Demgraphics.Skip() => Skip a whole chapter"
-                ],                
-                "version" : "5.4.1.0"
-            },            
-            {
-                "name" : "SkipAndKeepData",                
-                "ns" : "masquerwlanguage",                
-                "base" : "method",                
-                "type" : "question",                
-                "desc" : "Skips a question",                
-                "examples" : [
-                    " Gender.SkipAndKeepData() ' => Makes the question invisible",                    
-                    " Age.SkipAndKeepData().SetValue(21) => Skips the question and sets it in one go"
-                ],                
-                "version" : "5.4.1.0"
-            }
-        ],        
         "interview" : [
             {
                 "name" : "GoTo",                
@@ -200,6 +139,67 @@ askiaScript.extend(askiaScript.lexical, {
                     "",                    
                     " ' Example with calls chain",                    
                     " Interview.SetScenario(\"user\").SetLanguage(\"ENG\")"
+                ],                
+                "version" : "5.4.1.0"
+            }
+        ],        
+        "question" : [
+            {
+                "name" : "ChangeSubQuestionsOrder",                
+                "ns" : "masquerwlanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "desc" : "Skips a question",                
+                "examples" : [
+                    " Dim randomOrder = {1; 2; 3}.Shuffle()",                    
+                    " ChapterQuestionnaire.ChangeSubQuestionsOrder(randomOrder)"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "SetValue",                
+                "ns" : "masquerwlanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "anytype",                        
+                        "desc" : "to set"
+                    }
+                ],                
+                "desc" : "Sets a value to a question",                
+                "examples" : [
+                    " age.SetValue(21) ' => Set age to 21",                    
+                    " gender.SetValue(2) ' => set to female",                    
+                    " newspapers.SetValue({1;5}) ' => set a set",                    
+                    " name.SetValue(\"Peter Holmes\") ' => set a string",                    
+                    " today.SetValue(#10/3/1999#) ' => set to female",                    
+                    " rating.Iteration(3).SetValue(2) => set a question within a loop"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Skip",                
+                "ns" : "masquerwlanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "desc" : "Skips a question",                
+                "examples" : [
+                    " age.Skip() ' => Skip a question",                    
+                    " Demgraphics.Skip() => Skip a whole chapter"
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "SkipAndKeepData",                
+                "ns" : "masquerwlanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "desc" : "Skips a question",                
+                "examples" : [
+                    " Gender.SkipAndKeepData() ' => Makes the question invisible",                    
+                    " Age.SkipAndKeepData().SetValue(21) => Skips the question and sets it in one go"
                 ],                
                 "version" : "5.4.1.0"
             }

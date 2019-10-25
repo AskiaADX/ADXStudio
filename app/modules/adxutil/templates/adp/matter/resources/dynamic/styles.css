@@ -1,0 +1,292 @@
+{%
+'Theme
+Dim WhiteColor = Theme.WhiteColor
+Dim BlackColor = Theme.BlackColor
+Dim PrimaryColor = CurrentADP.Var("ribbon_footer_background_color")
+Dim PrimaryDarkColor = Theme.PrimaryDarkColor
+Dim PrimaryLightColor = Theme.PrimaryLightColor
+Dim SecondaryColor = Theme.SecondaryColor
+Dim SecondaryDarkColor = Theme.SecondaryDarkColor
+Dim FontFamily = Theme.FontFamily
+Dim BaseFS = Theme.BaseFS
+Dim LargeFS = Theme.LargeFS
+Dim NormalFS = Theme.NormalFS
+Dim SmallFS = Theme.SmallFS
+Dim NeutralColor = Theme.NeutralColor
+Dim NeutralDarkColor = Theme.NeutralDarkColor
+Dim NeutralLightColor = Theme.NeutralLightColor
+Dim ErrorColor = Theme.ErrorColor
+Dim BorderWidth = Theme.BorderWidth
+Dim BorderRadius = Theme.BorderRadius
+Dim VPadding = Theme.VPadding
+Dim HPadding = Theme.HPadding
+Dim LineHeight = Theme.LineHeight
+Dim buttons_alignement = CurrentADP.Var("buttons_alignement")
+Dim radio_checkbox_size = CurrentADP.Var("radio_checkbox_size")
+%}
+
+::selection {
+    color: rgba({%= WhiteColor %});
+    background-color: rgba({%= PrimaryColor %});
+}
+::-moz-selection {
+    color: rgba({%= WhiteColor %});
+    background-color: rgba({%= PrimaryColor %});
+}
+body, html {
+    font-family: {%= FontFamily %};
+    font-size: {%= BaseFS %};
+}
+::-webkit-input-placeholder {
+    font-family: {%= FontFamily %};
+}
+::-moz-placeholder {
+    font-family: {%= FontFamily %};
+}
+:-ms-input-placeholder {
+    font-family: {%= FontFamily %};
+}
+:-moz-placeholder {
+    font-family: {%= FontFamily %};
+}
+input, textarea, keygen, select, button {
+    font-family: {%= FontFamily %};
+}
+header h2 {
+    font-family: {%= FontFamily %};
+    font-size: {%= LargeFS %};
+    padding: 0 0 0 {%= HPadding %};
+}
+@media screen and (max-width: 500px) {
+  header h2 {
+    padding: 0 0 0 0.2em;
+  }
+}
+body, html {
+    color: rgba({%= BlackColor %});
+}
+
+body, header.large, .askiaquestions {
+    background-color: rgba({%= WhiteColor %});
+}
+body {
+    line-height: {%= LineHeight %};
+}
+
+.ribbon, footer {
+    background-color: rgba({%= PrimaryColor %});
+}
+{% If CurrentADP.Var("display_footer") = "no" Then %}
+footer {
+    display: none;
+}
+{% EndIf %}
+header.large, .askiaquestions, input[type=text], input[type=number], textarea {
+    color: rgba({%= BlackColor %});
+    background-color: rgba({%= WhiteColor %});
+}
+
+header.fixed {
+    box-shadow: 0 4px 5px 0 rgba({%= BlackColor.ToRGB() %}, .14);
+}
+
+header.fixed .progressWrapper {
+    padding: 1.65em {%= HPadding %} 0 0;
+}
+
+.progressWrapper {
+    padding: 2.5em {%= HPadding %} 2.5em 0;
+}
+@media screen and (max-width: 500px) {
+  .progressWrapper {
+    padding: 2.5em 0.5em 2.5em 0;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  header.fixed .progressWrapper {
+    padding: 1.65em 0.5em 0 0;
+  }
+}
+
+.progress {
+    background-color: rgba({%= NeutralLightColor %});
+    border-radius: {%= BorderRadius %};
+}
+
+.progress-bar {
+    background-color: rgba({%= SecondaryColor %});
+    border-radius: {%= BorderRadius %} 0 0 {%= BorderRadius %};
+    width: {%= Interview.Progress * (14/100) %}em;
+}
+.progress-value {
+    font-size: {%= SmallFS %};
+}
+
+@media screen and (min-width: 501px) and (max-width: 768px) {
+  .progress-bar {
+    width: {%= Interview.Progress * (11/100) %}em;
+  }
+}
+@media screen and (max-width: 500px) {
+  .progress-bar {
+    width: {%= Interview.Progress * (6/100) %}em;
+  }
+}
+.askiaquestions {  
+    border-radius: {%= BorderRadius %};
+    padding: {%= VPadding %} {%= HPadding %};
+    margin: 0 auto {%= VPadding %} auto;
+    margin: 0 auto 3em auto\9;
+    box-shadow: 0 4px 5px 0 rgba({%= BlackColor.ToRGB() %}, .14), 0 1px 10px 0 rgba({%= BlackColor.ToRGB() %}, .12), 0 2px 4px -1px rgba({%= BlackColor.ToRGB() %}, .2);
+}
+
+.askia-question-label {
+    font-size: {%= NormalFS %};
+    padding: {%= VPadding %} 0;
+}
+.askia-control .askia-question-label {
+    font-size: {%= NormalFS %};
+    padding: 0;
+}
+.askia-grid-row:nth-child(even) td {
+    background-color: rgba({%= NeutralLightColor.ToRGB() %},1.0);
+}
+.askia-grid-row td, .askia-grid-header td {
+    border-bottom: {%= BorderWidth %} solid rgba({%= NeutralDarkColor.ToRGB() %},1.0);
+}
+{% If (Browser.Mobile = False) Then %}
+.askia-grid-row:hover td {
+    background-color: rgba({%= BlackColor.ToRGB() %},.1);
+}
+{% EndIf %}
+
+.askia-grid-row .askia-question-label {
+    font-size: {%= NormalFS %};
+    padding-left: 0.5em;
+    width: 45%;
+}
+
+.instruction {
+    color: rgba({%= NeutralDarkColor %});
+    font-family: {%= FontFamily %};
+}
+
+.askia-errors-summary {
+    background: rgba({%= ErrorColor %});
+    border: {%= BorderWidth %} solid rgba({%= ErrorColor %});
+    border-radius: {%= BorderRadius %};
+    color: #FFF;
+    padding: {%= VPadding %} {%= HPadding %};
+}
+
+.askia-caption {
+    font-size: {%= NormalFS %};
+}
+.askia-response {
+    font-size: {%= NormalFS %};
+    padding: 5px;
+    cursor: pointer;
+}
+{% If (Browser.Mobile = False) Then %}
+.askia-response:hover {
+    background-color : rgba({%= BlackColor.ToRGB() %}, .1);
+    cursor: pointer;
+}
+{% EndIf %}
+.askia-grid-header .askia-response:hover {
+    background-color : transparent; 
+}
+.btn {
+    font-family: {%= FontFamily %};
+    font-size: {%= NormalFS %};
+    border-radius: {%= BorderRadius %};
+    padding: {%= VPadding %} 0;
+    box-shadow: 0 2px 5px rgba({%= BlackColor.ToRGB() %}, 0.3);
+}
+.btn:after {
+    box-shadow: inset 0 0 0 5em rgba({%= WhiteColor.ToRGB() %}, 0.5);
+}
+.btn:hover {
+    box-shadow: 0 2px 8px rgba({%= BlackColor.ToRGB() %}, 0.6);
+}
+input[type=checkbox]:checked~label.askia-response-label, input[type=radio]:checked~label.askia-response-label {
+    color: rgba({%= SecondaryColor %});
+}
+input[type=radio] + label.askia-radio,
+input[type=checkbox] + label.askia-checkbox {
+    width: {%= radio_checkbox_size %};
+    height: {%= radio_checkbox_size %};
+    border: {%= BorderWidth %} solid rgba({%= NeutralDarkColor %});
+    box-shadow: inset 0 0 0 0 rgba({%= SecondaryColor %});
+}
+input[type=checkbox]:checked + label.askia-checkbox,
+input[type=radio]:checked + label.askia-radio {
+    background: rgba({%= SecondaryColor %});
+    border-color: rgba({%= SecondaryColor %});
+    box-shadow: inset 0 0 0 .5em rgba({%= SecondaryColor %});
+    transition: transform .3s cubic-bezier(.2, .3, 0, 1), box-shadow .3s cubic-bezier(.2, .3, 0, 1), border-color 0s;
+}
+input[type=checkbox] + label.askia-checkbox:before,
+input[type=checkbox] + label.askia-checkbox:after,
+input[type=radio] + label.askia-radio:before,
+input[type=radio] + label.askia-radio:after {
+    top: -{%= BorderWidth %};
+    left: -{%= BorderWidth %};
+    font-size: {%= radio_checkbox_size %};
+}
+
+input[type=text], input[type=number], textarea {
+    font-size: {%= NormalFS %};
+    border: {%= BorderWidth %} solid rgba({%= NeutralColor %});
+    padding: 0.5em 0.5em;
+}
+input[type=text]:focus, input[type=number]:focus, textarea:focus {
+    border: {%= BorderWidth %} solid rgba({%= SecondaryColor %});
+}
+input[type=text]:hover, input[type=number]:hover, textarea:hover {
+    border: {%= BorderWidth %} solid rgba({%= NeutralDarkColor %});
+}
+
+.navigation {
+    text-align: {%= buttons_alignement %};
+    padding-top: {%= VPadding %};
+}
+
+.primary {
+    background-color: rgba({%= SecondaryColor %});
+    color: rgba({%= WhiteColor %});
+}
+
+.primary:hover {
+    background-color: rgba({%= SecondaryDarkColor %});
+    color: rgba({%= WhiteColor %});
+}
+
+.secondary {
+    background-color: rgba({%= NeutralLightColor %});
+    color: rgba({%= NeutralDarkColor %});
+}
+
+.secondary:hover {
+    background-color: rgba({%= NeutralColor %});
+    color: rgba({%= PrimaryDarkColor %});
+}
+.secondary.disabled:hover {
+    box-shadow: 0 2px 5px rgba({%= BlackColor.ToRGB() %}, 0.3);
+}
+.footerLeft {
+    padding: 0 0 0 {%= HPadding %};
+    color: rgba({%= WhiteColor %});
+    font-size: {%= SmallFS %};
+}
+
+.footerRight {
+    padding: 0 {%= HPadding %} 0 0;
+    color: rgba({%= WhiteColor %});
+    font-size: {%= SmallFS %};
+}
+footer a {
+    color: {%= WhiteColor.ToHexa() %};
+    transition: color linear .3s;
+}

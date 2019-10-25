@@ -7,7 +7,7 @@ describe("workspace", function () {
         EventEmitter = require('events').EventEmitter,
         nodePath = require('path'),
         util = require('util'),
-        uuid = require('node-uuid'),
+        uuid = require('uuid'),
         fs   = require('fs'),
         watcher,
         fakeWatcherInstance;
@@ -901,24 +901,6 @@ describe("workspace", function () {
                     done();
                 });
             });
-        });
-    });
-
-    describe("#unwatchTabsIn", function () {
-       it("must be tested!", function () {
-           expect(true).toBe(false);
-       });
-    });
-
-    describe("#rewatchTabsIn", function () {
-        it("must be tested!", function () {
-            expect(true).toBe(false);
-        });
-    });
-
-    describe("#findRewatchableTabsIn", function () {
-        it("must be tested!", function () {
-            expect(true).toBe(false);
         });
     });
 

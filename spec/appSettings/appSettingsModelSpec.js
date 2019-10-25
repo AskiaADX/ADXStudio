@@ -2,7 +2,7 @@
 describe('appSettings', function () {
     var appSettings,  fs = require('fs'),  spies, fakeStats;
     var pathHelper = require('path');
-    var ADX = require('adxutil').ADX;
+    var ADX = require('../../app/modules/adxutil').ADX;
 
     beforeEach(function () {
         var cacheKey = require.resolve("../../app/appSettings/appSettingsModel.js");
@@ -48,7 +48,7 @@ describe('appSettings', function () {
                 }
             };
         });
-        
+
         spies.fs.mkdir.andCallFake(function (dir, cb) {
             cb(null);
         });
@@ -331,16 +331,6 @@ describe('appSettings', function () {
             expect(spies.ADXPref.read).toHaveBeenCalled();
         });
 
-        it('should return an error when the Prefs.json could not be accessible', function () {
-            var sendError = new Error("ENOFILE"), returnError;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
-                cb(sendError);
-            });
-            appSettings.getPreferences(function (err) {
-                returnError = err;
-            });
-            expect(sendError).toBe(returnError);
-        });
 
         it('should return the default preferences when the Prefs.json and the ADXUtil prefs are not accessible', function () {
             var result;
@@ -350,7 +340,7 @@ describe('appSettings', function () {
             spies.ADXPref.read.andCallFake(function (options, cb) {
                 cb(null);
             });
-            appSettings.getPreferences(function (err, data) {
+            appSettings.getPreferences(function (data) {
                 result = data;
             });
             expect(result).toEqual({
@@ -364,7 +354,7 @@ describe('appSettings', function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
-            appSettings.getPreferences(function (err, data) {
+            appSettings.getPreferences(function (data) {
                 result = data;
             });
             expect(result).toEqual({
@@ -384,7 +374,7 @@ describe('appSettings', function () {
             spies.fs.readFile.andCallFake(function (filePath, cb) {
                 cb(null, '{"another_key": "Here"}');
             });
-            appSettings.getPreferences(function (err, data) {
+            appSettings.getPreferences(function (data) {
                 result = data;
             });
             expect(result).toEqual({
@@ -538,7 +528,7 @@ describe('appSettings', function () {
             });
 
             spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
-                cb(null, {
+                cb({
                     openLastProjectByDefault : true
                 });
             });
@@ -557,7 +547,7 @@ describe('appSettings', function () {
             });
 
             spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
-                cb(null, {
+                cb({
                     openLastProjectByDefault : true
                 });
             });
@@ -577,7 +567,7 @@ describe('appSettings', function () {
             });
 
             spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
-                cb(null, {
+                cb({
                     openLastProjectByDefault : false
                 });
             });

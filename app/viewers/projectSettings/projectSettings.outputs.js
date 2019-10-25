@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let opt;
     const list = currentOutputs.outputs;
     const defaultOutput = currentOutputs.defaultOutput;
-
+	
     outputsListEl.innerHTML = '';
     for (let i = 0, l = list.length; i < l; i += 1) {
       opt = document.createElement('option');
@@ -109,7 +109,17 @@ document.addEventListener('DOMContentLoaded', function () {
           return true;
         }
       }
+	  
+      // Use falsy to validate if the comparison make sense
+      // for example oriOutput.manageLoopDepth could not exist
+      // if curOutput.manageLoopDepth == 0 then it's equal
+      if (oriOutput.manageLoopDepth || curOutput.manageLoopDepth) {
+        if (curOutput.manageLoopDepth !== oriOutput.manageLoopDepth) {
+          return true;
+        }
+      }
 
+	  
       for (let j = 0, k = curOutput.contents.length; j < k; j += 1) {
         curContent = curOutput.contents[j];
         oriContent = oriOutput.contents[j];
@@ -155,12 +165,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!output) {
       return;
     }
+	
     muteChange = true;
     currentSelectedOutputIndex = index;
     document.getElementById('output_id').value = output.id;
     document.getElementById('output_condition').value = output.condition || '';
     document.getElementById('output_description').value = output.description || '';
     document.getElementById('output_default').checked = (output.id === currentOutputs.defaultOutput);
+    document.getElementById('output_manageLoopDepth').value = output.manageLoopDepth || 0;	
 
     loadContents();
     muteChange = false;
@@ -178,10 +190,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!output) {
       return;
     }
-
+	
     output.id = document.getElementById('output_id').value;
     output.condition = document.getElementById('output_condition').value;
     output.description = document.getElementById('output_description').value;
+	output.manageLoopDepth = document.getElementById('output_manageLoopDepth').value;
+	
     if (document.getElementById('output_default').checked || currentOutputs.outputs.length < 2) {
       const previousDefault = currentOutputs.defaultOutput;
       if (previousDefault !== output.id) {
@@ -192,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       currentOutputs.defaultOutput = output.id;
     }
-
+	
     outputsListEl.options[currentSelectedOutputIndex].setAttribute('value', output.id);
     outputsListEl.options[currentSelectedOutputIndex].innerText = output.id +
       ((output.id === currentOutputs.defaultOutput) ? ' (Default)' : '');
@@ -490,6 +504,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('output_condition').value = '';
       document.getElementById('output_description').value = '';
       document.getElementById('output_default').checked = false;
+      document.getElementById('output_manageLoopDepth').value = 0;	  
       loadOutput();
       muteChange = false;
 

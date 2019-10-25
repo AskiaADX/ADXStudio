@@ -1,0 +1,1164 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.askia.com/ADCSchema"
+            xmlns="http://www.askia.com/ADCSchema"
+            xmlns:adc="http://www.askia.com/ADCSchema"
+            elementFormDefault="qualified">
+
+  <!-- SPECIFIC TYPE AND VARIABLES -->
+
+  <!-- Number pattern -->
+  <xsd:simpleType name="numberPattern">
+    <xsd:annotation>
+      <xsd:documentation>
+        Based on number allow the usage of wildcards symbol (*) to indicates an unbounded number.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:token">
+      <xsd:pattern value="-?(\*|\d+(\.\d+)?)" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Legal version number -->
+  <xsd:simpleType name="versionNumber">
+    <xsd:annotation>
+      <xsd:documentation>
+        Legal version number using maximum 3 digits and optional alpha, beta or rc version.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:token">
+      <xsd:pattern value="\d+(\.\d+){0,2}(\.(alpha|beta|rc)\d*)?" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- DEFINITION -->
+
+  <!-- Root node of the ADC -->
+  <xsd:element name="control">
+    <xsd:annotation>
+      <xsd:appinfo>Askia Design Control</xsd:appinfo>
+      <xsd:documentation>
+        Root node of the ADC definition.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="adc:info" minOccurs="1" maxOccurs="1" />
+        <xsd:element ref="adc:outputs" minOccurs="1" maxOccurs="1" />
+        <xsd:element ref="adc:properties" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+
+      <xsd:attribute name="version" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Version number of the ADC format definition.
+            (Not the version of the control but the version of the ADC format)
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="adc:versionNumber">
+            <xsd:enumeration value="2.0.0">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Based version of the ADC.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="askiaCompat" type="adc:versionNumber" default="5.3.3">
+        <xsd:annotation>
+          <xsd:documentation>
+            Compatibility version with Askia product.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Metadata of the ADC -->
+  <xsd:element name="info">
+    <xsd:annotation>
+      <xsd:documentation>
+        Meta-data of the ADC.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="guid" type="xsd:token">
+          <xsd:annotation>
+            <xsd:documentation>
+              Unique identifier of the ADC control.
+              Should be share accross version of the same ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="name" type="xsd:normalizedString">
+          <xsd:annotation>
+            <xsd:documentation>
+              User friendly name of the ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="version" type="adc:versionNumber">
+          <xsd:annotation>
+            <xsd:documentation>
+              Version of the ADC.
+              This version must contains at least one digit and maximum 3 digits separates with a dot period (ex: 1, 1.0, 1.0.1).
+              It could also contains an extra version information such as 'alpha', 'beta' or 'rc' optionally follow by a number (ex: 1.alpha2, 1.0.beta10, 1.0.1.rc3).
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="date" type="xsd:date">
+          <xsd:annotation>
+            <xsd:documentation>
+              Release date of the ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="categories">
+          <xsd:annotation>
+            <xsd:documentation>
+              List the categories of the ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="category" minOccurs="1" maxOccurs="unbounded" type="xsd:token">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Freeform text which indicates the category of the ADC (ex: Sliders, Flash ...).
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="description" type="xsd:string" minOccurs="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              Describes the ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="author" type="xsd:normalizedString" minOccurs="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              Name of the ADC author(s).
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="company" type="xsd:normalizedString" minOccurs="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              Name of the company who provide the ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="site" type="xsd:anyURI" minOccurs="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              URL to the author/company web site.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="helpURL" type="xsd:anyURI" minOccurs="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              URL to the help file of the ADC.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="style" minOccurs="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              Default size of the ADC, mostly use for the ADC-Flash.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:attribute name="width" type="xsd:double">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Width of control in pixel.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="height" type="xsd:double">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Height of control in pixel.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element ref="constraints" />
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Constraints collection -->
+  <xsd:element name="constraints">
+    <xsd:annotation>
+      <xsd:documentation>
+        Constraints to indicates the allowed context of the ADC.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="adc:constraint" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Constraint element -->
+  <xsd:element name="constraint">
+    <xsd:annotation>
+      <xsd:documentation>
+        Define the constraint on a given context such as questions, responses or controls.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+
+      <xsd:attribute name="on" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicate the type of the constraint.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="questions">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Use to indicate the constraint on questions,
+                  such as the type of allowed questions.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="responses">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Use to indicate the constraint on responses,
+                  such as the min and max allowed responses.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="controls" >
+              <xsd:annotation>
+                <xsd:documentation>
+                  Use to indicate the constraint on controls,
+                  such as the type of allowed controls.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+
+      <!-- Attribute specific for the questions constraints -->
+      <xsd:attribute name="chapter" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the if the ADC is allowed on chapter.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="single" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the if the ADC is allowed on single closed questions.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="multiple" type="xsd:boolean" default="false" >
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the if the ADC is allowed on multi-coded question.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="numeric" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the if the ADC is allowed on numeric questions.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="open" type="xsd:boolean" default="false" >
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the if the ADC is allowed on open-ended questions.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="date" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the if the ADC is allowed on date questions.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="requireParentLoop" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on questions, indicates the question require a parent loop.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+
+      <!-- Attribute specific for the responses constraints -->
+      <xsd:attribute name="min" type="adc:numberPattern" default="*">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on responses, indicates the minimum of allowed responses.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="max" type="adc:numberPattern" default="*">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on responses, indicates the maximum of allowed responses.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+
+      <!-- Attribute specific for the controls constraints -->
+      <xsd:attribute name="label" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on controls, indicates if the ADC is allowed on label controls.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="textbox" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on controls, indicates if the ADC is allowed on text box controls.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="listbox" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on controls, indicates if the ADC is allowed on list box controls (combobox and list).
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="checkbox" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on controls, indicates if the ADC is allowed on checkbox controls.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="radiobutton" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on controls, indicates if the ADC is allowed on radio button controls.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="responseblock" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Use for the constraint on controls, indicates if the ADC is allowed on response block.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Outputs of the ADC -->
+  <xsd:element name="outputs">
+    <xsd:annotation>
+      <xsd:documentation>
+        List all possible ADC's outputs.
+        A condition could be specify for each outputs to make it alternative.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="adc:output"  minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+
+      <xsd:attribute name="defaultOutput" type="xsd:NCName" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the id of default output to use when none of the output conditions matches.
+            It is require as the latest output fallback.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:key name="UniqueOutputId">
+      <xsd:annotation>
+        <xsd:documentation>
+          Enforce uniqueness of the output ids.
+        </xsd:documentation>
+      </xsd:annotation>
+      <xsd:selector xpath="./adc:output" />
+      <xsd:field xpath="@id" />
+    </xsd:key>
+    <xsd:keyref name="DefaultOutputId" refer="UniqueOutputId">
+      <xsd:annotation>
+        <xsd:documentation>
+          The default output id should match one of the output id.
+        </xsd:documentation>
+      </xsd:annotation>
+      <xsd:selector xpath="." />
+      <xsd:field xpath="@defaultOutput" />
+    </xsd:keyref>
+  </xsd:element>
+
+  <!-- Output -->
+  <xsd:element name="output">
+    <xsd:annotation>
+      <xsd:documentation>
+        Output of the ADC.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="adc:description" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="adc:condition" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="adc:content" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:NCName" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Unique identifier of the output.
+            It use on the defaultOutput attribute of the outputs element.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="defaultGeneration" type="xsd:boolean" default="false">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates if the system must generate or not the default controls.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="maxIterations" type="adc:numberPattern" default="*">
+        <xsd:annotation>
+          <xsd:documentation>
+            Only for question(s) inside a loop.
+            Indicates the maximum of iterations that could be handle by the ADC.
+            If a bound value is set:
+            - On the first or middle iterations, the engine will not generate remain merge controls on the page
+            - On the last iteration, the engine will generate the remain merge controls on the page
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+
+  </xsd:element>
+
+  <!-- Description element -->
+  <xsd:element name="description" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Describes the element
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Condition -->
+  <xsd:element name="condition" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        AskiaScript condition to use the current element.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Output content -->
+  <xsd:element name="content">
+    <xsd:annotation>
+      <xsd:documentation>
+        Content of the specify output.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:complexType>
+
+      <xsd:sequence>
+        <xsd:element ref="adc:yield" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="adc:attribute" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+
+      <xsd:attribute name="fileName" type="xsd:normalizedString" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            File use to generate the content.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="type" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the type of content.
+            According to this type, the system will automatically generate
+            the proper HTML fragment unless the &lt;yield&gt; is specify.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="flash">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Flash content. Will be inserted using &lt;object /&gt; tag.
+                  The content must be static or share.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="css">
+              <xsd:annotation>
+                <xsd:documentation>
+                  CSS content. Will be inserted using &lt;link href /&gt; tag when static or share
+                  or using the &lt;style&gt;&lt;/style&gt; tag when dynamic.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="html">
+              <xsd:annotation>
+                <xsd:documentation>
+                  HTML content.
+                  Will be inserted as it is or interpreted when it's dynamic.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="javascript">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Javascript content. Will be inserted using the &lt;script src /&gt; tag when static or share
+                  or using &lt;script&gt;&lt;/script&gt; tag when dynamic.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="image">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Image content. Will be inserted using the &lt;img src /&gt; tag.
+                  The content must be static or share.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="video">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Video content. Will be inserted using the &lt;video src /&gt; tag.
+                  The content must be static or share.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="audio">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Audio content. Will be inserted using the &lt;audio src /&gt; tag.
+                  The content must be static or share.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="binary">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Arbitrary binary file.
+                  Will be inserted according to the specify &lt;yield&gt; tag.
+                  The &lt;yield&gt; should be specified using a binary content otherwize the system will not create an output.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="text">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Text-based file.
+                  Will be inserted as it is or interpreted when it's dynamic.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="mode" default="static" use="optional">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicate how the content will be treat and where the system should find the content file.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="share">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The share content is always associated with a file and must be place in the /Resources/Share/ folder of the ADC.
+                  The share content will be extract in the resources folder of the survey /Resources/SurveyName/.
+                  This kind of content, could be share accross ADCs and will not be overrides when it already exist in the folder.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="static">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The static content is always associated with a file and must be place in the /Resources/Static/ folder of the ADC.
+                  The static content will be extract in the resources folder of the ADC /Resources/SurveyName/ADCname/.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="dynamic">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The dynamic content could be file (text based) or in-line code define in the definition of the content.
+                  It could embed AskiaScript to execute.
+                  When the content is a file, it must be place in the /Resources/Dynamic folder of the ADC.
+                  The dynamic content will not be extract but load in memory.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="position" default="none" use="optional">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates how and where the system must render the current content.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="none">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The resource will not be rendered.
+                  But it's still available through HTTP request.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="head">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The resource will be inserted in the head section of the HTML document.
+                  Mostly use for CSS stylesheet.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="placeholder">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The resource will be inserted at the position of the ADC control.
+                  Mostly use for the HTML injection.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="foot">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The resource will be inserted at the end of the document, just before the end of the closed body tag.
+                  Mostly use for javascript insertion.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Attributes to generate with the content tag -->
+  <xsd:element name="attribute">
+    <xsd:annotation>
+      <xsd:documentation>
+        Additional attribute to add or to overwrite in the auto-generated tag.
+        When &lt;yield&gt; is present the attribute is not take in account.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element ref="adc:value" minOccurs="1" maxOccurs="1" />
+      </xsd:all>
+      <xsd:attribute name="name" type="xsd:token" use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            Name of the attribute.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Value of the attribute tag -->
+  <xsd:element name="value" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Value of the attribute.
+        This value could be dynamic, embed AskiaScript code.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- yield content -->
+  <xsd:element name="yield" type="xsd:string">
+    <xsd:annotation>
+      <xsd:documentation>
+        Dynamic string which indicates how the content must be rendered.
+        It override the built-in HTML render by the system.
+        Must be use for the non-manageed file, such as binary or text
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <!-- Exposed properties of the ADC accessible by Askia engine -->
+  <xsd:element name="properties">
+    <xsd:annotation>
+      <xsd:documentation>
+        List of properties accessible through the user interface.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:complexType>
+      <xsd:sequence maxOccurs="unbounded">
+        <xsd:choice>
+          <xsd:element name="category">
+            <xsd:annotation>
+              <xsd:documentation>
+                Category of the properties.
+              </xsd:documentation>
+            </xsd:annotation>
+
+            <xsd:complexType>
+              <xsd:sequence maxOccurs="unbounded">
+                <xsd:element name="property" type="adc:abstractPropertyBase" />
+              </xsd:sequence>
+
+              <xsd:attribute name="id" use="required" type="xsd:NCName">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Unique id of the category.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="name" type="xsd:normalizedString" use="required">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    User friendly name of the category to show on the interface.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="collapsed" type="xsd:boolean" default="false">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates if the category should be collapsed by default.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:complexType>
+          </xsd:element>
+
+          <xsd:element name="property" type="adc:abstractPropertyBase" /> 
+        </xsd:choice>
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:unique name="UniquePropertyId">
+      <xsd:annotation>
+        <xsd:documentation>
+          Enforce uniqueness of the property ids.
+        </xsd:documentation>
+      </xsd:annotation>
+      <xsd:selector xpath=".//*" />
+      <xsd:field xpath="@id" />
+    </xsd:unique>
+    
+  </xsd:element>
+
+  <!-- Abstract property -->
+  <xsd:complexType name="abstractPropertyBase" abstract="true">
+    <xsd:annotation>
+      <xsd:documentation>
+        Property accessible through the user interface.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="visible" type="xsd:boolean" default="true">
+      <xsd:annotation>
+        <xsd:documentation>
+          Indicate if the property is visible in the user in Askia interface.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+
+  <!-- Standard property -->
+  <xsd:complexType name="standardProperty">
+    <xsd:complexContent>
+      <xsd:extension base="adc:abstractPropertyBase">
+        <xsd:sequence>
+          <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>
+                Describes the aim of the property.
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="value" minOccurs="1" maxOccurs="unbounded">
+            <xsd:annotation>
+              <xsd:documentation>
+                Default value of the property.
+              </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute name="theme" type="xsd:normalizedString" default="default" use="optional">
+                    <xsd:annotation>
+                      <xsd:documentation>
+                        Indicates the default value for the specified 'theme'.
+                        Also see the &lt;globalproperty id="askia-theme" /&gt;
+                      </xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:attribute>
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element ref="adc:options"  minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+
+        <xsd:attribute name="id" use="required" type="xsd:NCName">
+          <xsd:annotation>
+            <xsd:documentation>
+              Unique id of the property to access on it using the AskiaScript.
+              This id should not be a reserved id.
+              See &lt;globalproperty&gt;
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="name" type="xsd:normalizedString" use="required">
+          <xsd:annotation>
+            <xsd:documentation>
+              User friendly name of the property to show on the interface.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="type" use="required">
+          <xsd:annotation>
+            <xsd:documentation>
+              Type of the property.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:NCName">
+              <xsd:enumeration value="string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Property as string.
+                    The string could be validate against a regular expression using the pattern attribute.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="number">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Property as number.
+                    The number could be restricted using the min/max/decimal attribute.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="boolean">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Property as boolean.
+                    The value must be true or false.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="color">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Property as color.
+                    The format of the color could be specify using the colorFormat attribute.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="file">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Property as string.
+                    Indicate the name of a resource file already register.
+                    This file must be on the survey and accessible through the url ../Resources/[Survey name]/
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="question">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Property as question.
+                    Indicate question that could be used in the current ADC.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="mode" default="static">
+          <xsd:annotation>
+            <xsd:documentation>
+              Indicate if the value of the property could or not embed AskiaScript code.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:NCName">
+              <xsd:enumeration value="static">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    The static value is use as it is.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="dynamic">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    The dynamic value will be evaluated before his usage.
+                    If the value return by the evaluation doesn't produce an expected value
+                    according to the min, max, decimal, pattern, fileExtension...
+                    then the default value will be used.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+
+        <xsd:attribute name="require" type="xsd:boolean" default="true">
+          <xsd:annotation>
+            <xsd:documentation>
+              Indicate if a value is require for this property.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+
+        <!-- Additional options for type string -->
+        <xsd:attribute name="pattern" type="xsd:normalizedString">
+          <xsd:annotation>
+            <xsd:documentation>
+              Use with the type string, the regular expression pattern will be use to validate the value entered.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+
+        <!-- Additional options for type number -->
+        <xsd:attribute name="min" type="adc:numberPattern" default="*">
+          <xsd:annotation>
+            <xsd:documentation>
+              Use with the type number. Indicates the minimum allowed value.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="max" type="adc:numberPattern" default="*">
+          <xsd:annotation>
+            <xsd:documentation>
+              Use with the type number. Indicate the maximum allowed value.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="decimal" type="adc:numberPattern" default="0">
+          <xsd:annotation>
+            <xsd:documentation>
+              Use with the type number. Indicate the maximum number of decimal digits allowed.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+
+        <!-- Additional options for type color -->
+        <xsd:attribute name="colorFormat" default="rgb">
+          <xsd:annotation>
+            <xsd:documentation>
+              Use with the type color. Indicate the format of the color.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:NCName">
+              <xsd:enumeration value="rgb">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Color in RGB format (Red, Green, Blue)
+                    (RR,GG,BB)
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="rgba">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Color in RGBA format (Red, Green, Blue, Alpha)
+                    (RR,GG,BB,AA)
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="hexa">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Color in Hexadecimal format
+                    (#rrggbb)
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+
+        <!-- Additional options for type file -->
+        <xsd:attribute name="fileExtension" default=".*">
+          <xsd:annotation>
+            <xsd:documentation>
+              Use with the type file. Indicate the allowed extension of the file.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:token">
+              <xsd:pattern value="((\.([a-zA-Z0-9]{1,10}|\*))+\s*,?\s*)+" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- Askia property -->
+  <xsd:complexType name="askiaProperty">
+    <xsd:complexContent>
+      <xsd:extension base="adc:abstractPropertyBase">
+        <xsd:sequence>
+          <xsd:element name="value" minOccurs="0" maxOccurs="1" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>
+                Default value of the property.
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element ref="adc:options"  minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="id" use="required">
+          <xsd:annotation>
+            <xsd:documentation>
+              Indicates the identifier of global property to use.
+              This identifier implicitly specified the category, name, type, mode... of the property.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:NCName">
+              <xsd:enumeration value="askia-theme">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    List all possible themes.
+                    Allow properties to multiple default values for each theme.
+                    If a &lt;value /&gt; of a property doesn't specify the theme,
+                    a theme named 'default' will be automatically associated with it.
+
+                    category: 'General'
+                    name: 'Theme'
+                    type: 'strubg'
+                    description: 'Predefined themes'
+                    mode: 'dynamic'
+                    Requires: &lt;options&gt; tag
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="askia-addDK">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Once this global property is present in the config file,
+                    it allow user to generate an extra input for the "Don't know" answer.
+                    It's specially useful for the non-closed questions such as open-ended, numeric or date.
+
+                    category: 'General'
+                    name: 'Add "Don't know" input'
+                    type: 'boolean'
+                    description: 'Add a "Don't know" input to enforce the answer'
+                    value: false
+                    mode: 'static'
+
+                    REMARKS:
+                    The additional "Don't know" answer could be accessible through the AskiaScript code:
+                    ' dim lastResponseIndex = CurrentQuestion.AvailableResponses.Count - 1
+                    ' CurrentQuestion.AvailableResponses[lastResponseIndex]
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+              <xsd:enumeration value="askia-maxIterations">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This global property is automatically displayed in the interface when the question is in a loop.
+                    It allow user to indicates how many iterations he want to display.
+                    The value associated is used in conjunction of the maxIterations attribute of the &lt;output&gt; element.
+                    The system will use the minimal value of both.
+
+                    category: 'General'
+                    name: 'Max. iterations'
+                    type: 'number'
+                    description: 'Indicates the maximum number of iterations to display'
+                    value: * or 0
+                    mode: 'dynamic'
+
+                    REMARKS:
+                    It's not necessary to create this property, the system will automatically create it.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:enumeration>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- ADC property options -->
+  <xsd:element name="options">
+    <xsd:annotation>
+      <xsd:documentation>
+        Enumerates all allowed values.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="option" minOccurs="2" maxOccurs="unbounded">
+          <xsd:annotation>
+            <xsd:documentation>
+              Allowed choice.
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:attribute name="value" type="xsd:normalizedString" use="required">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Value of the option.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="text" type="xsd:normalizedString" use="required">
+              <xsd:annotation>
+                <xsd:documentation>
+                  User friendly text of the option.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:unique name="UniqueOptionValue">
+      <xsd:annotation>
+        <xsd:documentation>Enforce the uniqueness of option value</xsd:documentation>
+      </xsd:annotation>
+      <xsd:selector xpath="./adc:option" />
+      <xsd:field xpath="@value" />
+    </xsd:unique>
+  </xsd:element>
+
+</xsd:schema>
