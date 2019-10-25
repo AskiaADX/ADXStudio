@@ -659,7 +659,7 @@ function menuWithKeyboard () {
 
   displayMenu(files, contextualMenu, filesParent);
 
-  contextualMenu.popup(remote.getCurrentWindow());
+  contextualMenu.popup(remote.BrowserWindow.getAllWindows()[0]);
 }
 
 function upExplorer () {
