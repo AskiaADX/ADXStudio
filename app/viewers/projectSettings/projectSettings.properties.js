@@ -153,11 +153,11 @@ innerFormEl.querySelector('#property_name').addEventListener('change', encodeEve
       // Use falsy to validate if the comparison make sense
       // for example oriCat.condition could not exist
       // if curCat.condition == '' then it's equal
-      if (oriCat.condition || curCat.condition) {
-        if (curCat.condition !== oriCat.condition) {
-          return true;
-        }
-      }
+      // if (oriCat.condition || curCat.condition) {
+      //   if (curCat.condition !== oriCat.condition) {
+      //     return true;
+      //   }
+      // }
 
       for (let j = 0, k = curCat.properties.length; j < k; j += 1) {
         curProp = curCat.properties[j];
@@ -203,7 +203,7 @@ innerFormEl.querySelector('#property_name').addEventListener('change', encodeEve
     currentSelectedCatIndex = index;
     document.getElementById('category_id').value = category.id;
     document.getElementById('category_name').value = category.name || '';
-    document.getElementById('category_condition').value = category.condition || '';
+    // document.getElementById('category_condition').value = category.condition || '';
 
     loadProperties();
     muteChange = false;
@@ -224,7 +224,7 @@ innerFormEl.querySelector('#property_name').addEventListener('change', encodeEve
 
     category.id = document.getElementById('category_id').value;
     category.name = document.getElementById('category_name').value;
-    category.condition = document.getElementById('category_condition').value;
+    // category.condition = document.getElementById('category_condition').value;
 
     categoriesListEl.options[currentSelectedCatIndex].setAttribute('value', category.id);
     categoriesListEl.options[currentSelectedCatIndex].innerText = category.name;
@@ -703,7 +703,7 @@ innerFormEl.querySelector('#property_name').addEventListener('change', encodeEve
       }
       document.getElementById('category_id').value = '';
       document.getElementById('category_name').value = '';
-      document.getElementById('category_condition').value = '';
+      // document.getElementById('category_condition').value = '';
       loadCategory();
       muteChange = false;
 
