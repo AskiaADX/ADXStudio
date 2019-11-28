@@ -52,7 +52,7 @@
     "appId": "com.askia.adxstudio",
     "asar": false,
     "buildVersion": "0",
-    "electronVersion": "4.2.11",
+    "electronVersion": "7.1.2",
     "copyright": "Copyright (c) Askia 2019",
     "productName": "ADXStudio",
     "win": {
