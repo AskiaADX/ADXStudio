@@ -1513,6 +1513,127 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.5.0.0"
             }
         ],        
+        "responses" : [
+            {
+                "ns" : "masquelanguage",                
+                "accessor" : "response"
+            },            
+            {
+                "name" : "Caption",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the caption of responses in the collection",                
+                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Count",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the number of items in the collection",                
+                "examples" : "gender.Responses.Count ' => 2",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code of responses in the collection",                
+                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
+                "examples" : [
+                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
+                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Factor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns all the factors of a response collection as they were entered in the value column of the scaled responses",                
+                "examples" : [
+                    "\tAge.Responses.Factor ' => {10; 20; 30; 50}",                    
+                    "\tAge.AvailableResponses.Factor ' => {20; 30; 50}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Index",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
+                "examples" : [
+                    " gender.Responses.Index ' => {1; 2}",                    
+                    " country.AvailableResponses.Index ' => {2; 3; 1}"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
+                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Roots",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "responses",                
+                "desc" : "Returns an array of responses with all the top level responses",                
+                "examples" : "Brands.Responses.Roots[1] ' => \"Brand A\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses.ToString()",                    
+                    " ' => [{",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " },{",                    
+                    " \"index\" : 2,",                    
+                    " \"entryCode\":\"002\",",                    
+                    " \"caption\":\"Woman\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"resourceUrl\":\"./Woman.png\"",                    
+                    " }]"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
         "assert" : [
             {
                 "name" : "AddContext",                
@@ -1627,118 +1748,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             }
         ],        
-        "responses" : [
-            {
-                "ns" : "masquelanguage",                
-                "accessor" : "response"
-            },            
-            {
-                "name" : "Caption",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the caption of responses in the collection",                
-                "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Count",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the number of items in the collection",                
-                "examples" : "gender.Responses.Count ' => 2",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code of responses in the collection",                
-                "examples" : "brands.Responses.EntryCode ' => {1; 2; 3}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the entry code (as string) of responses in the collection",                
-                "examples" : [
-                    " brands.Responses.EntryCodeStr ' => {\"001\"; \"002\"; \"003\"}",                    
-                    " country.Responses.EntryCodeStr ' => {\"US\"; \"UK\"; \"FR\"}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Factor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tReturns all the factors of a response collection as they were entered in the value column of the scaled responses",                
-                "examples" : [
-                    "\tAge.Responses.Factor ' => {10; 20; 30; 50}",                    
-                    "\tAge.AvailableResponses.Factor ' => {20; 30; 50}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Index",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array indexes (based 1) of responses as their was entered in question",                
-                "examples" : [
-                    " gender.Responses.Index ' => {1; 2}",                    
-                    " country.AvailableResponses.Index ' => {2; 3; 1}"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ResourceURL",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "Returns an array with the URL of resources for the responses in the collection",                
-                "examples" : "gender.Responses.ResourceURL  ' => {\"/man.png\"; \"/woman.png\"}",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response collection (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses.ToString()",                    
-                    " ' => [{",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " },{",                    
-                    " \"index\" : 2,",                    
-                    " \"entryCode\":\"002\",",                    
-                    " \"caption\":\"Woman\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"resourceUrl\":\"./Woman.png\"",                    
-                    " }]"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
-                "version" : "5.3.2.0"
-            }
-        ],        
         "error" : [
             {
                 "name" : "Id",                
@@ -1760,2199 +1769,6 @@ askiaScript.extend(askiaScript.lexical, {
                     " q2.Errors[1].Message  ' => \"You can only give one response for question 'q2'\""
                 ],                
                 "version" : "5.4.1.0"
-            }
-        ],        
-        "adccontent" : [
-            {
-                "name" : "FileName",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the file name associated with the content",                
-                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Mode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the mode of the content.",                    
-                    "\tAvailable modes are:",                    
-                    "\t- \"share\" ",                    
-                    "\t- \"static\" ",                    
-                    "\t- \"dynamic\""
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Position",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the position of the content.",                    
-                    "\tAvailable positions are:",                    
-                    "\t- \"none\" ",                    
-                    "\t- \"head\" ",                    
-                    "\t- \"placeholder\" ",                    
-                    "\t- \"foot\""
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToText",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the content of the file associated with the content. ",                    
-                    "",                    
-                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
-                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
-                ],                
-                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToURL",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the final relative URL path to the content file",                    
-                    "",                    
-                    "\tThis is a shorthand to the method:",                    
-                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
-                ],                
-                "examples" : [
-                    "\tCurrentADC.Contents[1].ToURL() ",                    
-                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1].ToURL()",                    
-                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
-                    "",                    
-                    "\tCurrentADC.Contents[1].ToURL()",                    
-                    "\t' => \"\" ' Not yet implemented"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the type of the content.",                
-                "examples" : "\tCurrentADC.Contents[1].Type ' => \"JavaScript\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the type of the content. Available types are:",                    
-                    "- \"text\" ",                    
-                    "-- \"html\" ",                    
-                    "-- \"css\" ",                    
-                    "-- \"javascript\" ",                    
-                    "- \"binary\" ",                    
-                    "-- \"image\" ",                    
-                    "-- \"audio\" ",                    
-                    "-- \"video\" ",                    
-                    "-- \"flash\""
-                ],                
-                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
-                "version" : "5.3.3.0"
-            }
-        ],        
-        "browser" : [
-            {
-                "name" : "Mobile",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "True if the browser is running on mobile device",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
-                ],                
-                "examples" : "Browser.Mobile ' => true",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Name",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Name of the browser",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
-                ],                
-                "examples" : [
-                    " Browser.Name ' => \"Explorer\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Firefox\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Chrome\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Safari\"",                    
-                    "",                    
-                    " Browser.Name ' => \"Opera\"",                    
-                    "",                    
-                    " Browser.Name ' => \"\"  (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "OS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Short name of the operating system",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
-                ],                
-                "examples" : [
-                    " Browser.OS ' => \"Windows\"",                    
-                    "",                    
-                    " Browser.OS ' => \"Mac\"",                    
-                    "",                    
-                    " Browser.OS ' => \"Linux\"",                    
-                    "",                    
-                    " Browser.OS ' => \"iPhone/iPod\"",                    
-                    "",                    
-                    " Browser.OS ' => \"\" (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "PluginVersion",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "pluginName",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the plugin.It could be one of the following name:<br /><ul><li>Flash</li><li>Silverlight</li><li>AdobeReader</li><li>PDFReader</li><li>QuickTime</li><li>WindowsMediaPlayer</li><li>RealPlayer</li><li>VLC</li></ul>"
-                    }
-                ],                
-                "desc" : [
-                    " Return the version of the specified plugin.",                    
-                    " Return an empty string if the plugin is not supported."
-                ],                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a>"
-                ],                
-                "examples" : [
-                    " Browser.PluginVersion(\"Flash\") ' => \"11.2.202.235\"",                    
-                    " Browser.PluginVersion(\"Silverlight\") ' => \"4.1.10329.0\"",                    
-                    " Browser.PluginVersion(\"QuickTime\") ' => \"\" (not supported)"
-                ],                
-                "alsoSee" : "Browser.Support",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenAvailHeight",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the available height in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenAvailHeight ' => 1040",                    
-                    " Browser.ScreenHeight ' => 1080",                    
-                    " Browser.WindowHeight ' => 895",                    
-                    "",                    
-                    " Browser.ScreenAvailHeight ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenAvailWidth",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the available width in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenAvailWidth ' => 1920",                    
-                    " Browser.ScreenWidth ' => 1920",                    
-                    " Browser.WindowWidth ' => 1916",                    
-                    "",                    
-                    " Browser.ScreenAvailWidth ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenAvailHeight",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenColorDepth",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenColorDepth ' => 32",                    
-                    "",                    
-                    " Browser.ScreenColorDepth ' => 0 (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenHeight",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the height in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenHeight ' => 1080",                    
-                    " Browser.ScreenAvailHeight ' => 1040",                    
-                    " Browser.WindowHeight ' => 895",                    
-                    "",                    
-                    " Browser.ScreenHeight ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ScreenWidth",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the width in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.ScreenWidth ' => 1920",                    
-                    " Browser.ScreenAvailWidth ' => 1920",                    
-                    " Browser.WindowWidth ' => 1916",                    
-                    "",                    
-                    " Browser.ScreenWidth ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.ScreenHeight",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight",                    
-                    "Browser.WindowWidth",                    
-                    "Browser.WindowHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Support",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "featureKey",                        
-                        "type" : "string",                        
-                        "desc" : "Feature to check.<br/><a href=\"#feature-keys\">Click here to display the list of feature keys</a>"
-                    }
-                ],                
-                "desc" : "Return a boolean value which indicates if the browser can support the specified feature.",                
-                "remarks" : [
-                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
-                    " <ul><li>Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a></li><li>HTML5 / ES5 / CSS3 features detection using the <a href=\"http://modernizr.com/\" target=\"_blank\">Modernizr</a></li></ul>"
-                ],                
-                "examples" : [
-                    " ' Support flash?",                    
-                    " Browser.Support(\"flash\") ' => true",                    
-                    "",                    
-                    " ' Support touch events?",                    
-                    " Browser.Support(\"touch\") ' => false",                    
-                    "",                    
-                    " ' Support cookies?",                    
-                    " Browser.Support(\"cookies\") ' => true",                    
-                    "",                    
-                    " ' Support HTML 5 video tag?",                    
-                    " Browser.Support(\"video\") ' => true"
-                ],                
-                "sections" : [
-                    {
-                        "name" : "Feature keys:",                        
-                        "linkName" : "feature-keys",                        
-                        "tagName" : "h2",                        
-                        "desc" : "List of all feature keys. All keys are not case-sensitive meaning that \"Flash\" or \"flash\" are equivalent."
-                    },                    
-                    {
-                        "name" : "Plugin keys",                        
-                        "linkName" : "plugin-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead>",                            
-                            " <tr>",                            
-                            " <th>Key</th>",                            
-                            " <th>Description</th>",                            
-                            " </tr>",                            
-                            " </thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Flash</td><td>Indicates if the browser support the Flash plugin</td></tr>",                            
-                            " <tr><td>Silverlight</td><td>Indicates if the browser support the Silverlight plugin</td></tr>",                            
-                            " <tr><td>QuickTime</td><td>Indicates if the browser support the QuickTime plugin</td></tr>",                            
-                            " <tr><td>WindowsMediaPlayer</td><td>Indicates if the browser support the Windows Media Player plugin</td></tr>",                            
-                            " <tr><td>RealPlayer</td><td>Indicates if the browser support the Real Player plugin</td></tr>",                            
-                            " <tr><td>VLC</td><td>Indicates if the browser support the VLC plugin</td></tr>",                            
-                            " <tr><td>AdobeReader</td><td>Indicates if the browser support the Adobe PDF Reader plugin</td></tr>",                            
-                            " <tr><td>PDFReader</td><td>Indicates if the browser support the any other PDF Reader plugin</td></tr>",                            
-                            " </tbody></table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 and HTML generic keys",                        
-                        "linkName" : "html5-generic-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Javascript</td><td>Indicates if the browser support Javascript</td></tr>",                            
-                            " <tr><td>Touch</td><td>Indicates if the browser support the <a href=\"http://www.w3.org/TR/touch-events/\" target=\"_blank\">HTML5 touch events API</a></td></tr>",                            
-                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source.html\" target=\"_blank\">HTML5 Geo Location API</a></td></tr>",                            
-                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"https://developer.mozilla.org/en/DOM/window.postMessage\" target=\"_blank\">HTML5 Post Message API</a></td></tr>",                            
-                            " <tr><td>HashChange</td><td> Indicates the browser support the  <a href=\"https://developer.mozilla.org/en/DOM/window.onhashchange\" target=\"_blank\">HTML5 HashChange event</a></td></tr>",                            
-                            " <tr><td>History</td><td>Indicates the browser support the <a href=\"https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history\" target=\"_blank\">HTML5 History API</a></td></tr>",                            
-                            " <tr><td>DragAndDrop</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2011/WD-html5-20110405/dnd.html\" target=\"_blank\">HTML5 Drag And Drop API</a></td></tr>",                            
-                            " <tr><td>FullScreen </td><td> Indicates the browser support the <a href=\"http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html\" target=\"_blank\">FullScreen API</a> </td></tr>",                            
-                            " <tr><td>SpeechInput </td><td> Indicates if the browser support the <a href=\"http://lists.w3.org/Archives/Public/public-xg-htmlspeech/2011Feb/att-0020/api-draft.html\" target=\"_blank\">Speech Input API</a> </td></tr>",                            
-                            " <tr><td>Cookies </td><td> Indicates the browser support the <a href=\"http://en.wikipedia.org/wiki/HTTP_cookie\" target=\"_blank\">cookies</a> </td></tr>",                            
-                            " <tr><td>Unicode </td><td> Indicates if the browser support the unicode </td></tr>",                            
-                            " <tr><td>StrictMode </td><td> Indicates if the browser support the <a href=\"http://dmitrysoshnikov.com/ecmascript/es5-chapter-2-strict-mode/\" target=\"_blank\">EcmaScript5 strict mode</a> </td></tr>",                            
-                            " <tr><td>JSON </td><td> Indicates if the browser support the native <a href=\"http://www.json.org/js.html\" target=\"_blank\">JSON API</a> </td></tr>",                            
-                            " <tr><td>MathML </td><td> Indicates if the browser support <a href=\"http://www.w3.org/Math/\" target=\"_blank\">MathML</a> </td></tr>",                            
-                            " <tr><td>DeviceMotion </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#devicemotion\" target=\"_blank\">devicemotion events</a> </td></tr>",                            
-                            " <tr><td>DeviceOrientation </td><td> Indicates if the browser suppor the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#deviceorientation\" target=\"_blank\">deviceorientation events</a> </td></tr>",                            
-                            " <tr><td> Battery </td><td> Indicates the browser support the  <a href=\"http://www.w3.org/TR/battery-status/\" target=\"_blank\">Battery Status API</a> </td></tr>",                            
-                            " <tr><td> FileReader </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/FileAPI/#dfn-filereader\" target=\"_blank\">FileReader API</a> </td></tr>",                            
-                            " <tr><td> FileSystem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/file-system-api/#the-filesystem-interface\" target=\"_blank\">FileSystem API</a> </td></tr>",                            
-                            " <tr><td>IE8Compat </td><td> Indicates the  <a href=\"http://blogs.msdn.com/b/askie/archive/2009/03/23/understanding-compatibility-modes-in-internet-explorer-8.aspx\" target=\"_blank\">IE8 compatibility mode</a> is enable on Microsoft Internet Explorer</td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 forms keys (inputs, attributes ...)",                        
-                        "linkName" : "html5-forms-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><th colspan=\"2\">Tags </th></tr>",                            
-                            " <tr><td> OutputElem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#New_output_mechanisms\" target=\"_blank\">HTML5 &lt;output&gt; tag</a> </td></tr>",                            
-                            " <tr><td> ProgressBar </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;progress&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Meter</td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;meter&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Details </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/details\" target=\"_blank\">HTML5 &lt;details&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Ruby </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/ruby/#intro\" target=\"_blank\">HTML5 &lt;ruby&gt; tag</a> </td></tr>",                            
-                            " <tr><td> Track </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/track\" target=\"_blank\">HTML5 &lt;track&gt; tag</a> </td></tr>",                            
-                            " <tr><th colspan=\"2\">Inputs </th></tr>",                            
-                            " <tr><td> Number </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.number.html\" target=\"_blank\">HTML 5 &lt;input type=number&gt;</a> </td></tr>",                            
-                            " <tr><td> Range </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.range.html\" target=\"_blank\">HTML 5 &lt;input type=range&gt;</a> </td></tr>",                            
-                            " <tr><td> Date </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.date.html\" target=\"_blank\">HTML 5 &lt;input type=date&gt;</a> </td></tr>",                            
-                            " <tr><td> DateTime </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime.html\" target=\"_blank\">HTML 5 &lt;input type=datetime&gt;</a> </td></tr>",                            
-                            " <tr><td> DateTime-Local </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime-local.html\" target=\"_blank\">HTML 5 &lt;input type=datetime-local&gt;</a> </td></tr>",                            
-                            " <tr><td> Month </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.month.html\" target=\"_blank\">HTML 5 &lt;input type=month&gt;</a> </td></tr>",                            
-                            " <tr><td> Week </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.week.html\" target=\"_blank\">HTML 5 &lt;input type=week&gt;</a> </td></tr>",                            
-                            " <tr><td> Time </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.time.html\" target=\"_blank\">HTML 5 &lt;input type=time&gt;</a> </td></tr>",                            
-                            " <tr><td> Tel </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.tel.html\" target=\"_blank\">HTML 5 &lt;input type=tel&gt;</a> </td></tr>",                            
-                            " <tr><td> Email </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.email.html\" target=\"_blank\">HTML 5 &lt;input type=email&gt;</a> </td></tr>",                            
-                            " <tr><td> URL </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.url.html\" target=\"_blank\">HTML 5 &lt;input type=url&gt;</a> </td></tr>",                            
-                            " <tr><td> Color </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.color.html\" target=\"_blank\">HTML 5 &lt;input type=color&gt;</a> </td></tr>",                            
-                            " <tr><td> Search </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.search.html\" target=\"_blank\">HTML 5 &lt;input type=search&gt;</a> </td></tr>",                            
-                            " <tr><th colspan=\"2\">Attributes </th></tr>",                            
-                            " <tr><td> AutoComplete </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-autocomplete\" target=\"_blank\">HTML5 autocomplete attribute</a> </td></tr>",                            
-                            " <tr><td> AutoFocus </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/Submission/web-forms2/#the-autofocus\" target=\"_blank\">HTML5 autofocus attribute</a> </td></tr>",                            
-                            " <tr><td> List </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-list\" target=\"_blank\">HTML5 datalist element and list attribute</a> </td></tr>",                            
-                            " <tr><td> Placeholder </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-placeholder\" target=\"_blank\">HTML5 placeholder attribute</a> </td></tr>",                            
-                            " <tr><td> Min </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 min attribute</a> </td></tr>",                            
-                            " <tr><td> Max </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 max attribute</a> </td></tr>",                            
-                            " <tr><td> Step </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-step\" target=\"_blank\">HTML5 step attribute</a> </td></tr>",                            
-                            " <tr><td> Multiple </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-multiple\" target=\"_blank\">HTML5 multiple attribute</a> </td></tr>",                            
-                            " <tr><td> Pattern </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-pattern\" target=\"_blank\">HTML5 pattern attribute</a> </td></tr>",                            
-                            " <tr><td> Required </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-required\" target=\"_blank\">HTML5 required attribute</a> </td></tr>",                            
-                            " <tr><td> FormValidation </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#Validation\" target=\"_blank\">Form Validation using required and pattern attributes</a> </td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 storage keys",                        
-                        "linkName" : "html5-storage-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>IndexedDB</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/IndexedDB/\" target=\"_blank\">HTML5 Indexed Database API</a></td></tr>",                            
-                            " <tr><td>LocalStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-localstorage-attribute\" target=\"_blank\">HTML5 Local Storage API</a></td></tr>",                            
-                            " <tr><td>SessionStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-sessionstorage-attribute\" target=\"_blank\">HTML5 Session Storage API</a></td></tr>",                            
-                            " <tr><td>ApplicationCache </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/offline-webapps/#offline\" target=\"_blank\">HTML5 Offline Application Cache API</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 communication keys",                        
-                        "linkName" : "html5-communication-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>WebSockets</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a></td></tr>",                            
-                            " <tr><td>WebSocketsBinary</td><td> Indicates if the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a> could accept binary data</td></tr>",                            
-                            " <tr><td>WebWorkers</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/workers/\" target=\"_blank\">HTML5 WebWorkers API</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 graphic keys",                        
-                        "linkName" : "html5-graphic-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Canvas</td><td> Indicates the browser support the <a href=\"https://developer.mozilla.org/en/HTML/Canvas\" target=\"_blank\">HTML5 Canvas API</a></td></tr>",                            
-                            " <tr><td>CanvasText</td><td> Indicates the browser support the <a href=\"http://www.canvastext.com/\" target=\"_blank\">HTML5 Canvas Text API</a></td></tr>",                            
-                            " <tr><td>WebGL</td><td> Indicates the browser support the <a href=\"http://www.khronos.org/webgl/wiki/Main_Page\" target=\"_blank\">HTML5 WebGL API</a></td></tr>",                            
-                            " <tr><td>SVG</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/SVG/proposals/svg-html/svg-html-proposal.html\" target=\"_blank\">HTML5 SVG API</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 video keys",                        
-                        "linkName" : "html5-video-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Video</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video\" target=\"_blank\">HTML5 &lt;video&gt; tag</a></td></tr>",                            
-                            " <tr><td>Ogg</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">Ogg codec</a></td></tr>",                            
-                            " <tr><td>H264</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">H264 codec</a></td></tr>",                            
-                            " <tr><td>WebM</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">WebM codec</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "HTML 5 audio keys",                        
-                        "linkName" : "html5-audio-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>Audio</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio\" target=\"_blank\">HTML5 &lt;audio&gt; tag</a></td></tr>",                            
-                            " <tr><td>mp3</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">mp3 codec</a></td></tr>",                            
-                            " <tr><td>wav</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">wav codec</a></td></tr>",                            
-                            " <tr><td>m4a</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">m4a codec</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    },                    
-                    {
-                        "name" : "CSS 3 keys",                        
-                        "linkName" : "css3-keys",                        
-                        "tagName" : "h3",                        
-                        "desc" : [
-                            " <table>",                            
-                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
-                            " <tbody>",                            
-                            " <tr><td>MediaQueries</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-mediaqueries/\" target=\"_blank\">CSS3 media queries</a></td></tr>",                            
-                            " <tr><td>GeneratedContent</td><td> Indicates the browser support the <a href=\"http://dev.opera.com/articles/view/css-generated-content-techniques/\" target=\"_blank\">CSS2/CSS3 generated content :before / :after / content</a></td></tr>",                            
-                            " <tr><td>FontFace</td><td> Indicates the browser support the <a href=\"http://www.css3.info/preview/web-fonts-with-font-face/\" title=\"@font-face\" target=\"_blank\">CSS3 web font</a></td></tr>",                            
-                            " <tr><td>Flexbox</td><td> Indicates the browser support the <a href=\"http://www.html5rocks.com/en/tutorials/flexbox/quick/\" target=\"_blank\">CSS3 flexbox</a></td></tr>",                            
-                            " <tr><td>RGBa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#rgba-color\" target=\"_blank\">CSS3 RGB with Alpha</a></td></tr>",                            
-                            " <tr><td>HSLa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#hsla-color\" target=\"_blank\">CSS3 HSLA</a></td></tr>",                            
-                            " <tr><td>MultipleBgs</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#layering\" target=\"_blank\">CSS3 multiple background</a></td></tr>",                            
-                            " <tr><td>BackgroundSize</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#the-background-size\" target=\"_blank\">CSS3 background size property</a></td></tr>",                            
-                            " <tr><td>BorderImage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#border-images\" target=\"_blank\">CSS3 border image properties</a></td></tr>",                            
-                            " <tr><td>BorderRadius</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#corners\" target=\"_blank\">CSS3 border radius properties</a></td></tr>",                            
-                            " <tr><td>BoxShadow</td><td> Indicates the browser support the \"CSS3 box shadow property\"</td></tr>",                            
-                            " <tr><td>TextShadow</td><td> Indicates the browser support the <a href=\"http://www.w3.org/Style/Examples/007/text-shadow.en.html\" target=\"_blank\">CSS3 text shadow property</a></td></tr>",                            
-                            " <tr><td>Opacity</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#opacity\" target=\"_blank\">CSS3 opacity property</a></td></tr>",                            
-                            " <tr><td>CSSAnimations</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-animations/#introduction\" target=\"_blank\">CSS3 animations properties</a></td></tr>",                            
-                            " <tr><td>CSSColumns</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-multicol/#introduction\" target=\"_blank\">CSS3 multi-columns properties</a></td></tr>",                            
-                            " <tr><td>CSSGradients</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/csswg/css3-images/#gradients\" target=\"_blank\">CSS3 linear-gradient, radial-gradients... properties</a></td></tr>",                            
-                            " <tr><td>CSSReflections</td><td> Indicates the browser support the <a href=\"http://designshack.net/articles/css/mastering-css-reflections-in-webkit/\" target=\"_blank\">CSS3 reflections properties</a></td></tr>",                            
-                            " <tr><td>CSSTransforms</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-rendering\" target=\"_blank\">CSS3 transforms properties</a></td></tr>",                            
-                            " <tr><td>CSSTransforms3D</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-3d-rendering\" target=\"_blank\">CSS3 3D transforms properties</a></td></tr>",                            
-                            " <tr><td>CSSTransitions</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transitions/#introduction\" target=\"_blank\">CSS3 transitions properties</a></td></tr>",                            
-                            " </tbody>",                            
-                            " </table>"
-                        ]
-                    }
-                ],                
-                "alsoSee" : "Browser.PluginVersion",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Browser.ToString()",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns \"browser\"",                
-                "examples" : "Browser.TypeOf() ' => \"browser\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "UserAgent",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "User-agent of the browser",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " ' Internet Explorer 9.0",                    
-                    " Browser.UserAgent ' => \"Mozilla/5.0 (compatible; MSIE 9.0;",                    
-                    "  Windows NT 6.1; Trident/5.0)\"",                    
-                    "",                    
-                    " ' Firefox 25.0",                    
-                    " Browser.UserAgent ' => \"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0)",                    
-                    "  Gecko/20100101 Firefox/25.0\"",                    
-                    "",                    
-                    " ' Safari 6.0",                    
-                    " Browser.UserAgent ' => \"Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X)",                    
-                    " AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25\""
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Version",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Major version number of the browser",                
-                "remarks" : "Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>",                
-                "examples" : [
-                    " Browser.Version ' => 8",                    
-                    "",                    
-                    " Browser.Version ' => 11.6",                    
-                    "",                    
-                    " Browser.Version '=> 0 (unknown)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "WindowHeight",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.WindowHeight ' => 895",                    
-                    " Browser.ScreenHeight ' => 1080",                    
-                    " Browser.ScreenAvailHeight ' => 1040",                    
-                    "",                    
-                    " Browser.WindowHeight ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.WindowWidth",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "WindowWidth",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "<blockquote>� Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
-                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
-                "examples" : [
-                    " Browser.WindowWidth ' => 1916",                    
-                    " Browser.ScreenWidth ' => 1920",                    
-                    " Browser.ScreenAvailWidth ' => 1920",                    
-                    "",                    
-                    " Browser.WindowWidth ' => 0 (unknown)"
-                ],                
-                "alsoSee" : [
-                    "Browser.WindowHeight",                    
-                    "Browser.ScreenWidth",                    
-                    "Browser.ScreenHeight",                    
-                    "Browser.ScreenAvailWidth",                    
-                    "Browser.ScreenAvailHeight"
-                ],                
-                "version" : "5.3.3.0"
-            }
-        ],        
-        "theme" : [
-            {
-                "name" : "BaseFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the base font size",                
-                "examples" : "\tInterview.BaseFS ' => \"12px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "BlackColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the color used as \"black\" - usually the fore color",                
-                "examples" : "\tInterview.Black ' => \"0,0,0\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "BorderRadius",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the border radius",                
-                "examples" : "\tInterview.BorderRadius ' => \"5px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "BorderWidth",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the border width",                
-                "examples" : "\tInterview.BorderWidth ' => \"1px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "ErrorColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the error colour",                
-                "examples" : "\tInterview.ErrorColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "FontFamily",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the font family",                
-                "examples" : "\tInterview.FontFamily ' => \"Print: Arial, Helvetica, sans-serif\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "HPadding",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the horizontal padding",                
-                "examples" : "\tInterview.HPadding ' => \"0.5em\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "LargeFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the large font size",                
-                "examples" : "\tInterview.LargeFS ' => \"14px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "LineHeight",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the line height for text",                
-                "examples" : "\tInterview.LineHeight ' => \"1.2\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NeutralColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the neutral colour",                
-                "examples" : "\tInterview.NeutralColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NeutralDarkColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the darker version of the neutral colour",                
-                "examples" : "\tInterview.NeutralDarkColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NeutralLightColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the lighter version of the neutral colour",                
-                "examples" : "\tInterview.NeutralLightColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "NormalFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the normal font size",                
-                "examples" : "\tInterview.NormalFS ' => \"10px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PrimaryColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the primary colour",                
-                "examples" : "\tInterview.PrimaryColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PrimaryDarkColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the darker version of the primary colour",                
-                "examples" : "\tInterview.PrimaryDarkColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PrimaryLightColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the lighter version of the primary colour",                
-                "examples" : "\tInterview.PrimaryLightColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "PropValue",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "property",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li><li>SuccessColor</li></ul>"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturn the value of the theme property.",                    
-                    "\tReturn an empty string if the property is not supported."
-                ],                
-                "examples" : "\tTheme.PropValue(\"PrimaryColor\") ' => \"11.202.235\"",                
-                "alsoSee" : "Theme.Var",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SecondaryColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the secondary colour",                
-                "examples" : "\tInterview.SecondaryColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SecondaryDarkColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the darker version of the secondary colour",                
-                "examples" : "\tInterview.SecondaryDarkColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SecondaryLightColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the lighter version of the secondary colour",                
-                "examples" : "\tInterview.SecondaryLightColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SmallFS",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the small font size",                
-                "examples" : "\tInterview.SmallFS ' => \"8px\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "SuccessColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the success colour",                
-                "examples" : "\tInterview.SuccessColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Var",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "variant",                
-                "args" : [
-                    {
-                        "name" : "property",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li><li>SuccessColor></li>"
-                    }
-                ],                
-                "desc" : [
-                    "\tReturn the value of the theme property (as a variant).",                    
-                    "\tReturn an empty string if the property is not supported."
-                ],                
-                "examples" : "\tTheme.Var(\"PrimaryColor\") ' => 11.202.235",                
-                "alsoSee" : "Theme.PropValue",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "VPadding",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the vertical padding",                
-                "examples" : "\tInterview.VPadding ' => \"1.2em\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "WhiteColor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the color used as \"white\" usually the back color",                
-                "examples" : "\tInterview.WhiteColor ' => \"255,255,255\"",                
-                "version" : "5.4.2.0"
-            }
-        ],        
-        "message" : [
-            {
-                "name" : "continue_left_off",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the continue_left_off \tContinue where you left off",                
-                "examples" : "Interview.Language.Translate(Message.continue_left_off) ' => \" \"Continue where you left off\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message \"expected_0_answer\"  \tA response is expected for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer) ' => \" \"A response is expected for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_multiple",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_multiple \tPlease choose all that apply!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple) ' => \" \"Please choose all that apply!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_multiple_grid_column",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_multiple_grid_column \tPlease choose at least one answer per column(vertically)!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple_grid_column) ' => \" \"Please choose at least one answer per column(vertically)!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_multiple_grid_row",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_multiple_grid_row \tPlease choose at least one answer per row(horizontally)!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple_grid_row) ' => \" \"Please choose at least one answer per row(horizontally)!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_open_ended",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_open_ended \tPlease type in your answer!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_open_ended) ' => \" \"Please type in your answer!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_single",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_single \tPlease choose one answer!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single) ' => \" \"Please choose one answer!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_single_grid_column",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_single_grid_column \tPlease choose one answer per column(vertically)!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single_grid_column) ' => \" \"Please choose one answer per column(vertically)!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_answer_single_grid_row",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_answer_single_grid_row \tPlease choose one answer per row(horizontally)!",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single_grid_row) ' => \" \"Please choose one answer per row(horizontally)!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_at_least_1_answer",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_at_least_1_answer \tPlease select at least %1 for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_at_least_1_answer) ' => \" \"Please select at least %1 for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_between_1_2",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_between_1_2 \tResponse to question '%0' must be between % 1 and %2",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_between_1_2) ' => \" \"Response to question '%0' must be between % 1 and %2\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_date",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_date \tPlease enter a valid date for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_date) ' => \" \"Please enter a valid date for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_greather_than_1",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_greather_than_1 \tResponse to question '%0' must be above % 1",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_greather_than_1) ' => \" \"Response to question '%0' must be between % 1 and %2\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_lower_than_1",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_lower_than_1 \tResponse to question '%0' must be under % 1",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_lower_than_1) ' => \" \"Response to question '%0' must be under % 1\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_no_decimal",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_no_decimal \tResponse to question '%0' cannot be decimal",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_no_decimal) ' => \" \"Response to question '%0' cannot be decimal\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_numeric",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_numeric\tResponse to question '%0' must be numeric",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_numeric) ' => \" \"Response to question '%0' must be numeric\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_only_1_answer",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_only_1_answer \tYou can only give %1 responses to '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_only_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_only_one_answer",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message expected_0_only_one_answer \tYou can only give one response for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_only_one_answer) ' => \" \"You can only give one response for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_rank_1",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_rank_1 \tRank % 1 is missing for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_rank_1) ' => \" \"Rank % 1 is missing for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_rank_1_once",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the 15 \texpected_0_rank_1_once \tRank % 1 has been given more than once for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_rank_1_once) ' => \" \"Rank % 1 has been given more than once for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_ranking_between_one_1",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_ranking_between_one_1 \tRanking must be between 1 an % 1 for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_ranking_between_one_1) ' => \" \"Ranking must be between 1 an % 1 for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_0_time",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_0_time \tPlease enter a valid time for question '%0'",                
-                "examples" : "Interview.Language.Translate(Message.expected_0_time) ' => \" \"Please enter a valid time for question '%0'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_answer_at_least",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_answer_at_least \tOne or more questions have not been answered and require further input.Please carefully review your responses on this page.",                
-                "examples" : "Interview.Language.Translate(Message.expected_answer_at_least) ' => \" \"One or more questions have not been answered and require further input.Please carefully review your responses on this page.\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "expected_semi_open",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the expected_semi_open \tYou must specify the semi - open response",                
-                "examples" : "Interview.Language.Translate(Message.expected_semi_open) ' => \" \"You must specify the semi-open response\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "interview_0_percent_completed",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the interview_0_completed\t0 % completed",                
-                "examples" : "Interview.Language.Translate(Message.interview_0_completed) ' => \" \"0 % completed\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "next",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the next \tNext",                
-                "examples" : "Interview.Language.Translate(Message.next) ' => \" \"Next\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "other",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message other",                
-                "examples" : "Interview.Language.Translate(Message.other) ' => \" \"Autre\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "picture_close",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the picture_close\tPlease click on the picture to close the window!",                
-                "examples" : "Interview.Language.Translate(Message.picture_close) ' => \" \"Please click on the picture to close the window!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "picture_enlarge",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the picture_enlarge\tPlease click on the picture to enlarge!",                
-                "examples" : "Interview.Language.Translate(Message.picture_enlarge) ' => \" \"Please click on the picture to enlarge!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "picture_see",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the picture_see\tPlease click on the link to see the picture!",                
-                "examples" : "Interview.Language.Translate(Message.picture_see) ' => \" \"Please click on the link to see the picture!\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "previous",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the next \tNext",                
-                "examples" : "Interview.Language.Translate(Message.previous) ' => \" \"Next\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "quota_closed_0",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the quota_closed_0 \tThe quotas are closed for '%1'",                
-                "examples" : "Interview.Language.Translate(Message.quota_closed_0) ' => \" \"The quotas are closed for '%1'\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "start_survey",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the start_survey \tStart Survey",                
-                "examples" : "Interview.Language.Translate(Message.start_survey) ' => \" \"Start Survey\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "submit",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the submit  \tSubmit your answers",                
-                "examples" : "Interview.Language.Translate(Message.submit ) ' => \" \"Submit your answers\"",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "unexpected_0_1_answer",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the identifier for the message unexpected_0_1_answer \tYou cannot give response � % 1� to question � % 0�",                
-                "examples" : "Interview.Language.Translate(Message.unexpected_0_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
-                "version" : "5.5.2.0"
-            }
-        ],        
-        "adcproperty" : [
-            {
-                "name" : "Id",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Return the id of the ADC Property",                
-                "examples" : "CurrentADC.Properties[1].Id  ' => \"tickColor\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the type of the property",                
-                "examples" : "\tCurrentADC.Properties[1].Type ' => \"string\"",                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Type",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the type of property, available types are:",                    
-                    "- \"number\" ",                    
-                    "- \"boolean\" ",                    
-                    "- \"string\" ",                    
-                    "- \"color\" ",                    
-                    "- \"file\" ",                    
-                    "- \"question\""
-                ],                
-                "examples" : [
-                    " CurrentADC.Properties[1].Type  ' => \"color\" ",                    
-                    " CurrentADC.Properties[2].Type  ' => \"string\" ",                    
-                    " CurrentADC.Properties[3].Type '  => \"question\""
-                ],                
-                "version" : "5.3.3.0"
-            }
-        ],        
-        "response" : [
-            {
-                "name" : "Caption",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the caption of the response",                
-                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Entry-code of the response",                
-                "examples" : "brands.Responses[1].EntryCode ' => 4",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "EntryCodeStr",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Entry-code of the response (as string)",                
-                "examples" : "country.Responses[1].EntryCodeStr ' => \"US\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Factor",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a factor as they were entered in the value column of the scaled responses",                
-                "examples" : [
-                    " gender.Responses[1].Factor ' => 3",                    
-                    " country.AvailableResponses[1].Factor ' => 7"
-                ],                
-                "version" : "5.4.6.0"
-            },            
-            {
-                "name" : "Id",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Internal unique identifier of the response",                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].id  ' => 456",                    
-                    " CurrentQuestion.AvailableResponses[2].id ' => 455"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Index",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the index of response (based 1) as it was entered",                
-                "examples" : [
-                    " gender.Responses[1].Index  ' => 1",                    
-                    " gender.Responses[2].Index  ' => 2"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "InputName",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Indicates the full-name of the HTML input for this response.",                    
-                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
-                    " <ul><li><strong>ranking</strong>: Obtain the full-name of the input to set the rank of this response</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.InputName() ' => \"U0\"",                    
-                    " gender.Responses[1].InputName() ' => \"U0\"",                    
-                    " gender.Responses[2].InputName() ' => \"U0\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.InputName() ' => \"M2\"",                    
-                    " brands.Responses[1].InputName() ' => \"M2 510\"",                    
-                    " brands.Responses[2].InputName() ' => \"M2 511\"",                    
-                    " brands.Responses[3].InputName() ' => \"M2 512\"",                    
-                    "",                    
-                    " ' Multiple with ranking",                    
-                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
-                    " brands.Responses[1].InputName(\"ranking\") ' => \"R2 510\"",                    
-                    " brands.Responses[2].InputName(\"ranking\") ' => \"R2 511\"",                    
-                    " brands.Responses[3].InputName(\"ranking\") ' => \"R2 512\""
-                ],                
-                "alsoSee" : [
-                    "Question.InputName",                    
-                    "Question.InputValue",                    
-                    "Response.InputValue"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "InputValue",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "args" : [
-                    {
-                        "name" : "type",                        
-                        "type" : "string",                        
-                        "desc" : "Specified the type of the input value to obtain",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns the HTML input value attribute for this response.",                    
-                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
-                    " <ul><li><strong>ranking</strong>: Obtain the rank value of the response input</li></ul>"
-                ],                
-                "examples" : [
-                    " ' Single",                    
-                    " gender.Responses[1].InputValue() ' => \"256\"",                    
-                    " gender.Responses[2].InputValue() ' => \"257\"",                    
-                    "",                    
-                    " ' Multiple",                    
-                    " brands.Responses[1].InputValue() ' => \"510\"",                    
-                    " brands.Responses[2].InputValue() ' => \"511\"",                    
-                    " brands.Responses[3].InputValue() ' => \"512\"",                    
-                    "",                    
-                    " ' Multiple with ranking (return the rank)",                    
-                    " brands.Responses[1].InputValue(\"ranking\") ' => \"2\"",                    
-                    " brands.Responses[2].InputValue(\"ranking\") ' => \"1\"",                    
-                    " brands.Responses[3].InputValue(\"ranking\") ' => \"\""
-                ],                
-                "alsoSee" : [
-                    "Question.InputName",                    
-                    "Question.InputValue",                    
-                    "Response.InputName"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "IsExclusive",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the response is considered (flag) as \"Exclusive\" answer.",                    
-                    " It returns always True for a single closed question, even if it's linked into a multiple"
-                ],                
-                "examples" : "gender.Responses[3].IsExclusive ' => True",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsIgnored",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the response is ignored",                
-                "examples" : "brands.Responses[5].IsIgnored ' => False",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "IsSelected",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].IsSelected  ' => true",                    
-                    " CurrentQuestion.AvailableResponses[2].IsSelected ' => false",                    
-                    " ' Similar than",                    
-                    " ' CurrentQuestion.Value Has CurrentQuestion.AvailableResponses[2].Index"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "Order",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the order of response (based 1) on display.",                    
-                    " Returns DK if the question is skipped or the response was ignored."
-                ],                
-                "examples" : [
-                    " brands.Responses[1].Order  ' => 2",                    
-                    " brands.Responses[2].Order  ' => 1"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Rank",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates in which order the answer has been selected by the respondent.",                    
-                    " Sequence from 0 (when no selection) to the number of answers.<br />If the response has not been selected the value is 0.",                    
-                    " For multiple ranking question it returns the order of the selection (based 1)",                    
-                    " For classical multiple question, the order of the selection is a sequence (based 1) <br />that may be sort according to how the responses has been displayed."
-                ],                
-                "examples" : [
-                    " CurrentQuestion.AvailableResponses[1].Rank ' => 0 (not selected)",                    
-                    " CurrentQuestion.AvailableResponses[2].Rank ' => 3 (third selected)",                    
-                    " CurrentQuestion.AvailableResponses[3].Rank ' => 1 (first selected)",                    
-                    " CurrentQuestion.AvailableResponses[4].Rank ' => 2 (second selected)"
-                ],                
-                "version" : "5.3.3.0"
-            },            
-            {
-                "name" : "ResourceURL",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the URL of resource for the response",                
-                "examples" : "gender.Responses[1].ResourceURL  ' => \"/man.png\"",                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "Tags",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "stringarray",                
-                "desc" : [
-                    "Returns the list of tags associated to a response",                    
-                    "",                    
-                    "q1.Responses[1].Tags Has {\"Browsable\"}"
-                ],                
-                "examples" : "q1.Responses[1].Tags Has {\"Browsable\"}",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns a string which represent the response (express in JSON format)",                
-                "examples" : [
-                    " ' Output in a single line (it's break here for the readability)",                    
-                    " gender.Responses[1].ToString()",                    
-                    " ' => {",                    
-                    " \"index\":1,",                    
-                    " \"entryCode\":\"001\",",                    
-                    " \"caption\":\"Man\",",                    
-                    " \"isExclusive\":true,",                    
-                    " \"isSelected\":true,",                    
-                    " \"resourceUrl\":\"./Man.png\"",                    
-                    " }"
-                ],                
-                "version" : "5.3.2.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the type of the current object / variable",                
-                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
-                "version" : "5.3.2.0"
-            }
-        ],        
-        "adp" : [
-            {
-                "name" : "Redirect",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adp",                
-                "args" : [
-                    {
-                        "name" : "URL",                        
-                        "type" : "string",                        
-                        "desc" : "to redirect"
-                    },                    
-                    {
-                        "name" : "Seconds",                        
-                        "type" : "string",                        
-                        "desc" : "to redirect"
-                    }
-                ],                
-                "desc" : "\tSets the ADP property",                
-                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).Redirect(\"www.askia.com\",3).ShowMessage(\"theEnd\")",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "SetProperty",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adp",                
-                "args" : [
-                    {
-                        "name" : "property",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to set"
-                    },                    
-                    {
-                        "name" : "value",                        
-                        "type" : "variant"
-                    }
-                ],                
-                "desc" : "\tSets the ADP property",                
-                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "ShowMessage",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adp",                
-                "args" : [
-                    {
-                        "name" : "message",                        
-                        "type" : "string",                        
-                        "desc" : "yto be shown where the questions are usually displayed"
-                    }
-                ],                
-                "desc" : "\tUses the ADP engine to generate some HTML with a message",                
-                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
-                "version" : "5.5.2.0"
-            }
-        ],        
-        "interview" : [
-            {
-                "name" : "AgentID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns the identifier of the interviewing agent",                    
-                    "",                    
-                    " Only available with askiaVoice or askiaFace fieldwork, otherwise it returns 0.",                    
-                    " Cotrarily to the agent name the agent id is stored in the survey data so can be accessed by verification scripts"
-                ],                
-                "remarks" : [
-                    " @alsosee",                    
-                    " AgentName"
-                ],                
-                "examples" : "Interview.AgentID ' => 35",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "AgentName",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the name of the interviewing agent",                    
-                    "",                    
-                    " Only available during askiaVoice or askiaFace fieldwork, otherwise it returns an empty string \"\".",                    
-                    " The agent name is not persisted in the survey data hence it's not available in verification script. Make sure that if you set a value to a question with it,",                    
-                    " you do no lose that information by modifying it in Supervisor or Entry (see IsCATI)"
-                ],                
-                "remarks" : [
-                    " ",                    
-                    " @alsosee",                    
-                    " IsCATI, AgentID",                    
-                    "",                    
-                    " "
-                ],                
-                "examples" : "Interview.AgentName ' => \"John Doe\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Broker",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the Broker ID as received in askia web",                
-                "remarks" : "",                
-                "examples" : "Interview.Broker ' => \"SSI\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "BrokerPanelID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
-                "remarks" : "",                
-                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "CallID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Returns a Call ID of the current interview.",                    
-                    "",                    
-                    " Only available during askiaVoice fieldwork, otherwise it returns 0."
-                ],                
-                "remarks" : "This is usually only available in AskiaVoice",                
-                "examples" : "Interview.CallID ' => 123",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Duration",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "args" : [
-                    {
-                        "name" : "startQuestion",                        
-                        "type" : "question"
-                    },                    
-                    {
-                        "name" : "endQuestion",                        
-                        "type" : "question",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "threshold",                        
-                        "type" : "number",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Returns the time (in seconds) spent on a question or the total time spent between a range of questions. (eg. InterviewTime)",                    
-                    " If any question duration is superior to the threshold, that question is not taken in account in the sum",                    
-                    "",                    
-                    " Parameters",                    
-                    "",                    
-                    " - startQuestion [Required] {Question} Indicates the question from where the calculation of tiem should start.",                    
-                    " - endQuestion [Optional] {Question} Indicates the question to where the calculation of time should stop should stop (included in the calculation). If the omit, the endQuestion is equal to the startQuestion",                    
-                    " - threshold [Optional] {Number} any duration superior to the threshold (for a given quetsion) will be ignored"
-                ],                
-                "examples" : [
-                    " Interview.Duration(gender) ' => 2 (seconds)",                    
-                    "",                    
-                    " Interview.Duration(gender, Age) ' => 5 (seconds)",                    
-                    "",                    
-                    " ' q1 is inside a loop = only the current iteration is returned",                    
-                    " Interview.Duration(q1) <> Interview.Duration(q1.FirstIteration,q1.LastIteration)",                    
-                    "  "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "EndTime",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the finished date/time of the current interview in the current time zone(eg. EndInterview)",                    
-                    "",                    
-                    " If the current interview is not yet finished it return the time of last screen submit"
-                ],                
-                "remarks" : "",                
-                "examples" : [
-                    " Interview.EndTime ' => #10/01/2016 11:01\"",                    
-                    "",                    
-                    " @alsosee",                    
-                    " EndTimeUTC,StartTime"
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "EndTimeUTC",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : [
-                    " Indicates the finished UTC date/time of the current interview (eg. EndInterview)",                    
-                    "",                    
-                    " If the current interview is not yet finished it return the time of last screen submit"
-                ],                
-                "remarks" : [
-                    " @alsosee",                    
-                    " EndTime,StartTimeUTC"
-                ],                
-                "examples" : "Interview.EndTimeUTC ' => #10/01/2016 10:01\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Errors",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "errors",                
-                "desc" : "Returns the list of errors during the interview run-time",                
-                "examples" : [
-                    " Interview.Errors.Count ' => 0",                    
-                    "",                    
-                    " Interview.Errors[1].Message ' => \"A response is expected for question 'q1'\""
-                ],                
-                "version" : "5.4.1.0"
-            },            
-            {
-                "name" : "GetFaceOS",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : [
-                    " Returns the Operating System (OS) of the AskiaFace device, if the current interviewing mode is AskiaFace.",                    
-                    "",                    
-                    " Returns an empty string if the interviewing mode is not Face.",                    
-                    "",                    
-                    " Possible return values are:",                    
-                    "",                    
-                    " \"windows\"",                    
-                    " \"ios\"",                    
-                    " \"android\"",                    
-                    "",                    
-                    " Return a String"
-                ],                
-                "examples" : [
-                    " Interview.GetFaceOS()  ' => \"windows\"",                    
-                    "",                    
-                    " Interview.GetFaceOS()  ' => \"ios\"",                    
-                    "",                    
-                    " Interview.GetFaceOS()  ' => \"android\"",                    
-                    " "
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "GUID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
-                "remarks" : "",                
-                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the ID of the interview. The ID is not available during the interview but is in case of a modification in Voice or in the verification scripts",                
-                "remarks" : "This is usually only available once the interview has been saved",                
-                "examples" : "Interview.Id ' => 123",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IPAddress",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the IPAddress if available",                
-                "remarks" : "This is usually only available in askiaWeb",                
-                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "IsFace",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interviewing mode is AskiaFace (CAPI)",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsFace  ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsFirstPage",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if you are on the first page",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsFirstPage ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsLastPage",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if you are on the last page - this might give you the wrong information depending on routings",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsLastPage ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsTest",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interview was started in Brief mode or Test flag",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsTest  ' => False",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsVoice",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interviewing mode is AskiaVoice (CATI)",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsVoice  ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "IsWeb",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    " Indicates if the current interviewing mode is in AskiaWeb (CAWI)",                    
-                    "",                    
-                    " Return a Boolean"
-                ],                
-                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
-                "examples" : "Interview.IsWeb  ' => True",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Key",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the secure hash key of the current interview (used in URL) (eg. Password)",                
-                "remarks" : "",                
-                "examples" : "Interview.Key ' => \"QWERTYQWERTYQWER\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Language",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "language",                
-                "desc" : "Returns the respondent's current language.",                
-                "examples" : [
-                    " Interview.Language.Abbr ' => \"FRA\"",                    
-                    " Interview.Language.Name ' => \"French (France)\""
-                ],                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "LastResultCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    "\tReturns the Last result code to the call or web interview - this is only available in a routing at the end of the survey or",                    
-                    "\ton an edit routing"
-                ],                
-                "remarks" : "\tthis was added in 5.4.9 in January 2019",                
-                "examples" : "\tInterview.LastResultCode ' => 4 = hang-up",                
-                "version" : "5.4.9.0"
-            },            
-            {
-                "name" : "LastSubResultCode",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    "\tReturns the Last sub result code to the call or web interview - this is only available in a routing at the end of the survey or",                    
-                    "\ton an edit routing"
-                ],                
-                "remarks" : "\tthis was added in 5.4.9 in January 2019",                
-                "examples" : "\tInterview.LastSubResultCode ' => 3",                
-                "version" : "5.4.9.0"
-            },            
-            {
-                "name" : "Latitude",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the Latitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Latitude ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ListID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the identifier of the respondent list",                
-                "remarks" : "This is usually only available in askiaVoice",                
-                "examples" : "Interview.ListID ' => 22",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Longitude",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the longitude if available (0 otherwise)",                
-                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
-                "examples" : "Interview.Longitude ' => 1.4",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "OutOfQuotaQuestions",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "array",                
-                "desc" : "\tReturns the question (r the list of questions if the quotas are nested) that triggered the out of quota",                
-                "remarks" : "\t",                
-                "examples" : [
-                    "\tInterview.OutOfQuotaQuestions[1].Shortcut ' => Gender",                    
-                    "\tInterview.OutOfQuotaQuestions[1].Value\t' => Male"
-                ],                
-                "version" : "5.4.9.0"
-            },            
-            {
-                "name" : "PanelID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the askia Panel ID as received in askia web when available",                
-                "remarks" : "",                
-                "examples" : "Interview.PanelID ' => \"2356b\"",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Progress",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns the percentage value of progress through the questionnaire.",                
-                "examples" : "Interview.Progress ' => 32",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "Returns",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "offsettoutc",                
-                "desc" : [
-                    " This returns the shift in hours from the time to the",                    
-                    " "
-                ],                
-                "examples" : "Interview.StartTime - Interview.OffsetToUTC /24 ' => StartTime as UTC time",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Scenario",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "Returns the current respondent scenario (also known in design 5 as version)",                
-                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
-                "examples" : "Interview.Scenario ' => \"User\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "Seed",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
-                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
-                "examples" : "Interview.Seed ' => 133",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "StartTime",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : "Indicates the start date/time of the current interview in the current time zone (eg. StartInterview)",                
-                "remarks" : [
-                    " @alsosee",                    
-                    " StartTimeUTC"
-                ],                
-                "examples" : "Interview.StartTime ' => #10/01/2016 10:33\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "StartTimeUTC",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "date",                
-                "desc" : "Indicates the start UTC date/time of the current interview  (eg. StartInterview)",                
-                "remarks" : [
-                    " @alsosee",                    
-                    " StartTime",                    
-                    "",                    
-                    " "
-                ],                
-                "examples" : "Interview.StartTimeUTC ' => #10/01/2016 11:33\"",                
-                "version" : "5.4.2.0"
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Interview.ToString()",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns \"interview\"",                
-                "examples" : "interview.TypeOf() ' => \"interview\"",                
-                "version" : "5.3.5.0"
-            }
-        ],        
-        "survey" : [
-            {
-                "name" : "ChildQuestions",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "questions",                
-                "desc" : [
-                    "\tReturns the array of questions at the top level of the survey (often chapters)",                    
-                    "\t"
-                ],                
-                "remarks" : [
-                    "\t@alsosee",                    
-                    "\tQuestions"
-                ],                
-                "examples" : "\tSurvey.ChildQuestions[1].Shortcut ' => \"Demographics\"",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "FileName",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the file name of the survey",                
-                "remarks" : [
-                    "\t@alsosee",                    
-                    "\tName"
-                ],                
-                "examples" : "\tSurvey.FileName ' => \"Ex.qex\"",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "ID",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tReturns the identifier of the survey (as registered in the CCA), or 0 when not yet registered.",                
-                "examples" : "\tSurvey.Id ' => 13",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "Languages",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "languagearray",                
-                "desc" : "\tReturns the revision number of the survey file",                
-                "examples" : "\tSurvey.Languages[1].Name ' => \"English\"",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "Name",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : "\tReturns the name of the survey (as registered in the CCA) or the filename of the survey when not yet registered.",                
-                "remarks" : [
-                    "\t@alsosee",                    
-                    "\tFileName"
-                ],                
-                "examples" : "\tSurvey.Name ' => \"Ex\"",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "Questions",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "questions",                
-                "desc" : "\tReturns the array of all questions - understand that per question we mean each survey data point - so a question within a loop will appear many times",                
-                "remarks" : [
-                    "\t@alsosee",                    
-                    "\tChildQuestions"
-                ],                
-                "examples" : "\tSurvey.Questions[1].Shortcut ' => \"Demographics\"",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "Revision",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tReturns the revision number of the survey file",                
-                "examples" : "\tSurvey.Revision ' => 14",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "Scenarios",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "stringarray",                
-                "desc" : "\tReturns the list of scenarios in the survey file",                
-                "examples" : "\tSurvey.Scenarios[1] ' => \"Debug\"",                
-                "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "Tags",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "stringarray",                
-                "desc" : "\tReturns the list of possible tags in the survey file",                
-                "examples" : "\tSurvey.Tag[1] ' => \"Demographic\"",                
-                "version" : "5.5.0.0"
             }
         ],        
         "question" : [
@@ -5082,6 +2898,20 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "UserData",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns a string that the user can utilize to store specific values (Key value or anything of his liking)",                
+                "examples" : [
+                    " If CurrentQuestion.UserData = \"Slider Then.",                    
+                    " Endif",                    
+                    " Dim Dic As Dictionary",                    
+                    " Dic.LoadJSON(CurrentQuestion.UserData)"
+                ],                
+                "version" : "5.5.2.0"
+            },            
+            {
                 "name" : "Value",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5107,6 +2937,2334 @@ askiaScript.extend(askiaScript.lexical, {
                     " birthday.value ' => DK"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "VisibleInDataEntry",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Returns a boolean that indicates if the question is marked as visible in the data entry (you might have to check its parent to know if the question is really visible",                
+                "examples" : [
+                    "If CurrentQuestion.VisibleInDataEntry Then.",                    
+                    "Endif"
+                ],                
+                "version" : "5.5.2.0"
+            }
+        ],        
+        "browser" : [
+            {
+                "name" : "Mobile",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "True if the browser is running on mobile device",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
+                ],                
+                "examples" : "Browser.Mobile ' => true",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Name",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Name of the browser",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
+                ],                
+                "examples" : [
+                    " Browser.Name ' => \"Explorer\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Firefox\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Chrome\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Safari\"",                    
+                    "",                    
+                    " Browser.Name ' => \"Opera\"",                    
+                    "",                    
+                    " Browser.Name ' => \"\"  (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "OS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Short name of the operating system",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>"
+                ],                
+                "examples" : [
+                    " Browser.OS ' => \"Windows\"",                    
+                    "",                    
+                    " Browser.OS ' => \"Mac\"",                    
+                    "",                    
+                    " Browser.OS ' => \"Linux\"",                    
+                    "",                    
+                    " Browser.OS ' => \"iPhone/iPod\"",                    
+                    "",                    
+                    " Browser.OS ' => \"\" (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "PluginVersion",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "pluginName",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the plugin.It could be one of the following name:<br /><ul><li>Flash</li><li>Silverlight</li><li>AdobeReader</li><li>PDFReader</li><li>QuickTime</li><li>WindowsMediaPlayer</li><li>RealPlayer</li><li>VLC</li></ul>"
+                    }
+                ],                
+                "desc" : [
+                    " Return the version of the specified plugin.",                    
+                    " Return an empty string if the plugin is not supported."
+                ],                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a>"
+                ],                
+                "examples" : [
+                    " Browser.PluginVersion(\"Flash\") ' => \"11.2.202.235\"",                    
+                    " Browser.PluginVersion(\"Silverlight\") ' => \"4.1.10329.0\"",                    
+                    " Browser.PluginVersion(\"QuickTime\") ' => \"\" (not supported)"
+                ],                
+                "alsoSee" : "Browser.Support",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenAvailHeight",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the available height in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenAvailHeight ' => 1040",                    
+                    " Browser.ScreenHeight ' => 1080",                    
+                    " Browser.WindowHeight ' => 895",                    
+                    "",                    
+                    " Browser.ScreenAvailHeight ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenAvailWidth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the available width in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenAvailWidth ' => 1920",                    
+                    " Browser.ScreenWidth ' => 1920",                    
+                    " Browser.WindowWidth ' => 1916",                    
+                    "",                    
+                    " Browser.ScreenAvailWidth ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenAvailHeight",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenColorDepth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenColorDepth ' => 32",                    
+                    "",                    
+                    " Browser.ScreenColorDepth ' => 0 (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenHeight",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the height in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenHeight ' => 1080",                    
+                    " Browser.ScreenAvailHeight ' => 1040",                    
+                    " Browser.WindowHeight ' => 895",                    
+                    "",                    
+                    " Browser.ScreenHeight ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ScreenWidth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the width in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.ScreenWidth ' => 1920",                    
+                    " Browser.ScreenAvailWidth ' => 1920",                    
+                    " Browser.WindowWidth ' => 1916",                    
+                    "",                    
+                    " Browser.ScreenWidth ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.ScreenHeight",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight",                    
+                    "Browser.WindowWidth",                    
+                    "Browser.WindowHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Support",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "featureKey",                        
+                        "type" : "string",                        
+                        "desc" : "Feature to check.<br/><a href=\"#feature-keys\">Click here to display the list of feature keys</a>"
+                    }
+                ],                
+                "desc" : "Return a boolean value which indicates if the browser can support the specified feature.",                
+                "remarks" : [
+                    " All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                    
+                    " <ul><li>Plugins detection using <a href=\"http://www.pinlady.net/PluginDetect/All/\" target=\"_blank\">PluginDetect by Eric Gerds</a></li><li>HTML5 / ES5 / CSS3 features detection using the <a href=\"http://modernizr.com/\" target=\"_blank\">Modernizr</a></li></ul>"
+                ],                
+                "examples" : [
+                    " ' Support flash?",                    
+                    " Browser.Support(\"flash\") ' => true",                    
+                    "",                    
+                    " ' Support touch events?",                    
+                    " Browser.Support(\"touch\") ' => false",                    
+                    "",                    
+                    " ' Support cookies?",                    
+                    " Browser.Support(\"cookies\") ' => true",                    
+                    "",                    
+                    " ' Support HTML 5 video tag?",                    
+                    " Browser.Support(\"video\") ' => true"
+                ],                
+                "sections" : [
+                    {
+                        "name" : "Feature keys:",                        
+                        "linkName" : "feature-keys",                        
+                        "tagName" : "h2",                        
+                        "desc" : "List of all feature keys. All keys are not case-sensitive meaning that \"Flash\" or \"flash\" are equivalent."
+                    },                    
+                    {
+                        "name" : "Plugin keys",                        
+                        "linkName" : "plugin-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead>",                            
+                            " <tr>",                            
+                            " <th>Key</th>",                            
+                            " <th>Description</th>",                            
+                            " </tr>",                            
+                            " </thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Flash</td><td>Indicates if the browser support the Flash plugin</td></tr>",                            
+                            " <tr><td>Silverlight</td><td>Indicates if the browser support the Silverlight plugin</td></tr>",                            
+                            " <tr><td>QuickTime</td><td>Indicates if the browser support the QuickTime plugin</td></tr>",                            
+                            " <tr><td>WindowsMediaPlayer</td><td>Indicates if the browser support the Windows Media Player plugin</td></tr>",                            
+                            " <tr><td>RealPlayer</td><td>Indicates if the browser support the Real Player plugin</td></tr>",                            
+                            " <tr><td>VLC</td><td>Indicates if the browser support the VLC plugin</td></tr>",                            
+                            " <tr><td>AdobeReader</td><td>Indicates if the browser support the Adobe PDF Reader plugin</td></tr>",                            
+                            " <tr><td>PDFReader</td><td>Indicates if the browser support the any other PDF Reader plugin</td></tr>",                            
+                            " </tbody></table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 and HTML generic keys",                        
+                        "linkName" : "html5-generic-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Javascript</td><td>Indicates if the browser support Javascript</td></tr>",                            
+                            " <tr><td>Touch</td><td>Indicates if the browser support the <a href=\"http://www.w3.org/TR/touch-events/\" target=\"_blank\">HTML5 touch events API</a></td></tr>",                            
+                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source.html\" target=\"_blank\">HTML5 Geo Location API</a></td></tr>",                            
+                            " <tr><td>GeoLocation</td><td>Indicates if the browser support the <a href=\"https://developer.mozilla.org/en/DOM/window.postMessage\" target=\"_blank\">HTML5 Post Message API</a></td></tr>",                            
+                            " <tr><td>HashChange</td><td> Indicates the browser support the  <a href=\"https://developer.mozilla.org/en/DOM/window.onhashchange\" target=\"_blank\">HTML5 HashChange event</a></td></tr>",                            
+                            " <tr><td>History</td><td>Indicates the browser support the <a href=\"https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history\" target=\"_blank\">HTML5 History API</a></td></tr>",                            
+                            " <tr><td>DragAndDrop</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2011/WD-html5-20110405/dnd.html\" target=\"_blank\">HTML5 Drag And Drop API</a></td></tr>",                            
+                            " <tr><td>FullScreen </td><td> Indicates the browser support the <a href=\"http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html\" target=\"_blank\">FullScreen API</a> </td></tr>",                            
+                            " <tr><td>SpeechInput </td><td> Indicates if the browser support the <a href=\"http://lists.w3.org/Archives/Public/public-xg-htmlspeech/2011Feb/att-0020/api-draft.html\" target=\"_blank\">Speech Input API</a> </td></tr>",                            
+                            " <tr><td>Cookies </td><td> Indicates the browser support the <a href=\"http://en.wikipedia.org/wiki/HTTP_cookie\" target=\"_blank\">cookies</a> </td></tr>",                            
+                            " <tr><td>Unicode </td><td> Indicates if the browser support the unicode </td></tr>",                            
+                            " <tr><td>StrictMode </td><td> Indicates if the browser support the <a href=\"http://dmitrysoshnikov.com/ecmascript/es5-chapter-2-strict-mode/\" target=\"_blank\">EcmaScript5 strict mode</a> </td></tr>",                            
+                            " <tr><td>JSON </td><td> Indicates if the browser support the native <a href=\"http://www.json.org/js.html\" target=\"_blank\">JSON API</a> </td></tr>",                            
+                            " <tr><td>MathML </td><td> Indicates if the browser support <a href=\"http://www.w3.org/Math/\" target=\"_blank\">MathML</a> </td></tr>",                            
+                            " <tr><td>DeviceMotion </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#devicemotion\" target=\"_blank\">devicemotion events</a> </td></tr>",                            
+                            " <tr><td>DeviceOrientation </td><td> Indicates if the browser suppor the <a href=\"http://dev.w3.org/geo/api/spec-source-orientation.html#deviceorientation\" target=\"_blank\">deviceorientation events</a> </td></tr>",                            
+                            " <tr><td> Battery </td><td> Indicates the browser support the  <a href=\"http://www.w3.org/TR/battery-status/\" target=\"_blank\">Battery Status API</a> </td></tr>",                            
+                            " <tr><td> FileReader </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/FileAPI/#dfn-filereader\" target=\"_blank\">FileReader API</a> </td></tr>",                            
+                            " <tr><td> FileSystem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/file-system-api/#the-filesystem-interface\" target=\"_blank\">FileSystem API</a> </td></tr>",                            
+                            " <tr><td>IE8Compat </td><td> Indicates the  <a href=\"http://blogs.msdn.com/b/askie/archive/2009/03/23/understanding-compatibility-modes-in-internet-explorer-8.aspx\" target=\"_blank\">IE8 compatibility mode</a> is enable on Microsoft Internet Explorer</td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 forms keys (inputs, attributes ...)",                        
+                        "linkName" : "html5-forms-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><th colspan=\"2\">Tags </th></tr>",                            
+                            " <tr><td> OutputElem </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#New_output_mechanisms\" target=\"_blank\">HTML5 &lt;output&gt; tag</a> </td></tr>",                            
+                            " <tr><td> ProgressBar </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;progress&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Meter</td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#.3Cprogress.3E_and_.3Cmeter.3E\" target=\"_blank\">HTML5 &lt;meter&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Details </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/details\" target=\"_blank\">HTML5 &lt;details&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Ruby </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/TR/ruby/#intro\" target=\"_blank\">HTML5 &lt;ruby&gt; tag</a> </td></tr>",                            
+                            " <tr><td> Track </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/track\" target=\"_blank\">HTML5 &lt;track&gt; tag</a> </td></tr>",                            
+                            " <tr><th colspan=\"2\">Inputs </th></tr>",                            
+                            " <tr><td> Number </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.number.html\" target=\"_blank\">HTML 5 &lt;input type=number&gt;</a> </td></tr>",                            
+                            " <tr><td> Range </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.range.html\" target=\"_blank\">HTML 5 &lt;input type=range&gt;</a> </td></tr>",                            
+                            " <tr><td> Date </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.date.html\" target=\"_blank\">HTML 5 &lt;input type=date&gt;</a> </td></tr>",                            
+                            " <tr><td> DateTime </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime.html\" target=\"_blank\">HTML 5 &lt;input type=datetime&gt;</a> </td></tr>",                            
+                            " <tr><td> DateTime-Local </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.datetime-local.html\" target=\"_blank\">HTML 5 &lt;input type=datetime-local&gt;</a> </td></tr>",                            
+                            " <tr><td> Month </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.month.html\" target=\"_blank\">HTML 5 &lt;input type=month&gt;</a> </td></tr>",                            
+                            " <tr><td> Week </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.week.html\" target=\"_blank\">HTML 5 &lt;input type=week&gt;</a> </td></tr>",                            
+                            " <tr><td> Time </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.time.html\" target=\"_blank\">HTML 5 &lt;input type=time&gt;</a> </td></tr>",                            
+                            " <tr><td> Tel </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.tel.html\" target=\"_blank\">HTML 5 &lt;input type=tel&gt;</a> </td></tr>",                            
+                            " <tr><td> Email </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.email.html\" target=\"_blank\">HTML 5 &lt;input type=email&gt;</a> </td></tr>",                            
+                            " <tr><td> URL </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.url.html\" target=\"_blank\">HTML 5 &lt;input type=url&gt;</a> </td></tr>",                            
+                            " <tr><td> Color </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.color.html\" target=\"_blank\">HTML 5 &lt;input type=color&gt;</a> </td></tr>",                            
+                            " <tr><td> Search </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/html-markup/input.search.html\" target=\"_blank\">HTML 5 &lt;input type=search&gt;</a> </td></tr>",                            
+                            " <tr><th colspan=\"2\">Attributes </th></tr>",                            
+                            " <tr><td> AutoComplete </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-autocomplete\" target=\"_blank\">HTML5 autocomplete attribute</a> </td></tr>",                            
+                            " <tr><td> AutoFocus </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/Submission/web-forms2/#the-autofocus\" target=\"_blank\">HTML5 autofocus attribute</a> </td></tr>",                            
+                            " <tr><td> List </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-list\" target=\"_blank\">HTML5 datalist element and list attribute</a> </td></tr>",                            
+                            " <tr><td> Placeholder </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-placeholder\" target=\"_blank\">HTML5 placeholder attribute</a> </td></tr>",                            
+                            " <tr><td> Min </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 min attribute</a> </td></tr>",                            
+                            " <tr><td> Max </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-min\" target=\"_blank\">HTML5 max attribute</a> </td></tr>",                            
+                            " <tr><td> Step </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-step\" target=\"_blank\">HTML5 step attribute</a> </td></tr>",                            
+                            " <tr><td> Multiple </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-multiple\" target=\"_blank\">HTML5 multiple attribute</a> </td></tr>",                            
+                            " <tr><td> Pattern </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-pattern\" target=\"_blank\">HTML5 pattern attribute</a> </td></tr>",                            
+                            " <tr><td> Required </td><td> Indicates if the browser support the <a href=\"http://dev.w3.org/html5/spec/common-input-element-attributes.html#attr-input-required\" target=\"_blank\">HTML5 required attribute</a> </td></tr>",                            
+                            " <tr><td> FormValidation </td><td> Indicates if the browser support the <a href=\"http://www.w3.org/wiki/HTML5_form_additions#Validation\" target=\"_blank\">Form Validation using required and pattern attributes</a> </td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 storage keys",                        
+                        "linkName" : "html5-storage-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>IndexedDB</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/IndexedDB/\" target=\"_blank\">HTML5 Indexed Database API</a></td></tr>",                            
+                            " <tr><td>LocalStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-localstorage-attribute\" target=\"_blank\">HTML5 Local Storage API</a></td></tr>",                            
+                            " <tr><td>SessionStorage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/2009/WD-webstorage-20091222/#the-sessionstorage-attribute\" target=\"_blank\">HTML5 Session Storage API</a></td></tr>",                            
+                            " <tr><td>ApplicationCache </td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/offline-webapps/#offline\" target=\"_blank\">HTML5 Offline Application Cache API</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 communication keys",                        
+                        "linkName" : "html5-communication-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>WebSockets</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a></td></tr>",                            
+                            " <tr><td>WebSocketsBinary</td><td> Indicates if the <a href=\"http://dev.w3.org/html5/websockets/\" target=\"_blank\">HTML5 WebSockets API</a> could accept binary data</td></tr>",                            
+                            " <tr><td>WebWorkers</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/workers/\" target=\"_blank\">HTML5 WebWorkers API</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 graphic keys",                        
+                        "linkName" : "html5-graphic-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Canvas</td><td> Indicates the browser support the <a href=\"https://developer.mozilla.org/en/HTML/Canvas\" target=\"_blank\">HTML5 Canvas API</a></td></tr>",                            
+                            " <tr><td>CanvasText</td><td> Indicates the browser support the <a href=\"http://www.canvastext.com/\" target=\"_blank\">HTML5 Canvas Text API</a></td></tr>",                            
+                            " <tr><td>WebGL</td><td> Indicates the browser support the <a href=\"http://www.khronos.org/webgl/wiki/Main_Page\" target=\"_blank\">HTML5 WebGL API</a></td></tr>",                            
+                            " <tr><td>SVG</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/SVG/proposals/svg-html/svg-html-proposal.html\" target=\"_blank\">HTML5 SVG API</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 video keys",                        
+                        "linkName" : "html5-video-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Video</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video\" target=\"_blank\">HTML5 &lt;video&gt; tag</a></td></tr>",                            
+                            " <tr><td>Ogg</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">Ogg codec</a></td></tr>",                            
+                            " <tr><td>H264</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">H264 codec</a></td></tr>",                            
+                            " <tr><td>WebM</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/video#Formats_and_Codecs\" target=\"_blank\">WebM codec</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "HTML 5 audio keys",                        
+                        "linkName" : "html5-audio-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>Audio</td><td>  Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio\" target=\"_blank\">HTML5 &lt;audio&gt; tag</a></td></tr>",                            
+                            " <tr><td>mp3</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">mp3 codec</a></td></tr>",                            
+                            " <tr><td>wav</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">wav codec</a></td></tr>",                            
+                            " <tr><td>m4a</td><td> Indicates the browser support the <a href=\"http://www.w3.org/wiki/HTML/Elements/audio#Formats_and_Codecs\" target=\"_blank\">m4a codec</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    },                    
+                    {
+                        "name" : "CSS 3 keys",                        
+                        "linkName" : "css3-keys",                        
+                        "tagName" : "h3",                        
+                        "desc" : [
+                            " <table>",                            
+                            " <thead><tr><th>Key</th><th>Description</th></tr></thead>",                            
+                            " <tbody>",                            
+                            " <tr><td>MediaQueries</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-mediaqueries/\" target=\"_blank\">CSS3 media queries</a></td></tr>",                            
+                            " <tr><td>GeneratedContent</td><td> Indicates the browser support the <a href=\"http://dev.opera.com/articles/view/css-generated-content-techniques/\" target=\"_blank\">CSS2/CSS3 generated content :before / :after / content</a></td></tr>",                            
+                            " <tr><td>FontFace</td><td> Indicates the browser support the <a href=\"http://www.css3.info/preview/web-fonts-with-font-face/\" title=\"@font-face\" target=\"_blank\">CSS3 web font</a></td></tr>",                            
+                            " <tr><td>Flexbox</td><td> Indicates the browser support the <a href=\"http://www.html5rocks.com/en/tutorials/flexbox/quick/\" target=\"_blank\">CSS3 flexbox</a></td></tr>",                            
+                            " <tr><td>RGBa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#rgba-color\" target=\"_blank\">CSS3 RGB with Alpha</a></td></tr>",                            
+                            " <tr><td>HSLa</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#hsla-color\" target=\"_blank\">CSS3 HSLA</a></td></tr>",                            
+                            " <tr><td>MultipleBgs</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#layering\" target=\"_blank\">CSS3 multiple background</a></td></tr>",                            
+                            " <tr><td>BackgroundSize</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#the-background-size\" target=\"_blank\">CSS3 background size property</a></td></tr>",                            
+                            " <tr><td>BorderImage</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#border-images\" target=\"_blank\">CSS3 border image properties</a></td></tr>",                            
+                            " <tr><td>BorderRadius</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-background/#corners\" target=\"_blank\">CSS3 border radius properties</a></td></tr>",                            
+                            " <tr><td>BoxShadow</td><td> Indicates the browser support the \"CSS3 box shadow property\"</td></tr>",                            
+                            " <tr><td>TextShadow</td><td> Indicates the browser support the <a href=\"http://www.w3.org/Style/Examples/007/text-shadow.en.html\" target=\"_blank\">CSS3 text shadow property</a></td></tr>",                            
+                            " <tr><td>Opacity</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-color/#opacity\" target=\"_blank\">CSS3 opacity property</a></td></tr>",                            
+                            " <tr><td>CSSAnimations</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-animations/#introduction\" target=\"_blank\">CSS3 animations properties</a></td></tr>",                            
+                            " <tr><td>CSSColumns</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-multicol/#introduction\" target=\"_blank\">CSS3 multi-columns properties</a></td></tr>",                            
+                            " <tr><td>CSSGradients</td><td> Indicates the browser support the <a href=\"http://dev.w3.org/csswg/css3-images/#gradients\" target=\"_blank\">CSS3 linear-gradient, radial-gradients... properties</a></td></tr>",                            
+                            " <tr><td>CSSReflections</td><td> Indicates the browser support the <a href=\"http://designshack.net/articles/css/mastering-css-reflections-in-webkit/\" target=\"_blank\">CSS3 reflections properties</a></td></tr>",                            
+                            " <tr><td>CSSTransforms</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-rendering\" target=\"_blank\">CSS3 transforms properties</a></td></tr>",                            
+                            " <tr><td>CSSTransforms3D</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transforms/#transform-3d-rendering\" target=\"_blank\">CSS3 3D transforms properties</a></td></tr>",                            
+                            " <tr><td>CSSTransitions</td><td> Indicates the browser support the <a href=\"http://www.w3.org/TR/css3-transitions/#introduction\" target=\"_blank\">CSS3 transitions properties</a></td></tr>",                            
+                            " </tbody>",                            
+                            " </table>"
+                        ]
+                    }
+                ],                
+                "alsoSee" : "Browser.PluginVersion",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Browser.ToString()",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns \"browser\"",                
+                "examples" : "Browser.TypeOf() ' => \"browser\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "UserAgent",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "User-agent of the browser",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " ' Internet Explorer 9.0",                    
+                    " Browser.UserAgent ' => \"Mozilla/5.0 (compatible; MSIE 9.0;",                    
+                    "  Windows NT 6.1; Trident/5.0)\"",                    
+                    "",                    
+                    " ' Firefox 25.0",                    
+                    " Browser.UserAgent ' => \"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0)",                    
+                    "  Gecko/20100101 Firefox/25.0\"",                    
+                    "",                    
+                    " ' Safari 6.0",                    
+                    " Browser.UserAgent ' => \"Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X)",                    
+                    " AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Version",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Major version number of the browser",                
+                "remarks" : "Browser detection based on the <a href=\"http://www.quirksmode.org/js/detect.html\" target='_blank'>browserDetect from QuirksMode</a>",                
+                "examples" : [
+                    " Browser.Version ' => 8",                    
+                    "",                    
+                    " Browser.Version ' => 11.6",                    
+                    "",                    
+                    " Browser.Version '=> 0 (unknown)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "WindowHeight",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.WindowHeight ' => 895",                    
+                    " Browser.ScreenHeight ' => 1080",                    
+                    " Browser.ScreenAvailHeight ' => 1040",                    
+                    "",                    
+                    " Browser.WindowHeight ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.WindowWidth",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "WindowWidth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "<blockquote>� Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
+                "examples" : [
+                    " Browser.WindowWidth ' => 1916",                    
+                    " Browser.ScreenWidth ' => 1920",                    
+                    " Browser.ScreenAvailWidth ' => 1920",                    
+                    "",                    
+                    " Browser.WindowWidth ' => 0 (unknown)"
+                ],                
+                "alsoSee" : [
+                    "Browser.WindowHeight",                    
+                    "Browser.ScreenWidth",                    
+                    "Browser.ScreenHeight",                    
+                    "Browser.ScreenAvailWidth",                    
+                    "Browser.ScreenAvailHeight"
+                ],                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "theme" : [
+            {
+                "name" : "BaseFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the base font size",                
+                "examples" : "\tInterview.BaseFS ' => \"12px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "BlackColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the color used as \"black\" - usually the fore color",                
+                "examples" : "\tInterview.Black ' => \"0,0,0\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "BorderRadius",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the border radius",                
+                "examples" : "\tInterview.BorderRadius ' => \"5px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "BorderWidth",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the border width",                
+                "examples" : "\tInterview.BorderWidth ' => \"1px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ErrorColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the error colour",                
+                "examples" : "\tInterview.ErrorColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "FontFamily",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the font family",                
+                "examples" : "\tInterview.FontFamily ' => \"Print: Arial, Helvetica, sans-serif\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "HPadding",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the horizontal padding",                
+                "examples" : "\tInterview.HPadding ' => \"0.5em\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LargeFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the large font size",                
+                "examples" : "\tInterview.LargeFS ' => \"14px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LineHeight",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the line height for text",                
+                "examples" : "\tInterview.LineHeight ' => \"1.2\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the neutral colour",                
+                "examples" : "\tInterview.NeutralColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the neutral colour",                
+                "examples" : "\tInterview.NeutralDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NeutralLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the neutral colour",                
+                "examples" : "\tInterview.NeutralLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "NormalFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the normal font size",                
+                "examples" : "\tInterview.NormalFS ' => \"10px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the primary colour",                
+                "examples" : "\tInterview.PrimaryColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the primary colour",                
+                "examples" : "\tInterview.PrimaryDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PrimaryLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the primary colour",                
+                "examples" : "\tInterview.PrimaryLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "PropValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li><li>SuccessColor</li></ul>"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturn the value of the theme property.",                    
+                    "\tReturn an empty string if the property is not supported."
+                ],                
+                "examples" : "\tTheme.PropValue(\"PrimaryColor\") ' => \"11.202.235\"",                
+                "alsoSee" : "Theme.Var",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the secondary colour",                
+                "examples" : "\tInterview.SecondaryColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryDarkColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the darker version of the secondary colour",                
+                "examples" : "\tInterview.SecondaryDarkColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SecondaryLightColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the lighter version of the secondary colour",                
+                "examples" : "\tInterview.SecondaryLightColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SmallFS",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the small font size",                
+                "examples" : "\tInterview.SmallFS ' => \"8px\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "SuccessColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the success colour",                
+                "examples" : "\tInterview.SuccessColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Var",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "variant",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property.It could be one of the following name:<br /><ul><li>BlackColor</li><li>WhiteColor</li><li>FontFamily</li><li>BaseFS</li><li>SmallFS</li><li>NormalFS</li><li>LargeFS</li><li>LineHeight</li><li>BorderWidth</li><li>BorderRadius</li><li>HPadding</li><li>VPadding</li><li>PrimaryColor</li><li>PrimaryDarkColor</li><li>PrimaryLightColor</li><li>SecondaryColor</li><li>SecondaryDarkColor</li><li>SecondaryLightColor</li><li>NeutralColor</li><li>NeutralDarkColor</li><li>NeutralLightColor</li><li>ErrorColor</li><li>SuccessColor></li>"
+                    }
+                ],                
+                "desc" : [
+                    "\tReturn the value of the theme property (as a variant).",                    
+                    "\tReturn an empty string if the property is not supported."
+                ],                
+                "examples" : "\tTheme.Var(\"PrimaryColor\") ' => 11.202.235",                
+                "alsoSee" : "Theme.PropValue",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "VPadding",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the vertical padding",                
+                "examples" : "\tInterview.VPadding ' => \"1.2em\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "WhiteColor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the color used as \"white\" usually the back color",                
+                "examples" : "\tInterview.WhiteColor ' => \"255,255,255\"",                
+                "version" : "5.4.2.0"
+            }
+        ],        
+        "message" : [
+            {
+                "name" : "continue_left_off",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the continue_left_off \tContinue where you left off",                
+                "examples" : "Interview.Language.Translate(Message.continue_left_off) ' => \" \"Continue where you left off\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "dont_know",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message dont_know",                
+                "examples" : "Interview.Language.Translate(Message.dont_know) ' => \" \"Don't know\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message \"expected_0_answer\"  \tA response is expected for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer) ' => \" \"A response is expected for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_multiple",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_multiple \tPlease choose all that apply!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple) ' => \" \"Please choose all that apply!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_multiple_grid_column",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_multiple_grid_column \tPlease choose at least one answer per column(vertically)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple_grid_column) ' => \" \"Please choose at least one answer per column(vertically)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_multiple_grid_row",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_multiple_grid_row \tPlease choose at least one answer per row(horizontally)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_multiple_grid_row) ' => \" \"Please choose at least one answer per row(horizontally)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_open_ended",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_open_ended \tPlease type in your answer!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_open_ended) ' => \" \"Please type in your answer!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_single",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_single \tPlease choose one answer!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single) ' => \" \"Please choose one answer!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_single_grid_column",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_single_grid_column \tPlease choose one answer per column(vertically)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single_grid_column) ' => \" \"Please choose one answer per column(vertically)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_answer_single_grid_row",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_answer_single_grid_row \tPlease choose one answer per row(horizontally)!",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_answer_single_grid_row) ' => \" \"Please choose one answer per row(horizontally)!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_at_least_1_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_at_least_1_answer \tPlease select at least %1 for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_at_least_1_answer) ' => \" \"Please select at least %1 for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_between_1_2",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_between_1_2 \tResponse to question '%0' must be between % 1 and %2",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_between_1_2) ' => \" \"Response to question '%0' must be between % 1 and %2\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_date",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_date \tPlease enter a valid date for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_date) ' => \" \"Please enter a valid date for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_greather_than_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_greather_than_1 \tResponse to question '%0' must be above % 1",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_greather_than_1) ' => \" \"Response to question '%0' must be between % 1 and %2\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_lower_than_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_lower_than_1 \tResponse to question '%0' must be under % 1",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_lower_than_1) ' => \" \"Response to question '%0' must be under % 1\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_no_decimal",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_no_decimal \tResponse to question '%0' cannot be decimal",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_no_decimal) ' => \" \"Response to question '%0' cannot be decimal\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_numeric",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_numeric\tResponse to question '%0' must be numeric",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_numeric) ' => \" \"Response to question '%0' must be numeric\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_only_1_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_only_1_answer \tYou can only give %1 responses to '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_only_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_only_one_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message expected_0_only_one_answer \tYou can only give one response for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_only_one_answer) ' => \" \"You can only give one response for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_rank_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_rank_1 \tRank % 1 is missing for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_rank_1) ' => \" \"Rank % 1 is missing for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_rank_1_once",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the 15 \texpected_0_rank_1_once \tRank % 1 has been given more than once for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_rank_1_once) ' => \" \"Rank % 1 has been given more than once for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_ranking_between_one_1",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_ranking_between_one_1 \tRanking must be between 1 an % 1 for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_ranking_between_one_1) ' => \" \"Ranking must be between 1 an % 1 for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_0_time",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_0_time \tPlease enter a valid time for question '%0'",                
+                "examples" : "Interview.Language.Translate(Message.expected_0_time) ' => \" \"Please enter a valid time for question '%0'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_answer_at_least",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_answer_at_least \tOne or more questions have not been answered and require further input.Please carefully review your responses on this page.",                
+                "examples" : "Interview.Language.Translate(Message.expected_answer_at_least) ' => \" \"One or more questions have not been answered and require further input.Please carefully review your responses on this page.\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "expected_semi_open",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the expected_semi_open \tYou must specify the semi - open response",                
+                "examples" : "Interview.Language.Translate(Message.expected_semi_open) ' => \" \"You must specify the semi-open response\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "interview_0_percent_completed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the interview_0_completed\t0 % completed",                
+                "examples" : "Interview.Language.Translate(Message.interview_0_completed) ' => \" \"0 % completed\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "new",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message new",                
+                "examples" : "Interview.Language.Translate(Message.new) ' => \" \"New\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "next",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the next \tNext",                
+                "examples" : "Interview.Language.Translate(Message.next) ' => \" \"Next\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "other",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message other",                
+                "examples" : "Interview.Language.Translate(Message.other) ' => \" \"Autre\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "other_specify",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message other_specify",                
+                "examples" : "Interview.Language.Translate(Message.other_specify) ' => \" \"Other (specify)\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "picture_close",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the picture_close\tPlease click on the picture to close the window!",                
+                "examples" : "Interview.Language.Translate(Message.picture_close) ' => \" \"Please click on the picture to close the window!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "picture_enlarge",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the picture_enlarge\tPlease click on the picture to enlarge!",                
+                "examples" : "Interview.Language.Translate(Message.picture_enlarge) ' => \" \"Please click on the picture to enlarge!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "picture_see",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the picture_see\tPlease click on the link to see the picture!",                
+                "examples" : "Interview.Language.Translate(Message.picture_see) ' => \" \"Please click on the link to see the picture!\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "previous",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the next \tNext",                
+                "examples" : "Interview.Language.Translate(Message.previous) ' => \" \"Next\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "quota_closed_0",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the quota_closed_0 \tThe quotas are closed for '%1'",                
+                "examples" : "Interview.Language.Translate(Message.quota_closed_0) ' => \" \"The quotas are closed for '%1'\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "specify",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message specify",                
+                "examples" : "Interview.Language.Translate(Message.specify) ' => \" \"Specify\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "start_survey",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the start_survey \tStart Survey",                
+                "examples" : "Interview.Language.Translate(Message.start_survey) ' => \" \"Start Survey\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "submit",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the submit  \tSubmit your answers",                
+                "examples" : "Interview.Language.Translate(Message.submit ) ' => \" \"Submit your answers\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "unexpected_0_1_answer",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the identifier for the message unexpected_0_1_answer \tYou cannot give response � % 1� to question � % 0�",                
+                "examples" : "Interview.Language.Translate(Message.unexpected_0_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
+                "version" : "5.5.2.0"
+            }
+        ],        
+        "adcproperty" : [
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the id of the ADC Property",                
+                "examples" : "CurrentADC.Properties[1].Id  ' => \"tickColor\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the type of the property",                
+                "examples" : "\tCurrentADC.Properties[1].Type ' => \"string\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of property, available types are:",                    
+                    "- \"number\" ",                    
+                    "- \"boolean\" ",                    
+                    "- \"string\" ",                    
+                    "- \"color\" ",                    
+                    "- \"file\" ",                    
+                    "- \"question\""
+                ],                
+                "examples" : [
+                    " CurrentADC.Properties[1].Type  ' => \"color\" ",                    
+                    " CurrentADC.Properties[2].Type  ' => \"string\" ",                    
+                    " CurrentADC.Properties[3].Type '  => \"question\""
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of property, available types are:",                    
+                    "- \"number\"",                    
+                    "- \"boolean\"",                    
+                    "- \"string\"",                    
+                    "- \"color\"",                    
+                    "- \"file\"",                    
+                    "- \"question\""
+                ],                
+                "examples" : [
+                    " CurrentADC.Properties[1].Type  ' => \"color\"",                    
+                    " CurrentADC.Properties[2].Type  ' => \"string\"",                    
+                    " CurrentADC.Properties[3].Type '  => \"question\""
+                ],                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "response" : [
+            {
+                "name" : "Caption",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the caption of the response",                
+                "examples" : "gender.Responses[1].Caption ' => \"Man\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Children",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "responses",                
+                "desc" : "Returns an array of the responses placed below the response",                
+                "examples" : "Brands.Responses[1].Children ' => {\"Sub-Brand A\"; \"Sub-Brand B\"; \"Sub-Brand C\"}",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "EntryCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Entry-code of the response",                
+                "examples" : "brands.Responses[1].EntryCode ' => 4",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "EntryCodeStr",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Entry-code of the response (as string)",                
+                "examples" : "country.Responses[1].EntryCodeStr ' => \"US\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Factor",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a factor as they were entered in the value column of the scaled responses",                
+                "examples" : [
+                    " gender.Responses[1].Factor ' => 3",                    
+                    " country.AvailableResponses[1].Factor ' => 7"
+                ],                
+                "version" : "5.4.6.0"
+            },            
+            {
+                "name" : "Id",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Internal unique identifier of the response",                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].id  ' => 456",                    
+                    " CurrentQuestion.AvailableResponses[2].id ' => 455"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Index",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the index of response (based 1) as it was entered",                
+                "examples" : [
+                    " gender.Responses[1].Index  ' => 1",                    
+                    " gender.Responses[2].Index  ' => 2"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "InputName",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Indicates the full-name of the HTML input for this response.",                    
+                    " The `type` parameter is use to precise the input name to obtain, it could be the following:",                    
+                    " <ul><li><strong>ranking</strong>: Obtain the full-name of the input to set the rank of this response</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.InputName() ' => \"U0\"",                    
+                    " gender.Responses[1].InputName() ' => \"U0\"",                    
+                    " gender.Responses[2].InputName() ' => \"U0\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.InputName() ' => \"M2\"",                    
+                    " brands.Responses[1].InputName() ' => \"M2 510\"",                    
+                    " brands.Responses[2].InputName() ' => \"M2 511\"",                    
+                    " brands.Responses[3].InputName() ' => \"M2 512\"",                    
+                    "",                    
+                    " ' Multiple with ranking",                    
+                    " brands.InputName(\"ranking\") ' => \"R2\"",                    
+                    " brands.Responses[1].InputName(\"ranking\") ' => \"R2 510\"",                    
+                    " brands.Responses[2].InputName(\"ranking\") ' => \"R2 511\"",                    
+                    " brands.Responses[3].InputName(\"ranking\") ' => \"R2 512\""
+                ],                
+                "alsoSee" : [
+                    "Question.InputName",                    
+                    "Question.InputValue",                    
+                    "Response.InputValue"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "InputValue",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "args" : [
+                    {
+                        "name" : "type",                        
+                        "type" : "string",                        
+                        "desc" : "Specified the type of the input value to obtain",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the HTML input value attribute for this response.",                    
+                    " The `type` parameter is use to precise the value to obtain, it could be the following:",                    
+                    " <ul><li><strong>ranking</strong>: Obtain the rank value of the response input</li></ul>"
+                ],                
+                "examples" : [
+                    " ' Single",                    
+                    " gender.Responses[1].InputValue() ' => \"256\"",                    
+                    " gender.Responses[2].InputValue() ' => \"257\"",                    
+                    "",                    
+                    " ' Multiple",                    
+                    " brands.Responses[1].InputValue() ' => \"510\"",                    
+                    " brands.Responses[2].InputValue() ' => \"511\"",                    
+                    " brands.Responses[3].InputValue() ' => \"512\"",                    
+                    "",                    
+                    " ' Multiple with ranking (return the rank)",                    
+                    " brands.Responses[1].InputValue(\"ranking\") ' => \"2\"",                    
+                    " brands.Responses[2].InputValue(\"ranking\") ' => \"1\"",                    
+                    " brands.Responses[3].InputValue(\"ranking\") ' => \"\""
+                ],                
+                "alsoSee" : [
+                    "Question.InputName",                    
+                    "Question.InputValue",                    
+                    "Response.InputName"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsExclusive",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the response is considered (flag) as \"Exclusive\" answer.",                    
+                    " It returns always True for a single closed question, even if it's linked into a multiple"
+                ],                
+                "examples" : "gender.Responses[3].IsExclusive ' => True",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsHeader",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Indicates if a response is a header (not clickable)",                
+                "examples" : "Cars.Response[1].IsHeader ' => true",                
+                "alsoSee" : "Response.IsOpen",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "IsIgnored",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the response is ignored",                
+                "examples" : "brands.Responses[5].IsIgnored ' => False",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "IsOpen",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Indicates if a response has an open ended response attached to it",                
+                "examples" : "Gender.Response[3].IsOpen ' => true",                
+                "alsoSee" : "Response.OpenQuestion",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "IsSelected",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Indicates if the response was previously selected (included in the Question.Answers collection)",                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].IsSelected  ' => true",                    
+                    " CurrentQuestion.AvailableResponses[2].IsSelected ' => false",                    
+                    " ' Similar than",                    
+                    " ' CurrentQuestion.Value Has CurrentQuestion.AvailableResponses[2].Index"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "OpenQuestion",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "Indicates the question when a response has an open ended response attached to it",                
+                "examples" : "Gender.Response[3].OpenQuestion ' => Please specify",                
+                "alsoSee" : "Response.IsOpen",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "Order",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the order of response (based 1) on display.",                    
+                    " Returns DK if the question is skipped or the response was ignored."
+                ],                
+                "examples" : [
+                    " brands.Responses[1].Order  ' => 2",                    
+                    " brands.Responses[2].Order  ' => 1"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Parent",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "response",                
+                "desc" : "\tReturns the parent response (hence a response as well) if no parent an object is created with DK as an ID",                
+                "examples" : "\tBrands.Responses[2].Parent ' => \"Brand A\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "Rank",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates in which order the answer has been selected by the respondent.",                    
+                    " Sequence from 0 (when no selection) to the number of answers.<br />If the response has not been selected the value is 0.",                    
+                    " For multiple ranking question it returns the order of the selection (based 1)",                    
+                    " For classical multiple question, the order of the selection is a sequence (based 1) <br />that may be sort according to how the responses has been displayed."
+                ],                
+                "examples" : [
+                    " CurrentQuestion.AvailableResponses[1].Rank ' => 0 (not selected)",                    
+                    " CurrentQuestion.AvailableResponses[2].Rank ' => 3 (third selected)",                    
+                    " CurrentQuestion.AvailableResponses[3].Rank ' => 1 (first selected)",                    
+                    " CurrentQuestion.AvailableResponses[4].Rank ' => 2 (second selected)"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the URL of resource for the response",                
+                "examples" : "gender.Responses[1].ResourceURL  ' => \"/man.png\"",                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Tags",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : [
+                    "Returns the list of tags associated to a response",                    
+                    "",                    
+                    "q1.Responses[1].Tags Has {\"Browsable\"}"
+                ],                
+                "examples" : "q1.Responses[1].Tags Has {\"Browsable\"}",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns a string which represent the response (express in JSON format)",                
+                "examples" : [
+                    " ' Output in a single line (it's break here for the readability)",                    
+                    " gender.Responses[1].ToString()",                    
+                    " ' => {",                    
+                    " \"index\":1,",                    
+                    " \"entryCode\":\"001\",",                    
+                    " \"caption\":\"Man\",",                    
+                    " \"isExclusive\":true,",                    
+                    " \"isSelected\":true,",                    
+                    " \"resourceUrl\":\"./Man.png\"",                    
+                    " }"
+                ],                
+                "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the type of the current object / variable",                
+                "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
+                "version" : "5.3.2.0"
+            }
+        ],        
+        "adccontent" : [
+            {
+                "name" : "FileName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the file name associated with the content",                
+                "examples" : "\tCurrentADC.Contents[1].FileName ' => \"IE-gender-with-fx.css\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Mode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the mode of the content.",                    
+                    "\tAvailable modes are:",                    
+                    "\t- \"share\" ",                    
+                    "\t- \"static\" ",                    
+                    "\t- \"dynamic\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Mode' => \"static\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Position",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the position of the content.",                    
+                    "\tAvailable positions are:",                    
+                    "\t- \"none\" ",                    
+                    "\t- \"head\" ",                    
+                    "\t- \"placeholder\" ",                    
+                    "\t- \"foot\""
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].Position ' => \"head\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToText",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the content of the file associated with the content. ",                    
+                    "",                    
+                    "\tThis method will evaluate all embedded AskiaScript when the file is dynamic.",                    
+                    "\tThis method will returns an empty string if the file is binary (\"binary\", \"video\", \"audio\", \"image\", \"flash\")."
+                ],                
+                "examples" : "\tCurrentADC.Contents[1].ToText() ' => \".tickColor { background: #ff00ff; }\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "ToURL",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the final relative URL path to the content file",                    
+                    "",                    
+                    "\tThis is a shorthand to the method:",                    
+                    "\tCurrentADC.URLTo(CurrentADC.Contents[_index_].Mode + \"/\" + CurrentADC.Contents[_index_].FileName)"
+                ],                
+                "examples" : [
+                    "\tCurrentADC.Contents[1].ToURL() ",                    
+                    "\t' => \"../Resources/[Survey]/[ADC]/style.css\" ",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"../Resources/[SurveyName]/jquery.js\"",                    
+                    "",                    
+                    "\tCurrentADC.Contents[1].ToURL()",                    
+                    "\t' => \"\" ' Not yet implemented"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the type of the content.",                
+                "examples" : "\tCurrentADC.Contents[1].Type ' => \"JavaScript\"",                
+                "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "Type",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the type of the content. Available types are:",                    
+                    "- \"text\" ",                    
+                    "-- \"html\" ",                    
+                    "-- \"css\" ",                    
+                    "-- \"javascript\" ",                    
+                    "- \"binary\" ",                    
+                    "-- \"image\" ",                    
+                    "-- \"audio\" ",                    
+                    "-- \"video\" ",                    
+                    "-- \"flash\""
+                ],                
+                "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
+                "version" : "5.3.3.0"
+            }
+        ],        
+        "adp" : [
+            {
+                "name" : "Redirect",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "URL",                        
+                        "type" : "string",                        
+                        "desc" : "to redirect"
+                    },                    
+                    {
+                        "name" : "Seconds",                        
+                        "type" : "string",                        
+                        "desc" : "to redirect"
+                    }
+                ],                
+                "desc" : "\tSets the ADP property",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).Redirect(\"www.askia.com\",3).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "SetProperty",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to set"
+                    },                    
+                    {
+                        "name" : "value",                        
+                        "type" : "variant"
+                    }
+                ],                
+                "desc" : "\tSets the ADP property",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ShowMessage",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "message",                        
+                        "type" : "string",                        
+                        "desc" : "yto be shown where the questions are usually displayed"
+                    }
+                ],                
+                "desc" : "\tUses the ADP engine to generate some HTML with a message",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            }
+        ],        
+        "interview" : [
+            {
+                "name" : "AgentID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns the identifier of the interviewing agent",                    
+                    "",                    
+                    " Only available with askiaVoice or askiaFace fieldwork, otherwise it returns 0.",                    
+                    " Cotrarily to the agent name the agent id is stored in the survey data so can be accessed by verification scripts"
+                ],                
+                "remarks" : [
+                    " @alsosee",                    
+                    " AgentName"
+                ],                
+                "examples" : "Interview.AgentID ' => 35",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "AgentName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the name of the interviewing agent",                    
+                    "",                    
+                    " Only available during askiaVoice or askiaFace fieldwork, otherwise it returns an empty string \"\".",                    
+                    " The agent name is not persisted in the survey data hence it's not available in verification script. Make sure that if you set a value to a question with it,",                    
+                    " you do no lose that information by modifying it in Supervisor or Entry (see IsCATI)"
+                ],                
+                "remarks" : [
+                    " ",                    
+                    " @alsosee",                    
+                    " IsCATI, AgentID",                    
+                    "",                    
+                    " "
+                ],                
+                "examples" : "Interview.AgentName ' => \"John Doe\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Broker",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker ID as received in askia web",                
+                "remarks" : "",                
+                "examples" : "Interview.Broker ' => \"SSI\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "BrokerPanelID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the Broker Panel ID as received in askia web  when available",                
+                "remarks" : "",                
+                "examples" : "Interview.BrokerPanelID ' => \"204ab\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "CallID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Returns a Call ID of the current interview.",                    
+                    "",                    
+                    " Only available during askiaVoice fieldwork, otherwise it returns 0."
+                ],                
+                "remarks" : "This is usually only available in AskiaVoice",                
+                "examples" : "Interview.CallID ' => 123",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Duration",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "args" : [
+                    {
+                        "name" : "startQuestion",                        
+                        "type" : "question"
+                    },                    
+                    {
+                        "name" : "endQuestion",                        
+                        "type" : "question",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "threshold",                        
+                        "type" : "number",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Returns the time (in seconds) spent on a question or the total time spent between a range of questions. (eg. InterviewTime)",                    
+                    " If any question duration is superior to the threshold, that question is not taken in account in the sum",                    
+                    "",                    
+                    " Parameters",                    
+                    "",                    
+                    " - startQuestion [Required] {Question} Indicates the question from where the calculation of tiem should start.",                    
+                    " - endQuestion [Optional] {Question} Indicates the question to where the calculation of time should stop should stop (included in the calculation). If the omit, the endQuestion is equal to the startQuestion",                    
+                    " - threshold [Optional] {Number} any duration superior to the threshold (for a given quetsion) will be ignored"
+                ],                
+                "examples" : [
+                    " Interview.Duration(gender) ' => 2 (seconds)",                    
+                    "",                    
+                    " Interview.Duration(gender, Age) ' => 5 (seconds)",                    
+                    "",                    
+                    " ' q1 is inside a loop = only the current iteration is returned",                    
+                    " Interview.Duration(q1) <> Interview.Duration(q1.FirstIteration,q1.LastIteration)",                    
+                    "  "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "EndTime",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the finished date/time of the current interview in the current time zone(eg. EndInterview)",                    
+                    "",                    
+                    " If the current interview is not yet finished it return the time of last screen submit"
+                ],                
+                "remarks" : "",                
+                "examples" : [
+                    " Interview.EndTime ' => #10/01/2016 11:01\"",                    
+                    "",                    
+                    " @alsosee",                    
+                    " EndTimeUTC,StartTime"
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "EndTimeUTC",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : [
+                    " Indicates the finished UTC date/time of the current interview (eg. EndInterview)",                    
+                    "",                    
+                    " If the current interview is not yet finished it return the time of last screen submit"
+                ],                
+                "remarks" : [
+                    " @alsosee",                    
+                    " EndTime,StartTimeUTC"
+                ],                
+                "examples" : "Interview.EndTimeUTC ' => #10/01/2016 10:01\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Errors",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "errors",                
+                "desc" : "Returns the list of errors during the interview run-time",                
+                "examples" : [
+                    " Interview.Errors.Count ' => 0",                    
+                    "",                    
+                    " Interview.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "GetFaceOS",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : [
+                    " Returns the Operating System (OS) of the AskiaFace device, if the current interviewing mode is AskiaFace.",                    
+                    "",                    
+                    " Returns an empty string if the interviewing mode is not Face.",                    
+                    "",                    
+                    " Possible return values are:",                    
+                    "",                    
+                    " \"windows\"",                    
+                    " \"ios\"",                    
+                    " \"android\"",                    
+                    "",                    
+                    " Return a String"
+                ],                
+                "examples" : [
+                    " Interview.GetFaceOS()  ' => \"windows\"",                    
+                    "",                    
+                    " Interview.GetFaceOS()  ' => \"ios\"",                    
+                    "",                    
+                    " Interview.GetFaceOS()  ' => \"android\"",                    
+                    " "
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "GUID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the GUID a global Unique Identifier for each respondent",                
+                "remarks" : "",                
+                "examples" : "Interview.GUID ' => \"759C5786-C972-4AA8-BBE0-DBBA9DD2ACF2\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the ID of the interview. The ID is not available during the interview but is in case of a modification in Voice or in the verification scripts",                
+                "remarks" : "This is usually only available once the interview has been saved",                
+                "examples" : "Interview.Id ' => 123",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IPAddress",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the IPAddress if available",                
+                "remarks" : "This is usually only available in askiaWeb",                
+                "examples" : "Interview.IPAddress ' => \"127.0.0.1\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "IsFace",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is AskiaFace (CAPI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsFace  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsFirstPage",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if you are on the first page",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsFirstPage ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsLastPage",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if you are on the last page - this might give you the wrong information depending on routings",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsLastPage ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsTest",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interview was started in Brief mode or Test flag",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsTest  ' => False",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsVoice",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is AskiaVoice (CATI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsVoice  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "IsWeb",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    " Indicates if the current interviewing mode is in AskiaWeb (CAWI)",                    
+                    "",                    
+                    " Return a Boolean"
+                ],                
+                "remarks" : "This is only available while the interview is being collected, not in verification scripts",                
+                "examples" : "Interview.IsWeb  ' => True",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Key",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the secure hash key of the current interview (used in URL) (eg. Password)",                
+                "remarks" : "",                
+                "examples" : "Interview.Key ' => \"QWERTYQWERTYQWER\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Language",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "language",                
+                "desc" : "Returns the respondent's current language.",                
+                "examples" : [
+                    " Interview.Language.Abbr ' => \"FRA\"",                    
+                    " Interview.Language.Name ' => \"French (France)\""
+                ],                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "LastResultCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the Last result code to the call or web interview - this is only available in a routing at the end of the survey or",                    
+                    "\ton an edit routing"
+                ],                
+                "remarks" : "\tthis was added in 5.4.9 in January 2019",                
+                "examples" : "\tInterview.LastResultCode ' => 4 = hang-up",                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "LastSubResultCode",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the Last sub result code to the call or web interview - this is only available in a routing at the end of the survey or",                    
+                    "\ton an edit routing"
+                ],                
+                "remarks" : "\tthis was added in 5.4.9 in January 2019",                
+                "examples" : "\tInterview.LastSubResultCode ' => 3",                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "Latitude",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the Latitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Latitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ListID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the identifier of the respondent list",                
+                "remarks" : "This is usually only available in askiaVoice",                
+                "examples" : "Interview.ListID ' => 22",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Longitude",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the longitude if available (0 otherwise)",                
+                "remarks" : "This is usually only available in askiaFace in IOS or Android",                
+                "examples" : "Interview.Longitude ' => 1.4",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "OutOfQuotaQuestions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "array",                
+                "desc" : "\tReturns the question (r the list of questions if the quotas are nested) that triggered the out of quota",                
+                "remarks" : "\t",                
+                "examples" : [
+                    "\tInterview.OutOfQuotaQuestions[1].Shortcut ' => Gender",                    
+                    "\tInterview.OutOfQuotaQuestions[1].Value\t' => Male"
+                ],                
+                "version" : "5.4.9.0"
+            },            
+            {
+                "name" : "PanelID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the askia Panel ID as received in askia web when available",                
+                "remarks" : "",                
+                "examples" : "Interview.PanelID ' => \"2356b\"",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Progress",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the percentage value of progress through the questionnaire.",                
+                "examples" : "Interview.Progress ' => 32",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Returns",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "offsettoutc",                
+                "desc" : [
+                    " This returns the shift in hours from the time to the",                    
+                    " "
+                ],                
+                "examples" : "Interview.StartTime - Interview.OffsetToUTC /24 ' => StartTime as UTC time",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Scenario",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns the current respondent scenario (also known in design 5 as version)",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Scenario ' => \"User\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "Seed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns a pseudo-unique number for each interview used to generate random numbers in the survey",                
+                "remarks" : "This is number is usually unique in Voice and Web but not in Face",                
+                "examples" : "Interview.Seed ' => 133",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "StartTime",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : "Indicates the start date/time of the current interview in the current time zone (eg. StartInterview)",                
+                "remarks" : [
+                    " @alsosee",                    
+                    " StartTimeUTC"
+                ],                
+                "examples" : "Interview.StartTime ' => #10/01/2016 10:33\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "StartTimeUTC",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "date",                
+                "desc" : "Indicates the start UTC date/time of the current interview  (eg. StartInterview)",                
+                "remarks" : [
+                    " @alsosee",                    
+                    " StartTime",                    
+                    "",                    
+                    " "
+                ],                
+                "examples" : "Interview.StartTimeUTC ' => #10/01/2016 11:33\"",                
+                "version" : "5.4.2.0"
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Interview.ToString()",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns \"interview\"",                
+                "examples" : "interview.TypeOf() ' => \"interview\"",                
+                "version" : "5.3.5.0"
+            }
+        ],        
+        "survey" : [
+            {
+                "name" : "ChildQuestions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : [
+                    "\tReturns the array of questions at the top level of the survey (often chapters)",                    
+                    "\t"
+                ],                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tQuestions"
+                ],                
+                "examples" : "\tSurvey.ChildQuestions[1].Shortcut ' => \"Demographics\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "FileName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the file name of the survey",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tName"
+                ],                
+                "examples" : "\tSurvey.FileName ' => \"Ex.qex\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "ID",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the identifier of the survey (as registered in the CCA), or 0 when not yet registered.",                
+                "examples" : "\tSurvey.Id ' => 13",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Languages",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "languagearray",                
+                "desc" : "\tReturns the revision number of the survey file",                
+                "examples" : "\tSurvey.Languages[1].Name ' => \"English\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Name",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the name of the survey (as registered in the CCA) or the filename of the survey when not yet registered.",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tFileName"
+                ],                
+                "examples" : "\tSurvey.Name ' => \"Ex\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Questions",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "questionarray",                
+                "desc" : "\tReturns the array of all questions - understand that per question we mean each survey data point - so a question within a loop will appear many times",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tChildQuestions"
+                ],                
+                "examples" : "\tSurvey.Questions[1].Shortcut ' => \"Demographics\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "ResourcePath",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the directory where the resources are made available",                
+                "examples" : "\tSurvey.ResourcePath => \"C:\\intepub\\webprod\\resource\\1\\Resources\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ResourceURL",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "\tReturns the URL (often relative) where the resources are made available",                
+                "examples" : "\tSurvey.ResourceURL => \"..\\Resources\"",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "Revision",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the revision number of the survey file",                
+                "examples" : "\tSurvey.Revision ' => 14",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Scenarios",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "\tReturns the list of scenarios in the survey file",                
+                "examples" : "\tSurvey.Scenarios[1] ' => \"Debug\"",                
+                "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "Tags",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "\tReturns the list of possible tags in the survey file",                
+                "examples" : "\tSurvey.Tag[1] ' => \"Demographic\"",                
+                "version" : "5.5.0.0"
             }
         ],        
         "adc" : [
