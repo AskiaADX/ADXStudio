@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<control  xmlns="http://www.askia.com/2.2.0/ADCSchema"
+<control  xmlns="http://www.askia.com/2.3.0/ADCSchema"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.askia.com/2.2.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.2.0/ADCSchema.xsd"
-          version="2.2.0"
-          askiaCompat="5.5.2">
+          xsi:schemaLocation="http://www.askia.com/2.3.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.3.0/ADCSchema.xsd"
+          version="2.3.0"
+          askiaCompat="5.5.3">
   <info>
     <name>
       <![CDATA[{{ADXName}}]]>
@@ -29,7 +29,7 @@
     </categories>
     <constraints>
       <constraint on="questions" chapter="false" single="false" multiple="false" numeric="false" date="false"
-                  open="false" requireParentLoop="false" requireLoopDepth="0"/>
+                  open="false" requireParentLoop="false" requireLoopDepth="0" manageSemiOpen="false" manageHeader="false"/>
       <constraint on="controls" responseblock="true" label="false" textbox="false" />
     </constraints>
   </info>

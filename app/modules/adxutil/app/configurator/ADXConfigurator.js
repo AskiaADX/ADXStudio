@@ -584,6 +584,8 @@ ADXInfo.prototype.get = function get() {
  * @param {Boolean} [data.constraints.questions.date] Allow or not on date questions
  * @param {Boolean} [data.constraints.questions.requireParentLoop] Require or not on a parent loop question
  * @param {Number} [data.constraints.questions.requireLoopDepth] Require or not on a parent loop question
+ * @param {Boolean} [data.constraints.questions.manageSemiOpen] Require or not on questions with semi-opens
+ * @param {Boolean} [data.constraints.questions.manageHeader] Require or not on questions with header responses(non selectable) 
  * @param {Object} [data.constraints.controls] Controls constraints of the ADC (ADC ONLY)
  * @param {Boolean} [data.constraints.controls.responseBlock] Allow or not on response-block
  * @param {Boolean} [data.constraints.controls.label] Allow or not on label

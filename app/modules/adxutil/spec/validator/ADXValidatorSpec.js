@@ -861,7 +861,7 @@ describe('ADXValidator', function () {
 
             expect(childProc.exec).toHaveBeenCalled();
         });
-		
+
         it('should output an error when the xmllint process failed', function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
@@ -977,7 +977,7 @@ describe('ADXValidator', function () {
 
             expect(Validator.prototype.writeWarning).toHaveBeenCalledWith(warnMsg.deprecatedInfoStyleTag);
         });
-		
+
         it("should output a warning when the `style` tag is used with ADC 2.1", function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
@@ -1006,8 +1006,8 @@ describe('ADXValidator', function () {
             adxValidator.validate(null, '/adx/path/dir');
 
             expect(Validator.prototype.writeWarning).toHaveBeenCalledWith(warnMsg.deprecatedInfoCategoriesTag);
-        });		
-		
+        });
+
         it("should output a warning when the `categories` tag is used with ADC 2.1", function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
@@ -1071,6 +1071,14 @@ describe('ADXValidator', function () {
             },
             {
                 name : 'requireLoopDepth',
+                on   : 'questions'
+            },
+            {
+                name : 'manageSemiOpen',
+                on   : 'questions'
+            },
+            {
+                name : 'manageHeader',
                 on   : 'questions'
             },
             {
@@ -1309,7 +1317,7 @@ describe('ADXValidator', function () {
 
             expect(Validator.prototype.writeWarning).toHaveBeenCalledWith(warnMsg.deprecatedDefaultGenerationAttr);
         });
-		
+
         it('should output a warning when using the `defaultGeneration` with the ADC 2.1', function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
@@ -1453,7 +1461,7 @@ describe('ADXValidator', function () {
             expect(Validator.prototype.writeWarning).not.toHaveBeenCalled();
             expect(Validator.prototype.writeError).not.toHaveBeenCalled();
         });
-		
+
         describe("#validateADXContents", function () {
 
             it("should output an error when the resources directory doesn't exist", function () {
