@@ -4,7 +4,7 @@
 * stored in AskiaScriptEditor project
 */
 CodeMirror.xsdSchemas = CodeMirror.xsdSchemas || {};
-CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADXUnitTestSchema"] = {
+CodeMirror.xsdSchemas["http://www.askia.com/2.3.0/ADXUnitTestSchema"] = {
   schema : {
     "root": "testCases",
     "tags": [

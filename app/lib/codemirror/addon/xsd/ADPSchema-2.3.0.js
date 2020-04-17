@@ -4,7 +4,7 @@
 * stored in AskiaScriptEditor project
 */
 CodeMirror.xsdSchemas = CodeMirror.xsdSchemas || {};
-CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADPSchema"] = {
+CodeMirror.xsdSchemas["http://www.askia.com/2.3.0/ADPSchema"] = {
   schema : {
     "root": "page",
     "tags": [
@@ -22,8 +22,16 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADPSchema"] = {
                     "desc": "Version number of the ADP format definition.\r\n            (Not the version of the page but the version of the ADP format)",
                     "values": [
                         {
-                            "name": "2.2.0",
+                            "name": "2.1.0",
                             "desc": "Based version of the ADP."
+                        },
+                        {
+                            "name": "2.2.0",
+                            "desc": "Compatible with 5.5.2"
+                        },
+                        {
+                            "name": "2.3.0",
+                            "desc": "Compatible with 5.6.0"
                         }
                     ]
                 },
@@ -342,7 +350,9 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADPSchema"] = {
         ],
         "attrs": {
             "version": [
-                "2.2.0"
+                "2.1.0",
+                "2.2.0",
+                "2.3.0"
             ],
             "askiaCompat": null
         }
