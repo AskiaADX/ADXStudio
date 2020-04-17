@@ -61,14 +61,14 @@
             <xsd:enumeration value="2.3.0">
               <xsd:annotation>
                 <xsd:documentation>
-                  Compatibility with 5.5.3
+                  Compatible with 5.6.0
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:enumeration>
           </xsd:restriction>
         </xsd:simpleType>
       </xsd:attribute>
-      <xsd:attribute name="askiaCompat" type="adp:versionNumber" default="5.5.3">
+      <xsd:attribute name="askiaCompat" type="adp:versionNumber" default="5.6.0">
         <xsd:annotation>
           <xsd:documentation>
             Compatibility version with Askia product.
@@ -361,7 +361,7 @@
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:enumeration>
-            <!-- Added 5.5.3 -->
+            <!-- Added 5.6.0 -->
             <xsd:enumeration value="asx">
               <xsd:annotation>
                 <xsd:documentation>
