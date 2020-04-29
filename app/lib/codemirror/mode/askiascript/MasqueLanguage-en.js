@@ -2660,6 +2660,15 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "NextSibling",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "Returns the next question in the tree (ignoring the questions below)",                
+                "examples" : "\t\t Dim NextQuestion = BrandEvaluation.NextSibling",                
+                "version" : "5.5.4.0"
+            },            
+            {
                 "name" : "ParentChapter",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -2696,6 +2705,15 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "\tReturns the parent question in the survey tree",                
                 "examples" : "\tGender.ParentQuestion.Shortcut =>\" Demographics chapter\"",                
                 "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "PreviousSibling",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "Returns the previous question in the tree (ignoring the questions below)",                
+                "examples" : "\t\t Dim PrevQuestion = BrandEvaluation.PreviousSibling",                
+                "version" : "5.5.4.0"
             },            
             {
                 "name" : "Questions",                
@@ -5177,6 +5195,19 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.5.0.0"
             },            
             {
+                "name" : "DurationMedian",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the median of the duration of interviews in seconds",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tSpeedMedian"
+                ],                
+                "examples" : "\tSurvey.DurationMedian ' => 25",                
+                "version" : "5.5.4.0"
+            },            
+            {
                 "name" : "FileName",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5268,6 +5299,19 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "\tReturns the list of scenarios in the survey file",                
                 "examples" : "\tSurvey.Scenarios[1] ' => \"Debug\"",                
                 "version" : "5.5.0.0"
+            },            
+            {
+                "name" : "SpeedMedian",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "\tReturns the median of the speed of interviews. The speed is (the number of clicks + the number ok keystrokes / 3) / Duration",                
+                "remarks" : [
+                    "\t@alsosee",                    
+                    "\tDurationMedian"
+                ],                
+                "examples" : "\tSurvey.SpeedMedian' => .2",                
+                "version" : "5.5.4.0"
             },            
             {
                 "name" : "Tags",                
