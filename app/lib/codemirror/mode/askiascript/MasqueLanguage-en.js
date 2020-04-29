@@ -2395,6 +2395,18 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "IsAnonymised",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Indicates if the question is anonymised",                
+                "examples" : [
+                    "gender.IsAnonymised ' => false",                    
+                    "Email.IsAnonymised ' => true"
+                ],                
+                "version" : "5.3.3.0"
+            },            
+            {
                 "name" : "IsDateOnly",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                

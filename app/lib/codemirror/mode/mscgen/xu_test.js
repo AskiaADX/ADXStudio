@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
+// Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function() {
   var mode = CodeMirror.getMode({indentUnit: 2}, "text/x-xu");
@@ -60,8 +60,7 @@
     "[attribute id]","[attribute url]","[attribute idurl]",
     "[attribute linecolor]","[attribute linecolour]","[attribute textcolor]","[attribute textcolour]","[attribute textbgcolor]","[attribute textbgcolour]",
     "[attribute arclinecolor]","[attribute arclinecolour]","[attribute arctextcolor]","[attribute arctextcolour]","[attribute arctextbgcolor]","[attribute arctextbgcolour]",
-    "[attribute arcskip]","[attribute title]",
-    "[attribute activate]","[attribute deactivate]","[attribute activation][bracket ]]]"
+    "[attribute arcskip][bracket ]]]"
   );
 
   MT("outside an attribute list, attributes classify as base",
@@ -69,7 +68,7 @@
     "[base id]","[base url]","[base idurl]",
     "[base linecolor]","[base linecolour]","[base textcolor]","[base textcolour]","[base textbgcolor]","[base textbgcolour]",
     "[base arclinecolor]","[base arclinecolour]","[base arctextcolor]","[base arctextcolour]","[base arctextbgcolor]","[base arctextbgcolour]",
-    "[base arcskip]", "[base title]"
+    "[base arcskip]"
   );
 
   MT("a typical program",
@@ -80,7 +79,7 @@
     "[base   b][bracket [[][attribute label][operator =][string \"Entity B\"][bracket ]]][base ,]",
     "[base   c][bracket [[][attribute label][operator =][string \"Entity C\"][bracket ]]][base ;]",
     "[base   a ][keyword =>>][base  b][bracket [[][attribute label][operator =][string \"Hello entity B\"][bracket ]]][base ;]",
-    "[base   a ][keyword <<][base  b][bracket [[][attribute label][operator =][string \"Here's an answer dude!\"][base , ][attribute title][operator =][string \"This is a title for this message\"][bracket ]]][base ;]",
+    "[base   a ][keyword <<][base  b][bracket [[][attribute label][operator =][string \"Here's an answer dude!\"][bracket ]]][base ;]",
     "[base   c ][keyword :>][base  *][bracket [[][attribute label][operator =][string \"What about me?\"][base , ][attribute textcolor][operator =][base red][bracket ]]][base ;]",
     "[bracket }]"
   );

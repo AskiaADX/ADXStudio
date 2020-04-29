@@ -112,15 +112,4 @@
     cm.scrollTo(null, 10);
     is(cm.getScrollInfo().top < 5);
   }, {lineNumbers: true});
-
-  testCM("bidi_ensureCursorVisible", function(cm) {
-    cm.setValue("<dd>وضع الاستخدام. عندما لا تعطى، وهذا الافتراضي إلى الطريقة الاولى\n");
-    cm.execCommand("goLineStart");
-    eq(cm.getScrollInfo().left, 0);
-    cm.execCommand("goCharRight");
-    cm.execCommand("goCharRight");
-    cm.execCommand("goCharRight");
-    eqCursorPos(cm.getCursor(), Pos(0, 3, "before"));
-    eq(cm.getScrollInfo().left, 0);
-  }, {lineWrapping: false});
 })();

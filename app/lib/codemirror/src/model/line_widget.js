@@ -1,12 +1,12 @@
-import { runInOp } from "../display/operations.js"
-import { addToScrollTop } from "../display/scrolling.js"
-import { regLineChange } from "../display/view_tracking.js"
-import { heightAtLine, lineIsHidden } from "../line/spans.js"
-import { lineNo, updateLineHeight } from "../line/utils_line.js"
-import { widgetHeight } from "../measurement/widgets.js"
-import { changeLine } from "./changes.js"
-import { eventMixin } from "../util/event.js"
-import { signalLater } from "../util/operation_group.js"
+import { runInOp } from "../display/operations"
+import { addToScrollPos } from "../display/scrolling"
+import { regLineChange } from "../display/view_tracking"
+import { heightAtLine, lineIsHidden } from "../line/spans"
+import { lineNo, updateLineHeight } from "../line/utils_line"
+import { widgetHeight } from "../measurement/widgets"
+import { changeLine } from "./changes"
+import { eventMixin } from "../util/event"
+import { signalLater } from "../util/operation_group"
 
 // Line widgets are block elements displayed above or below a line.
 
@@ -39,7 +39,7 @@ export class LineWidget {
     this.height = null
     let diff = widgetHeight(this) - oldH
     if (!diff) return
-    if (!lineIsHidden(this.doc, line)) updateLineHeight(line, line.height + diff)
+    updateLineHeight(line, line.height + diff)
     if (cm) {
       runInOp(cm, () => {
         cm.curOp.forceUpdate = true
@@ -53,7 +53,7 @@ eventMixin(LineWidget)
 
 function adjustScrollWhenAboveVisible(cm, line, diff) {
   if (heightAtLine(line) < ((cm.curOp && cm.curOp.scrollTop) || cm.doc.scrollTop))
-    addToScrollTop(cm, diff)
+    addToScrollPos(cm, null, diff)
 }
 
 export function addLineWidget(doc, handle, node, options) {
@@ -68,11 +68,11 @@ export function addLineWidget(doc, handle, node, options) {
     if (cm && !lineIsHidden(doc, line)) {
       let aboveVisible = heightAtLine(line) < doc.scrollTop
       updateLineHeight(line, line.height + widgetHeight(widget))
-      if (aboveVisible) addToScrollTop(cm, widget.height)
+      if (aboveVisible) addToScrollPos(cm, null, widget.height)
       cm.curOp.forceUpdate = true
     }
     return true
   })
-  if (cm) signalLater(cm, "lineWidgetAdded", cm, widget, typeof handle == "number" ? handle : lineNo(handle))
+  signalLater(cm, "lineWidgetAdded", cm, widget, typeof handle == "number" ? handle : lineNo(handle))
   return widget
 }

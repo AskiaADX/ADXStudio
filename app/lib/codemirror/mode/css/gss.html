@@ -8,12 +8,11 @@
 <link rel="stylesheet" href="../../addon/hint/show-hint.css">
 <script src="../../lib/codemirror.js"></script>
 <script src="css.js"></script>
-<script src="../../addon/edit/matchbrackets.js"></script>
 <script src="../../addon/hint/show-hint.js"></script>
 <script src="../../addon/hint/css-hint.js"></script>
 <style>.CodeMirror {background: #f8f8f8;}</style>
 <div id=nav>
-  <a href="https://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.png"></a>
+  <a href="http://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.png"></a>
 
   <ul>
     <li><a href="../../index.html">Home</a>
@@ -91,7 +90,7 @@ body {
       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         extraKeys: {"Ctrl-Space": "autocomplete"},
         lineNumbers: true,
-        matchBrackets: true,
+        matchBrackets: "text/x-less",
         mode: "text/x-gss"
       });
     </script>

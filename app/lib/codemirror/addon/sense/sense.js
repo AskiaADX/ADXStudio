@@ -329,21 +329,29 @@
     function Description(instance) {
         // CodeMirror instance
         this.instance       = instance;
-        this.currentQuestion = this.instance.options && this.instance.options.currentQuestion;
+        this.reloadCurrentQuestion();
         this.domResources = [];
-
+        
         // Cache of questions
         this.questionsCache = {};
         this.currentDisplayQuestion = null;
         // Question navigation History
         this.questionNavHistory = [];
-
+        // Options
+        this.descriptionOptions = (this.instance.options && this.instance.options.description) ||  {};
+    
         // Editor
         this.elEditor       = instance.getWrapperElement();
 
         // Root of description
+        this.elDescContainer = document.createElement('div');
+        this.elDescContainer.className = descClassNames.DESCRIPTION_CONTAINER;
+        this.elDescTitleBar = document.createElement('div');
+        this.elDescTitleBar.className = descClassNames.DESCRIPTION_TITLE_BAR;
+        this.elDescContainer.appendChild(this.elDescTitleBar);
         this.elDesc          = document.createElement('div');
         this.elDesc.className = descClassNames.DESCRIPTION;
+        this.elDescContainer.appendChild(this.elDesc);
 
         if (this.instance.options.debug) {
             this.elDebug = document.createElement('div');
@@ -375,20 +383,32 @@
         this.elDesc.appendChild(this.elVSplit);
 
         // Insert the description element after the editor
-        this.elEditor.parentNode.insertBefore(this.elDesc, this.elEditor.nextSibling);
-        this.domResources.push(this.elDesc);
+        this.elEditor.parentNode.insertBefore(this.elDescContainer, this.elEditor.nextSibling);
+        this.domResources.push(this.elDescContainer);
 
         // Insert the debug window after the description
         if (this.elDebug) {
-            this.elDesc.parentNode.insertBefore(this.elDebug, this.elDesc.nextSibling);
+            this.elDescContainer.parentNode.insertBefore(this.elDebug, this.elDescContainer.nextSibling);
             this.domResources.push(this.elDebug);
         }
 
         // Horizontal splitter just before the description
         this.elHSplit        = document.createElement('div');
         this.elHSplit.className = descClassNames.SPLITTER_H;
-        this.elEditor.parentNode.insertBefore(this.elHSplit, this.elDesc);
+        this.elEditor.parentNode.insertBefore(this.elHSplit, this.elDescContainer);
         this.domResources.push(this.elHSplit);
+
+
+        // Title bar
+        this.elDescTitleBarToggle = document.createElement("a");
+        this.elDescTitleBarToggle.setAttribute("href", "#");
+        this.elDescTitleBarToggle.className = descClassNames.DESCRIPTION_TITLE_BAR_TOGGLE;
+        this.elDescTitleBarToggle.innerHTML = "&#9660;";// "&#9654;";
+        this.elDescTitleBar.appendChild(this.elDescTitleBarToggle);
+        this.elDescTitleBarText = document.createElement("span");
+        this.elDescTitleBarText.className = descClassNames.DESCRIPTION_TITLE_BAR_TEXT;
+        this.elDescTitleBarText.innerText = translate('description.documentation');
+        this.elDescTitleBar.appendChild(this.elDescTitleBarText);
 
         // Search
         this.searchResults = null;
@@ -397,10 +417,22 @@
         this.listen();
 
         // Resize
-        this.resize();
-
+        if (this.descriptionOptions.collapse) {
+            this.collapse();
+        } else {
+            this.expand();
+        }
+        
         return this;
     }
+
+    /**
+     * Reload the current question using the editor options.
+     * @chainable
+     */
+    Description.prototype.reloadCurrentQuestion = function () {
+        this.currentQuestion = this.instance.options && this.instance.options.currentQuestion;
+    };
 
     /**
      * Log the text in the debugger
@@ -531,7 +563,8 @@
         CodeMirror.on(self.elDesc, 'click', function onLinkClick(e) {
             var el     = e.srcElement || e.target,
                 linkTo = el.getAttribute("data-linkto"),
-                map, keyword, member, item;
+                map, keyword, member, item,
+                arr, uniqueId;
             if (linkTo) {
                 map = (linkTo.indexOf('versions.') !== 0) ?  linkTo.split('.') : ['versions', linkTo.replace('versions.', '')];
                 keyword = map.length > 1 ? map[1] : map[0];
@@ -551,7 +584,10 @@
                     });
                     return;
                 }
-                item = askiaScript.find(keyword, member);
+                arr = keyword.split('-');
+                keyword = arr[0];
+                uniqueId = arr[1];
+                item = askiaScript.find(keyword, member, uniqueId);
                 if (item) {
                     self.display(item);
                 }
@@ -562,6 +598,10 @@
         CodeMirror.on(self.elHSplit, 'mousedown', function resizeDescription(e) {
             //noinspection JSValidateTypes
             if (e.which !== 1) { // Press the left mouse button
+                return;
+            }
+            // Collapsed
+            if (hasClass(self.elDescTitleBar, descClassNames.DESCRIPTION_TITLE_BAR_COLLAPSED)) {
                 return;
             }
 
@@ -588,7 +628,8 @@
                     parentHeight = parent.offsetHeight,
                     splitterTop  = parseInt(self.elHSplit.style.top, 10),
                     editorHeight = splitterTop - parentTop,
-                    descHeight   = parentHeight - editorHeight;
+                    descHeight   = parentHeight - editorHeight,
+                    titleBarHeight = self.elDescTitleBar.offsetHeight;
 
 
 
@@ -602,7 +643,8 @@
                 }
 
                 parent.style.height = parentHeight + "px";
-                self.elDesc.style.height = descHeight + 'px';
+                self.elDescContainer.style.height = descHeight + 'px';
+                self.elDesc.style.height = (descHeight - titleBarHeight) + 'px';
                 self.resize();
                 parent.style.height = "";
             }
@@ -667,6 +709,14 @@
             clearTimeout(buffer);
             buffer = setTimeout(removeOverflow, 100);
         }, 50, self));
+
+
+        // Toggle the description
+        CodeMirror.on(self.elDescTitleBarToggle, 'click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            self.toggle();
+        });
 
         // Enable the contextual listener (by default)
         instance.initContextualListener();
@@ -788,7 +838,7 @@
                         linkTo  = linkToPrefix + item.name;
 
                     li.setAttribute('data-search', item.name.toLowerCase());
-                    li.appendChild(askiaScript.createDescLink(item.name, linkTo));
+                    li.appendChild(askiaScript.createDescLink(item.name, linkTo, item.uniqueId));
                     innerList.appendChild(li);
                 });
 
@@ -832,6 +882,8 @@
                 var memberItem = askiaScript.find(name, 'core');
                 if (!memberItem || askiaScript.availableInNS(memberItem, namespace)) {
                     buildList(name, translate('types.' + name), members[name]);
+                } else if (name === 'question') {
+                    console.log(memberItem);
                 }
             }
         });
@@ -850,13 +902,14 @@
             editorHeight = this.elEditor.offsetHeight,
             editorTop    = this.elEditor.offsetTop,
             tocWidth     = this.elToc.offsetWidth,
-            descHeight   = this.elDesc.offsetHeight;
+            titleBarHeight = this.elDescTitleBar.offsetHeight,
+            descHeight   = this.elDescContainer.offsetHeight - titleBarHeight;
 
         this.elHSplit.style.width = editorWidth + 'px';
         this.elHSplit.style.top   = (editorHeight + editorTop) + 'px';
         this.elHSplit.style.left  = this.elEditor.offsetLeft + 'px';
 
-        this.elVSplit.style.top  = (editorHeight + editorTop) + 'px';
+        this.elVSplit.style.top  = (editorHeight + editorTop + titleBarHeight) + 'px';
         this.elVSplit.style.left = tocWidth + 'px';
         this.elVSplit.style.height = descHeight + 'px';
         return this;
@@ -883,7 +936,7 @@
      * @chainable
      */
     Description.prototype.resize = function resizeDescription() {
-        var descHeight   = this.elDesc.offsetHeight,
+        var descHeight   = this.elDescContainer.offsetHeight,
             parentHeight = this.elEditor.parentNode.offsetHeight,
             editorTop    = this.elEditor.offsetTop,
             remainHeight = parentHeight - (descHeight + editorTop);
@@ -902,6 +955,48 @@
         this.fixSplitters();
 
         return this;
+    };
+
+    /**
+     * Collapse the description
+     */
+    Description.prototype.collapse = function collapse() {
+        addClass(this.elDescTitleBar, descClassNames.DESCRIPTION_TITLE_BAR_COLLAPSED);
+        this.elDescTitleBarToggle.innerHTML =  "&#9654;";
+        this.elDesc.style.display = 'none';
+        this.elDescContainer.previousHeight = this.elDescContainer.offsetHeight;
+        this.elDescContainer.style.height = this.elDescTitleBar.offsetHeight + 'px'; 
+        this.elHSplit.style.cursor = 'default';
+        this.resize();
+    };
+
+    /**
+     * Expand the description
+     */
+    Description.prototype.expand = function expand() {
+        removeClass(this.elDescTitleBar, descClassNames.DESCRIPTION_TITLE_BAR_COLLAPSED);
+        this.elDescTitleBarToggle.innerHTML = "&#9660;";
+        this.elDesc.style.display = '';
+        var parent   = this.elEditor.parentNode;
+        var parentHeight = parent.offsetHeight;
+        parent.style.height = parentHeight + "px";
+        var height = this.elDescContainer.previousHeight || this.descriptionOptions.height || 270;
+        this.elDescContainer.style.height = height + 'px'; 
+        this.elDesc.style.height = (height - this.elDescTitleBar.offsetHeight) + 'px';
+        this.elHSplit.style.cursor = '';
+        this.resize();
+        parent.style.height = "";
+    };
+
+    /**
+     * Toggle the description
+     */
+    Description.prototype.toggle = function toggleDescription() {
+        if (hasClass(this.elDescTitleBar, descClassNames.DESCRIPTION_TITLE_BAR_COLLAPSED)) {
+            this.expand();
+        } else {
+            this.collapse();
+        }
     };
 
     /**
@@ -965,7 +1060,7 @@
 
         // Reset the latest token info
         this.instance.contextualListener.lastTokenInfo = null;
-
+        
         // Use only one desc element for all questions
         // Update the desc element using the question information
         if (item.base === bases.QUESTION) {
@@ -1235,7 +1330,9 @@
      */
     ContextualListener.prototype.isSameTokenInfo = function isSameTokenInfo(current) {
         var prev = this.lastTokenInfo;
-        return !(!prev || prev.line !== current.line || prev.start !== current.start || prev.end !== current.end || prev.string !== current.string);
+        return !(!prev || prev.line !== current.line || 
+                    prev.start !== current.start || prev.end !== current.end || 
+                    prev.string !== current.string || prev.type !== current.type);
     };
 
     /**
@@ -1251,13 +1348,21 @@
             instance = this.instance,
             namespace = instance.options && instance.options.namespace;
 
-        // Filter the match items
-        for (i = 0, l = collection.length; i < l; i += 1) {
-            item = collection[i];
-            if (shouldBeDisplay(item, rg) && !item.snippet && askiaScript.availableInNS(item, namespace)) {
-                match = item;
-                if (!match.deprecated) {
-                    break;
+       if (tokenInfo.type === 'builtin-question' && 
+                string.toLowerCase() === 'currentquestion') {
+            // Search the current question
+            match = instance.options.dictionary.getCurrentQuestionItem();
+       } 
+
+       // Filter the match items
+       if (!match) {
+            for (i = 0, l = collection.length; i < l; i += 1) {
+                item = collection[i];
+                if (shouldBeDisplay(item, rg) && !item.snippet && askiaScript.availableInNS(item, namespace)) {
+                    match = item;
+                    if (!match.deprecated) {
+                        break;
+                    }
                 }
             }
         }
@@ -1289,7 +1394,8 @@
                     line    : cur.line,
                     start   : token && token.start,
                     end     : token && token.end,
-                    string  : token && token.string
+                    string  : token && token.string,
+                    type    : token && token.type
                 },
                 searchQuestion;
 
@@ -1303,6 +1409,7 @@
                 tokenInfo.start = searchQuestion.questionToken.start;
                 tokenInfo.end = searchQuestion.questionToken.end;
                 tokenInfo.string = searchQuestion.questionToken.string;
+                tokenInfo.type = searchQuestion.questionToken.type;
                 // Already displayed
                 if (self.isSameTokenInfo(tokenInfo)) {
                     return;
@@ -1324,9 +1431,22 @@
 
     /**
      * Reset the cache
+     * @chainable
      */
     ContextualListener.prototype.reset = function () {
         this.lastTokenInfo  = null;
+        return this;
+    };
+
+    /**
+     * Reload the event.
+     * @chainable
+     */
+    ContextualListener.prototype.reload = function () {
+        this.reset();
+        var instance = this.instance;
+        CodeMirror.signal(instance, 'cursorActivity')
+        return this;
     };
 
     /**
@@ -1358,10 +1478,16 @@
         this.operatorCount++;
     };
 
+    // Return true when the token represent the question
+    ContextualQuestionToken.prototype.isQuestionToken = function isQuestionToken(token) {
+        return token.type === classNames.QUESTION || 
+                (token.type === 'builtin-question' && token.string.toLowerCase() === 'currentquestion');
+    };
+
     // Search while found a contextual question token
     // Return the question token when it's found
     ContextualQuestionToken.prototype.moonWalkThroughQuestion = function moonWalkThroughQuestion() {
-        if (this.startToken.type === classNames.QUESTION) {
+        if (this.isQuestionToken(this.startToken)) {
             return null;
         }
         if (!this.currentToken) {
@@ -1392,7 +1518,7 @@
         }
 
         // Look if the current token allows to moonwalk again
-        if (prev.type === classNames.QUESTION) {
+        if (this.isQuestionToken(prev)) {
             this.currentToken = prev;
             this.questionToken = prev;
             return this.questionToken;
@@ -1554,6 +1680,102 @@
         if (instance.description) {
             instance.description.displayQuestion(question);
         }
+        return this;
+    };
+
+    /**
+     * Change the current question
+     * 
+     * @param {String} shortcut Shortcut of the current question to use
+     * @chainable
+     */
+    CodeMirror.prototype.changeCurrentQuestion = function changeCurrentQuestion(shortcut) {
+        var instance = this;
+        instance.options.dictionary.updateCurrentQuestionItem(shortcut);
+        if (instance.description) {
+            instance.description.reloadCurrentQuestion();
+        }
+        if (instance.contextualListener) {
+            instance.contextualListener.reload();
+        }
+        return this;
+    };
+
+    /**
+     * Change the list of questions
+     * 
+     * @param {Array} questions List of questions
+     * @chainable
+     */
+    CodeMirror.prototype.updateQuestions = function updateQuestions(questions) {
+        var instance = this;
+        instance.options.dictionary.updateQuestions(questions);
+        if (instance.description) {
+            instance.description.reloadCurrentQuestion();
+        }
+        if (instance.contextualListener) {
+            instance.contextualListener.reload();
+        }
+        return this.rescan();
+    };
+
+    /**
+     * Add questions
+     * 
+     * @param {Array} questions List of questions to add
+     * @chainable
+     */
+    CodeMirror.prototype.addQuestions = function addQuestions(questions) {
+        var instance = this;
+        instance.options.dictionary.addQuestions(questions);
+        if (instance.description) {
+            instance.description.reloadCurrentQuestion();
+        }
+        if (instance.contextualListener) {
+            instance.contextualListener.reload();
+        }
+        return this.rescan();
+    };
+
+    /**
+     * Remove questions
+     * 
+     * @param {Array} questions List of questions to add
+     * @chainable
+     */
+    CodeMirror.prototype.removeQuestions = function removeQuestions(questions) {
+        var instance = this;
+        instance.options.dictionary.removeQuestions(questions);
+        if (instance.description) {
+            instance.description.reloadCurrentQuestion();
+        }
+        if (instance.contextualListener) {
+            instance.contextualListener.reload();
+        }
+        return this.rescan();
+    };
+
+    /**
+     * Rescan the document
+     * 
+     * @chainable
+     */
+    CodeMirror.prototype.rescan = function rescan() {
+        var doc = this.getDoc();
+        // Add an extra space at the beginning of the document
+        doc.replaceRange(' ', {
+            line: 0,
+            ch: 0
+        });
+        // Remove the extra space
+        doc.replaceRange('', {
+            line: 0,
+            ch: 0
+        }, {
+            line: 0,
+            ch: 1
+        });
+
         return this;
     };
 
@@ -2528,11 +2750,21 @@
     };
 
     /**
-     *
+     * Import functions of AskiaScript modules.
+     * 
+     * @param {Object[]} modules List of AskiaScript modules to add.
+     * @param {String} modules[].name Name of the module to add.
+     * @param {Object[]} modules[].functions List of module functinos
+     * @param {String} modules[].functions[].name Name of the function
+     * @param {String} modules[].functions[].base Base of the token (usually 'method') 
+     * @param {String} modules[].functions[].type Return type of the function
+     * @param {Object[]} modules[].functions[].args Arguments of the function
+     * @param {String} modules[].functions[].args[].name Name of the argument
+     * @param {String} modules[].functions[].args[].type Type of the arguemnt
      */
-    CodeMirror.prototype.importAskiaScriptModules = function ImportAskiaScriptModules(module) {
+    CodeMirror.prototype.importAskiaScriptModules = function ImportAskiaScriptModules(modules) {
         var instance = this,
             dictionary = instance.options.dictionary;
-        dictionary.updateModules(module);
+        dictionary.updateModules(modules);
     };
 });
