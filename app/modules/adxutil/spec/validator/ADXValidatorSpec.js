@@ -832,7 +832,7 @@ describe('ADXValidator', function () {
             expect(childProc.exec).toHaveBeenCalled();
         });
 
-        it('should run the xmllint process with the 2.2.0/ADCSchema.xsd and the config.xml file with ADC 2.2', function () {
+        it('should run the xmllint process with the 2.2.0/ADCSchema.xsd and the config.xml file with ADC 3.0', function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<control version="2.2.0"></control>');
@@ -847,7 +847,7 @@ describe('ADXValidator', function () {
             expect(childProc.exec).toHaveBeenCalled();
         });
 
-        it('should run the xmllint process with the 2.2.0/ADPSchema.xsd and the config.xml file with ADP 2.2', function () {
+        it('should run the xmllint process with the 2.2.0/ADPSchema.xsd and the config.xml file with ADP 3.0', function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page version="2.2.0"></page>');
@@ -856,6 +856,36 @@ describe('ADXValidator', function () {
             var childProc = require('child_process');
             spyOn(childProc, 'exec').andCallFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.2.0\\ADPSchema.xsd" "\\adx\\path\\dir\\config.xml"');
+            });
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(childProc.exec).toHaveBeenCalled();
+        });
+
+        it('should run the xmllint process with the 2.3.0/ADCSchema.xsd and the config.xml file with ADC 4.0', function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<control version="2.3.0"></control>');
+            };
+
+            var childProc = require('child_process');
+            spyOn(childProc, 'exec').andCallFake(function (command) {
+                expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.3.0\\ADCSchema.xsd" "\\adx\\path\\dir\\config.xml"');
+            });
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(childProc.exec).toHaveBeenCalled();
+        });
+
+        it('should run the xmllint process with the 2.3.0/ADPSchema.xsd and the config.xml file with ADP 4.0', function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<page version="2.3.0"></page>');
+            };
+
+            var childProc = require('child_process');
+            spyOn(childProc, 'exec').andCallFake(function (command) {
+                expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.3.0\\ADPSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
 
@@ -968,7 +998,17 @@ describe('ADXValidator', function () {
             expect(instance.adxName).toBe('test');
         });
 
-        it("should output a warning when the `style` tag is used with ADC 2.2", function () {
+        it("should output a warning when the `style` tag is used with ADC 4.0", function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<control version="2.3.0"><info><name>something</name><style width="200" height="400" /></info></control>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(Validator.prototype.writeWarning).toHaveBeenCalledWith(warnMsg.deprecatedInfoStyleTag);
+        });
+
+        it("should output a warning when the `style` tag is used with ADC 3.0", function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<control version="2.2.0"><info><name>something</name><style width="200" height="400" /></info></control>');
@@ -998,10 +1038,20 @@ describe('ADXValidator', function () {
             expect(Validator.prototype.writeWarning).not.toHaveBeenCalledWith(warnMsg.deprecatedInfoStyleTag);
         });
 
-        it("should output a warning when the `categories` tag is used with ADC 2.2", function () {
+        it("should output a warning when the `categories` tag is used with ADC 3.0", function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<control version="2.2.0"><info><name>something</name><categories><category>test</category></categories></info></control>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(Validator.prototype.writeWarning).toHaveBeenCalledWith(warnMsg.deprecatedInfoCategoriesTag);
+        });
+
+        it("should output a warning when the `categories` tag is used with ADC 4.0", function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<control version="2.3.0"><info><name>something</name><categories><category>test</category></categories></info></control>');
             };
             adxValidator.validate(null, '/adx/path/dir');
 
@@ -1305,7 +1355,20 @@ describe('ADXValidator', function () {
             expect(Validator.prototype.writeSuccess).toHaveBeenCalledWith(successMsg.xmlOutputsValidate);
         });
 
-        it('should output a warning when using the `defaultGeneration` with the ADC 2.2', function () {
+        it('should output a warning when using the `defaultGeneration` with the ADC 4.0', function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<control version="2.3.0"><outputs>' +
+                    '<output id="first" defaultGeneration="true">' +
+                    '</output>' +
+                    '</outputs></control>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(Validator.prototype.writeWarning).toHaveBeenCalledWith(warnMsg.deprecatedDefaultGenerationAttr);
+        });
+
+        it('should output a warning when using the `defaultGeneration` with the ADC 3.0', function () {
             spies.validateHook = function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<control version="2.2.0"><outputs>' +
@@ -1453,6 +1516,65 @@ describe('ADXValidator', function () {
 
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page version="2.2.0"><outputs>' +
+                    '<output id="first" masterPage="existing_file.html">' +
+                    '</output>' +
+                    '</outputs></page>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+            expect(Validator.prototype.writeWarning).not.toHaveBeenCalled();
+            expect(Validator.prototype.writeError).not.toHaveBeenCalled();
+        });
+
+        it('should output an error when the `masterPage` attribute doesn\'t exist with the ADP 4.0', function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<page version="2.3.0"><outputs>' +
+                    '<output id="first">' +
+                    '</output>' +
+                    '</outputs></page>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(Validator.prototype.writeError).toHaveBeenCalledWith(format(errMsg.missingOrEmptyMasterPageAttr, "first"));
+        });
+
+        it('should output an error when the `masterPage` attribute is empty with the ADP 4.0', function () {
+            spies.validateHook = function () {
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<page version="2.3.0"><outputs>' +
+                    '<output id="first" masterPage="">' +
+                    '</output>' +
+                    '</outputs></page>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(Validator.prototype.writeError).toHaveBeenCalledWith(format(errMsg.missingOrEmptyMasterPageAttr, "first"));
+        });
+
+        it('should output an error when the dynamic file associated with `masterPage` attribute is not found with ADP 4.0 ', function () {
+            spies.validateHook = function () {
+                this.dirResources.isExist = true;
+                this.dirResources.dynamic.isExist = true;
+
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<page version="2.3.0"><outputs>' +
+                    '<output id="first" masterPage="not_existing_file.html">' +
+                    '</output>' +
+                    '</outputs></page>');
+            };
+            adxValidator.validate(null, '/adx/path/dir');
+
+            expect(Validator.prototype.writeError).toHaveBeenCalledWith(format(errMsg.cannotFindFileInDirectory, "first", "not_existing_file.html", "dynamic"));
+        });
+
+        it('should not output an error nor warning when the dynamic file associated with `masterPage` attribute is found with ADP 4.0 ', function () {
+            spies.validateHook = function () {
+                this.dirResources.isExist = true;
+                this.dirResources.dynamic.isExist = true;
+                this.dirResources.dynamic['existing_file.html'] = 'existing_file.html';
+
+                this.adxConfigurator = new Configurator('/adx/path/dir');
+                this.adxConfigurator.fromXml('<page version="2.3.0"><outputs>' +
                     '<output id="first" masterPage="existing_file.html">' +
                     '</output>' +
                     '</outputs></page>');

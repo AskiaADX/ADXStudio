@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page  xmlns="http://www.askia.com/2.2.0/ADPSchema"
+<page  xmlns="http://www.askia.com/2.3.0/ADPSchema"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.askia.com/2.2.0/ADPSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.2.0/ADPSchema.xsd"
-          version="2.2.0"
-          askiaCompat="5.5.2">
+          xsi:schemaLocation="http://www.askia.com/2.3.0/ADPSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.3.0/ADPSchema.xsd"
+          version="2.3.0"
+          askiaCompat="5.6.0">
   <info>
     <name>
       <![CDATA[{{ADXName}}]]>

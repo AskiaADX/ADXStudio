@@ -3,7 +3,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.askia.com/2.3.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.3.0/ADCSchema.xsd"
           version="2.3.0"
-          askiaCompat="5.5.3">
+          askiaCompat="5.6.0">
   <info>
     <name>
       <![CDATA[{{ADXName}}]]>
