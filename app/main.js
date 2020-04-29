@@ -104,7 +104,10 @@ app.on('ready', function loadMainWindow () {
         //width: 800,
         //height: 600,
         show: false,
-        title: 'ADX Studio'
+        title: 'ADX Studio',
+        webPreferences: {
+          nodeIntegration: true
+        }
       });
 
       // and load the index.html of the app.
