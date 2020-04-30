@@ -41,7 +41,8 @@
     "nodejs-websocket": "^1.7.2",
     "request": "^2.88.2",
     "uuid": "^3.4.0",
-    "wrench": "^1.5.9"
+    "wrench": "^1.5.9",
+    "minimist": "^1.2.5"
   },
   "devDependencies": {
     "electron": "^4.0.0",
