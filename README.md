@@ -32,7 +32,7 @@ npm install
 ```
 
 ```
-electron app/main.js
+npm start
 ```
 
 Available resources
@@ -53,12 +53,12 @@ Authors
 -  [Jérôme Sopoçko](https://github.com/BadJerry)
 -  [Mehdi Aït-Bachir](https://github.com/AskiaMehdi)
 -  [Jérôme Duparc](https://github.com/Djedj)
+-  [Prabath Gamage](https://github.com/prabathgamage)
 
 Contributors
 ------------
 
 - [Robbe Van der Gucht](https://github.com/sir-ragna)
-- [Prabath Gamage](https://github.com/prabathgamage)
 
 License
 -------
