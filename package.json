@@ -4,7 +4,7 @@
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
-    "start": "electron ./app/main.js",
+    "start": "electron .",
     "test": "jasmine-node spec/",
     "dist": "build --win --x64 --ia32"
   },
@@ -44,7 +44,7 @@
     "wrench": "^1.5.9"
   },
   "devDependencies": {
-    "electron": "^8.2.3",
+    "electron": "^4.0.0",
     "electron-builder": "^21.2.0",
     "jasmine-node": "^3.0.0",
     "nodemon": "^2.0.3"
@@ -53,7 +53,7 @@
     "appId": "com.askia.adxstudio",
     "asar": false,
     "buildVersion": "0",
-    "electronVersion": "8.2.3",
+    "electronVersion": "4.0.0",
     "copyright": "Copyright (c) Askia 2020",
     "productName": "ADXStudio",
     "win": {
