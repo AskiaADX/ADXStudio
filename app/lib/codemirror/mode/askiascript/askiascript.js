@@ -125,8 +125,17 @@
                             obj[prop] = extend(clone, copy, true);
                         }
                     } else if (copy !== undefined) {
-                        //noinspection JSUnfilteredForInLoop
-                        obj[prop] = source[prop];
+                        // Special case for namespace
+                        if (prop === 'ns' && obj[prop] !== undefined && copy !== obj[prop]) {
+                            if ( isArray(obj[prop]) )  {
+                                obj[prop].push(copy);
+                            } else {
+                                obj[prop] = [obj[prop], copy];
+                            }
+                        } else {
+                            //noinspection JSUnfilteredForInLoop
+                            obj[prop] = source[prop];
+                        }
                     }
                 }
             }
@@ -167,6 +176,11 @@
             ITEM_SNIPPET_TAB        : 'cms-snippet-tab'
         },
         description         : {
+            DESCRIPTION_CONTAINER   : 'cms-desc-container',
+            DESCRIPTION_TITLE_BAR   : 'cms-desc-title-bar',
+            DESCRIPTION_TITLE_BAR_TOGGLE : 'cms-desc-title-bar-toggle',
+            DESCRIPTION_TITLE_BAR_COLLAPSED : 'cms-desc-title-bar-collapsed',
+            DESCRIPTION_TITLE_BAR_TEXT : 'cms-desc-title-bar-text',
             DESCRIPTION             : 'cms-desc',
             ITEM                    : 'cms-desc-item',
             TOC                     : 'cms-toc',
@@ -231,6 +245,7 @@
             releaseNotes : "Release notes"
         },
         description : {
+            documentation: "Documentation",
             parameters : 'Parameters:',
             returns    : 'Returns:',
             type       : 'Type:',
@@ -364,15 +379,17 @@
      * Create an DOM link to another description
      * @param {String} text Text of the link
      * @param {String} [linkTo] Description data link (use the text by default)
+     * @param {String|Number} [uniqueId] Unique item identifier
      * @return {HTMLElement} Fragment created
      */
-    askiaScript.createDescLink = function  createDescriptionLink(text, linkTo) {
+    askiaScript.createDescLink = function  createDescriptionLink(text, linkTo, uniqueId) {
         linkTo = linkTo || text;
-
+        
         var link  = document.createElement('a');
+        var suffix = uniqueId ? '-' + uniqueId : '';
 
-        link.href = "#" + text;
-        link.setAttribute("data-linkto", linkTo);
+        link.href = "#" + text + suffix;
+        link.setAttribute("data-linkto", linkTo + suffix);
         text = text.replace(/^core\./i, '');
         link.appendChild(document.createTextNode(text));
         CodeMirror.on(link, "click", clickOnDescriptionLink);
@@ -404,7 +421,8 @@
                 versions : {},
                 members : {
                     common : {}
-                }
+                },
+                byUniqueId : {}
             },
             coreItems   = [],
             accessors   = {},
@@ -1110,6 +1128,7 @@
                 anytypeMember = {},
                 updateAnytype = [],
                 types 		= [],
+                uniqueId    = 0,
                 member, key, l, items, item, arr, parent, versionsItem,ver;
 
             // Prepare the versions
@@ -1154,6 +1173,11 @@
                     if (!item.name) {
                         continue;
                     }
+
+                    // Add unique id to manage duplicate
+                    uniqueId++;
+                    item.uniqueId = uniqueId;
+                    internalDictionary.byUniqueId[item.uniqueId] = item;
 
                     // Set the parent relationship
                     item.parent = parent;
@@ -1202,6 +1226,11 @@
             if (l) {
                 while(l--) {
                     if (lexCommon[l].name) {
+                        // Add unique id to manage duplicate
+                        uniqueId++;
+                        lexCommon[l].uniqueId = uniqueId;
+                        internalDictionary.byUniqueId[lexCommon[l].uniqueId] = lexCommon[l];
+
                         mergeAndPrepareDescription('members.common', lexCommon[l]);
 
                         commonMember.push(lexCommon[l].name);
@@ -1225,6 +1254,11 @@
                     if (l) {
                         while(l--) {
                             item = items[l];
+
+                            // Add unique id to manage duplicate
+                            uniqueId++;
+                            item.uniqueId = uniqueId;
+                            internalDictionary.byUniqueId[item.uniqueId] = item;
 
                             // Set the parent relationship
                             item.parent = parent;
@@ -1299,9 +1333,20 @@
          *
          * @param {String} word Word to find
          * @param {String} [type] Type of member to find
+         * @param {String|Number} [uniqueId] Unique identifier of the items to find
          * @return {Object|Null} Returns the definition or null when not found
          */
-        askiaScript.find = function findDefinition(word, type) {
+        askiaScript.find = function findDefinition(word, type, uniqueId) {
+            // Search by unique identifier first
+            // Most efficient and manage the duplicate item
+            if (uniqueId) {
+                var item = internalDictionary.byUniqueId[uniqueId];
+                if (item) {
+                    return item;
+                }
+            }
+
+            // Search using the word/type
             word = word.toLowerCase();
             type = type && type.toLowerCase();
 
@@ -1352,12 +1397,19 @@
             // Compare with namespace dependencies
             if (deps) {
                 for (i = 0, l = deps.length; i < l; i += 1) {
-                    if (item.ns === deps[i]) {
+                    if (isArray(item.ns)) {
+                        if (item.ns.indexOf(deps[i]) !== -1) {
+                            return true;
+                        }
+                    } else if (item.ns === deps[i]) {
                         return true;
                     }
                 }
             }
             // Compare the current specified namespace
+            if (isArray(item.ns)) {
+                return (item.ns.indexOf(ns) !== -1);
+            }
             return (item.ns === ns);
         };
 
@@ -1868,13 +1920,14 @@
             dictionary  = askiaScript.dictionary,
             questions   = {},
             localVariables = {},
-            localModules   = [],
+            localModules   = {},
             labels      = {},
             funcNames   = {},
 
         // Don't consume characters during match
             DONT_CONSUME = false,
             modules = options.modules || [];
+        
         // Public dictionary for the instance of the editor
         // It's accessible through the options
         options.dictionary = (function createEditorDictionary() {
@@ -1882,30 +1935,104 @@
             var l,
                 question,
                 collection = [],
-                fragment    = [],
-                result     = {},
+                result     = {
+                    all       : null,
+                    questions : [],
+                    modules   : modules,
+                    variables : [],
+                    labels    : [],
+                    functions : []
+                },
                 sortItems  = askiaScript.sortItems;
 
-            if (options.questions && options.questions.length) {
-                l = options.questions.length;
-                while (l--) {
-                    question = options.questions[l];
-                    //noinspection JSUnresolvedVariable
-                    questions[question.shortcut] = question;
-                    //noinspection JSUnresolvedVariable
-                    collection.push({
-                        name : question.shortcut,
-                        type : question.type,
-                        base : bases.QUESTION
-                    });
+            // Update the list of questions
+            result.updateQuestions = function updateQuestions(items) {
+                if (items) {
+                    options.questions = items;
                 }
-                //noinspection JSUnresolvedVariable
-                if (options.currentQuestion && questions[options.currentQuestion]) {
-                    //noinspection JSUnresolvedVariable
-                    questions['currentquestion'] = questions[options.currentQuestion];
+                questions = {};
+                collection = [];
+                if (options.questions && options.questions.length) {
+                    l = options.questions.length;
+                    while (l--) {
+                        question = options.questions[l];
+                        //noinspection JSUnresolvedVariable
+                        questions[question.shortcut] = question;
+                        //noinspection JSUnresolvedVariable
+                        collection.push({
+                            name : question.shortcut,
+                            type : question.type,
+                            base : bases.QUESTION
+                        });
+                    }
                 }
-            }
+                result.updateCurrentQuestionItem(options.currentQuestion);
+                result.questions = collection.sort(sortItems);
+                updateResultAll();
+            };
 
+            // Add questions
+            result.addQuestions = function addQuestions(items) {
+                if (items.length) {
+                    l = items.length;
+                    while (l--) {
+                        question = items[l];
+                        if (questions[question.shortcut]) continue; // Already exist
+                        // Add it
+                        questions[question.shortcut] = question;
+                        collection.push({
+                            name : question.shortcut,
+                            type : question.type,
+                            base : bases.QUESTION
+                        });
+                    }
+                }
+                result.questions = collection.sort(sortItems);
+                updateResultAll();
+            };
+
+            // Remove questions
+            result.removeQuestions = function removeQuestions(items) {
+                if (items.length) {
+                    l = items.length;
+                    while (l--) {
+                        question = items[l];
+                        if (!questions[question.shortcut]) continue; // Not exist
+                        // Add it
+                        var index = -1; j, k;
+                        for(j = 0, k = collection.length; j < k; j++) {
+                            if (collection[j].name === question.shortcut) {
+                                index = j;
+                                break;
+                            }
+                        }
+
+                        delete questions[question.shortcut];
+                        if (index !== -1) {
+                            collection.splice(index, 1);
+                        }
+                    }
+                }
+                result.questions = collection.sort(sortItems);
+                updateResultAll();
+            };
+            
+            // Update the current question
+            result.updateCurrentQuestionItem = function updateCurrentQuestionItem(shortcut) {
+                options.currentQuestion = shortcut;
+                if (questions[options.currentQuestion]) {
+                    //noinspection JSUnresolvedVariable
+                    var i, l;
+                    for(i = 0, l = collection.length; i < l; i++) {
+                        if (collection[i].name === options.currentQuestion) {
+                            questions['currentquestion'] = collection[i];
+                            break;
+                        }
+                    }
+                }
+            };
+                 
+            // Build the regex for the modules
             function buildModuleRegexp() {
                 var funcs 	= [],
                     obj		= {};
@@ -1920,58 +2047,43 @@
                 CodeMirror.askiaScript.patterns.members["module"] = obj;
             }
 
-            //check if modules exist, then init the localModules array
-            if (modules && modules.length) {
-                for (var i = 0, l = modules.length; i < l; i++) {
-                    var module = modules[i];
-                    for (var j = 0, k = module.functions.length; j < k; j++) {
-                        module.functions[j].module = module.name;
-                    }
-                }
-                localModules = JSON.parse(JSON.stringify(modules));
-                buildModuleRegexp();
-            }
-
-            // All questions and builtin
-            fragment = (dictionary.builtin.concat(collection)).sort(sortItems);
-
-            //Update modules and localModules objects
-            function updateModules(mods) {
+            // Update modules and localModules objects
+            result.updateModules = function updateModules(mods) {
                 if (!mods && !mods.length) {
                     return;
                 }
                 for (var i = 0, l = mods.length; i < l; i++) {
-                    var module = mods[i];
                     var index = -1;
-                    for (var j = 0, k = modules.length; j < k; j++) {
-                        if (mods[i].name == modules[j].name) {
+                    for (var j = 0, k = result.modules.length; j < k; j++) {
+                        if (mods[i].name == result.modules[j].name) {
                             index = j;
                         }
                     }
                     //if the modules already exist, update it. If not, add it
                     if (index == -1) {
-                        modules.push({
+                        result.modules.push({
                             name        : mods[i].name,
                             functions   : mods[i].functions
                         });
                     } else {
-                        modules[index] = {
+                        result.modules[index] = {
                             name        : mods[i].name,
                             functions   : mods[i].functions
                         }
                     }
                 }
-                localModules = JSON.parse(JSON.stringify(modules));
-                //rebuild regex for modules
+                // Rebuild regex for modules
                 buildModuleRegexp();
-            }
+                updateResultAll();
+            };
 
-            function update(vars, lbls, funcs, mods) {
+            // Update variables, labels, functions and modules
+            result.update = function update(vars, lbls, funcs, mods) {
                 l = vars.length;
                 localVariables = {};
                 labels = {};
                 funcNames = {};
-                localModules = JSON.parse(JSON.stringify(modules)) || [];
+                localModules = {};
                 if (l) {
                     while(l--) {
                         localVariables[vars[l].name.toLowerCase()] = vars[l];
@@ -1992,42 +2104,45 @@
                 l = mods.length;
                 if (l) {
                   while(l--) {
-                    var name = mods[l].name;
-                    for (var j = 0, k = localModules.length; j < k; j++) {
-                      if (name == localModules[j].name) {
-                        mods[l] = localModules[j];
-                      }
-                    }
+                    localModules[mods[l].name.toLowerCase()] = mods[l];
                   }
-                }
-
-                for (var i = 0, l = modules.length; i < l; i++) {
-                    var module = modules[i];
-                    var funcs = module.functions;
-                    for (var i = 0, l = funcs.length; i < l; i++) {
-                        module.functions[i].module = module.name;
-                        funcs[i].module = module.name;
-                    }
                 }
 
                 result.variables = vars.sort(sortItems);
                 result.labels    = lbls.sort(sortItems);
                 result.functions = funcs.sort(sortItems);
-                result.modules   = mods.sort(sortItems);
-                result.all       = fragment.concat(vars).concat(lbls).concat(funcs).concat(mods).sort(sortItems);
+                result.localModules   = mods.sort(sortItems);
+                updateResultAll();
+            };
 
+            // Get the current question item
+            result.getCurrentQuestionItem = function () {
+                return questions['currentquestion'];
+            };
+
+            // Update the result.all options
+            function updateResultAll() {
+                result.all = (dictionary.builtin
+                                .concat(collection)
+                                .concat(result.variables)
+                                .concat(result.labels)
+                                .concat(result.functions)
+                                .concat(result.modules)).sort(sortItems);
             }
 
-            result = {
-                all       : fragment,
-                questions : collection.sort(sortItems),
-                modules   : modules,
-                variables : [],
-                labels    : [],
-                functions : [],
-                update    : update,
-                updateModules : updateModules
-            };
+            // Update the modules functions
+            if (result.modules && result.modules.length) {
+                for (var i = 0, l = result.modules.length; i < l; i++) {
+                    var module = result.modules[i];
+                    for (var j = 0, k = module.functions.length; j < k; j++) {
+                        module.functions[j].module = module.name;
+                    }
+                }
+                buildModuleRegexp();
+            }
+
+            // All questions and builtin
+            result.updateQuestions();
 
             return result;
         }());
@@ -2335,6 +2450,7 @@
         function matchMembers(stream, state) {
             var type = (state.lastToken && state.lastToken.style) || '',
                 match;
+            
             type = type.replace(patterns.prefixes, '');
 
             // Try with the latest scope if it's defined
@@ -2378,7 +2494,7 @@
                     match = stream.match(patterns.members[type]);
                 }
 
-                if (match) {
+                if (match && match[1]) {
                     return classNames.MEMBER_PREFIX + askiaScript.find(match[1], type).type;
                 }
             }

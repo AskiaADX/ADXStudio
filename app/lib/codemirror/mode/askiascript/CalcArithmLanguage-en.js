@@ -59,9 +59,9 @@ askiaScript.extend(askiaScript.lexical, {
             "type" : "number",            
             "args" : [
                 {
-                    "name" : "inidcates",                    
+                    "name" : "Index",                    
                     "type" : "number",                    
-                    "desc" : "the index of the calculation"
+                    "desc" : "indicates the index of the calculation"
                 }
             ],            
             "desc" : "This allows to access easily all other calculations related to this cell - note that you cannot refer to another arithmetic calculation placed after as the calculation has not been made when you are evaluating this",            
@@ -77,9 +77,9 @@ askiaScript.extend(askiaScript.lexical, {
             "type" : "string",            
             "args" : [
                 {
-                    "name" : "inidcates",                    
+                    "name" : "indice",                    
                     "type" : "number",                    
-                    "desc" : "the index of the calculation"
+                    "desc" : "indicates the index of the calculation"
                 }
             ],            
             "desc" : [
@@ -122,12 +122,12 @@ askiaScript.extend(askiaScript.lexical, {
                 {
                     "name" : "Name",                    
                     "type" : "string",                    
-                    "desc" : "indcates the name of the portfolio item in the same portfolio"
+                    "desc" : "indicates the name of the portfolio item in the same portfolio"
                 },                
                 {
                     "name" : "Page",                    
                     "type" : "string",                    
-                    "desc" : "indcates the optional page (1 by default)",                    
+                    "desc" : "indicates the optional page (1 by default)",                    
                     "opt" : true
                 }
             ],            
@@ -347,7 +347,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "name" : "Text",                
                 "ns" : "calcarithmlanguage",                
                 "base" : "property",                
-                "type" : "number",                
+                "type" : "string",                
                 "desc" : [
                     " returns the text or the formatted value of a cell",                    
                     " "
@@ -363,7 +363,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "type" : "number",                
                 "desc" : [
                     " returns the numeric value of a cell",                    
-                    " if you ask for the value of a capttion (question, response, ...) you will get a nuber indicate the intera;l number of the string",                    
+                    " if you ask for the value of a caption (question, response, ...) you will get a number indicating the internal number of the string",                    
                     " "
                 ],                
                 "examples" : "\tDim dCounts = CurrentCell.Value",                

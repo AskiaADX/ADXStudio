@@ -189,6 +189,11 @@ askiaScript.extend(askiaScript.lexical, {
     },    
     "versions" : [
         {
+            "name" : "5.5.3.0",            
+            "ns" : "askialanguage",            
+            "desc" : "Response improvement: IsHeader, IsOpen, Children, Parent"
+        },        
+        {
             "name" : "5.5.2.0",            
             "ns" : "askialanguage",            
             "desc" : [
@@ -2252,6 +2257,18 @@ askiaScript.extend(askiaScript.lexical, {
             ]
         },        
         {
+            "name" : "SetMaxRun",            
+            "ns" : "askialanguage",            
+            "base" : "function",            
+            "type" : "number",            
+            "args" : [
+                {
+                    "name" : "iterations",                    
+                    "type" : "number"
+                }
+            ]
+        },        
+        {
             "name" : "Shuffle",            
             "ns" : "askialanguage",            
             "base" : "function",            
@@ -2814,7 +2831,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : [
                     " Verify the format of the string as a valid date format",                    
                     " using the regional settings associated with the current interview",                    
-                    " or using the optional format parameter you can enforce a specify format."
+                    " or using the optional format parameter you can enforce a specific format."
                 ],                
                 "examples" : [
                     " dim s = \"22/03/2011\"",                    
@@ -3171,8 +3188,8 @@ askiaScript.extend(askiaScript.lexical, {
                     }
                 ],                
                 "desc" : [
-                    " Extract a sub-string using starting at the specify index (based 1) with a given length",                    
-                    " If the specify length is higher than the length of the string, it returns the end of the string",                    
+                    " Extract a sub-string starting at the specified index (based 1) with a given length",                    
+                    " If the specified length is higher than the length of the string, it returns everything until the end of the string",                    
                     " If the start position is higher than the length of the string, it returns an empty string"
                 ],                
                 "examples" : [
@@ -3307,7 +3324,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGB equivalent string.<br />Drop the \"alpha\" value when the string represent an RGBA color.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
+                "desc" : "Tries to convert the string which represent a color (hexa, rgb or rgba) to its RGB equivalent string.<br />Drop the \"alpha\" value when the string represents an RGBA color.<br />Returns an empty string when it fails to convert.<br />Trailing white spaces will be stripped before the conversion.",                
                 "examples" : [
                     " dim hexa_red_color = \"#ff0000\"",                    
                     " hexa_red_color.ToRGB() '=> \"255,0,0\"",                    
@@ -3331,7 +3348,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGBA equivalent string.<br />Always make the color fully opaque when the opacity is not part of the color representation.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
+                "desc" : "Tries to convert the string which represent a color (hexa, rgb or rgba) to its RGBA equivalent string.<br />Always make the color fully opaque when the opacity is not part of the color representation.<br />Returns an empty string when it fails to convert.<br />Trailing white spaces will be stripped before the conversion.",                
                 "examples" : [
                     " dim hexa_red_color = \"#ff0000\"",                    
                     " hexa_red_color.ToRGBA() '=> \"255,0,0,1\"",                    
@@ -4088,7 +4105,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "number",                
-                "desc" : "Return the neperian logarithm of the number",                
+                "desc" : "Return the Napierian logarithm of the number",                
                 "examples" : [
                     " dim counter = 1",                    
                     " counter.Log() ' => 0",                    
@@ -4142,7 +4159,7 @@ askiaScript.extend(askiaScript.lexical, {
                     {
                         "name" : "decimal",                        
                         "type" : "number",                        
-                        "desc" : "Number of decimal to keep. If not specified, no decimal will be get (same as 0)",                        
+                        "desc" : "Number of decimal to keep. If not specified, no decimal will be kept (same as 0)",                        
                         "opt" : true
                     }
                 ],                
@@ -5000,7 +5017,7 @@ askiaScript.extend(askiaScript.lexical, {
                     " Only available for an array of numbers.",                    
                     " This is askiascript's abbreviation for standard deviation.",                    
                     " Use this function to calculated the numerical standard deviation of numerical data where the variance is obtained by dividing by N",                    
-                    " To obtain the standard deviation estimatore (variance devided by N-1), use StdDevEst",                    
+                    " To obtain the standard deviation estimator (variance divided by N-1), use StdDevEst",                    
                     " Returns 0 when the array is empty."
                 ],                
                 "examples" : [

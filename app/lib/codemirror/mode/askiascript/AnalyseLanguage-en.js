@@ -182,7 +182,7 @@ askiaScript.extend(askiaScript.lexical, {
                     "\tReturns the response as an entry code for closed question",                    
                     "\tIt returns a string if the question is single, an array of string is the question is multiple",                    
                     "",                    
-                    "\tIt's the default property which is added when you campare a question to a string",                    
+                    "\tIt's the default property which is added when you compare a question to a string",                    
                     "",                    
                     "\tq1 Has {\"1\"} is transformed into q1.ToEntryCodeStr() Has {\"1\"}"
                 ],                

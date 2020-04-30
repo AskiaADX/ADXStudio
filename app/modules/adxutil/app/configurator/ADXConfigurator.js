@@ -318,11 +318,11 @@ Configurator.prototype.set = function set(data) {
  *       // Serialize the config to XML
  *       configurator.toXml();
  *       // -> <?xml version="1.0" encoding="utf-8"?>
- *             <control  xmlns="http://www.askia.com/2.2.0/ADCSchema"
+ *             <control  xmlns="http://www.askia.com/2.3.0/ADCSchema"
  *             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- *             xsi:schemaLocation="http://www.askia.com/2.2.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.2.0/ADCSchema.xsd"
- *             version="2.2.0"
- *             askiaCompat="5.5.2">
+ *             xsi:schemaLocation="http://www.askia.com/2.3.0/ADCSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.3.0/ADCSchema.xsd"
+ *             version="2.3.0"
+ *             askiaCompat="5.6.0">
  *                 <info>
  *                     <name>My Name</name>
  *                     <guid>the-guid</guid>
@@ -351,6 +351,10 @@ Configurator.prototype.toXml = function toXml() {
     let askiaCompat;
 
     switch(projectVersion) {
+        case '2.3.0':
+          askiaCompat = "5.6.0";
+          break;
+
         case '2.2.0':
           askiaCompat = "5.5.2";
           break;
@@ -584,6 +588,8 @@ ADXInfo.prototype.get = function get() {
  * @param {Boolean} [data.constraints.questions.date] Allow or not on date questions
  * @param {Boolean} [data.constraints.questions.requireParentLoop] Require or not on a parent loop question
  * @param {Number} [data.constraints.questions.requireLoopDepth] Require or not on a parent loop question
+ * @param {Boolean} [data.constraints.questions.manageSemiOpen] Require or not on questions with semi-opens
+ * @param {Boolean} [data.constraints.questions.manageHeader] Require or not on questions with header responses(non selectable)
  * @param {Object} [data.constraints.controls] Controls constraints of the ADC (ADC ONLY)
  * @param {Boolean} [data.constraints.controls.responseBlock] Allow or not on response-block
  * @param {Boolean} [data.constraints.controls.label] Allow or not on label

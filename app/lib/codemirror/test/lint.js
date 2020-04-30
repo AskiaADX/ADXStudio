@@ -4,8 +4,7 @@ var blint = require("blint");
   blint.checkDir(dir, {
     browser: true,
     allowedGlobals: ["CodeMirror", "define", "test", "requirejs"],
-    ecmaVersion: 5,
-    tabs: dir == "lib"
+    ecmaVersion: 5
   });
 });
 
