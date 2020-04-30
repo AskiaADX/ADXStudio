@@ -256,14 +256,8 @@ exports.writeMessage = function writeMessage(text) {
  * @ignore
  */
 exports.getChildProcessEnv = function getChildProcessEnv() {
-    const root = pathHelper.resolve(__dirname, "../../");
-    const arch = (process.arch === 'x64') ? '64' : '32';
-    const adxShellSysPath = pathHelper.join(root, exports.ADX_UNIT_DIR_PATH, 'sys' + arch);
-
     let env = JSON.parse(JSON.stringify(process.env));
-    env.Path = env.Path || '';
-    env.Path += ';' + adxShellSysPath;
-
+    env.Path = env.Path || '';    
     return env;
 };
 
