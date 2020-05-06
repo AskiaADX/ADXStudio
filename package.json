@@ -70,7 +70,6 @@
       "allowToChangeInstallationDirectory": true,
       "menuCategory": "Askia"
     },
-    "framework": "electron",
     "npmSkipBuildFromSource": true
   }
 }
