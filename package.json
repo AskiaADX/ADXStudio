@@ -4,7 +4,7 @@
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron ./app/main.js",
     "test": "jasmine-node spec/",
     "dist": "build --win --x64 --ia32"
   },
@@ -46,9 +46,8 @@
   },
   "devDependencies": {
     "electron": "^4.0.0",
-    "electron-builder": "^21.2.0",
-    "jasmine-node": "^3.0.0",
-    "nodemon": "^2.0.3"
+    "electron-builder": "^22.6.0",
+    "jasmine-node": "^3.0.0"
   },
   "build": {
     "appId": "com.askia.adxstudio",
