@@ -1242,7 +1242,7 @@ ADXOutputs.prototype.get = function get() {
 
         // ADC Only
         if (projectType === 'adc') {
-            if (projectVersion == "2.2.0") {
+            if (projectVersion == "2.2.0" | projectVersion == "2.3.0") {
               const manageLoopDepth = output.get("manageLoopDepth");
               item.manageLoopDepth = parseInt(manageLoopDepth);
 
@@ -1479,7 +1479,7 @@ ADXOutputs.prototype.set = function set(data) {
           if (output.maxIterations) {
             item.set("maxIterations", output.maxIterations);
           }
-          if (projectVersion == '2.2.0') {
+          if (projectVersion == '2.2.0' | projectVersion == '2.3.0') {
             item.set("manageLoopDepth", parseInt(output.manageLoopDepth));
           }
         }
@@ -1568,7 +1568,7 @@ ADXOutputs.prototype.toXml = function toXml() {
                 if (output.maxIterations) {
                     outputAttr += ' maxIterations="' + output.maxIterations + '"';
                 }
-                if (projectVersion == '2.2.0') {
+                if (projectVersion == '2.2.0' | projectVersion == '2.3.0') {
                   let manageLoopDepth = output.manageLoopDepth;
                   if (isNaN(manageLoopDepth)) {
                     manageLoopDepth = 0;
