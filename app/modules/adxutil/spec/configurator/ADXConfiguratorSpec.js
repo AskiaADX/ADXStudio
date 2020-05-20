@@ -1165,7 +1165,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
-                                condition : "",
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -1197,7 +1196,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition : "",
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -1220,7 +1218,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
-                                    condition : "",
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -1295,9 +1292,9 @@ describe('ADXConfigurator', function () {
                     '</constraints>' +
                     '</info>' +
                     '<outputs defaultOutput="main">' +
-                    '<description><![CDATA[Main output]]></description>' +
-                    // '<condition><![CDATA[Browser.Support("javascript")]]></condition>' +
                     '<output id="main" masterPage="default_main.html">' +
+                    '<description><![CDATA[Main output]]></description>' +
+                    '<condition><![CDATA[Browser.Support("javascript")]]></condition>' +
                     '<content fileName="main.css" type="css" mode="static" position="head" />' +
                     '<content fileName="main.html" type="html" mode="dynamic" position="placeholder" />' +
                     '<content fileName="main.js" type="javascript" mode="static" position="foot" />' +
@@ -1412,8 +1409,8 @@ describe('ADXConfigurator', function () {
                             outputs : [
                                 {
                                     id : "main",
-                                    // description : "Main output",
-                                    // condition : "Browser.Support(\"javascript\")",
+                                    condition : "Browser.Support(\"javascript\")",
+                                    description : "Main output",
                                     masterPage : "default_main.html",
                                     contents : [
                                         {
@@ -1487,7 +1484,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
-                                condition : "",
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -1511,7 +1507,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition : "",
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -1534,7 +1529,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
-                                    condition : "",
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -2080,7 +2074,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
-                                condition : '',
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -2114,7 +2107,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition : '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -2137,7 +2129,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
-                                    condition : '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -2640,7 +2631,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
-                                condition : '',
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -2664,7 +2654,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition : '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -2687,7 +2676,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
-                                    condition : '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5030,7 +5018,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
-                                condition: '',
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -5062,7 +5049,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition: '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5085,7 +5071,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
-                                    condition: '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5167,7 +5152,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "general",
                                 name: "General",
-                                condition: '',
                                 properties: [
                                     {
                                         id: "renderingType",
@@ -5191,7 +5175,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition: '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5214,7 +5197,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "fake",
                                     name : "Fake for test",
-                                    condition: '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5387,7 +5369,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
-                                condition: '',
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -5421,7 +5402,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition: '',
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5444,7 +5424,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
-                                    condition: '',
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5678,8 +5657,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
-                                condition: '',
-
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -5713,8 +5690,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition: '',
-
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5737,8 +5712,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
-                                    condition: '',
-
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -5922,8 +5895,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
-                                condition: '',
-
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -5947,8 +5918,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition: '',
-
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -5971,8 +5940,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
-                                    condition: '',
-
                                     properties : [
                                         {
                                             id : "testNumber",
@@ -6184,8 +6151,6 @@ describe('ADXConfigurator', function () {
                             categories : [{
                                 id: "new-general",
                                 name: "New General",
-                                condition: '',
-
                                 properties: [
                                     {
                                         id: "newRenderingType",
@@ -6209,8 +6174,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "images",
                                     name : "Rendering type images",
-                                    condition: '',
-
                                     properties : [
                                         {
                                             id : "singleImage",
@@ -6233,8 +6196,6 @@ describe('ADXConfigurator', function () {
                                 {
                                     id : "newFake",
                                     name : "New Fake for test",
-                                    condition: '',
-
                                     properties : [
                                         {
                                             id : "testNumber",
