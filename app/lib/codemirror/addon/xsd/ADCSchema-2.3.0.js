@@ -4,7 +4,7 @@
 * stored in AskiaScriptEditor project
 */
 CodeMirror.xsdSchemas = CodeMirror.xsdSchemas || {};
-CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
+CodeMirror.xsdSchemas["http://www.askia.com/2.3.0/ADCSchema"] = {
   schema : {
     "root": "control",
     "tags": [
@@ -793,7 +793,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
             "requireParentLoop": null,
             "manageSemiOpen": null,
             "manageHeader": null,
-			"requireLoopDepth": null,
+			      "requireLoopDepth": null,
             "min": null,
             "max": null,
             "label": null,
