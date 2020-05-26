@@ -32,22 +32,37 @@
                                   MinResponse="1" Translated="0">
                             <LongCaption>multiple</LongCaption>
                             <Modalities>
-                                <Modality ID="1" ResourceID="6">
+                                <Modality ID="54" Behaviour="1" Selectable="0">
+                                    <ShortCaption>Header 1</ShortCaption>
+                                </Modality>
+                                <Modality ID="1" ResourceID="6" Indent="2">
                                     <ShortCaption>Product A</ShortCaption>
                                 </Modality>
-                                <Modality ID="2" ResourceID="7">
+                                <Modality ID="2" ResourceID="7" Indent="2">
                                     <ShortCaption>Product B</ShortCaption>
                                 </Modality>
-                                <Modality ID="3" ResourceID="8">
+                                <Modality ID="3" ResourceID="8" Indent="2">
                                     <ShortCaption>Product C</ShortCaption>
                                 </Modality>
-                                <Modality ID="4" ResourceID="9">
+                                <Modality ID="4" ResourceID="9" Indent="2">
                                     <ShortCaption>Product D</ShortCaption>
                                 </Modality>
-                                <Modality ID="5" ResourceID="10" Exclusive="1">
+                                <Modality ID="55" Behaviour="1" Selectable="0">
+                                    <ShortCaption>Header 2</ShortCaption>
+                                </Modality>
+                                <Modality ID="5" SemiOpenQuestionID="16" Indent="2">
+                                    <LongCaption>Other Specify</LongCaption>
+                                    <ShortCaption>Other Specify</ShortCaption>
+                                </Modality>
+                                <Modality ID="7" ResourceID="10" Exclusive="1">
                                     <ShortCaption>None of them</ShortCaption>
                                 </Modality>
                             </Modalities>
+                            <Questions>
+                                <Question ID="16" Shortcut="multiple_Other Specify" Order="1" ElementType="question" AllowDK="0" Anonymity="0" QuestionType="open" Visible="0" Translated="0">
+                                    <LongCaption>Other Specify</LongCaption>
+                                </Question>
+                            </Questions>
                         </Question>
                     </Questions>
                 </Question>

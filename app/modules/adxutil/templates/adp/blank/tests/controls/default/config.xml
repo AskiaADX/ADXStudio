@@ -8,12 +8,12 @@
     <name>default</name>
     <guid>feba6dd4-1a09-4470-a854-e89c59821d8e</guid>
     <version>1.0.0</version>
-    <date>2016-04-15</date>
+    <date>2020-05-25</date>
     <description>
       <![CDATA[Default ADC with all kind of questions]]>
     </description>
     <author>
-      <![CDATA[Mamadou Sy <mamadou@askia.com>]]>
+      <![CDATA[]]>
     </author>
     <company>Askia SAS</company>
     <helpURL></helpURL>
@@ -22,22 +22,22 @@
       <category>General</category>
     </categories>
     <constraints>
-      <constraint on="questions" single="true" multiple="true" numeric="true" date="true" open="true" />
+      <constraint on="questions" single="true" multiple="true" numeric="true" date="true" open="true" requireParentLoop="true" requireLoopDepth="0" manageSemiOpen="false" manageHeader="false"/>
       <constraint on="controls" responseblock="true" />
     </constraints>
   </info>
 
   <outputs defaultOutput="default">
-    <output id="default">
+    <output id="default" manageLoopDepth="0">
       <description><![CDATA[Default output]]></description>
-	  <content fileName="adc_default.css" type="css" mode="static" position="head" />
+	    <content fileName="adc_default.css" type="css" mode="static" position="head" />
       <content fileName="single.html" type="html" mode="dynamic" position="none" />
       <content fileName="multiple.html" type="html" mode="dynamic" position="none" />
       <content fileName="open.html" type="html" mode="dynamic" position="none" />
       <content fileName="numeric.html" type="html" mode="dynamic" position="none" />
       <content fileName="datetime.html" type="html" mode="dynamic" position="none" />
       <content fileName="default.html" type="html" mode="dynamic" position="placeholder" />
-	  <content fileName="default.js" type="javascript" mode="static" position="foot" />
+	    <content fileName="default.js" type="javascript" mode="static" position="foot" />
       <content fileName="multiple.js" type="javascript" mode="dynamic" position="foot" />
     </output>
   </outputs>
