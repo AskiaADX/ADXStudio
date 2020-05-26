@@ -1145,7 +1145,7 @@ describe('ADXValidator', function () {
             },
             {
                 name : 'checkbox',
-                on : 'controls'
+                on   : 'controls'
             },
             {
                 name : 'textbox',
