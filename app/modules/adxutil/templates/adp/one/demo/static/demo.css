@@ -1,0 +1,175 @@
+/* QUESTION SHORTCUT FOR DEMO ONLY - DO NOT BRING INTO ADP */
+
+.caption > p.label::before {
+    color: #DF4335;
+    position: absolute;
+    margin-left: -2em;
+    text-align: right;
+}
+
+.caption > p.label#Q1::before {
+    content: '1.';
+}
+
+.caption > p.label#Q2::before {
+    content: '2.';
+}
+
+.caption > p.label#Q3::before {
+    content: '3.';
+}
+
+/* RESPONSE/ADC STYLING FOR DEMO ONLY - DO NOT BRING INTO ADP */
+
+.response-list {
+    list-style-type: none;
+    margin: 0;
+    padding: .5em 0;
+    color: #DDD;
+    font-size: 1.25rem;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+}
+
+.response-list > li {
+    margin: .15em 0;
+}
+
+@media (max-width: 1040px) {
+    .response-list {
+        columns: 1;
+        -webkit-columns: 1;
+        -moz-columns: 1;
+    }
+
+    .response-list > li {
+        display: flex;
+        flex-direction: column;
+
+    }
+}
+
+.response-list > li > input {
+    display: none;
+}
+
+.response-list > li > label {
+    display: inline-block;
+    padding: .5em 8em .5em .5em;
+    line-height: 1.5em;
+    background: rgba(255,255,255,0.2);
+    border-radius: .2em;
+    border: .1em solid #DF4335;
+    color: #DF4335;
+    margin: .1em 0;
+    cursor: pointer;
+    min-width: 7em;
+    transition: background ease-in .25s, color ease-in .25s, border ease-in .25s;
+}
+.response-list > li > label::after {
+    content: '\2714';
+    display: inline-block;
+    color: #FFF;
+    padding: 0;
+    position: relative;
+    left: 100%;
+    opacity: 0;
+    transition: opacity .15s ease-in .3s;
+}
+
+.response-list > li > * {
+    cursor: pointer;
+}
+
+.response-list > li > label:hover {
+    background: rgba(255,255,255,0.6);
+    border: .1em solid #DF4335;
+}
+
+.response-list > li > input[type=checkbox]:checked + label {
+    background: #DF4335;
+    color: #FFF;
+    border: .1em solid #c7372a;
+}
+
+.response-list > li > input[type=checkbox]:checked + label::after {
+    opacity: 1;
+}
+
+/* GLOBAL INPUT STYLING */
+::-webkit-input-placeholder {
+   color: #888;
+}
+
+:-moz-placeholder {
+   color: #888;
+}
+
+::-moz-placeholder {
+   color: #888;
+}
+
+:-ms-input-placeholder {
+   color: #888;
+}
+
+/* INPUT NUMBER STYLING */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    line-height: 1.5em;
+    background: rgba(255,255,255,0.7);
+    border-radius: .2em;
+    border: .15em solid #FFF;
+    width: 52vw;
+    margin: 1.2em auto;
+    padding: 1em;
+    transition: background ease-in .15s, border ease-in .15s;
+}
+
+input[type=number]:hover {
+    background: rgba(255,255,255,0.8);
+}
+
+input[type=number]:focus {
+    outline: none;
+    border: .15em solid #df4335;
+    background: rgba(255,255,255,0.9);
+}
+
+/* INPUT TEXT STYLING */
+textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+textarea {
+    line-height: 1.5em;
+    background: rgba(255,255,255,0.7);
+    border-radius: .2em;
+    border: .15em solid #FFF;
+    width: 52vw;
+    margin: 1.2em auto;
+    padding: 1em;
+    resize: vertical;
+    transition: background ease-in .15s, border ease-in .15s;
+}
+
+textarea:hover {
+    background: rgba(255,255,255,0.8);
+}
+
+textarea:focus {
+    outline: none;
+    border: .15em solid #df4335;
+    background: rgba(255,255,255,0.9);
+}
