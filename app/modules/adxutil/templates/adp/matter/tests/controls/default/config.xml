@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control xmlns="http://www.askia.com/2.2.0/ADCSchema"
+<control xmlns="http://www.askia.com/2.3.0/ADCSchema"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.askia.com/2.2.0/ADCSchema ../../../../ADXUtil/schema/2.2.0/ADCSchema.xsd"
-          version="2.2.0"
-          askiaCompat="5.5.2">
+          xsi:schemaLocation="http://www.askia.com/2.3.0/ADCSchema ../../../../ADXUtil/schema/2.3.0/ADCSchema.xsd"
+          version="2.3.0"
+          askiaCompat="5.6.0">
   <info>
     <name>default</name>
     <guid>feba6dd4-1a09-4470-a854-e89c59821d8e</guid>
@@ -75,7 +75,7 @@
         ]]>
         </description>
         <value>1</value>
-      </property>  
+      </property>
     </category>
 
     <category id="openQuestion" name="Open-ended question">
@@ -115,6 +115,6 @@
         <value></value>
       </property>
     </category>
-    
+
   </properties>
 </control>
