@@ -1,0 +1,286 @@
+{%
+'Theme
+Dim WhiteColor = Theme.WhiteColor
+Dim BlackColor = Theme.BlackColor
+Dim PrimaryColor = CurrentADP.Var("next_background_color")
+Dim PrimaryDarkColor = CurrentADP.Var("next_hover_background_color")
+Dim PrimaryLightColor = Theme.PrimaryLightColor
+Dim SecondaryColor = Theme.SecondaryColor
+Dim SecondaryDarkColor = Theme.SecondaryDarkColor
+Dim FontFamily = Theme.FontFamily
+Dim BaseFS = Theme.BaseFS
+Dim LargeFS = Theme.LargeFS
+Dim NormalFS = Theme.NormalFS
+Dim SmallFS = Theme.SmallFS
+Dim NeutralColor = Theme.NeutralColor
+Dim NeutralDarkColor = Theme.NeutralDarkColor
+Dim NeutralLightColor = Theme.NeutralLightColor
+Dim ErrorColor = Theme.ErrorColor
+Dim BorderWidth = Theme.BorderWidth
+Dim BorderRadius = Theme.BorderRadius
+Dim VPadding = Theme.VPadding
+Dim HPadding = Theme.HPadding
+Dim LineHeight = Theme.LineHeight
+Dim radio_checkbox_size = CurrentADP.Var("radio_checkbox_size")
+%}
+
+::selection {
+    color: rgba({%= NeutralLightColor %});
+    background-color: rgba({%= PrimaryColor %});
+}
+::-moz-selection {
+    color: rgba({%= NeutralLightColor %});
+    background-color: rgba({%= PrimaryColor %});
+}
+body, html {
+    font-family: {%= FontFamily %};
+    font-size: {%= BaseFS %};
+}
+::-webkit-input-placeholder {
+    font-family: {%= FontFamily %};
+}
+::-moz-placeholder {
+    font-family: {%= FontFamily %};
+}
+:-ms-input-placeholder {
+    font-family: {%= FontFamily %};
+}
+:-moz-placeholder {
+    font-family: {%= FontFamily %};
+}
+input, textarea, keygen, select, button {
+    font-family: {%= FontFamily %};
+}
+svg .logotext {
+    fill: rgba({%= PrimaryColor %});   
+}
+svg .logobar {
+    fill: rgba({%= SecondaryColor %});   
+}
+header h2 {
+    font-family: {%= FontFamily %};
+    font-size: {%= LargeFS %};
+}
+body, html {
+    color: rgba({%= BlackColor %});
+}
+
+body, header.large, .askiaquestions {
+    background-color: rgba({%= WhiteColor %});
+}
+body {
+    line-height: {%= LineHeight %};
+}
+header.large, .askiaquestions, input[type=text], input[type=number], textarea {
+    color: rgba({%= BlackColor %});
+    background-color: rgba({%= WhiteColor %});
+}
+
+.progressWrapper {
+    padding: 0;
+}
+
+.progress-bar {
+    background-color: rgba({%= SecondaryColor %});
+    border-radius: 0;
+    width: {%= Interview.Progress.ToString().Replace(",",".") %}%;
+}
+.progress-value {
+    font-size: {%= SmallFS %};
+}
+.askiaquestions {
+    border-radius: {%= BorderRadius %};
+    padding: {%= VPadding %} {%= HPadding %};
+    margin: 0 auto {%= VPadding %} auto;
+    margin: 0 auto 3em auto\9;
+    box-shadow: 0 4px 5px 0 rgba({%= BlackColor.ToRGB() %}, .14), 0 1px 10px 0 rgba({%= BlackColor.ToRGB() %}, .12), 0 2px 4px -1px rgba({%= BlackColor.ToRGB() %}, .2);
+}
+
+.askia-question-label {
+    font-size: {%= NormalFS %};
+    padding: {%= VPadding %} 0;
+}
+.askia-control .askia-question-label {
+    font-size: {%= NormalFS %};
+    padding: 0;
+}
+.askia-grid-row:nth-child(even) td {
+    background-color: rgba({%= NeutralLightColor.ToRGB() %},1.0);
+}
+.askia-grid-row td, .askia-grid-header td {
+    border-bottom: {%= BorderWidth %} solid rgba({%= NeutralDarkColor.ToRGB() %},1.0);
+}
+{% If CurrentADP.Var("display_next") = "no" Then %}
+input[name="Next"] {
+    display: none;
+}
+{% EndIf %}
+{% If (Browser.Mobile = False) Then %}
+.askia-grid-row:hover td {
+    background-color: rgba({%= BlackColor.ToRGB() %},.1);
+}
+{% EndIf %}
+
+.askia-grid-row .askia-question-label {
+    font-size: {%= NormalFS %};
+    padding-left: 0.5em;
+    width: 45%;
+}
+
+.instruction {
+    color: rgba({%= NeutralDarkColor %});
+    font-family: {%= FontFamily %};
+}
+
+.askia-errors-summary {
+    background: rgba({%= ErrorColor %});
+    border: {%= BorderWidth %} solid rgba({%= ErrorColor %});
+    border-radius: {%= BorderRadius %};
+    color: #FFF;
+    padding: calc({%= VPadding %} / 2) calc({%= HPadding %} / 2);
+}
+
+.askia-caption {
+    font-size: {%= NormalFS %};
+}
+.askia-response {
+    font-size: {%= NormalFS %};
+    padding: 5px;
+    cursor: pointer;
+}
+
+.askia-radio, .askia-checkbox {
+   float: left;
+}
+
+.askia-grid-row > td >.askia-radio, .askia-grid-row > td > .askia-checkbox, .askiarow > td >.askia-radio, .askiarow > td > .askia-checkbox {
+  float: none;
+}
+
+.askia-radio + .askia-response-label, .askia-checkbox + .askia-response-label {
+    display: block;
+    margin-left: {%= radio_checkbox_size %} !important;
+    padding-left: 10px;
+    vertical-align: text-top;
+}
+
+{% If (Browser.Mobile = False) Then %}
+.askia-response:hover {
+    background-color : rgba({%= BlackColor.ToRGB() %}, .1);
+    cursor: pointer;
+}
+{% EndIf %}
+.askia-grid-header .askia-response:hover {
+    background-color : transparent;
+}
+.btn {
+    font-family: {%= FontFamily %};
+    font-size: {%= NormalFS %};
+}
+.btn:after {
+    box-shadow: inset 0 0 0 5em rgba({%= WhiteColor.ToRGB() %}, 0.5);
+}
+.primary {
+	background-color: rgba({%= PrimaryColor %});
+    color: rgba({%= NeutralLightColor %});
+    padding: {%= VPadding %} {%= HPadding %};
+    transition: background-color .3s cubic-bezier(0.25, 0.1, 0.25, 0.1), color .3s cubic-bezier(0.25, 0.1, 0.25, 0.1);
+}
+.primary:hover {
+    background-color: rgba({%= PrimaryDarkColor %});
+    color: rgba({%= NeutralLightColor %});
+}
+.back label:after {
+    background: rgba({%= NeutralColor %});
+}
+.back svg {
+    fill: rgba({%= NeutralColor %});
+    transition: fill ease-in .3s;
+}
+
+.back label svg:hover {
+    fill: rgba({%= SecondaryColor %});
+}
+
+.back label.disabled svg:hover {
+    fill: rgba({%= NeutralColor %});
+}
+input[type=checkbox]:checked~label.askia-response-label, input[type=radio]:checked~label.askia-response-label {
+    color: rgba({%= SecondaryColor %});
+}
+input[type=radio] + label.askia-radio,
+input[type=checkbox] + label.askia-checkbox {
+    width: {%= radio_checkbox_size %};
+    height: {%= radio_checkbox_size %};
+    border: {%= BorderWidth %} solid rgba({%= NeutralDarkColor %});
+    box-shadow: inset 0 0 0 0 rgba({%= SecondaryColor %});
+}
+input[type=checkbox]:checked + label.askia-checkbox,
+input[type=radio]:checked + label.askia-radio {
+    background: rgba({%= SecondaryColor %});
+    border-color: rgba({%= SecondaryColor %});
+    box-shadow: inset 0 0 0 .5em rgba({%= SecondaryColor %});
+    transition: transform .3s cubic-bezier(.2, .3, 0, 1), box-shadow .3s cubic-bezier(.2, .3, 0, 1), border-color 0s;
+}
+input[type=checkbox] + label.askia-checkbox:before,
+input[type=checkbox] + label.askia-checkbox:after,
+input[type=radio] + label.askia-radio:before,
+input[type=radio] + label.askia-radio:after {
+    top: -{%= BorderWidth %};
+    left: -{%= BorderWidth %};
+    font-size: {%= radio_checkbox_size %};
+}
+
+input[type=text],
+input[type=number],
+textarea,
+input[type=color],
+input[type=date],
+input[type=datetime],
+input[type=email],
+input[type=month],
+input[type=password],
+input[type=range],
+input[type=search],
+input[type=tel],
+input[type=time],
+input[type=url],
+input[type=week] {
+    font-size: {%= NormalFS %};
+    border: {%= BorderWidth %} solid rgba({%= NeutralColor %});
+    padding: 0.5em 0.5em;
+}
+input[type=text]:focus,
+input[type=number]:focus,
+textarea:focus,
+input[type=color]:focus,
+input[type=date]:focus,
+input[type=datetime]:focus,
+input[type=email]:focus,
+input[type=month]:focus,
+input[type=password]:focus,
+input[type=range]:focus,
+input[type=search]:focus,
+input[type=tel]:focus,
+input[type=time]:focus,
+input[type=url]:focus,
+input[type=week]:focus {
+    border: {%= BorderWidth %} solid rgba({%= SecondaryColor %});
+}
+input[type=text]:hover,
+input[type=number]:hover,
+textarea:hover,
+input[type=color]:hover,
+input[type=date]:hover,
+input[type=datetime]:hover,
+input[type=email]:hover,
+input[type=month]:hover,
+input[type=password]:hover,
+input[type=range]:hover,
+input[type=search]:hover,
+input[type=tel]:hover,
+input[type=time]:hover,
+input[type=url]:hover,
+input[type=week]:hover {
+    border: {%= BorderWidth %} solid rgba({%= NeutralDarkColor %});
+}

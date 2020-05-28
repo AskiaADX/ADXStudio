@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page  xmlns="http://www.askia.com/2.3.0/ADPSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.askia.com/2.3.0/ADPSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.3.0/ADPSchema.xsd"
+          version="2.3.0"
+          askiaCompat="5.6.0">
+  <info>
+    <name>
+      <![CDATA[{{ADXName}}]]>
+    </name>
+    <guid>{{ADXGuid}}</guid>
+    <version>1.0.0</version>
+    <date>2000-01-01</date>
+    <description><![CDATA[{{ADXDescription}}]]></description>
+    <company>
+      <![CDATA[{{ADXAuthor.Company}}]]>
+    </company>
+    <author>
+      <![CDATA[{{ADXAuthor}}]]>
+    </author>
+    <site>
+      <![CDATA[{{ADXAuthor.Website}}]]>
+    </site>
+    <helpURL></helpURL>
+  </info>
+  <outputs defaultOutput="default">
+    <output id="default" masterPage="default.html">
+      <description><![CDATA[Default output]]></description>
+      <content fileName="favicon.png" type="image" mode="static" position="none" />
+      <content fileName="logo-askia-rvb.png" type="image" mode="static" position="none" />
+      <content fileName="logo-askia.svg" type="image" mode="static" position="none" />
+      <content fileName="askia.live.routing.js" type="javascript" mode="dynamic" position="head" />
+      <content fileName="html5-ie.js" type="javascript" mode="static" position="head" />
+      <content fileName="normalize.min.css" type="css" mode="static" position="head" />
+      <content fileName="styles.min.css" type="css" mode="static" position="head" />
+      <content fileName="styles.css" type="css" mode="dynamic" position="head" />
+      <content fileName="askia.ajax.min.js" type="javascript" mode="static" position="foot" />
+    </output>
+  </outputs>
+  <properties>
+    <category id="general" name="General">
+      <property xsi:type="standardProperty" id="window_title" name="Window title" type="string" require="true" visible="true">
+        <description><![CDATA[Title of the window]]></description>
+        <value><![CDATA[Askia Web Survey]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="survey_logo_src" name="Logo path" type="string" require="false" visible="true">
+        <description><![CDATA[The logo of the survey which will be display next to the survey name]]></description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="survey_logo_alt" name="Survey Logo Alt" type="string" require="false" visible="true">
+        <description><![CDATA[The alt of the survey logo]]></description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="survey_name" name="Survey Name" type="string" require="false" visible="true">
+        <description><![CDATA[the name of the survey]]></description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="errors_caption" name="Errors caption" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Errors caption]]></description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="display_progress_value" name="Display progress value" type="string" mode="dynamic" require="true" visible="true">
+        <description><![CDATA[Display progress value]]></description>
+        <value><![CDATA[no]]></value>
+        <options>
+          <option value="yes" text="Yes" />
+          <option value="no" text="No" />
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="radio_checkbox_size" name="Radio Checkbox size" type="string" mode="dynamic" require="true" visible="true">
+        <description><![CDATA[Radio Checkbox size]]></description>
+        <value><![CDATA[1.5rem]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="headHTML" name="Additional HTML for Head section" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Additional HTML for Head section]]></description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="footHTML" name="Additional HTML for Foot section" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Additional HTML for Foot section]]></description>
+        <value></value>
+      </property>
+    </category>
+    <category id="buttons" name="Buttons">
+      <property xsi:type="standardProperty" id="display_previous" name="Display previous" type="string" require="true" visible="true">
+        <description><![CDATA[Display previous button]]></description>
+        <value><![CDATA[yes]]></value>
+        <options>
+          <option value="yes" text="Yes" />
+          <option value="no" text="No" />
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="display_next" name="Display next" type="string" require="true" visible="true">
+        <description><![CDATA[Display next button]]></description>
+        <value><![CDATA[yes]]></value>
+        <options>
+          <option value="yes" text="Yes" />
+          <option value="no" text="No" />
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="next_caption" name="Next caption" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Next caption]]></description>
+        <value><![CDATA[NEXT QUESTION]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="next_background_color" name="Next background color" type="color" mode="dynamic" require="true" visible="false" colorFormat="rgba">
+        <description><![CDATA[The background color of the next button]]></description>
+        <value><![CDATA[{%= Theme.PrimaryColor %}]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="next_hover_background_color" name="Next hover background color" type="color" mode="dynamic" require="true" visible="false" colorFormat="rgba">
+        <description><![CDATA[The background color of the next button when hovered]]></description>
+        <value><![CDATA[{%= Theme.PrimaryDarkColor %}]]></value>
+      </property>
+    </category>
+  </properties>
+</page>
