@@ -194,6 +194,14 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
                     "desc": "Use for the constraint on questions of the info."
                 },
                 {
+                    "name": "manageSemiOpen",
+                    "desc": "Use for the constraint on questions, indicates that the ADC can deal with question with semi-open responses"
+                },
+                {
+                    "name": "manageHeader",
+                    "desc": "Use for the constraint on questions, indicates that the ADC can deal with question with header responses (non selectable)"
+                },				
+                {
                     "name": "min",
                     "desc": "Use for the constraint on responses, indicates the minimum of allowed responses."
                 },
@@ -778,7 +786,9 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
             "open": null,
             "date": null,
             "requireParentLoop": null,
-			      "requireLoopDepth": null,
+            "manageSemiOpen": null,
+            "manageHeader": null,			
+            "requireLoopDepth": null,				  
             "min": null,
             "max": null,
             "label": null,
