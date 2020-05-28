@@ -21,16 +21,21 @@ Dim BorderRadius = Theme.BorderRadius
 Dim VPadding = Theme.VPadding
 Dim HPadding = Theme.HPadding
 Dim LineHeight = Theme.LineHeight
-Dim buttons_alignement = CurrentADP.Var("buttons_alignement")
+Dim buttons_alignment = CurrentADP.Var("buttons_alignment")
 Dim radio_checkbox_size = CurrentADP.Var("radio_checkbox_size")
+
+Dim modalWidth = CurrentADP.Var("modal_width")
+Dim modalHeight = CurrentADP.Var("modal_height")
+Dim closeType = CurrentADP.Var("modal_close_type")
+
 %}
 
 ::selection {
-    color: rgba({%= WhiteColor %});
+    color: rgba({%= NeutralLightColor %});
     background-color: rgba({%= PrimaryColor %});
 }
 ::-moz-selection {
-    color: rgba({%= WhiteColor %});
+    color: rgba({%= NeutralLightColor %});
     background-color: rgba({%= PrimaryColor %});
 }
 body, html {
@@ -51,6 +56,12 @@ body, html {
 }
 input, textarea, keygen, select, button {
     font-family: {%= FontFamily %};
+}
+svg .logotext {
+    fill: rgba({%= PrimaryColor %});
+}
+svg .logobar {
+    fill: rgba({%= SecondaryColor %});
 }
 header h2 {
     font-family: {%= FontFamily %};
@@ -76,6 +87,11 @@ body {
 .ribbon, footer {
     background-color: rgba({%= PrimaryColor %});
 }
+{% If CurrentADP.Var("display_next") = "no" Then %}
+input[name="Next"] {
+    display: none;
+}
+{% EndIf %}
 {% If CurrentADP.Var("display_footer") = "no" Then %}
 footer {
     display: none;
@@ -91,33 +107,34 @@ header.fixed {
 }
 
 header.fixed .progressWrapper {
-    padding: 1.65em {%= HPadding %} 0 0;
+    margin: auto {%= HPadding %} auto auto;
 }
 
 .progressWrapper {
-    padding: 2.5em {%= HPadding %} 2.5em 0;
+    margin: auto {%= HPadding %} auto auto;
+
 }
 @media screen and (max-width: 500px) {
   .progressWrapper {
-    padding: 2.5em 0.5em 2.5em 0;
+      margin: auto 0.5em auto auto;
   }
 }
 
 @media screen and (max-width: 500px) {
   header.fixed .progressWrapper {
-    padding: 1.65em 0.5em 0 0;
+    margin: auto 0.5em auto auto;
   }
 }
 
 .progress {
-    background-color: rgba({%= NeutralLightColor %});
+    background-color: rgba({%= BlackColor.ToRGB() %}, 0.1);
     border-radius: {%= BorderRadius %};
 }
 
 .progress-bar {
     background-color: rgba({%= SecondaryColor %});
     border-radius: {%= BorderRadius %} 0 0 {%= BorderRadius %};
-    width: {%= Interview.Progress * (14/100) %}em;
+    width: {%= (Interview.Progress * (14/100)).ToString().Replace(",",".") %}em;
 }
 .progress-value {
     font-size: {%= SmallFS %};
@@ -125,19 +142,18 @@ header.fixed .progressWrapper {
 
 @media screen and (min-width: 501px) and (max-width: 768px) {
   .progress-bar {
-    width: {%= Interview.Progress * (11/100) %}em;
+    width: {%= (Interview.Progress * (11/100)).ToString().Replace(",",".") %}em;
   }
 }
 @media screen and (max-width: 500px) {
   .progress-bar {
-    width: {%= Interview.Progress * (6/100) %}em;
+    width: {%= (Interview.Progress * (6/100)).ToString().Replace(",",".") %}em;
   }
 }
-.askiaquestions {  
+.askiaquestions {
     border-radius: {%= BorderRadius %};
     padding: {%= VPadding %} {%= HPadding %};
-    margin: 0 auto {%= VPadding %} auto;
-    margin: 0 auto 3em auto\9;
+    margin: 0 auto 5em auto;
     box-shadow: 0 4px 5px 0 rgba({%= BlackColor.ToRGB() %}, .14), 0 1px 10px 0 rgba({%= BlackColor.ToRGB() %}, .12), 0 2px 4px -1px rgba({%= BlackColor.ToRGB() %}, .2);
 }
 
@@ -165,6 +181,21 @@ header.fixed .progressWrapper {
     font-size: {%= NormalFS %};
     padding-left: 0.5em;
     width: 45%;
+}
+
+.askia-radio, .askia-checkbox {
+   float: left;
+}
+
+.askia-grid-row > td >.askia-radio, .askia-grid-row > td > .askia-checkbox, .askiarow > td >.askia-radio, .askiarow > td > .askia-checkbox {
+  float: none;
+}
+
+.askia-radio + .askia-response-label, .askia-checkbox + .askia-response-label {
+    display: block;
+    margin-left: {%= radio_checkbox_size %} !important;
+    padding-left: 10px;
+    vertical-align: text-top;
 }
 
 .instruction {
@@ -195,13 +226,13 @@ header.fixed .progressWrapper {
 }
 {% EndIf %}
 .askia-grid-header .askia-response:hover {
-    background-color : transparent; 
+    background-color : transparent;
 }
 .btn {
     font-family: {%= FontFamily %};
     font-size: {%= NormalFS %};
     border-radius: {%= BorderRadius %};
-    padding: {%= VPadding %} 0;
+    padding: {%= VPadding %};
     box-shadow: 0 2px 5px rgba({%= BlackColor.ToRGB() %}, 0.3);
 }
 .btn:after {
@@ -236,20 +267,62 @@ input[type=radio] + label.askia-radio:after {
     font-size: {%= radio_checkbox_size %};
 }
 
-input[type=text], input[type=number], textarea {
+input[type=text],
+input[type=number],
+textarea,
+input[type=color],
+input[type=date],
+input[type=datetime],
+input[type=email],
+input[type=month],
+input[type=password],
+input[type=range],
+input[type=search],
+input[type=tel],
+input[type=time],
+input[type=url],
+input[type=week] {
     font-size: {%= NormalFS %};
     border: {%= BorderWidth %} solid rgba({%= NeutralColor %});
     padding: 0.5em 0.5em;
 }
-input[type=text]:focus, input[type=number]:focus, textarea:focus {
+input[type=text]:focus,
+input[type=number]:focus,
+textarea:focus,
+input[type=color]:focus,
+input[type=date]:focus,
+input[type=datetime]:focus,
+input[type=email]:focus,
+input[type=month]:focus,
+input[type=password]:focus,
+input[type=range]:focus,
+input[type=search]:focus,
+input[type=tel]:focus,
+input[type=time]:focus,
+input[type=url]:focus,
+input[type=week]:focus {
     border: {%= BorderWidth %} solid rgba({%= SecondaryColor %});
 }
-input[type=text]:hover, input[type=number]:hover, textarea:hover {
+input[type=text]:hover,
+input[type=number]:hover,
+textarea:hover,
+input[type=color]:hover,
+input[type=date]:hover,
+input[type=datetime]:hover,
+input[type=email]:hover,
+input[type=month]:hover,
+input[type=password]:hover,
+input[type=range]:hover,
+input[type=search]:hover,
+input[type=tel]:hover,
+input[type=time]:hover,
+input[type=url]:hover,
+input[type=week]:hover {
     border: {%= BorderWidth %} solid rgba({%= NeutralDarkColor %});
 }
 
 .navigation {
-    text-align: {%= buttons_alignement %};
+    text-align: {%= buttons_alignment %};
     padding-top: {%= VPadding %};
 }
 
@@ -277,16 +350,129 @@ input[type=text]:hover, input[type=number]:hover, textarea:hover {
 }
 .footerLeft {
     padding: 0 0 0 {%= HPadding %};
-    color: rgba({%= WhiteColor %});
+    color: rgba({%= NeutralLightColor %});
     font-size: {%= SmallFS %};
 }
 
 .footerRight {
     padding: 0 {%= HPadding %} 0 0;
-    color: rgba({%= WhiteColor %});
+    color: rgba({%= NeutralLightColor %});
     font-size: {%= SmallFS %};
 }
 footer a {
-    color: {%= WhiteColor.ToHexa() %};
+    color: {%= NeutralLightColor.ToHexa() %};
     transition: color linear .3s;
+}
+
+.loader-main {
+  margin-top: 10px;
+  width: calc({%= modalWidth %} - 20px);
+  {% If closeType = 1 Then %}
+    height: calc({%= modalHeight %} - 40px);
+  {% Else %}
+    height: 100%;
+  {% EndIf %}
+}
+
+@keyframes spin-cycle {
+  from {
+    fill: #DF4335;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  to {
+    fill: rgba(255, 255, 255, 0);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 10%; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Modal Content */
+.modal-content {
+    width: {%= modalWidth %};
+    height: {%= modalHeight %};
+    position: relative;
+    background-color: #fefefe;
+    font-weight: bold;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Modal loding */
+.modal-loading {
+  width: 100%;
+  height: {%= modalHeight %};
+  position: relative;
+  background-color: #fefefe;
+  font-weight: bold;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+{% If closeType = 1 Then %}
+.close-div{
+  height: 31px;
+  width: 100%;
+  background-color: rgba({%= SecondaryColor %});
+  transition: all .3s cubic-bezier(0.25, 0.1, 0.25, 0.1);
+
+}
+.close-div:hover{
+  background-color: rgba({%= SecondaryDarkColor %});
+  transition: all .3s cubic-bezier(0.25, 0.1, 0.25, 0.1);
+}
+{% EndIf %}
+
+.close_button{
+  transition: all .3s cubic-bezier(0.25, 0.1, 0.25, 0.1);
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;
+  margin-top: 5px;
+  color:white;
+  font-size: {%= NormalFS %}
 }

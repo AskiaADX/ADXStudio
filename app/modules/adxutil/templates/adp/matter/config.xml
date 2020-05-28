@@ -28,13 +28,13 @@
       <description><![CDATA[Default output]]></description>
       <content fileName="favicon.png" type="image" mode="static" position="none" />
       <content fileName="logo-askia-rvb.png" type="image" mode="static" position="none" />
-	    <content fileName="askia.live.routing.js" type="javascript" mode="dynamic" position="head" />
+      <content fileName="logo-askia.svg" type="image" mode="static" position="none" />
+      <content fileName="askia.live.routing.js" type="javascript" mode="dynamic" position="head" />
       <content fileName="html5-ie.js" type="javascript" mode="static" position="head" />
       <content fileName="normalize.min.css" type="css" mode="static" position="head" />
       <content fileName="styles.min.css" type="css" mode="static" position="head" />
       <content fileName="styles.css" type="css" mode="dynamic" position="head" />
-      <content fileName="askia.ajax.min.js" type="javascript" mode="static" position="foot" />
-    </output>
+      <content fileName="askia.ajax.min.js" type="javascript" mode="static" position="foot" />    </output>
   </outputs>
   <properties>
     <category id="general" name="General">
@@ -82,9 +82,17 @@
         <description><![CDATA[The background color of the ribbon and footer]]></description>
         <value><![CDATA[{%= Theme.PrimaryColor %}]]></value>
       </property>
+      <property xsi:type="standardProperty" id="headHTML" name="Additional HTML for Head section" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Additional HTML for Head section]]></description>
+        <value></value>
+      </property>
+      <property xsi:type="standardProperty" id="footHTML" name="Additional HTML for Foot section" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Additional HTML for Foot section]]></description>
+        <value></value>
+      </property>
     </category>
     <category id="buttons" name="Buttons">
-      <property xsi:type="standardProperty" id="buttons_alignement" name="Alignment" type="string" mode="dynamic" require="true" visible="true">
+      <property xsi:type="standardProperty" id="buttons_alignment" name="Alignment" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[The alignment of the buttons]]></description>
         <value><![CDATA[center]]></value>
         <options>
@@ -105,6 +113,14 @@
         <description><![CDATA[Previous caption]]></description>
         <value><![CDATA[Previous]]></value>
       </property>
+      <property xsi:type="standardProperty" id="display_next" name="Display next" type="string" require="true" visible="true">
+        <description><![CDATA[Display next button]]></description>
+        <value><![CDATA[yes]]></value>
+        <options>
+          <option value="yes" text="Yes" />
+          <option value="no" text="No" />
+        </options>
+      </property>
       <property xsi:type="standardProperty" id="next_caption" name="Next caption" type="string" mode="dynamic" require="false" visible="true">
         <description><![CDATA[Next caption]]></description>
         <value><![CDATA[Next]]></value>
@@ -113,7 +129,7 @@
     <category id="footer" name="Footer">
       <property xsi:type="standardProperty" id="display_footer" name="Display footer" type="string" mode="dynamic" require="true" visible="true">
         <description><![CDATA[Display footer]]></description>
-        <value><![CDATA[no]]></value>
+        <value><![CDATA[yes]]></value>
         <options>
           <option value="yes" text="Yes" />
           <option value="no" text="No" />
@@ -126,6 +142,48 @@
       <property xsi:type="standardProperty" id="footer_right" name="Footer right" type="string" mode="dynamic" require="false" visible="true">
         <description><![CDATA[Footer right]]></description>
         <value></value>
+      </property>
+    </category>
+    <category id="modal" name="Modal">
+      <property xsi:type="standardProperty" id="show_modal" name="Show modal" type="string" mode="dynamic" require="true" visible="true">
+        <description><![CDATA[Show modal on next button click]]></description>
+        <value><![CDATA[no]]></value>
+        <options>
+          <option value="yes" text="Yes" />
+          <option value="no" text="No" />
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="modal_content" name="Modal content" type="string" mode="dynamic" require="false" visible="true">
+        <description><![CDATA[Modal content]]></description>
+        <value><![CDATA[<p>Modal content goes here..</p>]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="modal_close_type" name="Modal close type" type="number" mode="static" require="true" visible="true" min="1" max="2">
+        <description><![CDATA[Select If modal close when clicked or Timed]]></description>
+        <value><![CDATA[1]]></value>
+        <options>
+          <option value="1" text="Clicked" />
+          <option value="2" text="Timed" />
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="duration" name="Duration(s)" type="number" mode="static" require="true" visible="true" min="1" decimal="0">
+        <description><![CDATA[Duration by seconds]]></description>
+        <value><![CDATA[1]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="num_of_attempts" name="Number of attempts" type="number" mode="static" require="true" visible="true" min="1" max="3">
+        <description><![CDATA[Define how many attempts/questions that does modal appear.]]></description>
+        <value><![CDATA[0]]></value>
+        <options>
+          <option value="0" text="Any" />
+          <option value="1" text="First attempt only" />
+        </options>
+      </property>
+      <property xsi:type="standardProperty" id="modal_width" name="Modal width" type="string" mode="dynamic" require="true" visible="true">
+        <description><![CDATA[Modal width]]></description>
+        <value><![CDATA[300px]]></value>
+      </property>
+      <property xsi:type="standardProperty" id="modal_height" name="Modal height" type="string" mode="dynamic" require="true" visible="true">
+        <description><![CDATA[Modal height]]></description>
+        <value><![CDATA[100px]]></value>
       </property>
     </category>
   </properties>
