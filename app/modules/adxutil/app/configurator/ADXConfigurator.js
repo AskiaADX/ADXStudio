@@ -980,16 +980,16 @@ ADXInfo.prototype.constraints = function constraints(data) {
                     v = parseInt(v, 10);
                 }
             } else if(attName === 'requireLoopDepth') {
-              if (projectVersion !== '2.2.0' || projectVersion !== '2.3.0') {
+              if (projectVersion !== '2.2.0' & projectVersion !== '2.3.0') {
                 return;
               } else {
+
                 // v = (v == 'true' ? 1 : 0);
                 if (v == 'false') {
                     v = 0;
                 } else if (v == 'true'){
                     v = 1;
                 }
-
               }
             } else {
               v = v !== undefined && (v !== 'false' && v !== '0' );

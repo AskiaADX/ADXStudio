@@ -778,7 +778,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
             "open": null,
             "date": null,
             "requireParentLoop": null,
-			"requireLoopDepth": null,
+			      "requireLoopDepth": null,
             "min": null,
             "max": null,
             "label": null,
