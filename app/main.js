@@ -88,6 +88,8 @@ app.on('window-all-closed', function () {
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function loadMainWindow () {
+  app.allowRendererProcessReuse = false;
+
   // Initialize the global.project
   global.project = new Project();
 
@@ -108,7 +110,8 @@ app.on('ready', function loadMainWindow () {
         webPreferences: {
           // webSecurity: false,
           nodeIntegration: true,
-          webviewTag: true
+          webviewTag: true,
+          contextIsolation: false
         }
       });
 
