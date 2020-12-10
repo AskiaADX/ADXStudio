@@ -45,7 +45,7 @@
     "minimist": ">=1.2.3"
   },
   "devDependencies": {
-    "electron": "^4.0.0",
+    "electron": "^6.0.0",
     "electron-builder": "^22.6.0",
     "jasmine-node": "^3.0.0"
   },
@@ -53,7 +53,7 @@
     "appId": "com.askia.adxstudio",
     "asar": false,
     "buildVersion": "0",
-    "electronVersion": "4.0.0",
+    "electronVersion": "6.0.0",
     "copyright": "Copyright (c) Askia 2020",
     "productName": "ADXStudio",
     "win": {

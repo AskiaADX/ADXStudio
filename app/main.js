@@ -106,7 +106,9 @@ app.on('ready', function loadMainWindow () {
         show: false,
         title: 'ADX Studio',
         webPreferences: {
-          nodeIntegration: true
+          // webSecurity: false,
+          nodeIntegration: true,
+          webviewTag: true
         }
       });
 
