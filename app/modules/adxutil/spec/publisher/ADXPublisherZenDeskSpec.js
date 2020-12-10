@@ -307,7 +307,7 @@ describe("ADXPublisherZenDesk", function() {
             var publisherZenDesk = new PublisherZenDesk(config, {}, options);
             var name = config.get().info.name;
             var p = path.resolve(path.join(config.path, common.ADX_BIN_PATH, name + '.adc'));
-            
+
             runSync(function (done) {
                 spies.request.post.andCallFake(function (obj, cb) {
                     expect(obj.formData).toEqual({
@@ -325,7 +325,7 @@ describe("ADXPublisherZenDesk", function() {
             var publisherZenDesk = new PublisherZenDesk(config, {}, options);
             var name = config.get().info.name;
             var p = path.resolve(path.join(config.path, common.ADX_BIN_PATH, name + '.adp'));
-            
+
             runSync(function (done) {
                 spies.request.post.andCallFake(function (obj, cb) {
                     expect(obj.formData).toEqual({
@@ -344,7 +344,7 @@ describe("ADXPublisherZenDesk", function() {
             var name = config.get().info.name;
             var p = path.resolve(path.join(config.path, common.QEX_PATH, name + '.qex'));
             var n = 0;
-            
+
             runSync(function (done) {
                 spies.request.post.andCallFake(function (obj, cb) {
                     if (n === 1) {
@@ -364,14 +364,14 @@ describe("ADXPublisherZenDesk", function() {
                 publisherZenDesk.publish();
             });
         });
-           
+
         it("should request to post the png file when he is present in root", function() {
             var config = new Configurator('.');
             config.projectType = "adc";
             var publisherZenDesk = new PublisherZenDesk(config, {}, options);
             var p = path.resolve(path.join(config.path, 'preview.png'));
             var n = 0;
-            
+
             runSync(function (done) {
                 spies.request.post.andCallFake(function (obj, cb) {
                     if (n === 2) {
@@ -391,7 +391,7 @@ describe("ADXPublisherZenDesk", function() {
                 publisherZenDesk.publish();
             });
         });
-        
+
         it("should output an error when the .adc file is missing in " + common.ADX_BIN_PATH, function() {
             var config = new Configurator('.');
             config.projectType = "adc";
@@ -631,7 +631,7 @@ describe("ADXPublisherZenDesk", function() {
                     expect(p).toEqual(path.join(__dirname,"../../", common.ZENDESK_ADP_ARTICLE_TEMPLATE_PATH));
                     cb(null, '{{ADXProperties:HTML}}, {{ADXListKeyWords}}, {{ADXConstraints}}');
                 });
-                
+
                 runSync(function (done) {
                     spyOn(fakeClient.articles, "create").andCallFake(function (id, json) {
 
@@ -683,7 +683,7 @@ describe("ADXPublisherZenDesk", function() {
                     });
                 });
             });
-            
+
             it("should output an error when it found duplicate article title", function () {
                 var config = new Configurator('.');
                 config.projectType = "adc";
@@ -733,7 +733,7 @@ describe("ADXPublisherZenDesk", function() {
                     done();
                 });
             });
-            
+
             it("should return the id of the article whitch already exist", function () {
                 var config = new Configurator('.');
                 config.projectType = "adc";
@@ -792,7 +792,7 @@ describe("ADXPublisherZenDesk", function() {
                                         file : o.path
                                     },
                                     headers : {
-                                        'Authorization' : "Basic " + new Buffer(options.username + ":" + options.password).toString('base64')
+                                        'Authorization' : "Basic " + Buffer.alloc(options.username + ":" + options.password).toString('base64')
                                     }
                                 });
                                 done();
@@ -818,14 +818,14 @@ describe("ADXPublisherZenDesk", function() {
                 {
                     name 	: "qex",
                     suffix 	: path.join(common.QEX_PATH, 'test-adx.qex')
-                }, 
+                },
                 {
                     name 	: "png",
                     suffix 	: 'preview.png'
                 }
             ].forEach(testPost);
         });
-        
+
         describe("update article with attachments", function() {
             it("should call updateForArticle with the attachments", function () {
                 var config = new Configurator('.');
@@ -837,23 +837,23 @@ describe("ADXPublisherZenDesk", function() {
                         body : '{{ADXQexFileURL}}, {{ADXFileURL}}, {{ADXPreview}}, {{ADXLiveDemo}}'
                     });
                 });
-                
+
                 runSync(function (done) {
                     spyOn(fakeClient.translations, "updateForArticle").andCallFake(function(id, lang, obj, cb) {
-                        var str = '<li>To download the qex file, <a href="/hc/en-us/article_attachments/an id/a file_name">click here</a></li>' + 
+                        var str = '<li>To download the qex file, <a href="/hc/en-us/article_attachments/an id/a file_name">click here</a></li>' +
                                     ', <a href="/hc/en-us/article_attachments/an id/a file_name">click here</a>' +
                                     ', <p><a href="http://demo" target="_blank"> <img style="max-width: 100%;" src="/hc/en-us/article_attachments/an id/a file_name" alt="" /> </a></p>' +
                                     ', <li><a href="http://demo" target="_blank">To access to the live survey, click on the picture above.</a></li>';
-                        
+
                         expect(obj.body).toEqual(str);
                         done();
                     });
                     publisherZenDesk.publish(function() {});
-                    
+
                 });
             });
         });
-        
+
         describe("update article with attachments", function() {
             it("should call update with the correct arguments", function () {
                 var config = new Configurator('.');
@@ -875,7 +875,7 @@ describe("ADXPublisherZenDesk", function() {
                         comments_disabled : jsonArticle.article.comments_disabled
                     });
                 });
-                
+
                 runSync(function (done) {
                     spyOn(fakeClient.articles, "update").andCallFake(function(id, obj, cb) {
                         expect(obj.promoted).toEqual(true);
@@ -883,12 +883,12 @@ describe("ADXPublisherZenDesk", function() {
                         done();
                     });
                     publisherZenDesk.publish(function() {});
-                    
+
                 });
             });
         });
     });
-    
+
     function testLogger(method) {
         var className = method.toLowerCase().replace('write', '');
         describe('#'  + method, function () {
