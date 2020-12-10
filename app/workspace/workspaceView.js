@@ -942,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function () {
         contextualMenu.append(new workspace.MenuItem({
           label: 'Open in browser',
           click: function onClickOpen () {
-            workspace.shell.openItem(tab.path);
+            workspace.shell.openPath(tab.path);
           }
         }));
       }

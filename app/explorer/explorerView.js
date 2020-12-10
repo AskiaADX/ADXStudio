@@ -114,7 +114,7 @@ function displayMenu (files, contextualMenu) {
         contextualMenu.append(new MenuItem({
           label: 'Open in browser',
           click: function onClickOpen () {
-            shell.openItem(file.path);
+            shell.openPath(file.path);
           }
         }));
       }
