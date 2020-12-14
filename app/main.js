@@ -12,6 +12,9 @@ const ipc = electron.ipcMain;
 
 require('./main/mainController.js');
 
+app.allowRendererProcessReuse = false;
+app.commandLine.appendSwitch('disable-site-isolation-trials')
+
 /**
  * Manage the open project
  *
@@ -88,7 +91,6 @@ app.on('window-all-closed', function () {
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function loadMainWindow () {
-  app.allowRendererProcessReuse = false;
 
   // Initialize the global.project
   global.project = new Project();
@@ -111,7 +113,8 @@ app.on('ready', function loadMainWindow () {
           // webSecurity: false,
           nodeIntegration: true,
           webviewTag: true,
-          contextIsolation: false
+          contextIsolation: false,
+          webSecurity: true
         }
       });
 
