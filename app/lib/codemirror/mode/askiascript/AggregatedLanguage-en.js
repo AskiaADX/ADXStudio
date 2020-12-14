@@ -195,6 +195,22 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "FilterByTag",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "responses",                
+                "args" : [
+                    {
+                        "name" : "TagArray",                        
+                        "type" : "any",                        
+                        "desc" : "Specifies the tags you want to filter by"
+                    }
+                ],                
+                "desc" : "\tReturns an array of questions who have been tagged with one of the parameters",                
+                "examples" : "\tBrand.Responses.FilterByTag({\"MainBrand\"; \"Competitors\"})",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Index",                
                 "ns" : "aggregatedlanguage",                
                 "base" : "property",                
@@ -704,24 +720,6 @@ askiaScript.extend(askiaScript.lexical, {
                     "\t Debug.Trace(\"My sig is \" + dValue )"
                 ],                
                 "version" : "5.3.5.0"
-            }
-        ],        
-        "responsearray" : [
-            {
-                "name" : "FilterByTag",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "responsearray",                
-                "args" : [
-                    {
-                        "name" : "TagArray",                        
-                        "type" : "any",                        
-                        "desc" : "Specifies the tags you want to filter by"
-                    }
-                ],                
-                "desc" : "\tReturns an array of questions who have been tagged with one of the parameters",                
-                "examples" : "\tBrand.Responses.FilterByTag({\"MainBrand\"; \"Competitors\"})",                
-                "version" : "5.5.3.0"
             }
         ],        
         "survey" : [

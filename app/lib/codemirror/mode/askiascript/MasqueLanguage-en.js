@@ -1505,7 +1505,7 @@ askiaScript.extend(askiaScript.lexical, {
                     {
                         "name" : "Shortcut",                        
                         "type" : "string",                        
-                        "desc" : "Specifies the shrtcut of the quetsion you want to find"
+                        "desc" : "Specifies the shortcut of the question you want to find"
                     }
                 ],                
                 "desc" : "\tReturns one question having the specified shortcut - if the question is not found, a dummy question is returned with a questionID = DK",                
@@ -1750,12 +1750,39 @@ askiaScript.extend(askiaScript.lexical, {
         ],        
         "error" : [
             {
+                "name" : "Blocking",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Indicates if the message is a blocking error (or a warning)",                
+                "examples" : "CurrentQuestion.Errors[1].Blocking ' => \"True\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "FromQuestion",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "Returns the object associated to the question",                
+                "examples" : "CurrentADC.Errors[1].FromQuestion.Shortcut ' => \"Q1\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Id",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Return the id of the Error",                
                 "examples" : "CurrentQuestion.Errors[1].Id  ' => 1001",                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Key",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the key of the error message",                
+                "examples" : "CurrentQuestion.Errors[1].Key ' => \"expected_0_answer\"",                
                 "version" : "5.4.1.0"
             },            
             {
@@ -2660,15 +2687,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
-                "name" : "NextSibling",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "question",                
-                "desc" : "Returns the next question in the tree (ignoring the questions below)",                
-                "examples" : "\t\t Dim NextQuestion = BrandEvaluation.NextSibling",                
-                "version" : "5.5.4.0"
-            },            
-            {
                 "name" : "ParentChapter",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -2705,15 +2723,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "\tReturns the parent question in the survey tree",                
                 "examples" : "\tGender.ParentQuestion.Shortcut =>\" Demographics chapter\"",                
                 "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "PreviousSibling",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "question",                
-                "desc" : "Returns the previous question in the tree (ignoring the questions below)",                
-                "examples" : "\t\t Dim PrevQuestion = BrandEvaluation.PreviousSibling",                
-                "version" : "5.5.4.0"
             },            
             {
                 "name" : "Questions",                
@@ -4722,6 +4731,21 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.4.2.0"
             },            
             {
+                "name" : "ApplicationName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "Indicates where the interview takes place: Design Offline, WebProd, Design Online, ...",                    
+                    "",                    
+                    "Design Off line: \"designoffline\"",                    
+                    "Design On line: \"designonline\"",                    
+                    "Webprod: \"web\""
+                ],                
+                "examples" : "Interview.ApplicationName ' => \"designonline\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Broker",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5090,11 +5114,25 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "PercentPosition",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "Returns the percentage value of progress through the questionnaire... it does not take in account the questions which should have been asked",                    
+                    "but have not been due to movement by chapter or setposition"
+                ],                
+                "remarks" : "@alsosee Progress",                
+                "examples" : "Interview.PercentPosition ' => 88",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Progress",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the percentage value of progress through the questionnaire.",                
+                "remarks" : "@alsosee PercentPosition",                
                 "examples" : "Interview.Progress ' => 32",                
                 "version" : "5.3.5.0"
             },            
@@ -5195,19 +5233,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.5.0.0"
             },            
             {
-                "name" : "DurationMedian",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tReturns the median of the duration of interviews in seconds",                
-                "remarks" : [
-                    "\t@alsosee",                    
-                    "\tSpeedMedian"
-                ],                
-                "examples" : "\tSurvey.DurationMedian ' => 25",                
-                "version" : "5.5.4.0"
-            },            
-            {
                 "name" : "FileName",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5299,19 +5324,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "\tReturns the list of scenarios in the survey file",                
                 "examples" : "\tSurvey.Scenarios[1] ' => \"Debug\"",                
                 "version" : "5.5.0.0"
-            },            
-            {
-                "name" : "SpeedMedian",                
-                "ns" : "masquelanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : "\tReturns the median of the speed of interviews. The speed is (the number of clicks + the number ok keystrokes / 3) / Duration",                
-                "remarks" : [
-                    "\t@alsosee",                    
-                    "\tDurationMedian"
-                ],                
-                "examples" : "\tSurvey.SpeedMedian' => .2",                
-                "version" : "5.5.4.0"
             },            
             {
                 "name" : "Tags",                
