@@ -443,12 +443,14 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.3.0/ADPSchema"] = {
                 "video",
                 "audio",
                 "binary",
-                "text"
+                "text",
+                "asx"
             ],
             "mode": [
                 "share",
                 "static",
-                "dynamic"
+                "dynamic",
+                "modules"
             ],
             "position": [
                 "none",
