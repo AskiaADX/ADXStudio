@@ -13,7 +13,7 @@ const ipc = electron.ipcMain;
 require('./main/mainController.js');
 
 app.allowRendererProcessReuse = false;
-app.commandLine.appendSwitch('disable-site-isolation-trials')
+app.commandLine.appendSwitch('disable-site-isolation-trials');
 
 /**
  * Manage the open project
@@ -110,11 +110,11 @@ app.on('ready', function loadMainWindow () {
         show: false,
         title: 'ADX Studio',
         webPreferences: {
-          // webSecurity: false,
           nodeIntegration: true,
           webviewTag: true,
           contextIsolation: false,
-          webSecurity: true
+          webSecurity: true,
+          enableRemoteModule: true
         }
       });
 
