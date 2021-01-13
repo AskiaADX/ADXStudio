@@ -71,9 +71,13 @@ XML
  atom
  svg
 
+AskiaScript
+.asx - Askia Script extension
+
 Other (C, perl etc.)
  cgi
  dll
+
 
 Executable
  Extension	Format	                                    Operating System(s)
@@ -145,7 +149,6 @@ Executable
  .3g2	3GPP2 Multimedia File
  .3gp	3GPP Multimedia File
  .asf	Advanced Systems Format File
- .asx	Microsoft ASF Redirector File
  .avi	Audio Video Interleave File
  .flv	Flash Video File
  .mov	Apple QuickTime Movie
@@ -163,14 +166,14 @@ Markdown
 
 white
 xml|rss|atom|svg|js|xhtml|htm|html|swf|css|hss|sass|less|ccss|pcss|txt|csv|json|
-gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur|
+gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur|asx|
 aif|iff|m4a|mid|mp3|mpa|ra|wav|wma|ogg|oga|webma|
 3g2|3gp|avi|flv|mov|mp4|mpg|rm|wmv|webm
 md|
 
 
 black
-cgi|dll|erb|rjs|rhtml|rb|py|phtml|php3|php4|php|pl|action|do|wss|jspx|jsp|jhtml|yaws|cfm|aspx|axd|asx|asmx|ashx|axd|ascx|asp|config|
+cgi|dll|erb|rjs|rhtml|rb|py|phtml|php3|php4|php|pl|action|do|wss|jspx|jsp|jhtml|yaws|cfm|aspx|axd|asmx|ashx|axd|ascx|asp|config|
 action|apk|app|bat|bin|cmd|com|command|cpl|csh|exe|gadget|inf1|ins|inx|ipa|isu|
 job|jse|ksh|lnk|msc|msi|msp|mst|ocx|osx|out|paf|pif|prg|ps1|reg|rgs|run|sct|shb|shs|u3p|
 vb|vbe|vbs|vbscript|workflow|ws|wsf|cs|cpp|
@@ -191,8 +194,8 @@ const successMsg   = common.messages.success;
 const msg          = common.messages.message;
 //  Test the file extension
 const fileExt      = {
-    blacklist : /\.(cgi|dll|erb|rjs|rhtml|rb|py|phtml|php3|php4|php|pl|action|do|wss|jspx|jsp|jhtml|yaws|cfm|aspx|axd|asx|asmx|ashx|axd|ascx|asp|config|action|apk|app|bat|bin|cmd|com|command|cpl|csh|exe|gadget|inf1|ins|inx|ipa|isu|job|jse|ksh|lnk|msc|msi|msp|mst|ocx|osx|out|paf|pif|prg|ps1|reg|rgs|run|sct|shb|shs|u3p|vb|vbe|vbs|vbscript|workflow|ws|wsf|cs|cpp|zip|rar|sql|ini|dmg|iso|vcd|class|java|htaccess)$/gi,
-    whitelist : /\.(xml|rss|atom|svg|js|xhtml|htm|html|swf|css|hss|sass|less|ccss|pcss|txt|csv|json|gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur|aif|iff|m4a|mid|mp3|mpa|ra|wav|wma|ogg|oga|webma|3g2|3gp|avi|flv|mov|mp4|mpg|rm|wmv|ogv|webm|md)$/gi
+    blacklist : /\.(cgi|dll|erb|rjs|rhtml|rb|py|phtml|php3|php4|php|pl|action|do|wss|jspx|jsp|jhtml|yaws|cfm|aspx|axd|asmx|ashx|axd|ascx|asp|config|action|apk|app|bat|bin|cmd|com|command|cpl|csh|exe|gadget|inf1|ins|inx|ipa|isu|job|jse|ksh|lnk|msc|msi|msp|mst|ocx|osx|out|paf|pif|prg|ps1|reg|rgs|run|sct|shb|shs|u3p|vb|vbe|vbs|vbscript|workflow|ws|wsf|cs|cpp|zip|rar|sql|ini|dmg|iso|vcd|class|java|htaccess)$/gi,
+    whitelist : /\.(xml|rss|atom|svg|js|xhtml|htm|html|swf|css|asx|hss|sass|less|ccss|pcss|txt|csv|json|gif|jpeg|jpg|tif|tiff|png|bmp|pdf|ico|cur|aif|iff|m4a|mid|mp3|mpa|ra|wav|wma|ogg|oga|webma|3g2|3gp|avi|flv|mov|mp4|mpg|rm|wmv|ogv|webm|md)$/gi
 };
 // Hash with all content type
 const contentType  = {
@@ -200,6 +203,7 @@ const contentType  = {
     'html'      : 'text',
     'javascript': 'text',
     'css'       : 'text',
+    'asx'       : 'text',
     'binary'    : 'binary',
     'image'     : 'binary',
     'video'     : 'binary',
@@ -1205,7 +1209,7 @@ Validator.prototype.validateADXContentAttribute = function validateADXContentAtt
     const yieldNode   = content.find("yield");
 
     // Attribute nodes are ignored for the following type
-    if (/(text|binary|html|flash)/.test(type)) {
+    if (/(text|binary|html|flash|asx)/.test(type)) {
         this.report.warnings++;
         this.writeWarning(warnMsg.attributeNodeWillBeIgnored, output.id, type, fileName);
     }

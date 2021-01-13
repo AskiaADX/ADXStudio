@@ -1437,7 +1437,7 @@ ADXOutputs.prototype.get = function get() {
  * @param {Number} [data.outputs.manageLoopDepth] manage loop depth of the output
  * @param {Object[]} [data.outputs.contents] List of contents (files) used by the output
  * @param {String} [data.outputs.contents.fileName] Name of the file
- * @param {String|"text"|"html"|"css"|"javascript"|"binary"|"image"|"audio"|"video"|"flash"} [data.outputs.contents.type] Name of the file
+ * @param {String|"text"|"html"|"css"|"javascript"|"binary"|"image"|"audio"|"video"|"flash"|"asx"} [data.outputs.contents.type] Name of the file
  * @param {String|"dynamic"|"static"|"share"|"modules"} [data.outputs.contents.mode] Extract mode
  * @param {String|"none"|"head"|"placeholder"|"foot"} [data.outputs.contents.position] Position in the final page document
  * @param {Object[]} [data.outputs.contents.attributes] List of HTML attributes
