@@ -202,7 +202,7 @@ app.once('ready', function createAppMenu () {
     }
 
     let template;
-    if (process.platforn !== 'darwin') {
+    if (process.platform !== 'darwin') {
       template = [
         {
           label: '&File',
