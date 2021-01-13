@@ -468,6 +468,10 @@ describe('ADXGenerator', function () {
                                 {
                                     name : 'static',
                                     sub  : []
+                                },
+                                {
+                                    name : 'modules',
+                                    sub  : []
                                 }
                             ]
                         },
@@ -495,6 +499,7 @@ describe('ADXGenerator', function () {
                d.push('|--|--|-- default.html');
                d.push('|--|-- share\\');
                d.push('|--|-- static\\');
+               d.push('|--|-- modules\\');
                d.push('|-- tests\\');
                d.push('|--|-- units\\');
                d.push('|--|--|-- test.xml');
@@ -538,6 +543,10 @@ describe('ADXGenerator', function () {
                                 },
                                 {
                                     name : 'static',
+                                    sub  : []
+                                },
+                                {
+                                    name : 'modules',
                                     sub  : []
                                 }
                             ]

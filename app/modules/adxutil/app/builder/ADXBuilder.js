@@ -305,7 +305,7 @@ Builder.prototype.compressADX =  function compressADX() {
 
                 if (folderLower === 'bin') return;   // Exclude the bin folder
                 if (folderLower === 'tests') return; // Exclude tests folder
-                if (zipDirLower === 'resources\\' &&  !/^(dynamic|static|share)$/i.test(folderLower)) return; // Exclude extra directories
+                if (zipDirLower === 'resources\\' &&  !/^(dynamic|static|share|modules)$/i.test(folderLower)) return; // Exclude extra directories
                 if (zipDirLower === '' && !/^(resources)$/.test(folderLower)) return; // Exclude extra directories
 
                 prevDir = zipDir;
@@ -352,8 +352,3 @@ exports.build = function build(program, path) {
     const builder = new Builder(path);
     builder.build(program);
 };
-
-
-
-
-

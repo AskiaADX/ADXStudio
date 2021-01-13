@@ -86,6 +86,7 @@ function buildFiles (dir, files) {
  * @param {String[]} callback.structure.dynamic List of files in dynamic directory
  * @param {String[]} callback.structure.static List of files in static directory
  * @param {String[]} callback.structure.share List of files in share directory
+ * @param {String[]} callback.structure.modules List of files in modules directory
  */
 function getResourcesDirectoryStructure (callback) {
   if (typeof callback !== 'function') {
@@ -99,14 +100,19 @@ function getResourcesDirectoryStructure (callback) {
       share: (!errShare) ? (buildFiles(sharePath, shareFiles) || []) : []
     };
 
-    const staticPath = path.join(adx.path, 'resources/static');
-    fs.readdir(staticPath, (errStatic, staticFiles) => {
-      structure.static = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
+    const modulesPath = path.join(adx.path, 'resources/modules');
+    fs.readdir(modulesPath, (errModules, modulesFiles) => {
+      structure.modules = (!errModules) ? (buildFiles(modulesPath, modulesFiles) || []) : [];
 
-      const dynamicPath = path.join(adx.path, 'resources/dynamic');
-      fs.readdir(dynamicPath, (errDynamic, dynamicFiles) => {
-        structure.dynamic = (!errDynamic) ? (buildFiles(dynamicPath, dynamicFiles) || []) : [];
-        callback(structure);
+      const staticPath = path.join(adx.path, 'resources/static');
+      fs.readdir(staticPath, (errStatic, staticFiles) => {
+        structure.static = (!errStatic) ? (buildFiles(staticPath, staticFiles) || []) : [];
+
+        const dynamicPath = path.join(adx.path, 'resources/dynamic');
+        fs.readdir(dynamicPath, (errDynamic, dynamicFiles) => {
+          structure.dynamic = (!errDynamic) ? (buildFiles(dynamicPath, dynamicFiles) || []) : [];
+            callback(structure);
+        });
       });
     });
   });

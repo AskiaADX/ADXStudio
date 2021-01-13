@@ -326,7 +326,7 @@ function Validator(adxDirPath) {
      * Map all files in the resources directory
      *
      * @name Validator#dirResources
-     * @type {{isExist: boolean, dynamic: {isExist: boolean}, statics: {isExist: boolean}, share: {isExist: boolean}}}
+     * @type {{isExist: boolean, dynamic: {isExist: boolean}, statics: {isExist: boolean}, share: {isExist: boolean}, modules: {isExist: boolean}}}
      */
     this.dirResources  = {
         isExist  : false,
@@ -338,6 +338,9 @@ function Validator(adxDirPath) {
         },
         share   : {
             isExist : false
+        },
+        modules : {
+          isExist : false
         }
     };
 
@@ -727,6 +730,29 @@ Validator.prototype.validateADXDirectoryStructure = function validateADXDirector
                     }
                 }
 
+                loadModules();
+            });
+        }
+
+        // Check the modules directory and resume the validation
+        function loadModules() {
+            common.dirExists(pathHelper.join(resourcesPath, common.MODULES_DIR_NAME), (er, find) => {
+                const dirModules = dirResources.modules;
+                dirModules.isExist = find;
+                if (find) {
+                    try {
+                        const files = fs.readdirSync(pathHelper.join(resourcesPath, common.MODULES_DIR_NAME));
+                        files.forEach((file) => {
+                            if (common.isIgnoreFile(file)) {
+                                return;
+                            }
+                            dirModules[file.toLocaleLowerCase()] = file;
+                        })
+                    } catch (ex) {
+                        // Do nothing
+                    }
+                }
+
                 self.resume(null);
             });
         }
@@ -747,7 +773,7 @@ Validator.prototype.validateADXDirectoryStructure = function validateADXDirector
  */
 Validator.prototype.validateFileExtensions = function validateFileExtensions() {
     const dirResources = this.dirResources;
-    const dir   = [dirResources.dynamic, dirResources.statics, dirResources.share];
+    const dir   = [dirResources.dynamic, dirResources.statics, dirResources.share, dirResources.modules];
 
     if (!dirResources.isExist) {
         this.resume(null);

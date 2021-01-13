@@ -1438,7 +1438,7 @@ ADXOutputs.prototype.get = function get() {
  * @param {Object[]} [data.outputs.contents] List of contents (files) used by the output
  * @param {String} [data.outputs.contents.fileName] Name of the file
  * @param {String|"text"|"html"|"css"|"javascript"|"binary"|"image"|"audio"|"video"|"flash"} [data.outputs.contents.type] Name of the file
- * @param {String|"dynamic"|"static"|"share"} [data.outputs.contents.mode] Extract mode
+ * @param {String|"dynamic"|"static"|"share"|"modules"} [data.outputs.contents.mode] Extract mode
  * @param {String|"none"|"head"|"placeholder"|"foot"} [data.outputs.contents.position] Position in the final page document
  * @param {Object[]} [data.outputs.contents.attributes] List of HTML attributes
  * @param {String} [data.outputs.contents.attributes.name] Name of the HTML attribute
@@ -1908,7 +1908,7 @@ ADXProperties.prototype.get = function get() {
  * @param {String} [data.categories.properties.name] Name of the property
  * @param {String|"number"|"boolean"|"string"|"color"|"file"|"question"} [data.categories.properties.type] Type of the property
  * @param {String} [data.categories.properties.description] Description of the property
- * @param {String|"static"|"dynamic"} [data.categories.properties.mode] Reading mode of the property value
+ * @param {String|"static"|"dynamic"|"modules"} [data.categories.properties.mode] Reading mode of the property value
  * @param {Boolean} [data.categories.properties.visible] Visibility of the property value
  * @param {Boolean} [data.categories.properties.require] Requirement of the property value
  * @param {String} [data.categories.properties.pattern] Pattern of the string property
