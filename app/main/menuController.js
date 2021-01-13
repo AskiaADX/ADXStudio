@@ -55,12 +55,12 @@ app.once('ready', function createAppMenu () {
       dialog.showSaveDialog({
         properties: ['openFile'],
         defaultPath: global.project.getPath()
-      }, function (filepath) {
-        if (!filepath) {
+      }).then(result => {
+        if (!result.filePaths[0]) {
           return;
         }
 
-        fs.writeFile(filepath, '', { encoding: 'utf8' }, function (err) {
+        fs.writeFile(result.filePaths[0], '', { encoding: 'utf8' }, function (err) {
           if (err) {
             app.emit('show-modal-dialog', {
               type: 'okOnly',
@@ -68,8 +68,10 @@ app.once('ready', function createAppMenu () {
             });
             return;
           }
-          app.emit('menu-new-file', filepath);
+          app.emit('menu-new-file', result.filePaths[0]);
         });
+      }).catch(err => {
+        console.log(err);
       });
     }
 
@@ -77,11 +79,16 @@ app.once('ready', function createAppMenu () {
      * Open project
      */
     function openProjectClick () {
-      dialog.showOpenDialog({ properties: ['openDirectory'] }, function (folderpath) {
-        if (folderpath && folderpath.length) {
-          global.project.set(folderpath[0]);
-          app.emit('menu-open-project', folderpath[0]);
+
+      dialog.showOpenDialog({
+        properties: ['openDirectory']
+      }).then(result => {
+        if (result.filePaths && result.filePaths.length) {
+          global.project.set(result.filePaths[0]);
+          app.emit('menu-open-project', result.filePaths[0]);
         }
+      }).catch(err => {
+        console.log(err)
       });
     }
 
@@ -89,10 +96,14 @@ app.once('ready', function createAppMenu () {
      * Open file
      */
     function openFileClick () {
-      dialog.showOpenDialog({ properties: ['openFile'] }, function (filepath) {
-        if (filepath && filepath.length) {
-          app.emit('menu-open-file', filepath[0]);
+      dialog.showOpenDialog({
+        properties: ['openFile']
+      }).then(result => {
+        if (result.filePaths && result.filePaths.length) {
+          app.emit('menu-open-file', result.filePaths[0]);
         }
+      }).catch(err => {
+        console.log(err)
       });
     }
 
