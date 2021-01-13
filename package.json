@@ -16,6 +16,8 @@
     "ADX",
     "ADC",
     "ADP",
+    "ASX",
+    "AskiaScript",
     "ASKIA",
     "Design",
     "Control",
@@ -54,7 +56,7 @@
     "asar": false,
     "buildVersion": "0",
     "electronVersion": "8.0.0",
-    "copyright": "Copyright (c) Askia 2020",
+    "copyright": "Copyright (c) Askia 2021",
     "productName": "ADXStudio",
     "win": {
       "target": "nsis",
