@@ -56,7 +56,8 @@ function displayMenu (files, contextualMenu) {
       directory: 'Directory name:',
       html: 'HTML file name:',
       css: 'Stylesheet file name:',
-      js: 'Javascript file name:'
+      js: 'Javascript file name:',
+      asx: 'Askia Script Xtension file name'
     };
     let filePath = file.path;
     if (file.type === 'file') { // Remove the file name
@@ -101,6 +102,11 @@ function displayMenu (files, contextualMenu) {
         {
           id: 'js',
           label: 'Javascript file',
+          click: addNewFile
+        },
+        {
+          id: 'asx',
+          label: 'Askia Script Xtension file',
           click: addNewFile
         }
       ]
