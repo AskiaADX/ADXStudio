@@ -1,4 +1,4 @@
-(function(mod) {
+﻿(function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"), require("../../mode/askiascript/askiascript"));
   else if (typeof define == "function" && define.amd) // AMD
@@ -57,6 +57,30 @@ askiaScript.extend(askiaScript.lexical, {
                     " ChapterQuestionnaire.ChangeSubQuestionsOrder(randomOrder)"
                 ],                
                 "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "SetNextQuestion",                
+                "ns" : "masquerwlanguage",                
+                "base" : "method",                
+                "type" : "question",                
+                "args" : [
+                    {
+                        "name" : "After",                        
+                        "type" : "question"
+                    }
+                ],                
+                "desc" : [
+                    "\tSets the next question after a given question so you can change the order of questions at run time. This is particularly useful for chat-bot like surveys",                    
+                    "\tThe returned question is the parameter question so you can chain calls",                    
+                    "\tQ1.SetNextQuestion(Q4).SetNextQuestion(Q6) sets this question order Q1, Q4, Q6",                    
+                    "\tNote that the sub-questions take precedence over the next question"
+                ],                
+                "examples" : [
+                    "\tGender.SetNextQuestion(Age)",                    
+                    "\tCurrentQuestion.SeNextQuestion(Q1)",                    
+                    "\tQ1.SetNextQuestion(Q4).SetNextQuestion(Q6) ' => \"Respondent Gender\""
+                ],                
+                "version" : "5.5.4.0"
             },            
             {
                 "name" : "SetValue",                
