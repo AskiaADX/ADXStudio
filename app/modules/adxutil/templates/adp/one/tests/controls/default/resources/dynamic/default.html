@@ -1,0 +1,13 @@
+﻿<div id="adc_{%= CurrentADC.InstanceId %}" class="adc-default">
+{% If CurrentQuestion.Type = "single" Then %}
+    {%:= CurrentADC.GetContent("dynamic/single.html").ToText() %}
+{% ElseIf CurrentQuestion.Type = "multiple" Then %}
+    {%:= CurrentADC.GetContent("dynamic/multiple.html").ToText() %}
+{% ElseIf CurrentQuestion.Type = "numeric" Then %}
+    {%:= CurrentADC.GetContent("dynamic/numeric.html").ToText() %}
+{% ElseIf CurrentQuestion.Type = "open" Then %}
+    {%:= CurrentADC.GetContent("dynamic/open.html").ToText() %}
+{% ElseIf CurrentQuestion.Type = "datetime" Then %}
+    {%:= CurrentADC.GetContent("dynamic/datetime.html").ToText() %}
+{% EndIf %}
+</div>

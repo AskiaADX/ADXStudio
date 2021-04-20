@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<fixture xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://www.askia.com/2.3.0/ADXUnitTestSchema"
+<?xml version="1.0" encoding="utf-8"?>
+<fixture xmlns="http://www.askia.com/2.3.0/ADXUnitTestSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.askia.com/2.3.0/ADXUnitTestSchema https://raw.githubusercontent.com/AskiaADX/ADXSchema/2.3.0/ADXUnitTests.xsd">
     <arrange>
         <Survey Name="SingleSurvey" CurrentQuestion="single" ADPName="default"
@@ -31,22 +31,34 @@
                                   MinResponse="0" Translated="0">
                             <LongCaption>single</LongCaption>
                             <Modalities>
-                                <Modality ID="1" ResourceID="4">
+                                <Modality ID="38" Behaviour="1" Selectable="0">
+                                    <ShortCaption>Header</ShortCaption>
+                                </Modality>
+                                <Modality ID="1" ResourceID="4" Indent="2">
                                     <ShortCaption>Absolutely</ShortCaption>
                                 </Modality>
-                                <Modality ID="2" ResourceID="5">
+                                <Modality ID="2" ResourceID="5" Indent="2">
                                     <ShortCaption>Rather yes</ShortCaption>
                                 </Modality>
-                                <Modality ID="3" ResourceID="2">
+                                <Modality ID="3" ResourceID="2" Indent="2">
                                     <ShortCaption>Rather No</ShortCaption>
                                 </Modality>
-                                <Modality ID="4" ResourceID="3">
+                                <Modality ID="4" ResourceID="3" Indent="2">
                                     <ShortCaption>Not at all</ShortCaption>
                                 </Modality>
-                                <Modality ID="5" ResourceID="1">
+                                <Modality ID="5" ResourceID="1" Indent="2">
                                     <ShortCaption>Don't know</ShortCaption>
                                 </Modality>
+                                <Modality ID="6" SemiOpenQuestionID="7" Indent="2">
+                                    <LongCaption>Other Specify</LongCaption>
+                                    <ShortCaption>Other Specify</ShortCaption>
+                                </Modality>
                             </Modalities>
+                            <Questions>
+                                <Question ID="7" Shortcut="single_Other Specify" Order="1" ElementType="question" AllowDK="0" Anonymity="0" QuestionType="open" Visible="0" Translated="0">
+	                                <LongCaption>Other Specify</LongCaption>
+                                </Question>
+                            </Questions>
                         </Question>
                     </Questions>
                 </Question>

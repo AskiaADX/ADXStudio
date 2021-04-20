@@ -54,7 +54,7 @@ function PublisherZenDesk(configurator, preferences, options) {
     if (options.printMode) {
         this.printMode = options.printMode || 'default';
     }
-    
+
     if (preferences && preferences.ZenDesk) {
         for (var option in preferences.ZenDesk) {
             if (preferences.ZenDesk.hasOwnProperty(option)) {
@@ -215,7 +215,7 @@ function generateHtmlCodeForOptions(opt) {
     for (let i = 0 , l = opt.length ; i < l ; i++) {
         values.push(opt[i].text);
     }
-    return values.join(", ");    
+    return values.join(", ");
 }
 
 /**
@@ -441,7 +441,7 @@ function uploadAvailableFiles(self, files, articleId, callback) {
             url		: self.options.url + "/api/v2/help_center/articles/" + articleId + "/attachments.json",
             formData: formData,
             headers : {
-                'Authorization' : "Basic " + new Buffer(self.options.username + ":" + self.options.password).toString('base64')
+                'Authorization' : "Basic " + Buffer.alloc(self.options.username + ":" + self.options.password).toString('base64')
             }
         };
 
@@ -498,7 +498,7 @@ function createArticle(publisher, articleToUpdateId, id, jsonArticle, cb) {
             cb(err, req, article);
         });
     } else {
-        publisher.client.articles.create(id, jsonArticle, cb);    
+        publisher.client.articles.create(id, jsonArticle, cb);
     }
 }
 
@@ -588,7 +588,7 @@ PublisherZenDesk.prototype.publish = function(callback) {
                                     ];
 
                                     // TODO::We should upload the file to the demo server from this app
-                                    //'/hc/en-us/article_attachments/' + attachmentsIDs.png.id + '/' + attachmentsIDs.png.name 
+                                    //'/hc/en-us/article_attachments/' + attachmentsIDs.png.id + '/' + attachmentsIDs.png.name
                                     const urlToPointAt = self.options.demoUrl || '';
                                     replacements.push({
                                         pattern         : /\{\{ADXPreview\}\}/gi,
@@ -635,7 +635,7 @@ PublisherZenDesk.prototype.listSections = function(callback) {
         if (err) {
             callback(err);
             return;
-        } 
+        }
         callback(null, res);
     });
 };

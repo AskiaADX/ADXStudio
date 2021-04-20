@@ -220,6 +220,10 @@ let successMsg;
                                     'default.js',
                                     'share.js'
                                 ]
+                            },
+                            {
+                                name : 'modules',
+                                sub  : []
                             }
                         ]
                     },
@@ -262,6 +266,7 @@ let successMsg;
                     'resources\\share\\',
                     'resources\\share\\default.js',
                     'resources\\share\\share.js',
+                    'resources\\modules\\',
                     'config.xml',
                     'readme.txt'
                 ]);
@@ -290,6 +295,7 @@ let successMsg;
                     'resources\\share\\',
                     'resources\\share\\default.js',
                     'resources\\share\\share.js',
+                    'resources\\modules\\',
                     'config.xml',
                     'readme.txt'
                 ]);
@@ -349,6 +355,7 @@ let successMsg;
                     'resources\\share\\',
                     'resources\\share\\default.js',
                     'resources\\share\\share.js',
+                    'resources\\modules\\',
                     'config.xml',
                     'readme.txt'
                 ]);
@@ -415,7 +422,7 @@ let successMsg;
                     compressionOptions: {
                         level: 6
                     }
-                }); 
+                });
             });
 
         });
@@ -451,6 +458,10 @@ let successMsg;
                                         'default.js',
                                         'share.js'
                                     ]
+                                },
+                                {
+                                    name : 'modules',
+                                    sub  : []
                                 }
                             ]
                         },
@@ -574,7 +585,11 @@ let successMsg;
                                         'default.js',
                                         'share.js'
                                     ]
-                                }
+                                },
+                                {
+                                    name : 'modules',
+                                    sub  : []
+                                }                                
                             ]
                         },
                         'config.xml',
@@ -709,4 +724,3 @@ let successMsg;
 
     ['writeMessage', 'writeSuccess', 'writeWarning', 'writeError'].forEach(testLogger);
 });
-

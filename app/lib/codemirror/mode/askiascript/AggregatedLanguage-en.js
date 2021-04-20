@@ -1,4 +1,4 @@
-(function(mod) {
+﻿(function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"), require("../../mode/askiascript/askiascript"));
   else if (typeof define == "function" && define.amd) // AMD
@@ -193,6 +193,22 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "Returns an array with the caption of responses in the collection",                
                 "examples" : "gender.Responses.Caption ' => {\"Man\"; \"Woman\"}",                
                 "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "FilterByTag",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "responses",                
+                "args" : [
+                    {
+                        "name" : "TagArray",                        
+                        "type" : "any",                        
+                        "desc" : "Specifies the tags you want to filter by"
+                    }
+                ],                
+                "desc" : "\tReturns an array of questions who have been tagged with one of the parameters",                
+                "examples" : "\tBrand.Responses.FilterByTag({\"MainBrand\"; \"Competitors\"})",                
+                "version" : "5.5.3.0"
             },            
             {
                 "name" : "Index",                
@@ -704,24 +720,6 @@ askiaScript.extend(askiaScript.lexical, {
                     "\t Debug.Trace(\"My sig is \" + dValue )"
                 ],                
                 "version" : "5.3.5.0"
-            }
-        ],        
-        "responsearray" : [
-            {
-                "name" : "FilterByTag",                
-                "ns" : "aggregatedlanguage",                
-                "base" : "method",                
-                "type" : "responsearray",                
-                "args" : [
-                    {
-                        "name" : "TagArray",                        
-                        "type" : "any",                        
-                        "desc" : "Specifies the tags you want to filter by"
-                    }
-                ],                
-                "desc" : "\tReturns an array of questions who have been tagged with one of the parameters",                
-                "examples" : "\tBrand.Responses.FilterByTag({\"MainBrand\"; \"Competitors\"})",                
-                "version" : "5.5.3.0"
             }
         ],        
         "survey" : [

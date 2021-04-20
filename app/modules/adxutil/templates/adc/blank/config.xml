@@ -40,5 +40,7 @@
       <content fileName="default.html" type="html" mode="dynamic" position="placeholder" />
     </output>
   </outputs>
-
+  <properties>
+      <category id="general" name="General"></category>
+  </properties>
 </control>

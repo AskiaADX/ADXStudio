@@ -1,4 +1,4 @@
-(function(mod) {
+﻿(function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"), require("../../mode/askiascript/askiascript"));
   else if (typeof define == "function" && define.amd) // AMD
@@ -18,11 +18,11 @@ askiaScript.extend(askiaScript.types, {
     "BROWSER" : "browser",    
     "ERROR" : "error",    
     "ERRORS" : "errors",    
-    "INTERVIEW" : "interview",    
     "LANGUAGE" : "language",    
     "MESSAGE" : "message",    
     "QUESTION" : "question",    
     "QUESTIONARRAY" : "questionarray",    
+    "QUOTA" : "quota",    
     "RESPONSE" : "response",    
     "RESPONSES" : "responses",    
     "SURVEY" : "survey",    
@@ -38,11 +38,11 @@ askiaScript.extend(askiaScript.i18n, {
         "browser" : "Browser",        
         "error" : "Error",        
         "errors" : "Errors",        
-        "interview" : "Interview",        
         "language" : "Language",        
         "message" : "Message",        
         "question" : "Question",        
         "questionarray" : "QuestionArray",        
+        "quota" : "Quota",        
         "response" : "Response",        
         "responses" : "Responses",        
         "survey" : "Survey",        
@@ -130,17 +130,6 @@ askiaScript.extend(askiaScript.i18n, {
             ],            
             "version" : "5.4.1.0"
         },        
-        "interview" : {
-            "ns" : "masquelanguage",            
-            "desc" : "Object used to obtain information about the current interview.",            
-            "remarks" : "This should be used during interview and encapsulates some properties that have been deprecated",            
-            "examples" : [
-                "Interview.IPAddress ' => \"127.0.0.1\"",                
-                "",                
-                "Interview.Seed ' => 123"
-            ],            
-            "version" : "5.3.5.0"
-        },        
         "language" : {
             "ns" : "masquelanguage",            
             "desc" : "\tObject used to obtain information about a language in an interview or a questionnaire",            
@@ -195,6 +184,12 @@ askiaScript.extend(askiaScript.i18n, {
             "desc" : "Object which contains a collection of questions. It's like an array of questions.",            
             "alsoSee" : "Range",            
             "version" : "5.4.4.0"
+        },        
+        "quota" : {
+            "ns" : "masquelanguage",            
+            "desc" : "Object used to obtain information about the quota during the current interview",            
+            "examples" : "Interview.Quota.ToString() ' => \"{quota:1}\"",            
+            "version" : "5.6.0.0"
         },        
         "response" : {
             "ns" : "masquelanguage",            
@@ -1505,7 +1500,7 @@ askiaScript.extend(askiaScript.lexical, {
                     {
                         "name" : "Shortcut",                        
                         "type" : "string",                        
-                        "desc" : "Specifies the shrtcut of the quetsion you want to find"
+                        "desc" : "Specifies the shortcut of the question you want to find"
                     }
                 ],                
                 "desc" : "\tReturns one question having the specified shortcut - if the question is not found, a dummy question is returned with a questionID = DK",                
@@ -1750,12 +1745,39 @@ askiaScript.extend(askiaScript.lexical, {
         ],        
         "error" : [
             {
+                "name" : "Blocking",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Indicates if the message is a blocking error (or a warning)",                
+                "examples" : "CurrentQuestion.Errors[1].Blocking ' => \"True\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
+                "name" : "FromQuestion",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "Returns the object associated to the question",                
+                "examples" : "CurrentADC.Errors[1].FromQuestion.Shortcut ' => \"Q1\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Id",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Return the id of the Error",                
                 "examples" : "CurrentQuestion.Errors[1].Id  ' => 1001",                
+                "version" : "5.4.1.0"
+            },            
+            {
+                "name" : "Key",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Return the key of the error message",                
+                "examples" : "CurrentQuestion.Errors[1].Key ' => \"expected_0_answer\"",                
                 "version" : "5.4.1.0"
             },            
             {
@@ -2667,6 +2689,53 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "Returns the next question in the tree (ignoring the questions below)",                
                 "examples" : "\t\t Dim NextQuestion = BrandEvaluation.NextSibling",                
                 "version" : "5.5.4.0"
+            },            
+            {
+                "name" : "OpenBalancedQuota",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : [
+                    "returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to the min using the following formula",                    
+                    " Formula: (Target% - Observed%) / Target%"
+                ],                
+                "examples" : [
+                    "Newspapers.OpenBalancedQuota[1] returns the quota which will make the quota closest to the target percentage",                    
+                    "Newspapers.OpenBalancedQuota(Region: 1, age: {1;2} )[1] returns the newspaper which will mae closes to the target % for region 1 and Age 1 or 2"
+                ],                
+                "alsoSee" : "OpenQuota",                
+                "version" : "5.6.0.0"
+            },            
+            {
+                "name" : "OpenQuota",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "args" : [
+                    {
+                        "name" : "value",                        
+                        "type" : "number",                        
+                        "desc" : "Specifies the quota branch for each",                        
+                        "repeatable" : true,                        
+                        "prefix" : "question"
+                    }
+                ],                
+                "desc" : "returns the indexes of the responses of the TargetQuestion still available ( to do > 0) and sorted from the max to do to the min to do using the count for the sort",                
+                "examples" : [
+                    "Newspapers.OpenQuota()[1] returns the quota for which there is the biggest number of respondents to fill",                    
+                    "Newspapers.OpenQuota(Region: 1, age: {1;2} )[1] returns the newspaper for which there is the biggest number of respondents to fill for region 1 and Age 1 or 2"
+                ],                
+                "alsoSee" : "OpenBalancedQuota",                
+                "version" : "5.6.0.0"
             },            
             {
                 "name" : "ParentChapter",                
@@ -4722,6 +4791,21 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.4.2.0"
             },            
             {
+                "name" : "ApplicationName",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "Indicates where the interview takes place: Design Offline, WebProd, Design Online, ...",                    
+                    "",                    
+                    "Design Off line: \"designoffline\"",                    
+                    "Design On line: \"designonline\"",                    
+                    "Webprod: \"web\""
+                ],                
+                "examples" : "Interview.ApplicationName ' => \"designonline\"",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Broker",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5090,13 +5174,36 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "PercentPosition",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "Returns the percentage value of progress through the questionnaire... it does not take in account the questions which should have been asked",                    
+                    "but have not been due to movement by chapter or setposition"
+                ],                
+                "remarks" : "@alsosee Progress",                
+                "examples" : "Interview.PercentPosition ' => 88",                
+                "version" : "5.5.3.0"
+            },            
+            {
                 "name" : "Progress",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
                 "desc" : "Returns the percentage value of progress through the questionnaire.",                
+                "remarks" : "@alsosee PercentPosition",                
                 "examples" : "Interview.Progress ' => 32",                
                 "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "Quota",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "quota",                
+                "desc" : "Returns an object to access all the quota functions",                
+                "examples" : "Interview.Quota.ToString()",                
+                "version" : "5.6.0.0"
             },            
             {
                 "name" : "Returns",                
@@ -5339,6 +5446,21 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "Errors",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "errors",                
+                "desc" : "\tReturns the list of errors associated to a given ADC",                
+                "examples" : [
+                    "\tCurrentADC.Errors.Count ' => 0",                    
+                    "",                    
+                    "\tCurrentADC.Errors[1].Key ' => \"expected_answer\"",                    
+                    "",                    
+                    "\tCurrentADC.Errors[1].Message ' => \"A response is expected for question 'q1'\""
+                ],                
+                "version" : "5.6.0.0"
+            },            
+            {
                 "name" : "GetContent",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
@@ -5478,6 +5600,27 @@ askiaScript.extend(askiaScript.lexical, {
                     "\tCurrentADC.PropValue(\"booleanProp\") ' => \"1\""
                 ],                
                 "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "SetProperty",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adc",                
+                "args" : [
+                    {
+                        "name" : "Property",                        
+                        "type" : "string",                        
+                        "desc" : "name"
+                    },                    
+                    {
+                        "name" : "value",                        
+                        "type" : "anytype",                        
+                        "desc" : "to set"
+                    }
+                ],                
+                "desc" : "Sets a value to the current ADC",                
+                "examples" : "CurrentADC.SetProperty(\"backColor\",\"#000000\") '",                
+                "version" : "5.6.0.0"
             },            
             {
                 "name" : "URLTo",                

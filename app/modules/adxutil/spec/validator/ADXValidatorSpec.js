@@ -1145,7 +1145,7 @@ describe('ADXValidator', function () {
             },
             {
                 name : 'checkbox',
-                on : 'controls'
+                on   : 'controls'
             },
             {
                 name : 'textbox',
@@ -1834,7 +1834,7 @@ describe('ADXValidator', function () {
             });
 
             describe("#validateADXContent", function () {
-                var directories = ['dynamic', 'static', 'share'];
+                var directories = ['dynamic', 'static', 'share', 'modules'];
 
                 it("should output a warning when using the attribute and yield nodes in the same content", function () {
                     spies.validateHook = function () {

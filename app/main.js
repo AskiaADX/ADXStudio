@@ -12,6 +12,9 @@ const ipc = electron.ipcMain;
 
 require('./main/mainController.js');
 
+app.allowRendererProcessReuse = false;
+app.commandLine.appendSwitch('disable-site-isolation-trials');
+
 /**
  * Manage the open project
  *
@@ -88,6 +91,7 @@ app.on('window-all-closed', function () {
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function loadMainWindow () {
+
   // Initialize the global.project
   global.project = new Project();
 
@@ -106,7 +110,11 @@ app.on('ready', function loadMainWindow () {
         show: false,
         title: 'ADX Studio',
         webPreferences: {
-          nodeIntegration: true
+          nodeIntegration: true,
+          webviewTag: true,
+          contextIsolation: false,
+          webSecurity: true,
+          enableRemoteModule: true
         }
       });
 

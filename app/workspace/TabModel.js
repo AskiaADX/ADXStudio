@@ -262,7 +262,7 @@ Tab.isTextOrBinaryFile = function (path, callback) {
       return;
     }
     const bufferSize = 16000;
-    const buffer = new Buffer(bufferSize);
+    const buffer = Buffer.alloc(bufferSize);
 
     fs.read(fd, buffer, 0, bufferSize, 0, () => {
       fs.close(fd, () => {

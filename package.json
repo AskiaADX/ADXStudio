@@ -4,7 +4,7 @@
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron ./app/main.js",
     "test": "jasmine-node spec/",
     "dist": "build --win --x64 --ia32"
   },
@@ -16,6 +16,8 @@
     "ADX",
     "ADC",
     "ADP",
+    "ASX",
+    "AskiaScript",
     "ASKIA",
     "Design",
     "Control",
@@ -45,17 +47,16 @@
     "minimist": ">=1.2.3"
   },
   "devDependencies": {
-    "electron": "^4.0.0",
-    "electron-builder": "^21.2.0",
-    "jasmine-node": "^3.0.0",
-    "nodemon": "^2.0.3"
+    "electron": "^8.0.0",
+    "electron-builder": "^22.6.0",
+    "jasmine-node": "^3.0.0"
   },
   "build": {
     "appId": "com.askia.adxstudio",
     "asar": false,
     "buildVersion": "0",
-    "electronVersion": "4.0.0",
-    "copyright": "Copyright (c) Askia 2020",
+    "electronVersion": "8.0.0",
+    "copyright": "Copyright (c) Askia 2021",
     "productName": "ADXStudio",
     "win": {
       "target": "nsis",
@@ -71,7 +72,6 @@
       "allowToChangeInstallationDirectory": true,
       "menuCategory": "Askia"
     },
-    "framework": "electron",
     "npmSkipBuildFromSource": true
   }
 }

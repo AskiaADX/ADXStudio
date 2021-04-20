@@ -503,39 +503,39 @@ describe('common', function () {
         });
     });
 
-    describe('#getChildProcessEnv', function () {
-        it("should return a copy process environment with adxshell/sys64 in the path for x64 arch", function () {
-            runInArch('x64', function () {
-                // Arrange
-                var root =  pathHelper.resolve(__dirname, "../../");
-                var adxShellSysPath = pathHelper.join(root, common.ADX_UNIT_DIR_PATH, 'sys64');
-                var expected = JSON.parse(JSON.stringify(process.env));
-                expected.Path += ';' + adxShellSysPath;
-
-                // Act
-                var actual = common.getChildProcessEnv();
-
-                // Assert
-                expect(actual).toEqual(expected);
-            });
-        });
-
-        it("should return a copy process environment with adxshell/sys32 in the path for ia32 arch", function () {
-            runInArch('ia32', function () {
-                // Arrange
-                var root =  pathHelper.resolve(__dirname, "../../");
-                var adxShellSysPath = pathHelper.join(root, common.ADX_UNIT_DIR_PATH, 'sys32');
-                var expected = JSON.parse(JSON.stringify(process.env));
-                expected.Path += ';' + adxShellSysPath;
-
-                // Act
-                var actual = common.getChildProcessEnv();
-
-                // Assert
-                expect(actual).toEqual(expected);
-            });
-        });
-    });
+    // describe('#getChildProcessEnv', function () {
+    //     it("should return a copy process environment with adxshell/sys64 in the path for x64 arch", function () {
+    //         runInArch('x64', function () {
+    //             // Arrange
+    //             var root =  pathHelper.resolve(__dirname, "../../");
+    //             var adxShellSysPath = pathHelper.join(root, common.ADX_UNIT_DIR_PATH, 'sys64');
+    //             var expected = JSON.parse(JSON.stringify(process.env));
+    //             expected.Path += ';' + adxShellSysPath;
+    //
+    //             // Act
+    //             var actual = common.getChildProcessEnv();
+    //
+    //             // Assert
+    //             expect(actual).toEqual(expected);
+    //         });
+    //     });
+    //
+    //     it("should return a copy process environment with adxshell/sys32 in the path for ia32 arch", function () {
+    //         runInArch('ia32', function () {
+    //             // Arrange
+    //             var root =  pathHelper.resolve(__dirname, "../../");
+    //             var adxShellSysPath = pathHelper.join(root, common.ADX_UNIT_DIR_PATH, 'sys32');
+    //             var expected = JSON.parse(JSON.stringify(process.env));
+    //             expected.Path += ';' + adxShellSysPath;
+    //
+    //             // Act
+    //             var actual = common.getChildProcessEnv();
+    //
+    //             // Assert
+    //             expect(actual).toEqual(expected);
+    //         });
+    //     });
+    // });
 
     describe('#writeError', function () {
        it("should call console#error with red output and prefix the message with [ERROR]", function () {

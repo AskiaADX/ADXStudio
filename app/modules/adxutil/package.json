@@ -56,7 +56,7 @@
   "deprecated": false,
   "description": "Utilities tools for Askia Design eXtension",
   "devDependencies": {
-    "del": "^3.0.0",
+    "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-jsdoc3": "^3.0.0",
     "gulp-shell": "^0.8.0",

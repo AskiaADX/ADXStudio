@@ -980,16 +980,16 @@ ADXInfo.prototype.constraints = function constraints(data) {
                     v = parseInt(v, 10);
                 }
             } else if(attName === 'requireLoopDepth') {
-              if (projectVersion !== '2.2.0') {
+              if (projectVersion !== '2.2.0' & projectVersion !== '2.3.0') {
                 return;
               } else {
+
                 // v = (v == 'true' ? 1 : 0);
                 if (v == 'false') {
                     v = 0;
                 } else if (v == 'true'){
                     v = 1;
                 }
-
               }
             } else {
               v = v !== undefined && (v !== 'false' && v !== '0' );
@@ -1242,7 +1242,7 @@ ADXOutputs.prototype.get = function get() {
 
         // ADC Only
         if (projectType === 'adc') {
-            if (projectVersion == "2.2.0") {
+            if (projectVersion == "2.2.0" | projectVersion == "2.3.0") {
               const manageLoopDepth = output.get("manageLoopDepth");
               item.manageLoopDepth = parseInt(manageLoopDepth);
 
@@ -1437,8 +1437,8 @@ ADXOutputs.prototype.get = function get() {
  * @param {Number} [data.outputs.manageLoopDepth] manage loop depth of the output
  * @param {Object[]} [data.outputs.contents] List of contents (files) used by the output
  * @param {String} [data.outputs.contents.fileName] Name of the file
- * @param {String|"text"|"html"|"css"|"javascript"|"binary"|"image"|"audio"|"video"|"flash"} [data.outputs.contents.type] Name of the file
- * @param {String|"dynamic"|"static"|"share"} [data.outputs.contents.mode] Extract mode
+ * @param {String|"text"|"html"|"css"|"javascript"|"binary"|"image"|"audio"|"video"|"flash"|"asx"} [data.outputs.contents.type] Name of the file
+ * @param {String|"dynamic"|"static"|"share"|"modules"} [data.outputs.contents.mode] Extract mode
  * @param {String|"none"|"head"|"placeholder"|"foot"} [data.outputs.contents.position] Position in the final page document
  * @param {Object[]} [data.outputs.contents.attributes] List of HTML attributes
  * @param {String} [data.outputs.contents.attributes.name] Name of the HTML attribute
@@ -1479,7 +1479,7 @@ ADXOutputs.prototype.set = function set(data) {
           if (output.maxIterations) {
             item.set("maxIterations", output.maxIterations);
           }
-          if (projectVersion == '2.2.0') {
+          if (projectVersion == '2.2.0' | projectVersion == '2.3.0') {
             item.set("manageLoopDepth", parseInt(output.manageLoopDepth));
           }
         }
@@ -1568,7 +1568,7 @@ ADXOutputs.prototype.toXml = function toXml() {
                 if (output.maxIterations) {
                     outputAttr += ' maxIterations="' + output.maxIterations + '"';
                 }
-                if (projectVersion == '2.2.0') {
+                if (projectVersion == '2.2.0' | projectVersion == '2.3.0') {
                   let manageLoopDepth = output.manageLoopDepth;
                   if (isNaN(manageLoopDepth)) {
                     manageLoopDepth = 0;
@@ -1908,7 +1908,7 @@ ADXProperties.prototype.get = function get() {
  * @param {String} [data.categories.properties.name] Name of the property
  * @param {String|"number"|"boolean"|"string"|"color"|"file"|"question"} [data.categories.properties.type] Type of the property
  * @param {String} [data.categories.properties.description] Description of the property
- * @param {String|"static"|"dynamic"} [data.categories.properties.mode] Reading mode of the property value
+ * @param {String|"static"|"dynamic"|"modules"} [data.categories.properties.mode] Reading mode of the property value
  * @param {Boolean} [data.categories.properties.visible] Visibility of the property value
  * @param {Boolean} [data.categories.properties.require] Requirement of the property value
  * @param {String} [data.categories.properties.pattern] Pattern of the string property

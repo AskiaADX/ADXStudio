@@ -52,6 +52,8 @@ exports.DYNAMIC_DIR_NAME = "dynamic";
 exports.STATIC_DIR_NAME = "static";
 // Name of the directory `share`
 exports.SHARE_DIR_NAME = "share";
+// Name of the directory `modules`
+exports.MODULES_DIR_NAME = "modules";
 
 // File name which contains the list of files to ignore
 exports.ADX_IGNORE_FILE_NAME = "ADXIgnore";
@@ -257,7 +259,7 @@ exports.writeMessage = function writeMessage(text) {
  */
 exports.getChildProcessEnv = function getChildProcessEnv() {
     let env = JSON.parse(JSON.stringify(process.env));
-    env.Path = env.Path || '';    
+    env.Path = env.Path || '';
     return env;
 };
 

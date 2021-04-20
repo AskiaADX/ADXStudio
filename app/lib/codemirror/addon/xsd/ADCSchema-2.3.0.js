@@ -4,7 +4,7 @@
 * stored in AskiaScriptEditor project
 */
 CodeMirror.xsdSchemas = CodeMirror.xsdSchemas || {};
-CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
+CodeMirror.xsdSchemas["http://www.askia.com/2.3.0/ADCSchema"] = {
   schema : {
     "root": "control",
     "tags": [
@@ -340,6 +340,10 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
                         {
                             "name": "text",
                             "desc": "Text-based file.\r\n                  Will be inserted as it is or interpreted when it's dynamic."
+                        },
+                        {
+                            "name": "asx",
+                            "desc": "Askia script extension file.\r\n                  The file must contain modules and exported functions. It must be in the modules directory"
                         }
                     ]
                 },
@@ -358,6 +362,10 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
                         {
                             "name": "dynamic",
                             "desc": "The dynamic content could be file (text based) or in-line code define in the definition of the content.\r\n                  It could embed AskiaScript to execute.\r\n                  When the content is a file, it must be place in the /Resources/Dynamic folder of the ADC.\r\n                  The dynamic content will not be extract but load in memory."
+                        },
+                        {
+                            "name": "modules",
+                            "desc": "The modules content is always associated with an asx file and must be place in the /Resources/Modules/ folder of the ADC or ADP..\r\n                  It could embed AskiaScript to execute.\r\n                  When the content is a file, it must be place in the /Resources/Dynamic folder of the ADC.\r\n                  The content will not be extracted physically but the compiled modules will be kept in memory."
                         }
                     ]
                 },
@@ -793,7 +801,7 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
             "requireParentLoop": null,
             "manageSemiOpen": null,
             "manageHeader": null,
-			"requireLoopDepth": null,
+			      "requireLoopDepth": null,
             "min": null,
             "max": null,
             "label": null,
@@ -844,12 +852,14 @@ CodeMirror.xsdSchemas["http://www.askia.com/2.2.0/ADCSchema"] = {
                 "video",
                 "audio",
                 "binary",
-                "text"
+                "text",
+                "asx"
             ],
             "mode": [
                 "share",
                 "static",
-                "dynamic"
+                "dynamic",
+                "modules"
             ],
             "position": [
                 "none",

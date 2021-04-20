@@ -519,7 +519,7 @@
       </xsd:attribute>
 
       <!-- Compatible with 5.5.2 -->
-      <xsd:attribute name="manageLoopDepth" type="xsd:numberPattern" default="0"  use="required">
+      <xsd:attribute name="manageLoopDepth" type="adc:numberPattern" default="0">
         <xsd:annotation>
           <xsd:documentation>
             Used as a attribute for the output.
@@ -548,15 +548,6 @@
       </xsd:documentation>
     </xsd:annotation>
   </xsd:element>
-
-  <!-- Manage Loop Depth 5.5.2 -->
-  <!-- <xsd:element name="manageLoopDepth" type="adc:numberPattern">
-    <xsd:annotation>
-      <xsd:documentation>
-        Used as a attribute for the output.
-      </xsd:documentation>
-    </xsd:annotation>
-  </xsd:element> -->
 
   <!-- Output content -->
   <xsd:element name="content">

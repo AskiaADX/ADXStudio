@@ -160,11 +160,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (key === 'responses') {
               document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]]) || '';
             } else {
-			  if(constraints[i] == 'requireLoopDepth'){
-                document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]]) || 0;
-			  }else{
-				document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;
-			  }
+      			  if(constraints[i] == 'requireLoopDepth'){
+                    document.getElementById(key + '_' + constraints[i]).value = (info.constraints[key] && info.constraints[key][constraints[i]]) || 0;
+      			  } else {
+      				      document.getElementById(key + '_' + constraints[i]).checked = (info.constraints[key] && info.constraints[key][constraints[i]]) || false;
+      			  }
             }
 
           }
