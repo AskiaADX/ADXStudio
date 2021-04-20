@@ -32,7 +32,7 @@
         '<p>version ' + appVersion + '</p>',
         '<p>Maxime Gasnier, Vincent Tellier, Louis Ledoux, Mamadou Sy, Paul Nevin, Mehdi Ait Bachir, J&#233;r&#244;me Duparc, J&#233;r&#244;me Sopo&#231;ko, Robbe Van der Gucht, Prabath Gamage</p>',
         '<p>Sections of this application use or are based upon third-party technologies: <a href="http://electron.atom.io/" target="_blank">Electron</a>, <a href="https://nodejs.org/en/" target="_blank">NodeJS</a>.</p>',
-        '<p>Made with <span style="color: #e74c3c">&hearts;</span> in Paris at <a href="http://www.askia.com/" target="_blank">Askia</a> &copy; 2020 all rights reserved.</p></div>',
+        '<p>Made with <span style="color: #e74c3c">&hearts;</span> in Paris at <a href="http://www.askia.com/" target="_blank">Askia</a> &copy; 2021 all rights reserved.</p></div>',
         '</div>',
         '</section>'
       ].join('');
