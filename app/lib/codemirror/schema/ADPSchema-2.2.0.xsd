@@ -361,6 +361,16 @@
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:enumeration>
+            <!-- Added 5.5.3 -->
+            <xsd:enumeration value="asx">
+              <xsd:annotation>
+                <xsd:documentation>
+                  Askia script extension file.
+                  The file must contain modules and exported functions. It must be in the modules directory
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            
           </xsd:restriction>
         </xsd:simpleType>
       </xsd:attribute>
