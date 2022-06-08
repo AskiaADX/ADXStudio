@@ -1,6 +1,6 @@
 {
   "name": "adxstudio",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "ADXStudio",
   "main": "app/main.js",
   "scripts": {
@@ -58,7 +58,7 @@
     "asar": false,
     "buildVersion": "0",
     "electronVersion": "8.0.0",
-    "copyright": "Copyright (c) Askia 2021",
+    "copyright": "Copyright (c) Askia 2022",
     "productName": "ADXStudio",
     "win": {
       "target": "nsis",
