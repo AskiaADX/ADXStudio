@@ -18,6 +18,7 @@ askiaScript.extend(askiaScript.types, {
     "BROWSER" : "browser",    
     "ERROR" : "error",    
     "ERRORS" : "errors",    
+    "INTERVIEW" : "interview",    
     "LANGUAGE" : "language",    
     "MESSAGE" : "message",    
     "QUESTION" : "question",    
@@ -38,6 +39,7 @@ askiaScript.extend(askiaScript.i18n, {
         "browser" : "Browser",        
         "error" : "Error",        
         "errors" : "Errors",        
+        "interview" : "Interview",        
         "language" : "Language",        
         "message" : "Message",        
         "question" : "Question",        
@@ -129,6 +131,17 @@ askiaScript.extend(askiaScript.i18n, {
                 "Error"
             ],            
             "version" : "5.4.1.0"
+        },        
+        "interview" : {
+            "ns" : "masquelanguage",            
+            "desc" : "Object used to obtain information about the current interview.",            
+            "remarks" : "This should be used during interview and encapsulates some properties that have been deprecated",            
+            "examples" : [
+                "Interview.IPAddress ' => \"127.0.0.1\"",                
+                "",                
+                "Interview.Seed ' => 123"
+            ],            
+            "version" : "5.3.5.0"
         },        
         "language" : {
             "ns" : "masquelanguage",            
@@ -685,7 +698,7 @@ askiaScript.extend(askiaScript.lexical, {
             "type" : "number",            
             "desc" : [
                 " Retrieves the numerical ID of the current interview during askiaweb fieldwork.",                
-                " This function will return the number that is suffixed to the standard �Intvw� prefix of an Intvw file.",                
+                " This function will return the number that is suffixed to the standard ”Intvw” prefix of an Intvw file.",                
                 " This function is used on its own"
             ],            
             "remarks" : [
@@ -695,7 +708,7 @@ askiaScript.extend(askiaScript.lexical, {
             "examples" : [
                 " IntvwId",                
                 "",                
-                " if askiaweb created Intvw123 to stored the current interview�s data, the function will return 123."
+                " if askiaweb created Intvw123 to stored the current interview’s data, the function will return 123."
             ]
         },        
         {
@@ -724,11 +737,11 @@ askiaScript.extend(askiaScript.lexical, {
             "examples" : [
                 " IsQuotaFullFor(\"Q1\")",                
                 "",                
-                " if any of the quotas defined for Q1 have been reached, the function will return the value True. If none of Q1�s quotas have been reached it will return the value False.",                
+                " if any of the quotas defined for Q1 have been reached, the function will return the value True. If none of Q1’s quotas have been reached it will return the value False.",                
                 "",                
                 " IsQuotaFullFor(\"Q1:\"+1)",                
                 "",                
-                " if the quota defined for Q1�s response item 1 has been reached, the function will return the value True. If the quota defined for Q1�s response item 1 has not been reached it will return the value False.",                
+                " if the quota defined for Q1’s response item 1 has been reached, the function will return the value True. If the quota defined for Q1’s response item 1 has not been reached it will return the value False.",                
                 "",                
                 " IsQuotaFullFor(\"Q1;Q2\")",                
                 "",                
@@ -736,7 +749,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "",                
                 " IsQuotaFullFor(\"Q1;Q2:\"+1)",                
                 "",                
-                " if the crossed quotas defined for Q1 by Q2's response item 1 has been reached, the function will return the value True. If the crossed quotas defined for Q1 by Q2�s response item 1 has been reached it will return the value False."
+                " if the crossed quotas defined for Q1 by Q2's response item 1 has been reached, the function will return the value True. If the crossed quotas defined for Q1 by Q2’s response item 1 has been reached it will return the value False."
             ]
         },        
         {
@@ -879,7 +892,7 @@ askiaScript.extend(askiaScript.lexical, {
             "desc" : [
                 " Use this function to return the percentage value of progress through the questionnaire.",                
                 "",                
-                " This function enables you to calculate, during data collection, how much of the questionnaire has already been answered by the respondent. For example, if we have a questionnaire made of four questions (Q1, Q2, Q3 and Q4), we may decide to paste the following Askia script in the variables� long captions:",                
+                " This function enables you to calculate, during data collection, how much of the questionnaire has already been answered by the respondent. For example, if we have a questionnaire made of four questions (Q1, Q2, Q3 and Q4), we may decide to paste the following Askia script in the variables’ long captions:",                
                 "",                
                 " You have completed !!PrctDone!!% of the survey.",                
                 "",                
@@ -1020,7 +1033,7 @@ askiaScript.extend(askiaScript.lexical, {
                     "desc" : "Full path of the file to read"
                 }
             ],            
-            "desc" : "Use this function to return the contents of a binary file and transform it into hexadecimal so it can be stored in an open�ended question.",            
+            "desc" : "Use this function to return the contents of a binary file and transform it into hexadecimal so it can be stored in an open–ended question.",            
             "examples" : [
                 " ReadBinaryFile(\"D:\\Workspace\\int1.txt\")",                
                 " ReadBinaryFile(\"D:\\Workspace\\int\" + ??Q1?? + \".txt\")"
@@ -1038,7 +1051,7 @@ askiaScript.extend(askiaScript.lexical, {
                     "desc" : "Full path of the file to read"
                 }
             ],            
-            "desc" : "Use this function to return the content of a text file and it can be stored in an open�ended question.",            
+            "desc" : "Use this function to return the content of a text file and it can be stored in an open–ended question.",            
             "examples" : [
                 " ReadTextFile(\"D:\\Workspace\\int1.txt\")",                
                 " ReadTextFile(\"D:\\Workspace\\int\" + ??Q1?? + \".txt\")"
@@ -1316,6 +1329,15 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.4.1.0"
             },            
             {
+                "name" : "CultureInfo",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "ISO denomination of the language",                
+                "examples" : "Interview.Language.CultureInfo ' => \"en-UK\"",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "DateFormat",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -1508,6 +1530,179 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.5.0.0"
             }
         ],        
+        "adp" : [
+            {
+                "name" : "Redirect",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "URL",                        
+                        "type" : "string",                        
+                        "desc" : "to redirect"
+                    },                    
+                    {
+                        "name" : "Seconds",                        
+                        "type" : "string",                        
+                        "desc" : "to redirect"
+                    }
+                ],                
+                "desc" : "\tSets the ADP property",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).Redirect(\"www.askia.com\",3).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "SetProperty",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "property",                        
+                        "type" : "string",                        
+                        "desc" : "Id of the Property to set"
+                    },                    
+                    {
+                        "name" : "value",                        
+                        "type" : "variant"
+                    }
+                ],                
+                "desc" : "\tSets the ADP property",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "ShowMessage",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "adp",                
+                "args" : [
+                    {
+                        "name" : "message",                        
+                        "type" : "string",                        
+                        "desc" : "yto be shown where the questions are usually displayed"
+                    }
+                ],                
+                "desc" : "\tUses the ADP engine to generate some HTML with a message",                
+                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
+                "version" : "5.5.2.0"
+            }
+        ],        
+        "assert" : [
+            {
+                "name" : "AddContext",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "assert",                
+                "args" : [
+                    {
+                        "name" : "Question",                        
+                        "type" : "question",                        
+                        "desc" : "that will be added to the context"
+                    },                    
+                    {
+                        "name" : "Message",                        
+                        "type" : "string",                        
+                        "desc" : "Message that will be prefix the value of the context",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    " Adds a question to the context. Whenever an Assert will fail, the content of the question will be added to the output",                    
+                    " "
+                ],                
+                "examples" : [
+                    "      Assert.AddContext( Gender ).AddContext( Age ,\"Age=\")",                    
+                    "      Assert.Check ( Gender = 1 and Age < 18, \"We do not know allow males under 18)",                    
+                    "      Assert.ResetContext()"
+                ]
+            },            
+            {
+                "name" : "Check",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "args" : [
+                    {
+                        "name" : "expression",                        
+                        "type" : "anytype",                        
+                        "desc" : "An AskiaScript expression that should be evaluated as true"
+                    },                    
+                    {
+                        "name" : "message",                        
+                        "type" : "string",                        
+                        "desc" : "An explicit human message that explain the assertion. It will be used in the final report when the assertion failed.  We recommend to use message with 3 parts: <b>context</b>, <b>expectation</b>, <b>actual</b> (context and actual could be optional).  Examples message format: - \"When/If [context], [question(s)/response[s)] should/must be [expectation], but was [actual]\" - \"[question(s)/response(s)] should/must be [expectation], but was [actual]\""
+                    }
+                ],                
+                "desc" : [
+                    " Evaluate the expression as a boolean value.",                    
+                    " If the value of the expression is true, nothing happens",                    
+                    " Otherwise the assert failed and the message is used to give an explanation of the failure.",                    
+                    " The Assert object is no longer returned - a boolean is returned since 5.6.0.0"
+                ],                
+                "examples" : [
+                    " If Country has {1} Then",                    
+                    "     Assert.Check(Language has {1}, \"When country is 'UK', 'English' language should be selected, but was {%= Country.Answers[1].Caption%}\")",                    
+                    " EndIf",                    
+                    " ' Example output:",                    
+                    " ' \"When country is 'UK', 'English' language should be selected, but was 'French\"",                    
+                    "",                    
+                    " If Country has {1} Then",                    
+                    "     Assert.Check(Q1.HasNA, \"If 'UK', Q1 must be skipped, but was ask\")",                    
+                    " EndIf",                    
+                    "",                    
+                    " Assert.Check(Q2.Responses[3].IsIgnored, \"The third response of Q2 should be ignored\")",                    
+                    "",                    
+                    " ' Use the return value of assert",                    
+                    " If Gender Has {1} Then",                    
+                    "      If Assert.Check(AgeRecod.HasNA, \"AgeRecod must be skipped for 'man'\") Then",                    
+                    "         If Age < 26 Then",                    
+                    "             Assert.Check(AgeRecord Has {1}, \"AgeRecod must be 'Less than 25' when Age < 25, but was {%= AgeRecord.Answers[1].Caption%}\")",                    
+                    "         Else If Age < 46 Then",                    
+                    "             Assert.Check(AgeRecord Has {2}, \"AgeRecod must be '25-45' when Age < 46, but was {%= AgeRecord.Answers[1].Caption%}\")",                    
+                    "         Else",                    
+                    "             Assert.Check(AgeRecord Has {3}, \"AgeRecod must be 'Greater 45' when Age > 45, but was {%= AgeRecord.Answers[1].Caption%}\")",                    
+                    "         EndIf",                    
+                    "      EndIf",                    
+                    " EndIf"
+                ],                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "ResetContext",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "assert",                
+                "desc" : [
+                    " Resets the context and removes all question reporting",                    
+                    " "
+                ],                
+                "examples" : [
+                    "      Assert.AddContext( Gender ).AddContext( Age )",                    
+                    "\t  Assert ( Gender = 1 and Age < 18, \"We do not know allow males under 18)",                    
+                    "      Assert.ResetContext()"
+                ]
+            },            
+            {
+                "name" : "ToString",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns the string representation of the object / variable",                
+                "examples" : "Assert.ToString()",                
+                "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "TypeOf",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "string",                
+                "desc" : "Returns \"assert\"",                
+                "examples" : "Assert.TypeOf() ' => \"assert\"",                
+                "version" : "5.3.5.0"
+            }
+        ],        
         "responses" : [
             {
                 "ns" : "masquelanguage",                
@@ -1595,6 +1790,19 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.5.3.0"
             },            
             {
+                "name" : "Tags",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : [
+                    "Returns the list of tags associated to a list of responses",                    
+                    "",                    
+                    "q1.Answers.Tags Has {\"Luxury\"}"
+                ],                
+                "examples" : "q1.Answers.Tags Has {\"Luxury\"}",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "ToString",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
@@ -1627,120 +1835,6 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "Returns the type of the current object / variable",                
                 "examples" : "gender.Responses.TypeOf() ' => \"responses\"",                
                 "version" : "5.3.2.0"
-            }
-        ],        
-        "assert" : [
-            {
-                "name" : "AddContext",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "assert",                
-                "args" : [
-                    {
-                        "name" : "Question",                        
-                        "type" : "question",                        
-                        "desc" : "that will be added to the context"
-                    },                    
-                    {
-                        "name" : "Message",                        
-                        "type" : "string",                        
-                        "desc" : "Message that will be prefix the value of the context",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    " Adds a question to the context. Whenever an Assert will fail, the content of the question will be added to the output",                    
-                    " "
-                ],                
-                "examples" : [
-                    "      Assert.AddContext( Gender ).AddContext( Age ,\"Age=\")",                    
-                    "      Assert ( Gender = 1 and Age < 18, \"We do not know allow males under 18)",                    
-                    "      Assert.ResetContext()"
-                ]
-            },            
-            {
-                "name" : "Check",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "assert",                
-                "args" : [
-                    {
-                        "name" : "expression",                        
-                        "type" : "anytype",                        
-                        "desc" : "An AskiaScript expression that should be evaluated as true"
-                    },                    
-                    {
-                        "name" : "message",                        
-                        "type" : "string",                        
-                        "desc" : "An explicit human message that explain the assertion. It will be used in the final report when the assertion failed.  We recommend to use message with 3 parts: <b>context</b>, <b>expectation</b>, <b>actual</b> (context and actual could be optional).  Examples message format: - \"When/If [context], [question(s)/response[s)] should/must be [expectation], but was [actual]\" - \"[question(s)/response(s)] should/must be [expectation], but was [actual]\""
-                    }
-                ],                
-                "desc" : [
-                    " Evaluate the expression as a boolean value.",                    
-                    " If the value of the expression is true, nothing happens",                    
-                    " Otherwise the assert failed and the message is used to give an explanation of the failure.",                    
-                    " The Asset object is returned to allow chaining of actions"
-                ],                
-                "examples" : [
-                    " If Country has {1} Then",                    
-                    "     Assert.Check(Language has {1}, \"When country is 'UK', 'English' language should be selected, but was {%= Country.Answers[1].Caption%}\")",                    
-                    " EndIf",                    
-                    " ' Example output:",                    
-                    " ' \"When country is 'UK', 'English' language should be selected, but was 'French\"",                    
-                    "",                    
-                    " If Country has {1} Then",                    
-                    "     Assert.Check(Q1.HasNA, \"If 'UK', Q1 must be skipped, but was ask\")",                    
-                    " EndIf",                    
-                    "",                    
-                    " Assert.Check(Q2.Responses[3].IsIgnored, \"The third response of Q2 should be ignored\")",                    
-                    "",                    
-                    " ' Use the return value of assert",                    
-                    " If Gender Has {1} Then",                    
-                    "      If Assert.Check(AgeRecod.HasNA, \"AgeRecod must be skipped for 'man'\") Then",                    
-                    "         If Age < 26 Then",                    
-                    "             Assert.Check(AgeRecord Has {1}, \"AgeRecod must be 'Less than 25' when Age < 25, but was {%= AgeRecord.Answers[1].Caption%}\")",                    
-                    "         Else If Age < 46 Then",                    
-                    "             Assert.Check(AgeRecord Has {2}, \"AgeRecod must be '25-45' when Age < 46, but was {%= AgeRecord.Answers[1].Caption%}\")",                    
-                    "         Else",                    
-                    "             Assert.Check(AgeRecord Has {3}, \"AgeRecod must be 'Greater 45' when Age > 45, but was {%= AgeRecord.Answers[1].Caption%}\")",                    
-                    "         EndIf",                    
-                    "      EndIf",                    
-                    " EndIf"
-                ],                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "ResetContext",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "assert",                
-                "desc" : [
-                    " Resets the context and removes all question reporting",                    
-                    " "
-                ],                
-                "examples" : [
-                    "      Assert.AddContext( Gender ).AddContext( Age )",                    
-                    "\t  Assert ( Gender = 1 and Age < 18, \"We do not know allow males under 18)",                    
-                    "      Assert.ResetContext()"
-                ]
-            },            
-            {
-                "name" : "ToString",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns the string representation of the object / variable",                
-                "examples" : "Assert.ToString()",                
-                "version" : "5.3.5.0"
-            },            
-            {
-                "name" : "TypeOf",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "string",                
-                "desc" : "Returns \"assert\"",                
-                "examples" : "Assert.TypeOf() ' => \"assert\"",                
-                "version" : "5.3.5.0"
             }
         ],        
         "error" : [
@@ -2226,6 +2320,52 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "ImportClosed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "Returns how closed response are assigned when doing an import",                    
+                    "\t\t0 --> Using modality caption",                    
+                    "\t\t1 --> Using modality order",                    
+                    "\t\t2 --> Using modality entry code"
+                ],                
+                "examples" : "gender.ImportClosed' => 3",                
+                "alsoSee" : "ImportType",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "ImportInvisibleWhenImported",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "Indicates if a question should be made invisible when data is imported",                
+                "examples" : "gender.ImportInvisibleWhenImported ' => True",                
+                "alsoSee" : "ImportType",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "ImportType",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "Returns the type of import associated to this question",                    
+                    "\t\t0 --> None",                    
+                    "\t\t1 --> Entry list (Deprecated)",                    
+                    "\t\t2 --> ODBC query",                    
+                    "\t\t3 --> Panel (sent by Cca)",                    
+                    "\t\t4 --> GeoCATI Field",                    
+                    "\t\t5 --> Internet parameter",                    
+                    "\t\t6 --> Platform one",                    
+                    "\t\t7 --> Fulcrum",                    
+                    "\t\t8 --> All internet parameter as JSON"
+                ],                
+                "examples" : "gender.ImportType ' => 3",                
+                "alsoSee" : "ImportClosed",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "IndexToEntryCode",                
                 "ns" : "masquelanguage",                
                 "base" : "method",                
@@ -2441,12 +2581,26 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.3.0"
             },            
             {
+                "name" : "IsFirstIteration",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : [
+                    "Convenient property which indicates if we are on the first iteration of a loop.",                    
+                    "Only available for a loop, if you try to use this property for another type of element,",                    
+                    "the application should raise the following exception:",                    
+                    "The property IsFirstIteration is only available for a loop."
+                ],                
+                "examples" : "Loop1.IsFirstIteration ' => True",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "IsLastIteration",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
-                "type" : "number",                
+                "type" : "boolean",                
                 "desc" : [
-                    " Convenient property which indicates if we are on the latest iteration of a loop.",                    
+                    " Convenient property which indicates if we are on the last iteration of a loop.",                    
                     " Only available for a loop, if you try to use this property for another type of element,",                    
                     " the application should raise the following exception:",                    
                     " The property IsLastIteration is only available for a loop."
@@ -2495,6 +2649,16 @@ askiaScript.extend(askiaScript.lexical, {
                     " MyTimeWithDate.IsTimeOnly ' => false"
                 ],                
                 "version" : "5.3.3.0"
+            },            
+            {
+                "name" : "IsUpperCase",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if a question entry should be made in upper case",                
+                "examples" : "\tgender.ImportInvisibleWhenImported ' => True",                
+                "alsoSee" : "IsUpperCase",                
+                "version" : "5.6.1.0"
             },            
             {
                 "name" : "Iteration",                
@@ -2555,6 +2719,49 @@ askiaScript.extend(askiaScript.lexical, {
                     " ' and in the first iteration of the 'SubLoop' loop"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "LinkInludeExclusive",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if the link responses always include the exclusives",                
+                "examples" : "\tgender.LinkExcludeExclusive ' => True",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "LinkSourceQuestion",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "question",                
+                "desc" : "\tIndicates the source question for the link",                
+                "examples" : "\tBrands.LinkSourceQuestion.Shortcut ' => \"Sourcebrands\"",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "LinkTopLevel",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if the Link to top level responses, making headers selectable",                
+                "examples" : "\tBrands.LinkTopLevel ' => True",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "LinkType",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the type of response link for this question",                    
+                    "\t\t0 --> None",                    
+                    "\t\t1 --> All responses",                    
+                    "\t\t2 --> All selected responses",                    
+                    "\t\t3 --> All non selected responses",                    
+                    "\t\t4 --> Selected responses in all linked questions"
+                ],                
+                "examples" : "\tgender.LinkType ' => 1",                
+                "version" : "5.6.1.0"
             },            
             {
                 "name" : "LongCaption",                
@@ -2859,6 +3066,44 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "RotationSeed",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tIndicates the number used to determine the rotation of a closed response wit the following special values",                    
+                    "\t\t-1 --> Different for every question",                    
+                    "\t\t-2 --> Reused for question with same number of responses"
+                ],                
+                "examples" : "\tFavoriteBrand.RotationSeed ' => 273",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "RotationType",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tIndicates how the resposes of a closed question are rotated",                    
+                    "\t\t0 --> Never",                    
+                    "\t\t1 --> Randomise",                    
+                    "\t\t2 --> Rotate",                    
+                    "\t\t3 --> Invert",                    
+                    "\t\t4 --> Alphabetical"
+                ],                
+                "examples" : "\tFavoriteBrand.RotationType ' => 1",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "Scenarios",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "Returns the list of scenarios associated to this question",                
+                "examples" : "gender.Scenarios ' => \"{US;UK}\"",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "ShortCaption",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -3003,7 +3248,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "type" : "string",                
                 "desc" : "Returns a string that the user can utilize to store specific values (Key value or anything of his liking)",                
                 "examples" : [
-                    " If CurrentQuestion.UserData = \"Slider Then.",                    
+                    " If CurrentQuestion.UserData = \"Slider\" Then",                    
                     " Endif",                    
                     " Dim Dic As Dictionary",                    
                     " Dic.LoadJSON(CurrentQuestion.UserData)"
@@ -3036,6 +3281,20 @@ askiaScript.extend(askiaScript.lexical, {
                     " birthday.value ' => DK"
                 ],                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "Visibility",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tIndicates how a quetson, loop or chapter is appararing to the user",                    
+                    "\t\t0 --> For the chapter if Hide chapter and sub questions selected, for questions if visible during data entry unticked and for loops if Sub questions visible during data entry unticked",                    
+                    "\t\t1 --> For chapter if Hide chapter only or for loops if Sub questions visible during data entry ticked AND stop during data entry unticked",                    
+                    "\t\t2 --> For chapter if Show chapter and sub-questions, for questions if visible during data entry ticked and for loops if Sub questions visible during data entry ticked AND stop during data entry ticked"
+                ],                
+                "examples" : "\tFavoriteBrand.Visibility ' => 2",                
+                "version" : "5.6.1.0"
             },            
             {
                 "name" : "VisibleInDataEntry",                
@@ -3145,7 +3404,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the available height in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the available height in pixel of the rendering surface of the output device  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.ScreenAvailHeight ' => 1040",                    
@@ -3168,7 +3427,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the available width in pixel of the rendering surface of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the available width in pixel of the rendering surface of the output device  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.ScreenAvailWidth ' => 1920",                    
@@ -3191,7 +3450,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the number of bits allocated to colors (i.e. excluding the alpha channel) in the output device.<br /> If the output device does not support colors these attributes must return zero  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.ScreenColorDepth ' => 32",                    
@@ -3205,7 +3464,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the height in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the height in pixel of the output device  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.ScreenHeight ' => 1080",                    
@@ -3228,7 +3487,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the width in pixel of the output device  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the width in pixel of the output device  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#the-screen-interface\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.ScreenWidth ' => 1920",                    
@@ -3560,7 +3819,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the viewport height in pixel including the size of a rendered scroll bar (if any)  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerheight\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.WindowHeight ' => 895",                    
@@ -3583,7 +3842,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "number",                
-                "desc" : "<blockquote>� Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  �<br/>� <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
+                "desc" : "<blockquote>« Returns the viewport width in pixel including the size of a rendered scroll bar (if any)  »<br/>— <a href=\"http://dev.w3.org/csswg/cssom-view/#dom-window-innerwidth\" target=\"_blank\">Source from W3C</a></blockquote>",                
                 "remarks" : "All detections are done through Javascript, if Javascript is disable all values fall to default values (false, \"\", 0)",                
                 "examples" : [
                     " Browser.WindowWidth ' => 1916",                    
@@ -4199,7 +4458,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "string",                
-                "desc" : "Returns the identifier for the message unexpected_0_1_answer \tYou cannot give response � % 1� to question � % 0�",                
+                "desc" : "Returns the identifier for the message unexpected_0_1_answer \tYou cannot give response ‘ % 1’ to question ‘ % 0’",                
                 "examples" : "Interview.Language.Translate(Message.unexpected_0_1_answer) ' => \" \"You can only give one response for question '%0'\"",                
                 "version" : "5.5.2.0"
             }
@@ -4540,6 +4799,29 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.2.0"
             },            
             {
+                "name" : "RotationBehaviour",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tIndicates how a resposes rotates ",                    
+                    "\t\t1 --> Autorised",                    
+                    "\t\t2 --> Fixed",                    
+                    "\t\t3 --> Always follow previous"
+                ],                
+                "examples" : "\tFavoriteBrand.Responses[1].RotationBehaviour ' => 1",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "Scenarios",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "stringarray",                
+                "desc" : "Returns the list of scenarios associated to this Response",                
+                "examples" : "gender.Responses[1].Scenarios ' => \"{US;UK}\"",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "Tags",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -4580,6 +4862,20 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "Returns the type of the current object / variable",                
                 "examples" : "gender.Responses[1].TypeOf() ' => \"response\"",                
                 "version" : "5.3.2.0"
+            },            
+            {
+                "name" : "UserData",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : "Returns a string that the user can utilize to store specific values (Key value or anything of their liking)",                
+                "examples" : [
+                    "If CurrentQuestion.Responses[1].UserData = \"LuxuryBrand\" Then",                    
+                    "Endif",                    
+                    "Dim Dic As Dictionary",                    
+                    "Dic.LoadJSON(CurrentQuestion.Responses[1].UserData)"
+                ],                
+                "version" : "5.6.1.0"
             }
         ],        
         "adccontent" : [
@@ -4688,65 +4984,6 @@ askiaScript.extend(askiaScript.lexical, {
                 ],                
                 "examples" : "CurrentADC.Contents[1].Type ' => \"image\"",                
                 "version" : "5.3.3.0"
-            }
-        ],        
-        "adp" : [
-            {
-                "name" : "Redirect",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adp",                
-                "args" : [
-                    {
-                        "name" : "URL",                        
-                        "type" : "string",                        
-                        "desc" : "to redirect"
-                    },                    
-                    {
-                        "name" : "Seconds",                        
-                        "type" : "string",                        
-                        "desc" : "to redirect"
-                    }
-                ],                
-                "desc" : "\tSets the ADP property",                
-                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).Redirect(\"www.askia.com\",3).ShowMessage(\"theEnd\")",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "SetProperty",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adp",                
-                "args" : [
-                    {
-                        "name" : "property",                        
-                        "type" : "string",                        
-                        "desc" : "Id of the Property to set"
-                    },                    
-                    {
-                        "name" : "value",                        
-                        "type" : "variant"
-                    }
-                ],                
-                "desc" : "\tSets the ADP property",                
-                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
-                "version" : "5.5.2.0"
-            },            
-            {
-                "name" : "ShowMessage",                
-                "ns" : "masquelanguage",                
-                "base" : "method",                
-                "type" : "adp",                
-                "args" : [
-                    {
-                        "name" : "message",                        
-                        "type" : "string",                        
-                        "desc" : "yto be shown where the questions are usually displayed"
-                    }
-                ],                
-                "desc" : "\tUses the ADP engine to generate some HTML with a message",                
-                "examples" : "\tCurrentADP.SetProperty(\"Next\",false).ShowMessage(\"theEnd\")",                
-                "version" : "5.5.2.0"
             }
         ],        
         "interview" : [
@@ -5031,6 +5268,32 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.4.2.0"
             },            
             {
+                "name" : "IsSpeeder",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "desc" : [
+                    "This triggers the evaluation of whether an interview is considered to be a speeder. You can run this at any point in the survey.",                    
+                    "",                    
+                    "Return a Boolean"
+                ],                
+                "examples" : "Interview.IsSpeeder()  ' => True",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "IsStraightliner",                
+                "ns" : "masquelanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "desc" : [
+                    "This triggers the evaluation whether an interview is considered to be a straightliner. You can run this at any point in the survey.",                    
+                    "",                    
+                    "Return a Boolean"
+                ],                
+                "examples" : "Interview.IsStraightliner()  ' => True",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "IsTest",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5174,6 +5437,16 @@ askiaScript.extend(askiaScript.lexical, {
                 "version" : "5.3.5.0"
             },            
             {
+                "name" : "PercentCompletion",                
+                "ns" : "masquelanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : "Returns the percentage value of completion through the questionnaire... so even if you go back in the survey, this number does not decrease",                
+                "remarks" : "@alsosee Progress,PercentPosition",                
+                "examples" : "Interview.PercentCompletion ' => 88",                
+                "version" : "5.6.1.0"
+            },            
+            {
                 "name" : "PercentPosition",                
                 "ns" : "masquelanguage",                
                 "base" : "property",                
@@ -5182,7 +5455,7 @@ askiaScript.extend(askiaScript.lexical, {
                     "Returns the percentage value of progress through the questionnaire... it does not take in account the questions which should have been asked",                    
                     "but have not been due to movement by chapter or setposition"
                 ],                
-                "remarks" : "@alsosee Progress",                
+                "remarks" : "@alsosee Progress,PercentCompletion",                
                 "examples" : "Interview.PercentPosition ' => 88",                
                 "version" : "5.5.3.0"
             },            
@@ -5341,7 +5614,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "masquelanguage",                
                 "base" : "property",                
                 "type" : "languagearray",                
-                "desc" : "\tReturns the revision number of the survey file",                
+                "desc" : "\tReturns the array of all languages in the survey.",                
                 "examples" : "\tSurvey.Languages[1].Name ' => \"English\"",                
                 "version" : "5.5.0.0"
             },            

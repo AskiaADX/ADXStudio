@@ -1391,6 +1391,26 @@ askiaScript.extend(askiaScript.lexical, {
             "version" : "5.4.5.0"
         },        
         {
+            "name" : "ImportFile",            
+            "ns" : "askialanguage",            
+            "base" : "function",            
+            "type" : "nothing",            
+            "args" : [
+                {
+                    "name" : "File",                    
+                    "type" : "string"
+                }
+            ],            
+            "desc" : [
+                " Imports another file to access its functions or modules",                
+                "",                
+                " @example",                
+                " ImportFile(\".\\Increment.asx\")",                
+                "",                
+                " Increment::IncrementQuestion(qCounter)"
+            ]
+        },        
+        {
             "name" : "In",            
             "ns" : "askialanguage",            
             "base" : "operator",            
@@ -3324,7 +3344,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Tries to convert the string which represent a color (hexa, rgb or rgba) to its RGB equivalent string.<br />Drop the \"alpha\" value when the string represents an RGBA color.<br />Returns an empty string when it fails to convert.<br />Trailing white spaces will be stripped before the conversion.",                
+                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGB equivalent string.<br />Drop the \"alpha\" value when the string represent an RGBA color.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
                 "examples" : [
                     " dim hexa_red_color = \"#ff0000\"",                    
                     " hexa_red_color.ToRGB() '=> \"255,0,0\"",                    
@@ -3348,7 +3368,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "askialanguage",                
                 "base" : "method",                
                 "type" : "string",                
-                "desc" : "Tries to convert the string which represent a color (hexa, rgb or rgba) to its RGBA equivalent string.<br />Always make the color fully opaque when the opacity is not part of the color representation.<br />Returns an empty string when it fails to convert.<br />Trailing white spaces will be stripped before the conversion.",                
+                "desc" : "Try to convert the string which represent a color (hexa, rgb or rgba) to it's RGBA equivalent string.<br />Always make the color fully opaque when the opacity is not part of the color representation.<br />Returns an empty string when fail to convert.<br />Trailing whitespaces will be striped before the conversion.",                
                 "examples" : [
                     " dim hexa_red_color = \"#ff0000\"",                    
                     " hexa_red_color.ToRGBA() '=> \"255,0,0,1\"",                    
@@ -3644,324 +3664,6 @@ askiaScript.extend(askiaScript.lexical, {
                     " dt.Year ' => 2011"
                 ],                
                 "version" : "5.3.2.0"
-            }
-        ],        
-        "dictionary" : [
-            {
-                "name" : "Clear",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "dictionary",                
-                "desc" : "\tRemoves all properties of an Dictionary",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Get(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
-                    "",                    
-                    "\tmyDictionary.Clear()",                    
-                    "\tmyDictionary.ContainKey(\"property2\") => 0"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "ContainsKey",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "boolean",                
-                "args" : [
-                    {
-                        "name" : "KeyName",                        
-                        "type" : "string"
-                    }
-                ],                
-                "desc" : "\tReturns the number of properties in an Dictionary",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Get(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
-                    "",                    
-                    "\tmyDictionary.ContainsKey(\"property2) => True",                    
-                    "\tmyDictionary.ContainsKey(\"property10\") => False"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "Count",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "number",                
-                "desc" : "\tReturns the number of properties in an Dictionary",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Get(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
-                    "",                    
-                    "\tmyDictionary.Count() =>3"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "Keys",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "array",                
-                "desc" : "\tReturns an array of strings with the list of all property names",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Get(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
-                    "",                    
-                    "\treturn myDictionary.Keys()[2] => \"Property2\""
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "LoadJSON",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "methodresult",                
-                "args" : [
-                    {
-                        "name" : "name",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the property",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    "\tUse the JSON string in argument to initialize the value of the variant.",                    
-                    "",                    
-                    "\tReturns a successful value if the operation succeeds, otherwise it returns a failed value.",                    
-                    "",                    
-                    "\tReturns a MethodResult.\t"
-                ],                
-                "examples" : [
-                    "\tDim strString = \"{\\\"property1\\\": 1, \\\"property2\\\": \\\"abc\\\", \\\"property3\\\": [1,2,3,4,5]}\"",                    
-                    "\tDim myDictionary As Dictionary",                    
-                    "\tDim Res = myDictionary.LoadJSON(strString)",                    
-                    "\treturn Res.Success"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "LoadXML",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "methodresult",                
-                "args" : [
-                    {
-                        "name" : "xmlString",                        
-                        "type" : "string",                        
-                        "desc" : "xml code to be parsed",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : [
-                    "\tUse the XML string in argument to set or reset all the dictionary keys.",                    
-                    "",                    
-                    "\tTo be user-friendly as much as possible, the conversion of XML to a dictionary uses the following simple rules:",                    
-                    "",                    
-                    "\t\"tagname\": The tag name is used as it is",                    
-                    "\tand the value associated with those keys are Dictionary or Array.",                    
-                    "\t\"@attr\": The tag attribute is prefix by the @ character",                    
-                    "\tand the value associated with those keys are always String which represent the value of the attribute.",                    
-                    "\t\"#text\": The special key #text represent the text value inside the tag.",                    
-                    "",                    
-                    "\tReturns a successful value if the operation succeeds, otherwise it returns a failed value."
-                ],                
-                "examples" : [
-                    "\tDim xml As Dictionary",                    
-                    "\tDim result = xml.LoadXml(\"invalid xml format\")",                    
-                    "\t' result.Success ' => False",                    
-                    "\t' result.ErrorMessage ' => \"SyntaxError: Unexpected token i in XML at position : 0\"",                    
-                    "\t' xml.Count ' => 0",                    
-                    "",                    
-                    "",                    
-                    "",                    
-                    "\tDim xml As Dictionary",                    
-                    "\tDim result = items.LoadXml(\"<root><items><item id=\\\"1\\\">ABC</item></root>\")",                    
-                    "\t' result.Success ' => True",                    
-                    "\t' xml.Count  ' => 1",                    
-                    "\t' xml ' => @{",                    
-                    "\t'   \"root\" : {",                    
-                    "\t'       \"items\" : {",                    
-                    "\t'          \"item\" : {",                    
-                    "\t'             \"@id\" : \"1\",",                    
-                    "\t'             \"#text\" : \"ABC\"",                    
-                    "\t'          }",                    
-                    "\t'       }",                    
-                    "\t'    }",                    
-                    "\t' }",                    
-                    "\t'",                    
-                    "\t' xml[\"root\"][\"items\"][\"item\"][\"@id\"] ' => \"1\"",                    
-                    "\t' xml[\"root\"][\"items\"][\"item\"][\"#text\"] ' => \"ABC\"",                    
-                    "",                    
-                    "",                    
-                    "",                    
-                    "\tDim xml As Dictionary",                    
-                    "\tDim result = items.LoadXml(\"<root><items><item id=\\\"1\\\">ABC</item><item id=\\\"2\\\">DEF</item></root>\")",                    
-                    "\t' result.Success ' => True",                    
-                    "\t' xml.Count  ' => 1",                    
-                    "\t' xml ' => @{",                    
-                    "\t'   \"root\" : {",                    
-                    "\t'       \"items\" : {",                    
-                    "\t'          \"item\" : [",                    
-                    "\t'             {",                    
-                    "\t'               \"@id\" : \"1\",",                    
-                    "\t'               \"#text\" : \"ABC\"",                    
-                    "\t'             },",                    
-                    "\t'             {",                    
-                    "\t'               \"@id\" : \"2\",",                    
-                    "\t'               \"#text\" : \"DEF\"",                    
-                    "\t'             },",                    
-                    "\t'          ]",                    
-                    "\t'       }",                    
-                    "\t'    }",                    
-                    "\t' }",                    
-                    "\t'",                    
-                    "\t' xml[\"root\"][\"items\"][\"item\"][1][\"@id\"] ' => \"1\"",                    
-                    "\t' xml[\"root\"][\"items\"][\"item\"][1][\"#text\"] ' => \"ABC\"",                    
-                    "\t'",                    
-                    "\t' xml[\"root\"][\"items\"][\"item\"][2][\"@id\"] ' => \"2\"",                    
-                    "\t' xml[\"root\"][\"items\"][\"item\"][2][\"#text\"] ' => \"DEF\""
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "RemoveKey",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "dictionary",                
-                "args" : [
-                    {
-                        "name" : "KeyName",                        
-                        "type" : "string"
-                    }
-                ],                
-                "desc" : "\tRemoves the property of an Dictionary",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Get(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
-                    "",                    
-                    "\tmyDictionary.RemoveKey(\"property2) ",                    
-                    "\tmyDictionary.ContainsKey(\"property2\") => 0"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "Set",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "dictionary",                
-                "args" : [
-                    {
-                        "name" : "name",                        
-                        "type" : "string",                        
-                        "desc" : "Name of the property",                        
-                        "opt" : true
-                    },                    
-                    {
-                        "name" : "value",                        
-                        "type" : "variant",                        
-                        "desc" : "Value of the property (all types supported)",                        
-                        "opt" : true
-                    }
-                ],                
-                "desc" : "\tSets or creates a property in an Dictionary",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Set(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "Values",                
-                "ns" : "askialanguage",                
-                "base" : "method",                
-                "type" : "array",                
-                "desc" : "\tReturns an array of strings with the list of all property values",                
-                "examples" : [
-                    "\tDim myDictionary as Dictionary",                    
-                    "\tmyDictionary.Get(\"property1\", 1)",                    
-                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
-                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
-                    "",                    
-                    "\treturn myDictionary.Values()[2].ToString() => \"abc\""
-                ],                
-                "version" : "5.4.8.0"
-            }
-        ],        
-        "methodresult" : [
-            {
-                "name" : "ErrorCode",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "number",                
-                "desc" : [
-                    "\tReturns the code of failure. It's always DK when the Success is True, or when there is no error code provided by the API that throws the exception.",                    
-                    "",                    
-                    "\tReturn a Number."
-                ],                
-                "examples" : [
-                    "\tDim items As Variant",                    
-                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
-                    "\tresult.Success ' => False",                    
-                    "\tresult.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
-                    "\tresult.ErrorCode ' => DK"
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "ErrorMessage",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "string",                
-                "desc" : [
-                    "\tReturns the reason of failure.It's always empty when the Success is True, and most of time non-empty when it's False",                    
-                    "",                    
-                    "\tReturn a String."
-                ],                
-                "examples" : [
-                    "\tDim items As Variant",                    
-                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
-                    "\tresult.Success ' => False",                    
-                    "\tresult.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
-                    "",                    
-                    "\tDim isOk As Variant",                    
-                    "\tDim result = isOk.LoadJSON(\"true\")",                    
-                    "\tresult.Success ' => True",                    
-                    "\tresult.ErrorMessage ' => \"\""
-                ],                
-                "version" : "5.4.8.0"
-            },            
-            {
-                "name" : "Success",                
-                "ns" : "askialanguage",                
-                "base" : "property",                
-                "type" : "boolean",                
-                "desc" : [
-                    "\tReturns True when the operation succeed, otherwise it return False and chance is to have an ErrorMessage which indicates the reason of failure.",                    
-                    "",                    
-                    "\tReturn a Boolean."
-                ],                
-                "examples" : [
-                    "\tDim items As Variant",                    
-                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
-                    "\tresult.Success ' => False",                    
-                    "",                    
-                    "\tDim isOk As Variant",                    
-                    "\tDim result = isOk.LoadJSON(\"true\")",                    
-                    "\tresult.Success ' => True"
-                ],                
-                "version" : "5.4.8.0"
             }
         ],        
         "number" : [
@@ -4306,6 +4008,324 @@ askiaScript.extend(askiaScript.lexical, {
                     " i.TypeOf() ' => \"number\""
                 ],                
                 "version" : "5.3.2.0"
+            }
+        ],        
+        "dictionary" : [
+            {
+                "name" : "Clear",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "dictionary",                
+                "desc" : "\tRemoves all properties of an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.Clear()",                    
+                    "\tmyDictionary.ContainKey(\"property2\") => 0"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ContainsKey",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "boolean",                
+                "args" : [
+                    {
+                        "name" : "KeyName",                        
+                        "type" : "string"
+                    }
+                ],                
+                "desc" : "\tReturns the number of properties in an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.ContainsKey(\"property2) => True",                    
+                    "\tmyDictionary.ContainsKey(\"property10\") => False"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Count",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "number",                
+                "desc" : "\tReturns the number of properties in an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.Count() =>3"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Keys",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : "\tReturns an array of strings with the list of all property names",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\treturn myDictionary.Keys()[2] => \"Property2\""
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "LoadJSON",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "methodresult",                
+                "args" : [
+                    {
+                        "name" : "name",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    "\tUse the JSON string in argument to initialize the value of the variant.",                    
+                    "",                    
+                    "\tReturns a successful value if the operation succeeds, otherwise it returns a failed value.",                    
+                    "",                    
+                    "\tReturns a MethodResult.\t"
+                ],                
+                "examples" : [
+                    "\tDim strString = \"{\\\"property1\\\": 1, \\\"property2\\\": \\\"abc\\\", \\\"property3\\\": [1,2,3,4,5]}\"",                    
+                    "\tDim myDictionary As Dictionary",                    
+                    "\tDim Res = myDictionary.LoadJSON(strString)",                    
+                    "\treturn Res.Success"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "LoadXML",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "methodresult",                
+                "args" : [
+                    {
+                        "name" : "xmlString",                        
+                        "type" : "string",                        
+                        "desc" : "xml code to be parsed",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : [
+                    "\tUse the XML string in argument to set or reset all the dictionary keys.",                    
+                    "",                    
+                    "\tTo be user-friendly as much as possible, the conversion of XML to a dictionary uses the following simple rules:",                    
+                    "",                    
+                    "\t\"tagname\": The tag name is used as it is",                    
+                    "\tand the value associated with those keys are Dictionary or Array.",                    
+                    "\t\"@attr\": The tag attribute is prefix by the @ character",                    
+                    "\tand the value associated with those keys are always String which represent the value of the attribute.",                    
+                    "\t\"#text\": The special key #text represent the text value inside the tag.",                    
+                    "",                    
+                    "\tReturns a successful value if the operation succeeds, otherwise it returns a failed value."
+                ],                
+                "examples" : [
+                    "\tDim xml As Dictionary",                    
+                    "\tDim result = xml.LoadXml(\"invalid xml format\")",                    
+                    "\t' result.Success ' => False",                    
+                    "\t' result.ErrorMessage ' => \"SyntaxError: Unexpected token i in XML at position : 0\"",                    
+                    "\t' xml.Count ' => 0",                    
+                    "",                    
+                    "",                    
+                    "",                    
+                    "\tDim xml As Dictionary",                    
+                    "\tDim result = items.LoadXml(\"<root><items><item id=\\\"1\\\">ABC</item></root>\")",                    
+                    "\t' result.Success ' => True",                    
+                    "\t' xml.Count  ' => 1",                    
+                    "\t' xml ' => @{",                    
+                    "\t'   \"root\" : {",                    
+                    "\t'       \"items\" : {",                    
+                    "\t'          \"item\" : {",                    
+                    "\t'             \"@id\" : \"1\",",                    
+                    "\t'             \"#text\" : \"ABC\"",                    
+                    "\t'          }",                    
+                    "\t'       }",                    
+                    "\t'    }",                    
+                    "\t' }",                    
+                    "\t'",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][\"@id\"] ' => \"1\"",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][\"#text\"] ' => \"ABC\"",                    
+                    "",                    
+                    "",                    
+                    "",                    
+                    "\tDim xml As Dictionary",                    
+                    "\tDim result = items.LoadXml(\"<root><items><item id=\\\"1\\\">ABC</item><item id=\\\"2\\\">DEF</item></root>\")",                    
+                    "\t' result.Success ' => True",                    
+                    "\t' xml.Count  ' => 1",                    
+                    "\t' xml ' => @{",                    
+                    "\t'   \"root\" : {",                    
+                    "\t'       \"items\" : {",                    
+                    "\t'          \"item\" : [",                    
+                    "\t'             {",                    
+                    "\t'               \"@id\" : \"1\",",                    
+                    "\t'               \"#text\" : \"ABC\"",                    
+                    "\t'             },",                    
+                    "\t'             {",                    
+                    "\t'               \"@id\" : \"2\",",                    
+                    "\t'               \"#text\" : \"DEF\"",                    
+                    "\t'             },",                    
+                    "\t'          ]",                    
+                    "\t'       }",                    
+                    "\t'    }",                    
+                    "\t' }",                    
+                    "\t'",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][1][\"@id\"] ' => \"1\"",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][1][\"#text\"] ' => \"ABC\"",                    
+                    "\t'",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][2][\"@id\"] ' => \"2\"",                    
+                    "\t' xml[\"root\"][\"items\"][\"item\"][2][\"#text\"] ' => \"DEF\""
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "RemoveKey",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "dictionary",                
+                "args" : [
+                    {
+                        "name" : "KeyName",                        
+                        "type" : "string"
+                    }
+                ],                
+                "desc" : "\tRemoves the property of an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\tmyDictionary.RemoveKey(\"property2) ",                    
+                    "\tmyDictionary.ContainsKey(\"property2\") => 0"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Set",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "dictionary",                
+                "args" : [
+                    {
+                        "name" : "name",                        
+                        "type" : "string",                        
+                        "desc" : "Name of the property",                        
+                        "opt" : true
+                    },                    
+                    {
+                        "name" : "value",                        
+                        "type" : "variant",                        
+                        "desc" : "Value of the property (all types supported)",                        
+                        "opt" : true
+                    }
+                ],                
+                "desc" : "\tSets or creates a property in an Dictionary",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Set(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Values",                
+                "ns" : "askialanguage",                
+                "base" : "method",                
+                "type" : "array",                
+                "desc" : "\tReturns an array of strings with the list of all property values",                
+                "examples" : [
+                    "\tDim myDictionary as Dictionary",                    
+                    "\tmyDictionary.Get(\"property1\", 1)",                    
+                    "\tmyDictionary.Set(\"property2\", \"abc\")",                    
+                    "\tmyDictionary.Set(\"property3\", { 1 to 5} )",                    
+                    "",                    
+                    "\treturn myDictionary.Values()[2].ToString() => \"abc\""
+                ],                
+                "version" : "5.4.8.0"
+            }
+        ],        
+        "methodresult" : [
+            {
+                "name" : "ErrorCode",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "number",                
+                "desc" : [
+                    "\tReturns the code of failure. It's always DK when the Success is True, or when there is no error code provided by the API that throws the exception.",                    
+                    "",                    
+                    "\tReturn a Number."
+                ],                
+                "examples" : [
+                    "\tDim items As Variant",                    
+                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
+                    "\tresult.Success ' => False",                    
+                    "\tresult.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
+                    "\tresult.ErrorCode ' => DK"
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "ErrorMessage",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "string",                
+                "desc" : [
+                    "\tReturns the reason of failure.It's always empty when the Success is True, and most of time non-empty when it's False",                    
+                    "",                    
+                    "\tReturn a String."
+                ],                
+                "examples" : [
+                    "\tDim items As Variant",                    
+                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
+                    "\tresult.Success ' => False",                    
+                    "\tresult.ErrorMessage ' => \"SyntaxError: Unexpected token i in JSON at position : 0\"",                    
+                    "",                    
+                    "\tDim isOk As Variant",                    
+                    "\tDim result = isOk.LoadJSON(\"true\")",                    
+                    "\tresult.Success ' => True",                    
+                    "\tresult.ErrorMessage ' => \"\""
+                ],                
+                "version" : "5.4.8.0"
+            },            
+            {
+                "name" : "Success",                
+                "ns" : "askialanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : [
+                    "\tReturns True when the operation succeed, otherwise it return False and chance is to have an ErrorMessage which indicates the reason of failure.",                    
+                    "",                    
+                    "\tReturn a Boolean."
+                ],                
+                "examples" : [
+                    "\tDim items As Variant",                    
+                    "\tDim result = items.LoadJSON(\"incorrect json format\")",                    
+                    "\tresult.Success ' => False",                    
+                    "",                    
+                    "\tDim isOk As Variant",                    
+                    "\tDim result = isOk.LoadJSON(\"true\")",                    
+                    "\tresult.Success ' => True"
+                ],                
+                "version" : "5.4.8.0"
             }
         ],        
         "array" : [
