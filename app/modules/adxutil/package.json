@@ -46,7 +46,7 @@
     "cli-color": "^1.4.0",
     "commander": "^3.0.2",
     "elementtree": "^0.1.7",
-    "jszip": "^2.6.1",
+    "jszip": "^3.7.0",
     "ncp": "^2.0.0",
     "node-zendesk": "^1.4.0",
     "request": "^2.88.2",
