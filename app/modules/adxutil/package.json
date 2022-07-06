@@ -51,7 +51,8 @@
     "node-zendesk": "^1.4.0",
     "request": "^2.88.2",
     "uuid": "^3.4.0",
-    "minimist": ">=1.2.3"
+    "minimist": ">=1.2.3",
+    "lodash": ">=4.17.21"
   },
   "deprecated": false,
   "description": "Utilities tools for Askia Design eXtension",
@@ -60,7 +61,8 @@
     "gulp": "^4.0.2",
     "gulp-jsdoc3": "^3.0.0",
     "gulp-shell": "^0.8.0",
-    "jasmine-node": "^3.0.0"
+    "jasmine-node": "^3.0.0",
+    "lodash": ">=4.17.21"
   },
   "gitHead": "8f24141069d1b761518711898cb9d7a731b875a4",
   "homepage": "https://github.com/AskiaADX/ADXUtil#readme",
