@@ -87,7 +87,11 @@
     "url": "git+https://github.com/AskiaADX/ADXUtil.git"
   },
   "scripts": {
-    "test": "jasmine-node spec/"
+    "test": "jasmine-node spec/",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
   },
   "version": "2.0.5"
 }
