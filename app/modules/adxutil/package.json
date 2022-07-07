@@ -92,7 +92,9 @@
   },
   "resolutions": {
     "glob-parent": "^6.0.1",
-    "minimist": ">=1.2.6"
+    "minimist": ">=1.2.6",
+    "ajv": ">=6.12.3",
+    "underscore": ">=1.12.1"
   },
   "version": "2.0.5"
 }
