@@ -91,7 +91,8 @@
     "preinstall": "npx npm-force-resolutions"
   },
   "resolutions": {
-    "glob-parent": "^6.0.1"
+    "glob-parent": "^6.0.1",
+    "minimist": ">=1.2.6"
   },
   "version": "2.0.5"
 }
