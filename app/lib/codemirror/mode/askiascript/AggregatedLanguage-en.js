@@ -47,7 +47,7 @@ askiaScript.extend(askiaScript.i18n, {
         },        
         "debug" : {
             "ns" : "aggregatedlanguage",            
-            "desc" : "Object used to output debug information while running scripts. The information is added to a file called DebugTracte.txt. Nothing is done in in Vista",            
+            "desc" : "Object used to output debug information while running scripts. The information is added to a file called DebugTrace.txt. Nothing is done in in Vista",            
             "version" : "5.3.5.0"
         },        
         "question" : {
@@ -269,10 +269,7 @@ askiaScript.extend(askiaScript.lexical, {
                 "ns" : "aggregatedlanguage",                
                 "base" : "property",                
                 "type" : "questionarray",                
-                "desc" : [
-                    " Returns all the sub-questions associated to a question - that is all the questions placed within the sub-tree defined by a question",                    
-                    " It's also known as the Developed Questions"
-                ],                
+                "desc" : "Returns all the questions placed within the sub-tree defined by a question",                
                 "examples" : "\t Dim arrSubQuestions = BrandEvaluation.Children",                
                 "version" : "5.3.5.0"
             },            
@@ -320,6 +317,18 @@ askiaScript.extend(askiaScript.lexical, {
                 "desc" : "\tIndicates if a question is developed - that is does it come from a question inside a loop associated to one ore more loop items",                
                 "examples" : "\tRatingBrandPepsi.IsDeveloped ' => True",                
                 "version" : "5.5.2.0"
+            },            
+            {
+                "name" : "IsScaled",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "property",                
+                "type" : "boolean",                
+                "desc" : "\tIndicates if a question is marked as IsScaled in Design (this means that although the question is closed, it can be used as a numeric)",                
+                "examples" : [
+                    "\tgender.IsCalculated ' => False",                    
+                    "\tRating.IsScaled ' => true"
+                ],                
+                "version" : "5.6.0.0"
             },            
             {
                 "name" : "IsVisibleDuringDataEntry",                
@@ -819,6 +828,30 @@ askiaScript.extend(askiaScript.lexical, {
                     " "
                 ],                
                 "version" : "5.3.5.0"
+            },            
+            {
+                "name" : "FilterHas",                
+                "ns" : "aggregatedlanguage",                
+                "base" : "method",                
+                "type" : "data",                
+                "args" : [
+                    {
+                        "name" : "Question",                        
+                        "type" : "question",                        
+                        "desc" : "used to filter"
+                    },                    
+                    {
+                        "name" : "Responses",                        
+                        "type" : "numarray",                        
+                        "desc" : "to be filtered"
+                    }
+                ],                
+                "desc" : "Filters the data so that it includes only those items that have the chosen response(s) for the supplied question.",                
+                "examples" : [
+                    "Age.Data.FilterHas(Gender, 1).Mean() ' => Mean age of all males",                    
+                    "Age.Data.FilterHas(NewspaperRead, { 3; 5} ).Mean() ' => Mean age of readers of 2 newspapers"
+                ],                
+                "version" : "5.6.1.0"
             },            
             {
                 "name" : "MakeNumeric",                

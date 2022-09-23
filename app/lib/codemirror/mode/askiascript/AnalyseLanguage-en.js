@@ -227,6 +227,26 @@ askiaScript.extend(askiaScript.lexical, {
                 ],                
                 "version" : "5.3.5.0"
             }
+        ],        
+        "data" : [
+            {
+                "name" : "FilterByCurrent",                
+                "ns" : "analyselanguage",                
+                "base" : "method",                
+                "type" : "data",                
+                "desc" : "\tFilters some data with the current definition of the sub-population as in the tab, the calculated question, etc...",                
+                "examples" : "\tMoneySpent.Data.FilterByCurrent().Mean() ' => Mean of money spent for the specified sub-population",                
+                "version" : "5.6.1.0"
+            },            
+            {
+                "name" : "FilterCurrentInterview",                
+                "ns" : "analyselanguage",                
+                "base" : "method",                
+                "type" : "data",                
+                "desc" : "Filters some data with the response to a question",                
+                "examples" : "MoneySpent.Data.FilterCurrentInterview().Mean() ' => Mean of money spent (which could be in another level) for the current interview",                
+                "version" : "5.6.1.0"
+            }
         ]
     }
 }, true);

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             targetNamespace="http://www.askia.com/2.2.0/ADPSchema"
@@ -361,7 +361,7 @@
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:enumeration>
-            <!-- Added 5.5.3 -->
+            <!-- Added 5.6.0 -->
             <xsd:enumeration value="asx">
               <xsd:annotation>
                 <xsd:documentation>
@@ -370,7 +370,7 @@
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:enumeration>
-            
+
           </xsd:restriction>
         </xsd:simpleType>
       </xsd:attribute>
@@ -406,6 +406,14 @@
                   It could embed AskiaScript to execute.
                   When the content is a file, it must be place in the /Resources/Dynamic folder of the ADP.
                   The dynamic content will not be extract but load in memory.
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="modules">
+              <xsd:annotation>
+                <xsd:documentation>
+                  The modules content is always associated with an asx file and must be place in the /Resources/Modules/ folder of the ADC or ADP.
+                  The content will not be extracted physically but the compiled modules will be kept in memory
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:enumeration>
