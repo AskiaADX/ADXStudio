@@ -21,7 +21,11 @@
     openDialog.showOpenDialog({
       properties: ['openDirectory'],
       defaultPath: defaultPath
-    }, callback);
+    }).then((result)=>{
+      if(callback && result.filePaths && result.filePaths.length) {
+        callback(result.filePaths[0]);
+      }
+    });
   }
 
   modalDialog.addPlugin('newADXProject', {
