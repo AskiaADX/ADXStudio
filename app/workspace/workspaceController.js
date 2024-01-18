@@ -80,6 +80,17 @@ function buildFiles (dir, files) {
 }
 
 /**
+ * Deep clone object
+ * Added because of limitations in sending objects through IPC methods
+ * 
+ * @param {*} obj Object to clone
+ * @returns {*}
+ */
+function cloneObject(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+/**
  * Return the structure of the resources directory of the current ADX
  * @param {Function} callback
  * @param {Object} callback.structure
@@ -195,7 +206,7 @@ function openProject () {
 
             // Open the project settings
             loadProjectSettingsTab(tab, (err) => {
-              workspaceView.send(action, err, tab, pane);
+              workspaceView.send(action, err, cloneObject(tab), pane);
               openNextTab(callback);
             });
           });
@@ -216,7 +227,7 @@ function openProject () {
                 http: options.httpPort,
                 ws: options.wsPort
               };
-              workspaceView.send(action, err, tab, workspace.where(tab));
+              workspaceView.send(action, err, cloneObject(tab), workspace.where(tab));
               openNextTab(callback);
             });
           });
@@ -224,7 +235,7 @@ function openProject () {
           // Open file by default
           tab.loadFile((er) => {
             if (!er) {
-              workspaceView.send(action, er, tab, workspace.where(tab));
+              workspaceView.send(action, er, cloneObject(tab), workspace.where(tab));
             }
             openNextTab(callback);
           });
@@ -267,17 +278,17 @@ function openFile (file, fromExplorer) {
     if (tab) {
       // TODO::Look if the content of the tab has changed
       // TODO::Look if the file has been removed
-      workspaceView.send('workspace-focus-tab', err, tab, pane);
+      workspaceView.send('workspace-focus-tab', err, cloneObject(tab), pane);
       return;
     }
 
-    // When the tab doesn't exist, create it
-    workspace.createTab(file, (err, tab, pane) => {
+    // When the tab doesn't exist, create it    
+    workspace.createTab(file, (err, tab, pane) => {      
       if (err) {
         throw err;
       }
       tab.loadFile((err) => {
-        workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+        workspaceView.send('workspace-create-and-focus-tab', err, cloneObject(tab), pane);
       });
     });
   });
@@ -289,6 +300,7 @@ function openFile (file, fromExplorer) {
  * @param {String|Object} file File to open
  */
 function openFileFromExplorer (event, file) {
+  console.info('Open file from explorer');
   const filePath = (typeof file === 'string') ? file : file.path;
   openFile(filePath, true);
 }
@@ -315,7 +327,8 @@ function openProjectSettings (code) {
         if (tab.mode !== code) {
           tab.mode = code;
         }
-        workspaceView.send('workspace-focus-tab', err, tab, pane);
+
+        workspaceView.send('workspace-focus-tab', err, cloneObject(tab), pane);
         return;
       }
       // When the tab doesn't exist, create it
@@ -331,7 +344,7 @@ function openProjectSettings (code) {
           throw err;
         }
         loadProjectSettingsTab(tab, (err) => {
-          workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+          workspaceView.send('workspace-create-and-focus-tab', err, cloneObject(tab), pane);
         });
       });
     });
@@ -353,7 +366,7 @@ function openPreview (options) {
   workspace.find('::preview', (err, tab, pane) => {
     // If the tab already exist only focus it
     if (tab) {
-      workspaceView.send('workspace-focus-tab', err, tab, pane);
+      workspaceView.send('workspace-focus-tab', err, cloneObject(tab), pane);
       return;
     }
     // When the tab doesn't exist, create it
@@ -370,7 +383,8 @@ function openPreview (options) {
         http: options.httpPort,
         ws: options.wsPort
       };
-      workspaceView.send('workspace-create-and-focus-tab', err, tab, pane);
+
+      workspaceView.send('workspace-create-and-focus-tab', err, cloneObject(tab), pane);
     });
   });
 }
@@ -502,7 +516,7 @@ function onSetCurrentTab (event, tabId) {
  */
 function onCloseTab (event, tabId) {
   workspace.removeTab(tabId, (err, tab, pane) => {
-    workspaceView.send('workspace-remove-tab', err, tab, pane);
+    workspaceView.send('workspace-remove-tab', err, cloneObject(tab), pane);
   });
 }
 
@@ -566,7 +580,8 @@ function onRestoreContent (event, tabId) {
  */
 function sendUpdateTabEvent (err, tab, pane) {
   tab.edited = false;
-  workspaceView.send('workspace-update-tab', err, tab, pane);
+
+  workspaceView.send('workspace-update-tab', err, cloneObject(tab), pane);
   // Trigger the event in the app
   if (!exports.hasEditingTabs()) {
     app.emit('workspace-save-all-finish');
@@ -724,7 +739,7 @@ function onConfirmReload (event, tab, answer) {
         return;
       }
       tab.loadFile((err) => {
-        workspaceView.send('workspace-reload-tab', err, tab, pane);
+        workspaceView.send('workspace-reload-tab', err, cloneObject(tab), pane);
       });
     });
   }
@@ -736,7 +751,7 @@ function onConfirmReload (event, tab, answer) {
 function onFileChanged (tab, pane) {
   if (!tab.edited) {
     tab.loadFile((err) => {
-      workspaceView.send('workspace-reload-tab', err, tab, pane);
+      workspaceView.send('workspace-reload-tab', err, cloneObject(tab), pane);
     });
   } else {
     app.emit('show-modal-dialog', {
@@ -751,7 +766,7 @@ function onFileChanged (tab, pane) {
  */
 function onFileRemoved (tab) {
   workspace.removeTab(tab, (err, tab, pane) => {
-    workspaceView.send('workspace-remove-tab', err, tab, pane);
+    workspaceView.send('workspace-remove-tab', err, cloneObject(tab), pane);
   });
 }
 
@@ -829,7 +844,7 @@ function explorerRemovingFile (fileType, filePath) {
     if (testPath === filePath.toLowerCase()) {
       workspace.find('::preview', (err, tab, pane) => {
         if (tab) {
-          workspaceView.send('workspace-remove-tab', err, tab, pane);
+          workspaceView.send('workspace-remove-tab', err, cloneObject(tab), pane);
         }
         workspace.unwatchTabsIn(filePath);
       });
