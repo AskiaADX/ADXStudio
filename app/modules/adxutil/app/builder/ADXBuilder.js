@@ -316,23 +316,26 @@ Builder.prototype.compressADX =  function compressADX() {
             }
         });
 
-        const buffer = zip.generate({
+        const bufferPromise = zip.generateAsync({
             type: "nodebuffer",
             compression: 'DEFLATE',
             compressionOptions: {
                 level: 6
             }
         });
-        const fileExt = '.' + self.adxConfigurator.projectType.toLowerCase();
 
-        self.outputPath = pathHelper.join(self.binPath, self.adxName + fileExt);
-        fs.writeFile(self.outputPath, buffer, (err) => {
-            if (err) {
-                throw err;
-            }
+        bufferPromise.then(function(buffer){
+            const fileExt = '.' + self.adxConfigurator.projectType.toLowerCase();
+
+            self.outputPath = pathHelper.join(self.binPath, self.adxName + fileExt);
+            fs.writeFile(self.outputPath, buffer, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+    
+            self.sequence.resume();
         });
-
-        self.sequence.resume();
     });
 };
 
