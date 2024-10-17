@@ -190,6 +190,8 @@
 
             tab.editor = window.editor = CodeMirror.fromTextArea(textarea, editorOptions).suggest();
 
+            window.editor.refresh();
+
             window.editor.on('change', function onChange(instance) {
                 workspaceView.onContentChange(tab.id, instance.getValue());
             });

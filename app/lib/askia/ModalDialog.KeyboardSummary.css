@@ -47,6 +47,7 @@
 .askia-modal-dialog.Keyboard-Shortcuts .main {
     display : flex;
     flex    : 1;
+    height: calc(100% - 50px);
 }
 
 .askia-modal-dialog.Keyboard-Shortcuts .left {

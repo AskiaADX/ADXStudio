@@ -64,6 +64,7 @@ function addItem (event, dirPath, type, itemName) {
         });
         return;
       }
+      refreshExplorerView(filePath);
       app.emit('menu-new-file', filePath);
     });
   } else {
@@ -119,8 +120,12 @@ function removeFile (event, file) {
         message: err.message
       });
     }
+
+    refreshExplorerView(file.path);
   });
 }
+
+
 
 /**
  * Rename file event
@@ -132,6 +137,7 @@ function removeFile (event, file) {
 function renameFile (event, file, newName) {
   const oldPath = file.path;
   const newPath = path.join(oldPath, '..', newName);
+
   // Notify that a file will be rename
   app.emit('explorer-file-renaming', file.type, oldPath, newPath);
   explorer.rename(oldPath, newPath, function (err) {
@@ -142,8 +148,38 @@ function renameFile (event, file, newName) {
       });
       return;
     }
-    // Notify that a file has been renamed (also send the error just in case)
+
+    refreshExplorerView(newPath);
+
+    // Notify that a file has been renamed (also send the error just in case)  
     app.emit('explorer-file-renamed', err, file.type, oldPath, newPath);
+  });
+}
+
+/**
+ * Minify file event
+ *
+ * @param event
+ * @param {Object} file File object (which contain name/path/type)
+ * @param {String} newName New name of the file or folder
+ */
+function minifyFile (event, file, newName) {
+  const oldPath = file.path;
+  const newPath = path.join(oldPath, '..', newName);
+  // Notify that a file will be rename
+  // app.emit('explorer-file-renaming', file.type, oldPath, newPath);
+  explorer.minify(oldPath, newPath, function (err) {
+    if (err) {
+      app.emit('show-modal-dialog', {
+        type: 'okOnly',
+        message: err.message
+      });
+      return;
+    }
+    refreshExplorerView(newPath);
+
+    // Notify that a file has been renamed (also send the error just in case)    
+    app.emit('menu-new-file', newPath);
   });
 }
 
@@ -210,8 +246,6 @@ function paste (event, file) {
     let path = file.path.substring(0, (file.path.length - file.name.length - 1));
     file.path = path;
   }
-
-
 
   fs.readdir(file.path, function (err, files) {
     if (err) {
@@ -286,6 +320,37 @@ function finalPaste (event, button) {
   }
 }
 
+function refreshExplorerView(filePath) {
+  var folderpath = path.dirname(filePath);
+  explorer.load(folderpath, function (err, files) {
+    explorerView.send('explorer-expand-folder', err, folderpath, files);      
+  });
+}
+
+function openExplorer(event, path) {
+  var cmd = ``;
+  switch (require(`os`).platform().toLowerCase().replace(/[0-9]/g, ``).replace(`darwin`, `macos`)) {
+      case `win`:
+          path = path || '=';
+          cmd = `explorer`;
+          break;
+      case `linux`:
+          path = path || '/';
+          cmd = `xdg-open`;
+          break;
+      case `macos`:
+          path = path || '/';
+          cmd = `open`;
+          break;
+  }
+  let p = require(`child_process`).spawn(cmd, [path]);
+
+  p.on('error', (err) => {
+      p.kill();
+      // return callback(err);
+  });
+}
+
 /**
  * Switch the current theme
  * @param {String} themeName The name of the new theme
@@ -325,6 +390,9 @@ ipc.on('explorer-ready', function (event) {
   ipc.removeListener('explorer-rename', renameFile);
   ipc.on('explorer-rename', renameFile);
 
+  ipc.removeListener('explorer-minify', minifyFile);
+  ipc.on('explorer-minify', minifyFile);
+
   ipc.removeListener('explorer-remove', removeFile);
   ipc.on('explorer-remove', removeFile);
 
@@ -351,6 +419,9 @@ ipc.on('explorer-ready', function (event) {
 
   ipc.removeListener('explorer-copy-override', finalPaste);
   ipc.on('explorer-copy-override', finalPaste);
+
+  ipc.removeListener('open-explorer', openExplorer);
+  ipc.on('open-explorer', openExplorer);
 
   // When the directory structure change, reload the view
   explorer.removeListener('change', onChange); // Remove it first

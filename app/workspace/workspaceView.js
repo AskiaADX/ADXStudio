@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     this.electron = require('electron');
     this.ipc = this.electron.ipcRenderer;
-    this.remote = this.electron.remote;
+    this.remote = require('@electron/remote');
     this.Menu = this.remote.Menu;
     this.MenuItem = this.remote.MenuItem;
     this.shell = this.remote.shell;

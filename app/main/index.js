@@ -7,6 +7,8 @@
   const askia = window.askia;
   let countDownReadyWebView = 2; // 2 web-views must be loaded
 
+  //exp.setAttribute('src', '../explorer/explorer.html');
+  //wks.setAttribute('src', '../workspace/workspace.html');
 
   /**
    * Look how many web-views are loaded and fire the ready event when all are ready
