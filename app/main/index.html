@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>ADX Studio</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'" />
     <link rel="stylesheet" type="text/css" href="index.css"/>
     <link rel="stylesheet" type="text/css" href="../lib/askia/ModalDialog.css"/>
     <link rel="stylesheet" type="text/css" href="../lib/askia/ModalDialog.Loader.css"/>
@@ -28,8 +29,8 @@
     <div id="panels">
         <div id="panel_toolbar" class="panel"></div>
         <div id="main_panels">
-            <div id="panel_explorer" class="panel"><webview id="explorer" src="../explorer/explorer.html" nodeintegration="on"></webview></div>
-            <div id="panel_workspace" class="panel"><webview id="workspace" src="../workspace/workspace.html" nodeintegration="on"></webview></div>
+            <div id="panel_explorer" class="panel"><webview id="explorer" webpreferences = 'contextIsolation=false' src="../explorer/explorer.html" nodeintegration="on"></webview></div>
+            <div id="panel_workspace" class="panel"><webview id="workspace" webpreferences = 'contextIsolation=false' src="../workspace/workspace.html" nodeintegration="on"></webview></div>
         </div>
         <div id="panel_status" class="panel">
             <div class="panel-title-bar">

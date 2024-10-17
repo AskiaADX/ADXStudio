@@ -299,8 +299,7 @@ function openFile (file, fromExplorer) {
  * @param event
  * @param {String|Object} file File to open
  */
-function openFileFromExplorer (event, file) {
-  console.info('Open file from explorer');
+function openFileFromExplorer (event, file) {  
   const filePath = (typeof file === 'string') ? file : file.path;
   openFile(filePath, true);
 }
@@ -817,7 +816,8 @@ function explorerRenamedFile (err, fileType, oldPath, newPath) {
       tab.watch();
     });
 
-    workspaceView.send('workspace-rename-tabs', null, tabs, panes);
+    var tabsList = tabs.map((tb)=>{return {id:tb.id, path: tb.path, name: tb.name};});
+    workspaceView.send('workspace-rename-tabs', null, tabsList, panes);
   });
 }
 

@@ -1,14 +1,18 @@
 'use strict';
 // If more details needed, then uncomment the next row for node js deprecation errors
 // process.traceDeprecation = true;
+// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 const electron = require('electron');
+const remoteMain = require('@electron/remote/main');
+remoteMain.initialize();
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const appSettings = require('./appSettings/appSettingsModel.js');
 const ADX = require('./modules/adxutil').ADX;
 const shell = electron.shell;
 const ipc = electron.ipcMain;
+
 
 require('./main/mainController.js');
 
@@ -116,6 +120,16 @@ app.on('ready', function loadMainWindow () {
           webSecurity: true,
           enableRemoteModule: true
         }
+      });
+
+      remoteMain.enable(global.mainWindow.webContents);
+
+      
+      global.mainWindow.webContents.on('did-attach-webview', () => {
+            const all = electron.webContents.getAllWebContents();
+            all.forEach((item) => {
+              remoteMain.enable(item);     
+            });
       });
 
       // and load the index.html of the app.

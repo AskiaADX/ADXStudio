@@ -59,6 +59,7 @@ Contributors
 ------------
 
 - [Robbe Van der Gucht](https://github.com/sir-ragna)
+- [Peter Gabriël]()
 
 License
 -------

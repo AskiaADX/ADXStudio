@@ -6,7 +6,8 @@ const watcher = require('../modules/watcher/watcher.js');
 const path = require('path');
 const util = require('util');
 const EventEmitter = require('events').EventEmitter;
-
+const minify = require('@node-minify/core');
+const uglifyjs = require('@node-minify/uglify-js');
 
 /**
  * Sort the files with folder first
@@ -194,6 +195,43 @@ Explorer.prototype.rename = function (oldPath, newPath, callback) {
     callback(null);
   });
 
+};
+
+/**
+ * Minify the file
+ *
+ *    let explorer=require('ADXStudio/src/explorer/explorer.js');
+ *    explorer.minify('old/path', 'path/new', function(err) {
+ *       console.log(err);
+ *    });
+ *
+ * @param {String} oldPath Path of file to change.
+ * @param {String} newPath Path of new file.
+ * @param {Function} callback
+ * @param {Error} callback.err Error
+ */
+Explorer.prototype.minify = function (oldPath, newPath, callback) {
+
+  if ((!oldPath || !newPath) && !callback) {
+    throw new Error('Invalid argument');
+  }
+
+  callback = callback || function () { };
+
+
+  minify({
+    compressor: uglifyjs,
+    input: oldPath,
+    output: newPath,
+    callback: function(err, min){
+      if (err) {
+        callback(err);
+        return;
+      }
+  
+      callback(null);
+    }
+  });
 };
 
 /**

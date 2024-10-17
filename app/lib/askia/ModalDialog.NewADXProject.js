@@ -8,8 +8,9 @@
 
   const modalDialog = askia.modalDialog;
   let autoIncrement = 0;
-  const electron = require('electron');
-  const remote = electron.remote;
+  // const electron = require('electron');
+  // const remote = electron.remote;
+  const remote = require('@electron/remote');
   const openDialog = remote.dialog;
 
   /**

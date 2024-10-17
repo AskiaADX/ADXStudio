@@ -1,6 +1,10 @@
 // the object map is created to give unique id to each item
 const electron = require('electron');
-let remote = electron.remote;
+// let remote = electron.remote;
+const remote = require('@electron/remote');
+
+remote.require("@electron/remote/main").enable(remote.BrowserWindow.getAllWindows()[0].webContents);
+
 let Menu = remote.Menu;
 let MenuItem = remote.MenuItem;
 let ipc = electron.ipcRenderer;
@@ -165,7 +169,6 @@ function displayMenu (files, contextualMenu) {
             },
             value: file.name
           }, 'explorer-rename', file);
-
         }
       }));
 
@@ -176,11 +179,46 @@ function displayMenu (files, contextualMenu) {
           removeMenu(files);
         }
       }));
+
+      /* Minify file */
+      if(file.path.endsWith('.js')) {
+        contextualMenu.append(new MenuItem({
+          label: 'Minify',
+          click: function () {
+            ipc.sendToHost('show-modal-dialog', {
+              type: 'prompt',
+              message: 'Minify:',
+              buttonText: {
+                ok: 'Minify',
+                cancel: 'Cancel'
+              },
+              value: file.name.replace('.js', '.min.js')
+            }, 'explorer-minify', file);
+          }
+        }));
+      }
+
+      /* Open explorer */
+      if(file.type !== 'file') {
+        contextualMenu.append(new MenuItem({
+          label: 'Open in explorer',
+          click: function () {
+            ipc.send('open-explorer', file.path);
+          }
+        }));
+      }
     } else {
       contextualMenu.append(new MenuItem({
         label: 'Project settings',
         click: function () {
           ipc.send('explorer-show-project-settings');
+        }
+      }));
+
+      contextualMenu.append(new MenuItem({
+        label: 'Open in explorer',
+        click: function () {
+          ipc.send('open-explorer', file.path);
         }
       }));
     }
@@ -743,7 +781,6 @@ document.addEventListener('DOMContentLoaded', function () {
       root.parentNode.querySelector('.name').innerHTML = rootName;
       //root.parentNode.setAttribute('title', path);
     }
-
 
     for (let i = 0; i < files.length; i += 1) {
 
