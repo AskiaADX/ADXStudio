@@ -18,6 +18,9 @@
     border      : none;
     border-bottom  : 1px solid #cccccc;
     display     : none;
+    position: absolute;
+    z-index:1000;
+    right:20px;
 }
 /* Find mode or find and replace mode*/
 .cms-find.find,
@@ -41,7 +44,7 @@ COMMON
 .cms-find-input-pattern-container,
 .cms-find-input-replace-container {
     min-width  : 150px;
-    width : 300px;
+    width : 150px;
     max-width: 50%;
 }
 
@@ -89,7 +92,9 @@ COMMON
 }
 
 /* Match result */
-.cms-find-match-result {}
+.cms-find-match-result {
+    font-size: 0.8em;
+}
 
 .cms-find-close {
     float:right;
@@ -125,5 +130,47 @@ Replace container
     margin-right : 15px;
 }
 
+.cms-checkbox {
+    position: relative;
+    display: inline-block;       
+}
 
+.cms-checkbox input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
+.cms-checkbox span {
+    display:inline-block;
+    cursor: pointer;
+    border:1px solid transparent;
+    border-radius: 2px;
+}
+
+.cms-checkbox span:hover {
+    border:1px solid rgba(0,0,0,0.2);
+}
+
+input:checked + span:hover {
+    border:1px solid rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0.1);
+}
+
+input:checked + span {
+    border:1px solid rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0.1);
+}
+
+.cms-replace-button {
+    border: 1px solid transparent;
+    background-color:transparent;
+    cursor: pointer;
+    color: #ddd;
+    box-shadow: none;
+}
+
+.cms-replace-button:hover {
+    color: #ddd;
+    background-color: rgba(255,255,255,0.1);
+}
