@@ -116,6 +116,15 @@ function displayMenu (files, contextualMenu) {
       ]
     }));
 
+    if(file.type !== 'file') {
+      contextualMenu.append(new MenuItem({
+        label: 'Refresh',
+        click: function onClickCut () {
+          ipc.send('explorer-refresh', file.path);
+        }
+      }));
+    }
+
     contextualMenu.append(new MenuItem({ type: 'separator' }));
 
     if (!file.root) {
@@ -135,7 +144,6 @@ function displayMenu (files, contextualMenu) {
         click: function onClickCut () {
           ipc.send('cut-file', file);
         }
-
       }));
 
       /*copy file*/

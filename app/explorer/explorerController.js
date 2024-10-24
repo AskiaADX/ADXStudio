@@ -320,8 +320,17 @@ function finalPaste (event, button) {
   }
 }
 
-function refreshExplorerView(filePath) {
-  var folderpath = path.dirname(filePath);
+function doRefreshExplorerView(event, filePath) {
+  refreshExplorerView(filePath, false);
+}
+
+function refreshExplorerView(filePath, isFile = true) {
+  var folderpath = filePath;
+  
+  if(isFile) {
+    folderpath = path.dirname(filePath);
+  }
+  
   explorer.load(folderpath, function (err, files) {
     explorerView.send('explorer-expand-folder', err, folderpath, files);      
   });
@@ -392,6 +401,9 @@ ipc.on('explorer-ready', function (event) {
 
   ipc.removeListener('explorer-minify', minifyFile);
   ipc.on('explorer-minify', minifyFile);
+
+  ipc.removeListener('explorer-refresh', doRefreshExplorerView);
+  ipc.on('explorer-refresh', doRefreshExplorerView);
 
   ipc.removeListener('explorer-remove', removeFile);
   ipc.on('explorer-remove', removeFile);
