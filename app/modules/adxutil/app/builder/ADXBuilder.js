@@ -283,7 +283,13 @@ Builder.prototype.compressADX =  function compressADX() {
         }
 
         const zip   = common.getNewZip();
+        const extraIgnoreFile = pathHelper.resolve(self.adxDirectoryPath, 'ADXIgnore');
         let zipDir  = '';
+        let extra = null;
+
+        if(fs.existsSync(extraIgnoreFile)) {
+            extra = fs.readFileSync(extraIgnoreFile, 'utf8');
+        }
 
         structure.forEach(function appendInZip(file) {
             let prevDir,
@@ -293,7 +299,7 @@ Builder.prototype.compressADX =  function compressADX() {
             if (typeof file === 'string') {  // File
                 if (zipDirLower === 'resources\\') return; // Exclude extra files
                 if (zipDirLower === '' && !/^(config\.xml|readme|changelog)/i.test(file)) return; // Exclude extra files
-                if (common.isIgnoreFile(file)) return; // Ignore files
+                if (common.isIgnoreFile(file, extra)) return; // Ignore files
                 zip.file(
                     pathHelper.join(zipDir, file),
                     fs.readFileSync(pathHelper.join(self.adxDirectoryPath, zipDir, file))

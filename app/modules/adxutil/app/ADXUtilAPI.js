@@ -299,7 +299,7 @@ ADX.prototype.show = function show(options, callback) {
 };
 
 /**
- * Import an akia xml
+ * Import an Askia xml
  *
  *      const ADX = require('adxutil').ADX;
  *      const myAdx = new ADX('path/to/adx/dir');
@@ -372,7 +372,7 @@ function getXmlListFiles(directory, callback) {
  * @param {String[]} callback.list List of fixtures
  */
 ADX.prototype.getFixtureList = function getFixtureList(callback) {
-    const fixturePath = path.join(this.path, common.FIXTIRES_DIR_PATH);
+    const fixturePath = path.join(this.path, common.FIXTURES_DIR_PATH);
     getXmlListFiles(fixturePath, callback);
 };
 
@@ -462,7 +462,7 @@ ADX.prototype.checkTestsDirectory = function checkTestsDirectory(callback) {
         }
 
         // Check the fixtures directory
-        checkDirectory(common.FIXTIRES_DIR_PATH, onCheckDirectory);
+        checkDirectory(common.FIXTURES_DIR_PATH, onCheckDirectory);
 
         // Check the emulations directory
         checkDirectory(common.EMULATIONS_DIR_PATH, onCheckDirectory);

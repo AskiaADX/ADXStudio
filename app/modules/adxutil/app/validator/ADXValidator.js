@@ -422,7 +422,6 @@ Validator.prototype.validate = function validate(options, callback) {
     // Register the end callback for future usage
     this.validationCallback = callback;
 
-
     this._adxShell = (options && options.adxShell) || null;
 
     // Validate according to the options

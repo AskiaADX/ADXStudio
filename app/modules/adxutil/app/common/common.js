@@ -21,7 +21,7 @@ exports.README_FILE_NAME = 'readme.md';
 // Path of the unit tests directory
 exports.UNIT_TEST_DIR_PATH = "tests/units";
 // Path of the `fixtures` directory
-exports.FIXTIRES_DIR_PATH = "tests/fixtures";
+exports.FIXTURES_DIR_PATH = "tests/fixtures";
 // Path of the `emulations` directory
 exports.EMULATIONS_DIR_PATH = "tests/emulations";
 // Path of the `controls` directory
@@ -59,6 +59,8 @@ exports.MODULES_DIR_NAME = "modules";
 exports.ADX_IGNORE_FILE_NAME = "ADXIgnore";
 // Ignore file list
 exports.adxIgnoreFiles = "";
+// Ignore file list extra
+exports.adxIgnoreFilesExtra = [];
 // Rules to ignore files
 exports.adxIgnoreFilesRules = undefined;
 
@@ -316,30 +318,40 @@ exports.dirExists = function dirExists(path, callback) {
  * @return {Boolean} True when should be ignored
  * @ignore
  */
-exports.isIgnoreFile = function isIgnoreFile(filename) {
+exports.isIgnoreFile = function isIgnoreFile(filename, extra) {
     if (!exports.adxIgnoreFiles) {
         exports.adxIgnoreFiles = fs.readFileSync(pathHelper.resolve(__dirname, "../" + exports.ADX_IGNORE_FILE_NAME), 'utf8');
     }
 
-    // Export the rules
-    if (!exports.adxIgnoreFilesRules) {
-        const lines = exports.adxIgnoreFiles.split('\n');
-        const rgExp = [];
-        lines.forEach((line) => {
-            line = line.replace(/(#.*)/g, '');
-            line = line.replace(/\s/g, '');
-            line = line.replace(/\r/g, '');
-            if (!line) return;
-            line = line.replace(/\./g, "\\.");
-            line = line.replace(/-/g, "\\-");
-            line = line.replace(/\*/g, ".*");
-            rgExp.push(line);
-        });
-
-        exports.adxIgnoreFilesRules = new RegExp("(" + rgExp.join("|") + ")$", "gi");
+    if(extra) {
+        exports.adxIgnoreFilesExtra = exports.getRegExp(extra);
     }
 
-    return exports.adxIgnoreFilesRules.test(filename);
+    // Export the rules
+    if (!exports.adxIgnoreFilesRules) {
+        exports.adxIgnoreFilesRules = exports.getRegExp(exports.adxIgnoreFiles);
+        // exports.adxIgnoreFilesRules = new RegExp("(" + rgExp.join("|") + ")$", "gi");
+    }
+
+    const filesRegExp = new RegExp("(" + (exports.adxIgnoreFilesRules.concat(exports.adxIgnoreFilesExtra)).join("|") + ")$", "gi");
+    return filesRegExp.test(filename);
+};
+
+exports.getRegExp = function getRegExp(ignoreFiles) {
+    const lines = ignoreFiles.split('\n');
+    const rgExp = [];
+    lines.forEach((line) => {
+        line = line.replace(/(#.*)/g, '');
+        line = line.replace(/\s/g, '');
+        line = line.replace(/\r/g, '');
+        if (!line) return;
+        line = line.replace(/\./g, "\\.");
+        line = line.replace(/-/g, "\\-");
+        line = line.replace(/\*/g, ".*");
+        rgExp.push(line);
+    });
+
+    return rgExp;
 };
 
 /**

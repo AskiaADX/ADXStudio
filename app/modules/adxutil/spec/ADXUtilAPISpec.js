@@ -332,7 +332,7 @@ describe('ADXUtilAPI', () => {
         describe('#getFixtureList', function () {
             it('should return the names of xml file under the `tests/fixtures` path', function () {
                 spies.fs.readdir.andCallFake(function (path, cb) {
-                    if (path === pathHelper.join('some/path', common.FIXTIRES_DIR_PATH)) {
+                    if (path === pathHelper.join('some/path', common.FIXTURES_DIR_PATH)) {
                         cb(null, ['no-fixture.doc', 'fixture1.xml', 'fixture2.xml', 'fixture3.xml', 'no-fixture', 'no-fixture.txt', 'fixture4.xml']);
                     } else {
                         cb(new Error('No such file or directory'));
@@ -394,7 +394,7 @@ describe('ADXUtilAPI', () => {
 
             it("should copy `tests/fixtures` directory of the `blank` ADC template if it  doesn't exist", function () {
                 spyOn(common, 'dirExists').andCallFake(function (p, cb) {
-                    if (p === pathHelper.join('adc/path', common.FIXTIRES_DIR_PATH)) {
+                    if (p === pathHelper.join('adc/path', common.FIXTURES_DIR_PATH)) {
                         cb(null, false);
                     } else {
                         cb(null, true);
@@ -406,8 +406,8 @@ describe('ADXUtilAPI', () => {
 
                 runSync(function (done) {
                     spies.ncp.andCallFake(function (source, dest) {
-                        expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adc', common.DEFAULT_TEMPLATE_NAME, common.FIXTIRES_DIR_PATH));
-                        expect(dest).toEqual(pathHelper.join('adc/path', common.FIXTIRES_DIR_PATH));
+                        expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adc', common.DEFAULT_TEMPLATE_NAME, common.FIXTURES_DIR_PATH));
+                        expect(dest).toEqual(pathHelper.join('adc/path', common.FIXTURES_DIR_PATH));
                         done();
                     });
 
@@ -420,7 +420,7 @@ describe('ADXUtilAPI', () => {
 
             it("should copy `tests/fixtures` directory of the `blank` ADP template if it  doesn't exist", function () {
                 spyOn(common, 'dirExists').andCallFake(function (p, cb) {
-                    if (p === pathHelper.join('adp/path', common.FIXTIRES_DIR_PATH)) {
+                    if (p === pathHelper.join('adp/path', common.FIXTURES_DIR_PATH)) {
                         cb(null, false);
                     } else {
                         cb(null, true);
@@ -432,8 +432,8 @@ describe('ADXUtilAPI', () => {
 
                 runSync(function (done) {
                     spies.ncp.andCallFake(function (source, dest) {
-                        expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adp', common.DEFAULT_TEMPLATE_NAME, common.FIXTIRES_DIR_PATH));
-                        expect(dest).toEqual(pathHelper.join('adp/path', common.FIXTIRES_DIR_PATH));
+                        expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adp', common.DEFAULT_TEMPLATE_NAME, common.FIXTURES_DIR_PATH));
+                        expect(dest).toEqual(pathHelper.join('adp/path', common.FIXTURES_DIR_PATH));
                         done();
                     });
 
