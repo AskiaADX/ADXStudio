@@ -29,7 +29,7 @@ html, body {
 
 #panel_workspace {
     flex        : 1;
-//    margin-left : 4px;
+   /* margin-left : 4px; */
 }
 
 webview {

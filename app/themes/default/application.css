@@ -989,7 +989,7 @@ table#properties_table a:active:not(.add-property-option) {
 }
 
 .askia-modal-dialog.about .left {
-    background: url(../../lib/askia/about-adxstudiologo.png) no-repeat center center;
+    background: url(../../lib/askia/about-adxstudiologo.png) no-repeat center center, #8dc53e;
 }
 
 .askia-modal-dialog.about .right {

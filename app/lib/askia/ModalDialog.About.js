@@ -28,11 +28,11 @@
         '</div>',
         '<div class="right">',
         '<h3>ADX Studio</h3>',
-        '<h4>Askia Design eXtension Studio</h4>',
+        '<h4>Askia Design eXtension Studio</h4><br><hr>',
         '<p>version ' + appVersion + '</p>',
-        '<p>Maxime Gasnier, Vincent Tellier, Louis Ledoux, Mamadou Sy, Paul Nevin, Mehdi Ait Bachir, J&#233;r&#244;me Duparc, J&#233;r&#244;me Sopo&#231;ko, Robbe Van der Gucht, Prabath Gamage, Peter Gabri&#235;l</p>',
+        '<!--<p>Maxime Gasnier, Vincent Tellier, Louis Ledoux, Mamadou Sy, Paul Nevin, Mehdi Ait Bachir, J&#233;r&#244;me Duparc, J&#233;r&#244;me Sopo&#231;ko, Robbe Van der Gucht, Prabath Gamage, Peter Gabri&#235;l</p>-->',
         '<p>Sections of this application use or are based upon third-party technologies: <a href="http://electron.atom.io/" target="_blank">Electron</a>, <a href="https://nodejs.org/en/" target="_blank">NodeJS</a>.</p>',
-        '<p>Made with <span style="color: #e74c3c">&hearts;</span> in Paris at <a href="http://www.askia.com/" target="_blank">Askia</a> &copy; 2024 all rights reserved.</p></div>',
+        '<hr><p><br>Made with <span style="color: #e74c3c">&hearts;</span> at <a href="http://www.askia.com/" target="_blank">Askia</a> &copy; 2024 all rights reserved.</p></div>',
         '</div>',
         '</section>'
       ].join('');

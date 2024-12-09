@@ -1,6 +1,6 @@
 # Explorer
 
-The explorer is the left space in the IDE dedicated to the tree view when folders/projetcs are opens.
+The explorer is the left space in the IDE dedicated to the tree view when folders/projects are opened.
 
 The explorer contains :
 
@@ -34,7 +34,7 @@ It's fire with the following arguments:
 
 * **event** Event object
 * **dirPath** Path of the directory where to create the new item.
-* **tyoe** Type of item it could be ('file', 'directory', 'html', 'css', 'js').
+* **type** Type of item it could be ('file', 'directory', 'html', 'css', 'js').
 * **itemName** Name of the file or directory
 
 ### explorer-rename
@@ -100,7 +100,7 @@ It will load the folder chosen.
         });
 
   **About the 'event.sender.send'**
-  * 'loadFoler' the message sent.
+  * 'loadFolder' the message sent.
   * 'err' the information about the potential error.
   * 'files' the files selected.
   * 'elementid' the id of the file selected.
