@@ -630,7 +630,11 @@ function onSaveContent (event, tabId, content) {
  *
  * @param {String} fileContent Content of the file to save
  */
-function showSaveDialog (fileContent) {
+function showSaveDialog (tab, fileContent) {
+  const fn = path.basename(tab.path);
+  const fileExt = path.extname(tab.path);
+  const fileNameWithoutExt = fn.substring(0, fn.length-fileExt.length);
+  const parentDir = tab.path.substring(0, tab.path.length-fn.length);
   const fileName = fileNameWithoutExt + ' - Copy' + fileExt;
   const defaultPath = path.join(parentDir, fileName);
 
@@ -667,10 +671,14 @@ function onSaveContentAs (event, tabId, content) {
     if (err) {
       return; // Do nothing
     }
-
     if (tab.type === 'projectSettings') {
       // Use a fresh instance of the configurator based on the same file
-      const configurator = new ADXConfigurator(tab.path);
+      const adx = global.project.getADX();
+      if (!adx || !adx.path) {
+        return;
+      }
+
+      const configurator = new ADXConfigurator(adx.path);
       configurator.load((err) => {
         if (err) {
           return; // Do nothing
@@ -682,12 +690,12 @@ function onSaveContentAs (event, tabId, content) {
           configurator.set(content);
         }
         // Save the xml
-        showSaveDialog(configurator.toXml());
+        showSaveDialog(tab, configurator.toXml());
       });
       return;
     }
 
-    showSaveDialog(content);
+    showSaveDialog(tab, content);
   });
 }
 
