@@ -352,10 +352,12 @@ function openPreferences (){
 /**
  * Save preferences
  */
-function savePreferences (event, button, options) {
+function savePreferences (event, options) {
+  /*
   if (button !== 'ok' && button !== 'yes') {
     return;
   }
+  */
   if (!options.preferences) {
     return;
   }

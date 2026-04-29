@@ -103,6 +103,10 @@ h3 {
     vertical-align  : middle;
 }
 
+#grid input[type=file] {
+    width: 90%;
+}
+
 .color_text {
     width: calc(90% - 76px) !important;
 }
@@ -115,7 +119,7 @@ h3 {
 }
 
 #grid select {
-    width       : calc(90% + 20px);
+    width       : calc(90% + 22px);
     line-height : 26px;
     cursor      : pointer;
 }
