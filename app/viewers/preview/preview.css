@@ -108,7 +108,7 @@ h3 {
 }
 
 .color_text {
-    width: calc(90% - 76px) !important;
+    width: calc(90% - 60px) !important;
 }
 
 #grid input[type=color] {

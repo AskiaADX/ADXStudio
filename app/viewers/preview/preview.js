@@ -174,6 +174,8 @@ document.addEventListener('DOMContentLoaded', function () {
     revert: true
   });
   const tab = viewer.currentTab;
+  let frameLocationSearch = '';
+  let frameLocationHref = '';
   const wsConnection = new WebSocket('ws://localhost:' + tab.ports.ws);
 
   wsConnection.onopen = function () {
@@ -196,6 +198,13 @@ document.addEventListener('DOMContentLoaded', function () {
       FormBuilder.getInstance().reloadPreview();
     }
   };
+
+  // Receive the message from the iframe to get the location search and href
+  // This is need because it's no longer possible to access the contentWindow of the iframe because of the security (cross-origin)
+  window.addEventListener('message', function(event) {
+    frameLocationSearch = event.data.search;
+    frameLocationHref = event.data.href;
+  });
 
   /**
    * Convert a number to his base 16
@@ -342,7 +351,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     doc = doc || document;
     const rgExp = new RegExp(name + '=([^\\&]*)', 'i');
-    const arrResult = rgExp.exec(doc.location.search);
+    // const search = doc.location.search || '';
+    const arrResult = rgExp.exec(frameLocationSearch);
     if (!arrResult) {
       return '';
     }
@@ -369,7 +379,8 @@ document.addEventListener('DOMContentLoaded', function () {
     this.onlocationChange = () => {
       // Wait a few in case of the HTTP redirect
       setTimeout(() => {
-        this.addressURL.value = this.iframe.contentWindow.location.href;
+        // this.addressURL.value = this.iframe.contentWindow.location.href;
+        this.addressURL.value = frameLocationHref;
       }, 500);
     };
     this.iframe.addEventListener('load', () => {
