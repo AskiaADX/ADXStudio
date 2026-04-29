@@ -1,0 +1,11 @@
+document.createElement('header');
+document.createElement('footer');
+document.createElement('section');
+document.createElement('hgroup');
+document.createElement('aside');
+document.createElement('nav');
+document.createElement('article');
+document.createElement('figure');
+document.createElement('figcaption');
+document.createElement('time');
+document.createElement('dialog');

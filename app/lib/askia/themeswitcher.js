@@ -1,5 +1,7 @@
+
 (function () {
-  const ipc = require('electron').ipcRenderer;
+  // Use window.electronAPI for IPC
+  const ipc = window.electronAPI;
 
   // First try to find it in the URL
   const initialTheme = window.localStorage['adxstudio-initial-theme'] || 'default';
@@ -23,5 +25,7 @@
     }
   }
 
-  ipc.on('switch-theme', changeTheme);
+  if (ipc && ipc.on) {
+    ipc.on('switch-theme', changeTheme);
+  }
 })();

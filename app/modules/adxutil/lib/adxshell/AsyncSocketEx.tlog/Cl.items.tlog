@@ -1,0 +1,15 @@
+D:\source\ContactCentre\CCShared\CryptoWrapper.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\CryptoWrapper.obj
+D:\source\ContactCentre\SharedRepo\Miscellaneous\AsyncSocketEx.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSocketEx.obj
+D:\source\ContactCentre\CCShared\Crypt.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\Crypt.obj
+D:\source\ContactCentre\_Source Libs\Zlib\adler32.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\adler32.obj
+D:\source\ContactCentre\_Source Libs\Zlib\crc32.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\crc32.obj
+D:\source\ContactCentre\_Source Libs\Zlib\deflate.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\deflate.obj
+D:\source\ContactCentre\_Source Libs\Zlib\inffast.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\inffast.obj
+D:\source\ContactCentre\_Source Libs\Zlib\inflate.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\inflate.obj
+D:\source\ContactCentre\_Source Libs\Zlib\inftrees.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\inftrees.obj
+D:\source\ContactCentre\_Source Libs\Zlib\trees.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\trees.obj
+D:\source\ContactCentre\_Source Libs\Zlib\zutil.c;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\zutil.obj
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\AsyncSocketExApp.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSocketExApp.obj
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\AsyncSocketExDirect.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSocketExDirect.obj
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\stdafx.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\stdafx.obj
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\Wrapper.cpp;D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\Wrapper.obj

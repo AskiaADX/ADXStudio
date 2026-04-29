@@ -1,0 +1,9 @@
+C:\Users\jasper\Documents\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSocketEx.vcxproj.CopyComplete
+C:\Users\jasper\Documents\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSocketEx.dll
+C:\Users\jasper\Documents\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AskCmn.dll
+C:\Users\jasper\Documents\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\boost_locale-vc143-mt-x64-1_80.dll
+C:\Users\jasper\Documents\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\libcurl.dll
+C:\Users\jasper\Documents\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\zlib1.dll
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSoc.0B84CCBB.Up2Date
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\AsyncSocketEx.dll
+D:\source\ContactCentre\_Utilities\AsyncSocketEx\x64\Release\zlib1.dll

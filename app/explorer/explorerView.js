@@ -1,14 +1,6 @@
 // the object map is created to give unique id to each item
-const electron = require('electron');
-// let remote = electron.remote;
-const remote = require('@electron/remote');
-
-remote.require("@electron/remote/main").enable(remote.BrowserWindow.getAllWindows()[0].webContents);
-
-let Menu = remote.Menu;
-let MenuItem = remote.MenuItem;
-let ipc = electron.ipcRenderer;
-let shell = electron.shell;
+// Use window.electronAPI for IPC and shell actions in renderer context
+let shell = window.electronAPI;
 let dblClick = JSON.parse(localStorage['adxstudio-initial-useDblClick']);
 let lastSelected;
 let keyCodes = {
@@ -30,7 +22,7 @@ let keyCodes = {
 function removeMenu (files) {
   let file = files[0];
   if (files.length === 1) {
-    ipc.sendToHost('show-modal-dialog', {
+    window.electronAPI.send('show-modal-dialog', {
       type: 'yesNo',
       message: 'Do you really want to remove `' + file.name + '`?',
       buttonText: {
@@ -39,7 +31,7 @@ function removeMenu (files) {
       }
     }, 'explorer-remove', file);
   } else {
-    ipc.sendToHost('show-modal-dialog', {
+    window.electronAPI.send('show-modal-dialog', {
       type: 'yesNo',
       message: 'Do you really want to remove these files?',
       buttonText: {
@@ -50,223 +42,6 @@ function removeMenu (files) {
   }
 }
 
-function displayMenu (files, contextualMenu) {
-  let file = files[0];
-
-  /* Add file */
-  function addNewFile (menuItem) {
-    let messageByType = {
-      file: 'File name:',
-      directory: 'Directory name:',
-      html: 'HTML file name:',
-      css: 'Stylesheet file name:',
-      js: 'Javascript file name:',
-      asx: 'Askia Script Xtension file name'
-    };
-    let filePath = file.path;
-    if (file.type === 'file') { // Remove the file name
-      filePath = filePath.replace(file.name, '');
-    }
-    ipc.sendToHost('show-modal-dialog', {
-      type: 'prompt',
-      message: messageByType[menuItem.id],
-      buttonText: {
-        ok: 'Create',
-        cancel: 'Don\'t create'
-      }
-    }, 'explorer-add-item', filePath, menuItem.id);
-  }
-  if (files.length === 1) {
-    contextualMenu.append(new MenuItem({
-      label: 'New',
-      submenu: [
-        {
-          id: 'file',
-          label: 'File',
-          click: addNewFile
-        },
-        {
-          id: 'directory',
-          label: 'Directory',
-          click: addNewFile
-        },
-        {
-          type: 'separator'
-        },
-        {
-          id: 'html',
-          label: 'HTML file',
-          click: addNewFile
-        },
-        {
-          id: 'css',
-          label: 'Stylesheet',
-          click: addNewFile
-        },
-        {
-          id: 'js',
-          label: 'Javascript file',
-          click: addNewFile
-        },
-        {
-          id: 'asx',
-          label: 'Askia Script Xtension file',
-          click: addNewFile
-        }
-      ]
-    }));
-
-    if(file.type !== 'file') {
-      contextualMenu.append(new MenuItem({
-        label: 'Refresh',
-        click: function onClickCut () {
-          ipc.send('explorer-refresh', file.path);
-        }
-      }));
-    }
-
-    contextualMenu.append(new MenuItem({ type: 'separator' }));
-
-    if (!file.root) {
-      /* Open file in the OS manner */
-      if (/\.html?$/i.test(file.name)) {
-        contextualMenu.append(new MenuItem({
-          label: 'Open in browser',
-          click: function onClickOpen () {
-            shell.openPath(file.path);
-          }
-        }));
-      }
-
-      /*cut file*/
-      contextualMenu.append(new MenuItem({
-        label: 'Cut',
-        click: function onClickCut () {
-          ipc.send('cut-file', file);
-        }
-      }));
-
-      /*copy file*/
-      contextualMenu.append(new MenuItem({
-        label: 'Copy',
-        click: function onClickCopy () {
-          ipc.send('copy-file', file);
-        }
-      }));
-
-      /*paste file*/
-      contextualMenu.append(new MenuItem({
-        label: 'Paste',
-        click: function onClickPaste () {
-          ipc.send('paste-file', file);
-        }
-      }));
-
-      contextualMenu.append(new MenuItem({ type: 'separator' }));
-
-      /* Rename file */
-      contextualMenu.append(new MenuItem({
-        label: 'Rename',
-        click: function onClickRename () {
-          ipc.sendToHost('show-modal-dialog', {
-            type: 'prompt',
-            message: 'Rename:',
-            buttonText: {
-              ok: 'Rename',
-              cancel: 'Don\'t rename'
-            },
-            value: file.name
-          }, 'explorer-rename', file);
-        }
-      }));
-
-      /* Remove file */
-      contextualMenu.append(new MenuItem({
-        label: 'Remove',
-        click: function () {
-          removeMenu(files);
-        }
-      }));
-
-      /* Minify file */
-      if(file.path.endsWith('.js')) {
-        contextualMenu.append(new MenuItem({
-          label: 'Minify',
-          click: function () {
-            ipc.sendToHost('show-modal-dialog', {
-              type: 'prompt',
-              message: 'Minify:',
-              buttonText: {
-                ok: 'Minify',
-                cancel: 'Cancel'
-              },
-              value: file.name.replace('.js', '.min.js')
-            }, 'explorer-minify', file);
-          }
-        }));
-      }
-
-      /* Open explorer */
-      if(file.type !== 'file') {
-        contextualMenu.append(new MenuItem({
-          label: 'Open in explorer',
-          click: function () {
-            ipc.send('open-explorer', file.path);
-          }
-        }));
-      }
-    } else {
-      contextualMenu.append(new MenuItem({
-        label: 'Project settings',
-        click: function () {
-          ipc.send('explorer-show-project-settings');
-        }
-      }));
-
-      contextualMenu.append(new MenuItem({
-        label: 'Open in explorer',
-        click: function () {
-          ipc.send('open-explorer', file.path);
-        }
-      }));
-    }
-  }
-  if (files.length > 1) {
-    /*cut file*/
-    contextualMenu.append(new MenuItem({
-      label: 'Cut All',
-      click: function onClickCut () {
-        ipc.send('cut-all-file', files);
-      }
-
-    }));
-
-    /*copy file*/
-    contextualMenu.append(new MenuItem({
-      label: 'Copy All',
-      click: function onClickCopy () {
-        ipc.send('copy-all-file', files);
-      }
-    }));
-
-    /*paste file*/
-    contextualMenu.append(new MenuItem({
-      label: 'Paste All',
-      click: function onClickPaste () {
-        ipc.send('paste-file', file);
-      }
-    }));
-
-    contextualMenu.append(new MenuItem({ type: 'separator' }));
-
-    contextualMenu.append(new MenuItem({
-      label: 'Remove All',
-      click: function () {
-        removeMenu(files);
-      }
-    }));
-  }
-}
 
 function checkIfRootIsSelected () {
   let root = document.getElementById('root').querySelector('.item-info');
@@ -364,7 +139,7 @@ function itemDoubleClick (e) {
     return;
   }
   if (file.type === 'file') {
-    ipc.send('explorer-load-file', file);
+    window.electronAPI.send('explorer-load-file', file);
   }
 }
 
@@ -378,13 +153,9 @@ function itemRightClick (e) {
   for (let i = 0, l = selectedElements.length; i < l; i++) {
     files.push(selectedElements[i].parentNode.file);
     filesParent.push(selectedElements[i].parentNode);
-  }
+  }  
 
-  let contextualMenu = new Menu();
-
-  displayMenu(files, contextualMenu, filesParent);
-
-  contextualMenu.popup(remote.BrowserWindow.getAllWindows()[0]);
+  window.electronAPI.send('explorer-context-menu', files, filesParent);
 }
 
 function itemclick (e) {
@@ -416,7 +187,7 @@ function itemclick (e) {
     }
 
     if (!file.loaded) {
-      ipc.send('explorer-load-folder', file.path);
+      window.electronAPI.send('explorer-load-folder', file.path);
       file.loaded = true;
     }
   }
@@ -424,7 +195,7 @@ function itemclick (e) {
     return;
   }
   if (file.type === 'file') {
-    ipc.send('explorer-load-file', file);
+    window.electronAPI.send('explorer-load-file', file);
   }
 }
 
@@ -436,9 +207,9 @@ function copy () {
   }
   if (files.length === 1) {
     let file = files[0];
-    ipc.send('copy-file', file);
+    window.electronAPI.send('copy-file', file);
   } else if (files.length > 1) {
-    ipc.send('copy-all-file', files);
+    window.electronAPI.send('copy-all-file', files);
   }
 }
 
@@ -450,9 +221,9 @@ function cut () {
   }
   if (files.length === 1) {
     let file = files[0];
-    ipc.send('cut-file', file);
+    window.electronAPI.send('cut-file', file);
   } else if (files.length > 1) {
-    ipc.send('cut-all-file', files);
+    window.electronAPI.send('cut-all-file', files);
   }
 }
 
@@ -464,9 +235,9 @@ function paste () {
   }
   if (files.length === 1) {
     let file = files[0];
-    ipc.send('paste-file', file);
+    window.electronAPI.send('paste-file', file);
   } else if (files.length > 1) {
-    ipc.send('paste-file', files);
+    window.electronAPI.send('paste-file', files);
   }
 }
 
@@ -623,7 +394,7 @@ function keyNavigator (e) {
         }
 
         if (!file.loaded) {
-          ipc.send('explorer-load-folder', file.path);
+          window.electronAPI.send('explorer-load-folder', file.path);
           file.loaded = true;
         }
       }
@@ -641,7 +412,7 @@ function keyNavigator (e) {
         }
 
         if (!file.loaded) {
-          ipc.send('explorer-load-folder', file.path);
+          window.electronAPI.send('explorer-load-folder', file.path);
           file.loaded = true;
         }
       }
@@ -663,11 +434,11 @@ function keyNavigator (e) {
         }
 
         if (!file.loaded) {
-          ipc.send('explorer-load-folder', file.path);
+          window.electronAPI.send('explorer-load-folder', file.path);
           file.loaded = true;
         }
       } else {
-        ipc.send('explorer-load-file', file);
+        window.electronAPI.send('explorer-load-file', file);
       }
     }
   } else if (selectedElements.length === 0) {
@@ -678,7 +449,7 @@ function keyNavigator (e) {
 
 function renameWithKeyboard () {
   let file = document.querySelector('.selected').parentNode.file;
-  ipc.sendToHost('show-modal-dialog', {
+  window.electronAPI.send('show-modal-dialog', {
     type: 'prompt',
     message: 'Rename:',
     buttonText: {
@@ -707,11 +478,12 @@ function menuWithKeyboard () {
     filesParent.push(selectedElements[i].parentNode);
   }
 
-  let contextualMenu = new Menu();
+  window.electronAPI.send('explorer-context-menu', files, filesParent);
 
-  displayMenu(files, contextualMenu, filesParent);
-
-  contextualMenu.popup(remote.BrowserWindow.getAllWindows()[0]);
+  // Native context menus are not available in the renderer without remote.
+  // Implement a custom context menu here or send an IPC event to main process to show native menu if needed.
+  // Example: window.electronAPI.send('show-context-menu', menuTemplate, files);
+  // For now, this is a no-op.
 }
 
 function upExplorer () {
@@ -758,7 +530,7 @@ document.addEventListener('keydown', function (e) {
   }
 });
 
-ipc.on('switch-click', switchClick);
+window.electronAPI.on('switch-click', switchClick);
 
 document.addEventListener('DOMContentLoaded', function () {
   /*
@@ -767,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
    * @param {Array} files files or folder inside rootPath.
    * @param {Boolean} isRoot indicate if e are on root.
    */
-  ipc.on('explorer-expand-folder', function (event, err, path, files, isRoot, rootName) {
+  window.electronAPI.on('explorer-expand-folder', function (event, err, path, files, isRoot, rootName) {
     let root = (isRoot) ? document.getElementById('root').querySelector('.child')
       : document.querySelector('div[data-path=\'' + path.replace(/(\\)/g, '\\\\').replace(/(:)/g, '\\:') + '\']').querySelector('.child');
     let deep = parseInt(root.getAttribute('data-deep'), 10);
@@ -833,5 +605,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  ipc.send('explorer-ready');
+  window.electronAPI.send('explorer-ready');
 });

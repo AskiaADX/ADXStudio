@@ -1,7 +1,6 @@
+// Use window.electronAPI for Electron APIs in renderer context
 (function () {
-  const electron = require('electron');
-  const ipc = electron.ipcRenderer;
-  const shell = electron.shell;
+  const shell = window.electronAPI.shell;
   const exp = document.getElementById('explorer');
   const wks = document.getElementById('workspace');
   const askia = window.askia;
@@ -23,7 +22,7 @@
       });
 
       resExpl.start();
-      ipc.send('main-ready');
+      window.electronAPI.send('main-ready');
     }
   }
 
@@ -46,7 +45,7 @@
           if (result.value) {
             args.push(result.value);
           }
-          ipc.send.apply(ipc, args);
+          window.electronAPI.send.apply(null, args);
         }
       });
     }
@@ -55,7 +54,7 @@
   /**
    * Set the focus on the workspace by default
    */
-  ipc.on('application-focus', function () {
+  window.electronAPI.on('application-focus', function () {
     wks.focus();
   });
 
@@ -63,21 +62,24 @@
   /**
    * Show modal dialog from the controller
    */
-  ipc.on('show-modal-dialog', function showModalDialog (event, options) {
+  window.electronAPI.on('show-modal-dialog', function showModalDialog (event, options) {    
     let args = Array.prototype.slice.call(arguments, 2, arguments.length); // Remove the first args
     askia.modalDialog.show(options, function (result) {
-      args.push(result.button);
-      if (result.value) {
-        args.push(result.value);
+      // args.push(result.button);
+      if (result.button === 'ok' || result.button === 'yes') {
+        if (result.value) {
+          args.push(result.value);
+        }
+
+        window.electronAPI.send.apply(null, args);
       }
-      ipc.send.apply(ipc, args);
     });
   });
 
   /**
    * Close the modal dialog from the controller
    */
-  ipc.on('close-modal-dialog', function closeModalDialog () {
+  window.electronAPI.on('close-modal-dialog', function closeModalDialog () {
     askia.modalDialog.close();
   });
 
@@ -86,7 +88,7 @@
    * @param event
    * @param {String} view View to toggle
    */
-  ipc.on('toggle-dev-tools', function toggleDevTools (event, view) {
+  window.electronAPI.on('toggle-dev-tools', function toggleDevTools (event, view) {
     switch (view) {
     case 'explorer':
       if (exp.isDevToolsOpened()) {
@@ -163,7 +165,7 @@
      * Write in the output
      * @param {String} text Text to write
      */
-    ipc.on('output-write', function (event, text) {
+    window.electronAPI.on('output-write', function (event, text) {
       openStatusBar('panel_output'); // Make sure it's open
 
       //let el = document.createElement("div");
@@ -181,14 +183,14 @@
     /**
      * Clear the output
      */
-    ipc.on('output-clear', function () {
+    window.electronAPI.on('output-clear', function () {
       outEl.innerHTML = '';
     });
 
     /**
      * Close the status bar
      */
-    ipc.on('output-close', function () {
+    window.electronAPI.on('output-close', function () {
       closeStatusBar();
     });
   });

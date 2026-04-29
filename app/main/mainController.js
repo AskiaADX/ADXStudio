@@ -13,7 +13,8 @@ const packageJson = require('../../package.json');
 let  mainView;
 
 const workspaceController = require('../workspace/workspaceController.js');
-require('../explorer/explorerController.js');
+const explorerController = require('../explorer/explorerController.js');
+const { show } = require('../modules/adxutil/app/show/ADXShow.cjs');
 require('./menuController.js');
 
 /**
@@ -61,7 +62,12 @@ global.adxLogger = {
  * @param {String} callbackEventName Name of the callback event
  */
 function showModalDialog () {
-  mainView.send('show-modal-dialog', ...arguments);
+  mainView.send('show-modal-dialog', ...arguments);  
+}
+
+function doShowModalDialog () {
+  let args = Array.prototype.slice.call(arguments, 1, arguments.length); // Remove the first arg (event)
+  showModalDialog(...args);
 }
 
 /**
@@ -419,6 +425,10 @@ function onAppFocus () {
 }
 
 
+function openExplorer (event, path) {
+ explorerController.openExplorer(event, path);
+}
+
 /**
  * Fire when the main window is ready
  */
@@ -427,6 +437,9 @@ ipc.on('main-ready', function (event) {
 
   app.removeListener('show-modal-dialog', showModalDialog);
   app.on('show-modal-dialog', showModalDialog);
+  
+  ipc.removeListener('show-modal-dialog', doShowModalDialog);
+  ipc.on('show-modal-dialog', doShowModalDialog);
 
     // When focused on the app
   app.removeListener('browser-window-focus', onAppFocus);

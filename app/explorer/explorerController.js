@@ -75,6 +75,7 @@ function addItem (event, dirPath, type, itemName) {
           message: err.message
         });
       }
+      refreshExplorerView(dirPath, false);
     });
   }
 }
@@ -98,7 +99,7 @@ function sortFiles (a, b) {
 function removeAllFiles (event, files) {
   files = files.sort(sortFiles).reverse();
   for (let i = 0, l = files.length; i < l; i++) {
-    removeFile(event, files[i]);
+    removeFile(files[i]);
   }
 }
 
@@ -108,7 +109,7 @@ function removeAllFiles (event, files) {
  * @param event
  * @param {Tab} file Path of the folder or the file selected.
  */
-function removeFile (event, file) {
+function removeFile (file) {
   const pathToRemove = file.path;
   // Notify that a file will be remove
   app.emit('explorer-file-removing', file.type, file.path);
@@ -125,7 +126,9 @@ function removeFile (event, file) {
   });
 }
 
-
+function doRemoveFile (event, file) {
+  removeFile(file);
+}
 
 /**
  * Rename file event
@@ -223,7 +226,7 @@ function cutAll (event, files) {
   };
 }
 
-function copy (event, file) {
+function copy (file) {
   lastCopy = {
     file: file,
     type: 'simple',
@@ -231,7 +234,11 @@ function copy (event, file) {
   };
 }
 
-function cut (event, file) {
+function doCopy (event, file) {
+  copy(file);
+}
+
+function cut (file) {
   lastCopy = {
     file: file,
     type: 'simple',
@@ -239,7 +246,11 @@ function cut (event, file) {
   };
 }
 
-function paste (event, file) {
+function doCut (event, file) {
+  cut(file);
+}
+
+function paste (file) {
   fileToPaste = file;
 
   if (file.type === 'file') {
@@ -266,33 +277,37 @@ function paste (event, file) {
         }
       }
     }
-    finalPaste(event, false);
+    finalPaste(false);
   });
 }
 
-function copyFolder (src, dest, forceDel, event) {
+function doPaste (event, file) {
+  paste(file);
+}
+
+function copyFolder (src, dest, forceDel) {
   wrench.copyDirRecursive(src.path, dest, { forceDelete: forceDel }, function (err) {
     if (err) {
       console.log(err.message);
     }
     if (lastCopy.typeOfCopy === 'cut') {
-      removeFile(event, src);
+      removeFile(src);
     }
   });
 }
 
-function copyFile (src, dest, forceDel, event) {
+function copyFile (src, dest, forceDel) {
   fse.copy(src.path, dest, { replace: forceDel }, function (err) {
     if (err) {
       console.log(err.message);
     }
     if (lastCopy.typeOfCopy === 'cut') {
-      removeFile(event, src);
+      removeFile(src);
     }
   });
 }
 
-function finalPaste (event, button) {
+function finalPaste (button) {
   const override = (button === 'yes');
   let filePath = fileToPaste.path;
   if (fileToPaste.type === 'file') {
@@ -303,24 +318,28 @@ function finalPaste (event, button) {
     for (let i = 0, l = lastCopy.file.length; i < l; i++) {
       fileToWrite = path.join(filePath, lastCopy.file[i].name);
       if (lastCopy.file[i].type === 'folder') {
-        copyFolder(lastCopy.file[i], fileToWrite, override, event);
+        copyFolder(lastCopy.file[i], fileToWrite, override);
       }
       if (lastCopy.file[i].type === 'file') {
-        copyFile(lastCopy.file[i], fileToWrite, override, event);
+        copyFile(lastCopy.file[i], fileToWrite, override);
       }
     }
   } else {
     fileToWrite = path.join(filePath, lastCopy.file.name);
     if (lastCopy.file.type === 'folder') {
-      copyFolder(lastCopy.file, fileToWrite, override, event);
+      copyFolder(lastCopy.file, fileToWrite, override);
     }
     if (lastCopy.file.type === 'file') {
-      copyFile(lastCopy.file, fileToWrite, override, event);
+      copyFile(lastCopy.file, fileToWrite, override);
     }
   }
 }
 
-function doRefreshExplorerView(event, filePath) {
+function doFinalPaste (event, button) {
+  finalPaste(button);
+}
+
+function doRefreshExplorerView(filePath) {
   refreshExplorerView(filePath, false);
 }
 
@@ -336,7 +355,8 @@ function refreshExplorerView(filePath, isFile = true) {
   });
 }
 
-function openExplorer(event, path) {
+
+function openExplorer(path) {
   var cmd = ``;
   switch (require(`os`).platform().toLowerCase().replace(/[0-9]/g, ``).replace(`darwin`, `macos`)) {
       case `win`:
@@ -393,6 +413,24 @@ ipc.on('explorer-ready', function (event) {
   app.removeListener('preference-switch-click', switchClick);
   app.on('preference-switch-click', switchClick);
 
+  app.removeListener('explorer-show-project-settings', showProjectSettings);
+  app.on('explorer-show-project-settings', showProjectSettings);
+
+  app.removeListener('open-explorer', openExplorer);
+  app.on('open-explorer', openExplorer);
+
+  app.removeListener('explorer-refresh', doRefreshExplorerView);  
+  app.on('explorer-refresh', doRefreshExplorerView);
+
+  app.removeListener('cut-file', cut);
+  app.on('cut-file', cut);
+
+  app.removeListener('copy-file', copy);
+  app.on('copy-file', copy);
+
+  app.removeListener('paste-file', paste);
+  app.on('paste-file', paste);
+
   ipc.removeListener('explorer-add-item', addItem);
   ipc.on('explorer-add-item', addItem);
 
@@ -402,26 +440,20 @@ ipc.on('explorer-ready', function (event) {
   ipc.removeListener('explorer-minify', minifyFile);
   ipc.on('explorer-minify', minifyFile);
 
-  ipc.removeListener('explorer-refresh', doRefreshExplorerView);
-  ipc.on('explorer-refresh', doRefreshExplorerView);
-
-  ipc.removeListener('explorer-remove', removeFile);
-  ipc.on('explorer-remove', removeFile);
+  ipc.removeListener('explorer-remove', doRemoveFile);
+  ipc.on('explorer-remove', doRemoveFile);
 
   ipc.removeListener('explorer-remove-all', removeAllFiles);
   ipc.on('explorer-remove-all', removeAllFiles);
 
-  ipc.removeListener('explorer-show-project-settings', showProjectSettings);
-  ipc.on('explorer-show-project-settings', showProjectSettings);
+  ipc.removeListener('cut-file', doCut);
+  ipc.on('cut-file', doCut);
 
-  ipc.removeListener('cut-file', cut);
-  ipc.on('cut-file', cut);
+  ipc.removeListener('copy-file', doCopy);
+  ipc.on('copy-file', doCopy);
 
-  ipc.removeListener('copy-file', copy);
-  ipc.on('copy-file', copy);
-
-  ipc.removeListener('paste-file', paste);
-  ipc.on('paste-file', paste);
+  ipc.removeListener('paste-file', doPaste);
+  ipc.on('paste-file', doPaste);
 
   ipc.removeListener('cut-all-file', cutAll);
   ipc.on('cut-all-file', cutAll);
@@ -429,11 +461,8 @@ ipc.on('explorer-ready', function (event) {
   ipc.removeListener('copy-all-file', copyAll);
   ipc.on('copy-all-file', copyAll);
 
-  ipc.removeListener('explorer-copy-override', finalPaste);
-  ipc.on('explorer-copy-override', finalPaste);
-
-  ipc.removeListener('open-explorer', openExplorer);
-  ipc.on('open-explorer', openExplorer);
+  ipc.removeListener('explorer-copy-override', doFinalPaste);
+  ipc.on('explorer-copy-override', doFinalPaste);
 
   // When the directory structure change, reload the view
   explorer.removeListener('change', onChange); // Remove it first
