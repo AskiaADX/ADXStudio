@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   // Receive the message from the iframe to get the location search and href
-  // This is need because it's no longer possible to access the contentWindow of the iframe because of the security (cross-origin)
+  // This is needed because it's no longer possible to access the contentWindow of the iframe because of the security (cross-origin)
   window.addEventListener('message', function(event) {
     frameLocationSearch = event.data.search;
     frameLocationHref = event.data.href;

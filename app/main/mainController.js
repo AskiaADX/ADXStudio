@@ -134,11 +134,7 @@ function newProject () {
  * @param {String} button Button clicked
  * @param {Object} options Project options
  */
-function createNewProject (event, button, options) {
-  if (button !== 'ok' && button !== 'yes') {
-    return;
-  }
-
+function createNewProject (event, options) {
   clearOutput();
   showLoader('Creating `' + options.name + '` ADX project ...');
   let project = {
@@ -157,7 +153,7 @@ function createNewProject (event, button, options) {
     }
     global.project.set(adx);
 
-        // Open the project with the 'Project settings' tab open
+    // Open the project with the 'Project settings' tab open
     fs.mkdir(path.join(adx.path, '.adxstudio'), function () {
       fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
         tabs: [
@@ -172,7 +168,7 @@ function createNewProject (event, button, options) {
           }
         ]
       }), {encoding: 'utf8'}, function () {
-                // Open the newest project
+        // Open the newest project
         app.emit('menu-open-project', adx.path);
       });
     });
