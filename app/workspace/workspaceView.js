@@ -32,12 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     this.modalDialog = this.askia.modalDialog;
 
-    this.electron = require('electron');
-    this.ipc = this.electron.ipcRenderer;
-    this.remote = require('@electron/remote');
-    this.Menu = this.remote.Menu;
-    this.MenuItem = this.remote.MenuItem;
-    this.shell = this.remote.shell;
+    // Use window.electronAPI for IPC
+    this.ipc = window.electronAPI;
+
+    // Removed @electron/remote and electron require. Use window.electronAPI for IPC and shell actions.
     this.resizer = new this.askia.Resizer({
       element: this.panels.main.htmlElements.root,
       onResize: function onResize () {
@@ -116,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
   WorkspaceView.prototype.listenIpcEvents = function listenIpcEvents () {
     const self = this;
 
-    this.ipc.on('workspace-update-tab', function (event, err, newTabConfig, panelId) {
+    window.electronAPI.on('workspace-update-tab', function (event, err, newTabConfig, panelId) {
       if (err) {
         console.warn(err);
         return;
@@ -124,19 +122,19 @@ document.addEventListener('DOMContentLoaded', function () {
       self.updateTab(newTabConfig, panelId);
     });
 
-    this.ipc.on('workspace-save-active-file', function () {
+    window.electronAPI.on('workspace-save-active-file', function () {
       self.save();
     });
 
-    this.ipc.on('workspace-save-as-active-file', function () {
+    window.electronAPI.on('workspace-save-as-active-file', function () {
       self.save(true);
     });
 
-    this.ipc.on('workspace-save-all-files', function () {
+    window.electronAPI.on('workspace-save-all-files', function () {
       self.saveAll();
     });
 
-    this.ipc.on('workspace-create-tab', function (event, err, tabConfig, panelId) {
+    window.electronAPI.on('workspace-create-tab', function (event, err, tabConfig, panelId) {
       if (err) {
         console.warn(err);
         return;
@@ -144,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
       self.addTab(panelId, tabConfig);
     });
 
-    this.ipc.on('workspace-create-and-focus-tab', function (event, err, tabConfig, panelId) {
+    window.electronAPI.on('workspace-create-and-focus-tab', function (event, err, tabConfig, panelId) {
       if (err) {
         console.warn(err);
         return;
@@ -152,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
       self.addTab(panelId, tabConfig);
     });
 
-    this.ipc.on('workspace-focus-tab', function (event, err, tabConfig, panelId) {
+    window.electronAPI.on('workspace-focus-tab', function (event, err, tabConfig, panelId) {
       if (err) {
         console.warn(err);
         return;
@@ -162,10 +160,9 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         self.setActiveTab(tabConfig.id);
       }
-
     });
 
-    this.ipc.on('workspace-remove-tab', function (event, err, tabConfig, panelId) {
+    window.electronAPI.on('workspace-remove-tab', function (event, err, tabConfig, panelId) {
       if (err) {
         console.warn(err);
         return;
@@ -173,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
       self.panels[panelId].removeTab(tabConfig.id);
     });
 
-    this.ipc.on('workspace-remove-tabs', function (event, err, removedTabs) {
+    window.electronAPI.on('workspace-remove-tabs', function (event, err, removedTabs) {
       if (err) {
         console.warn(err);
         return;
@@ -181,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
       self.removeAllTabs(removedTabs);
     });
 
-    this.ipc.on('workspace-reload-tab', function (event, err, tabConfig, panelId) {
+    window.electronAPI.on('workspace-reload-tab', function (event, err, tabConfig, panelId) {
       if (err) {
         console.warn(err);
         return;
@@ -189,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
       self.reloadTab(tabConfig, panelId);
     });
 
-    this.ipc.on('workspace-rename-tabs', function (event, err, tabsConfig, panelIds) {
+    window.electronAPI.on('workspace-rename-tabs', function (event, err, tabsConfig, panelIds) {
       if (err) {
         console.warn(err);
         return;
@@ -199,19 +196,19 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    this.ipc.on('switch-size', function (event, size) {
+    window.electronAPI.on('switch-size', function (event, size) {
       self.switchFontSize(size);
     });
 
-    this.ipc.on('next-tab', function () {
+    window.electronAPI.on('next-tab', function () {
       self.nextTab();
     });
 
-    this.ipc.on('prev-tab', function () {
+    window.electronAPI.on('prev-tab', function () {
       self.prevTab();
     });
 
-    this.ipc.send('workspace-ready');
+    window.electronAPI.send('workspace-ready');
   };
 
   /***************************************************************************************
@@ -484,19 +481,6 @@ document.addEventListener('DOMContentLoaded', function () {
    * @return {Array} editedTabs The array of edited tabs
    */
   WorkspaceView.prototype.getEditedTabs = function () {
-    /*const editedTabs = [], panelId, tabs, id;
-    for (panelId in this.panels) {
-        if (this.panels.hasOwnProperty(panelId)) {
-            tabs = this.panels[panelId].tabs;
-            for (id in tabs) {
-                if (tabs.hasOwnProperty(id)) {
-                    if (tabs[id].edited) {
-                        editedTabs.push(tabs[id]);
-                    }
-                }
-            }
-        }
-    }*/
     const editedTabs = [];
     let panelId;
     let tabs;
@@ -835,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function () {
    * @param {String} url URL to open
    */
   WorkspaceView.prototype.openExternal = function openExternal (url) {
-    this.shell.openExternal(url);
+    window.electronAPI.openExternal(url);
   };
 
   /**
@@ -897,58 +881,13 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * Display the contextual menu on tab
      */
-    function showContextualMenu (tab) {
-      const contextualMenu = new workspace.Menu();
-      /* Close */
-      contextualMenu.append(new workspace.MenuItem({
-        label: 'Close',
-        click: function onCloseClick () {
-          workspace.removeTab(self.id, tab.id);
-        }
-      }));
-
-      /* Close others */
-      contextualMenu.append(new workspace.MenuItem({
-        label: 'Close others',
-        click: function onCloseOthersClick () {
-          workspace.ipc.send('workspace-close-all-tabs', {
-            except: tab.id
-          });
-          //workspace.removeAllTabs(tab.id);
-        }
-      }));
-      /* Close all */
-      contextualMenu.append(new workspace.MenuItem({
-        label: 'Close all',
-        click: function onCloseAllClick () {
-          workspace.ipc.send('workspace-close-all-tabs');
-        }
-      }));
-
-      contextualMenu.append(new workspace.MenuItem({ type: 'separator' }));
-
-      /* Move to other pane */
-      contextualMenu.append(new workspace.MenuItem({
-        label: 'Move to other pane',
-        click: function onMoveToOtherPaneClick () {
-          workspace.moveToAnotherPane(tab.id);
-        }
-      }));
-
-      /* Open file in the OS manner */
-      if (/\.html?$/i.test(tab.path)) {
-        contextualMenu.append(new workspace.MenuItem({ type: 'separator' }));
-
-        contextualMenu.append(new workspace.MenuItem({
-          label: 'Open in browser',
-          click: function onClickOpen () {
-            workspace.shell.openPath(tab.path);
-          }
-        }));
-      }
-
-
-      contextualMenu.popup(workspace.remote.BrowserWindow.getAllWindows()[0]);
+    function showContextualMenu(tab) {
+      // Send menu request to main process via IPC
+      window.electronAPI.showTabContextMenu({
+        tabId: tab.id,
+        tabPath: tab.path,
+        isHtml: /\.html?$/i.test(tab.path)
+      });
     }
 
     function onTabsMousedown (event) {

@@ -8,10 +8,7 @@
 
   const modalDialog = askia.modalDialog;
   let autoIncrement = 0;
-  // const electron = require('electron');
-  // const remote = electron.remote;
-  const remote = require('@electron/remote');
-  const openDialog = remote.dialog;
+  // Use window.electronAPI for dialog
 
   /**
    * Show open directory dialog box
@@ -19,11 +16,11 @@
    * @param {Function} callback
    */
   function showOpenDirectory (defaultPath, callback) {
-    openDialog.showOpenDialog({
+    window.electronAPI.showOpenDialog({
       properties: ['openDirectory'],
       defaultPath: defaultPath
-    }).then((result)=>{
-      if(callback && result.filePaths && result.filePaths.length) {
+    }).then((result) => {
+      if (callback && result.filePaths && result.filePaths.length) {
         callback(result.filePaths[0]);
       }
     });

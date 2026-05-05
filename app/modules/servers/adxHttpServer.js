@@ -198,6 +198,14 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
       // in the fixtures files, we just remove it!
       output = output.replace(/..\/resources\/survey\/..\/..\/..\/surveyresources\//gi,
         '../resources/survey/');
+
+      output += `<script>
+        const wLocationSearch = window.location.search;
+        const wLocationHref = window.location.href;
+        window.parent.postMessage({ search: wLocationSearch, href: wLocationHref }, '*');
+      </script>`;
+
+
       response.write(output);
       response.end();
     }
