@@ -1,7 +1,7 @@
 describe('InteractiveADXShell', function () {
 
     var childProcess    = require('child_process'),
-        common          = require('../../app/common/common.js'),
+        common          = require('../../app/common/common.cjs'),
         pathHelper      = require('path'),
         util            = require('util'),
         EventEmitter    = require('events').EventEmitter,
@@ -25,17 +25,17 @@ describe('InteractiveADXShell', function () {
 
     beforeEach(function () {
         // Clean the cache, obtain a fresh instance of the module each time
-        var moduleKey = require.resolve('../../app/common/InteractiveADXShell.js');
+        var moduleKey = require.resolve('../../app/common/InteractiveADXShell.cjs');
         delete require.cache[moduleKey];
-        InteractiveADXShell = require('../../app/common/InteractiveADXShell.js').InteractiveADXShell;
+        InteractiveADXShell = require('../../app/common/InteractiveADXShell.cjs').InteractiveADXShell;
 
         // Court-circuit the access of the child process
-        spies.spawn = spyOn(childProcess, 'spawn').andCallFake(function () {
+        spies.spawn = spyOn(childProcess, 'spawn').and.callFake(function () {
             return new ChildProcessFake();
         });
 
         // CWD
-        spyOn(process, 'cwd').andReturn('');
+        spyOn(process, 'cwd').and.returnValue('');
     });
 
     describe('#constructor', function () {
@@ -92,7 +92,7 @@ describe('InteractiveADXShell', function () {
             it("should not call spawn twice when the ADXShell process was already initialized", function () {
                 var adxShell = new InteractiveADXShell('/adc/path');
                 var callCount = 0;
-                spies.spawn.andCallFake(function () {
+                spies.spawn.and.callFake(function () {
                     callCount++;
                     return new ChildProcessFake();
                 });
@@ -103,7 +103,7 @@ describe('InteractiveADXShell', function () {
 
             it("should send the command in the standard input of the process", function () {
                 var writeData, mock;
-                spies.spawn.andCallFake(function () {
+                spies.spawn.and.callFake(function () {
                     mock = new ChildProcessFake();
                     mock.stdin.write = function (data) {
                         writeData = data;
@@ -125,7 +125,7 @@ describe('InteractiveADXShell', function () {
             }].forEach(function (obj) {
                 it("should read in the " + obj.name  + " of the process", function () {
                     var mock;
-                    spies.spawn.andCallFake(function () {
+                    spies.spawn.and.callFake(function () {
                         mock = new ChildProcessFake();
                         return mock;
                     });
@@ -136,7 +136,7 @@ describe('InteractiveADXShell', function () {
 
                 it("should call the callback with the data of the " + obj.name  + " of the process when it receive a message starting with [ADXShell:End]", function () {
                     var stub, result;
-                    spies.spawn.andCallFake(function () {
+                    spies.spawn.and.callFake(function () {
                         stub = new ChildProcessFake();
                         return stub;
                     });
@@ -159,7 +159,7 @@ describe('InteractiveADXShell', function () {
 
                 it("should remove the listener after data was emit via the " + obj.name  + " of the process", function () {
                     var mock;
-                    spies.spawn.andCallFake(function () {
+                    spies.spawn.and.callFake(function () {
                         mock = new ChildProcessFake();
                         return mock;
                     });
@@ -177,7 +177,7 @@ describe('InteractiveADXShell', function () {
 
             it("should ignore the first output", function () {
                 var stub, result = '';
-                spies.spawn.andCallFake(function () {
+                spies.spawn.and.callFake(function () {
                     stub = new ChildProcessFake();
                     return stub;
                 });
@@ -212,7 +212,7 @@ describe('InteractiveADXShell', function () {
             it("should not call spawn twice when the ADXShell process was already initialized", function () {
                 var adxShell = new InteractiveADXShell('/adc/path', {mode : 'interview'});
                 var callCount = 0;
-                spies.spawn.andCallFake(function () {
+                spies.spawn.and.callFake(function () {
                     callCount++;
                     return new ChildProcessFake();
                 });
@@ -223,7 +223,7 @@ describe('InteractiveADXShell', function () {
 
             it("should not send the first command in the standard input of the process", function () {
                 var wasCalled = false, mock;
-                spies.spawn.andCallFake(function () {
+                spies.spawn.and.callFake(function () {
                     mock = new ChildProcessFake();
                     mock.stdin.write = function () {
                         wasCalled  = true;
@@ -245,7 +245,7 @@ describe('InteractiveADXShell', function () {
             }].forEach(function (obj) {
                 it("should read in the " + obj.name  + " of the process", function () {
                     var mock;
-                    spies.spawn.andCallFake(function () {
+                    spies.spawn.and.callFake(function () {
                         mock = new ChildProcessFake();
                         return mock;
                     });
@@ -256,7 +256,7 @@ describe('InteractiveADXShell', function () {
 
                 it("should call the callback with the data of the " + obj.name  + " of the process when it receive a message starting with [ADXShell:End]", function () {
                     var stub, result;
-                    spies.spawn.andCallFake(function () {
+                    spies.spawn.and.callFake(function () {
                         stub = new ChildProcessFake();
                         return stub;
                     });
@@ -278,7 +278,7 @@ describe('InteractiveADXShell', function () {
 
                 it("should remove the listener after data was emit via the " + obj.name  + " of the process", function () {
                     var mock;
-                    spies.spawn.andCallFake(function () {
+                    spies.spawn.and.callFake(function () {
                         mock = new ChildProcessFake();
                         return mock;
                     });
@@ -295,7 +295,7 @@ describe('InteractiveADXShell', function () {
 
             it("should not ignore the first output", function () {
                 var stub, result = '';
-                spies.spawn.andCallFake(function () {
+                spies.spawn.and.callFake(function () {
                     stub = new ChildProcessFake();
                     return stub;
                 });
@@ -333,7 +333,7 @@ describe('InteractiveADXShell', function () {
         it("should call the spawn#kill to exit the process", function () {
             var adxShell = new InteractiveADXShell('/adc/path');
             var wasCalled = false;
-            spies.spawn.andCallFake(function () {
+            spies.spawn.and.callFake(function () {
                 var p = new ChildProcessFake();
                 p.kill = function () {
                     wasCalled = true;

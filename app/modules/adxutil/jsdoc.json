@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["app"],
+    "includePattern": ".*\\.(cjs|js)$",
+    "excludePattern": "(node_modules|docs)"
+  },
+  "opts": {
+    "destination": "docs",
+    "recurse": true
+  }
+}

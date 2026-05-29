@@ -1228,9 +1228,12 @@ ADXOutputs.prototype.get = function get() {
     el.iter('output', (output) => {
         // Output element
         const item = {
-            id : output.get("id"),
-            condition : output.get("condition")
+            id : output.get("id")
         };
+        const condition = output.get("condition");
+        if (condition !== undefined && condition !== null) {
+            item.condition = condition;
+        }
         const descEl = output.find("description");
         if (descEl) {
             item.description = descEl.text;

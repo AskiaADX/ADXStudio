@@ -13,13 +13,13 @@ ADXUtil node dependency is removed and it is added as module.
 
 ## Run unit tests of ADXUtil
 
-Install jasmine-node for unit tests
+Install dependencies for unit tests
 
-    npm install jasmine-node -g
+    npm install
 
 Then run
 
-    jasmine-node spec/
+    jasmine spec/
 
 or
 

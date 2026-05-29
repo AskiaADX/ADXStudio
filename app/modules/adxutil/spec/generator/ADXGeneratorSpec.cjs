@@ -3,9 +3,8 @@
 describe('ADXGenerator', function () {
 
     const fs            = require('fs'),
-        ncpLib          = require('ncp'),
+        fsExtra         = require('fs-extra'),
         format          = require('util').format,
-        uuid            = require('uuid'),
         pathHelper      = require('path'),
         spies           = {};
 
@@ -20,17 +19,17 @@ describe('ADXGenerator', function () {
     beforeEach(() => {
         // !! Make sure to court-circuit   !!
         // !! it before to load the module !!
-        spies.ncp = spyOn(ncpLib, 'ncp');
+        spies.ncp = spyOn(fsExtra, 'copy');
 
         // Clean the cache, obtain a fresh instance of the adxGenerator each time
-        const adxGeneratorKey = require.resolve('../../app/generator/ADXGenerator.js'),
-             commonKey       = require.resolve('../../app/common/common.js');
+        const adxGeneratorKey = require.resolve('../../app/generator/ADXGenerator.cjs'),
+             commonKey       = require.resolve('../../app/common/common.cjs');
 
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
         delete require.cache[adxGeneratorKey];
-        adxGenerator = require('../../app/generator/ADXGenerator.js');
+        adxGenerator = require('../../app/generator/ADXGenerator.cjs');
 
         Generator = adxGenerator.Generator;
         const oldGenerate = Generator.prototype.generate;
@@ -51,7 +50,7 @@ describe('ADXGenerator', function () {
         spies.dirExists    = spyOn(common, 'dirExists');
         spies.getDirStructure = spyOn(common, 'getDirStructure');
         spies.getTemplatePath = spyOn(common, 'getTemplatePath');
-        spies.getTemplatePath.andCallFake(function (type, name, cb) {
+        spies.getTemplatePath.and.callFake(function (type, name, cb) {
             cb(null, pathHelper.join(common.TEMPLATES_PATH, type, name));
         });
 
@@ -64,16 +63,12 @@ describe('ADXGenerator', function () {
             writeFile   : spyOn(fs, 'writeFile')
         };
 
+        spies.cwd = spyOn(process, 'cwd').and.returnValue('adx/path/dir');
 
-        // Court-circuit the uuid generator
-        spyOn(uuid, 'v4').andReturn('guid');
-
-        spies.cwd = spyOn(process, 'cwd').andReturn('adx/path/dir');
-
-        adxPreferences  = require('../../app/preferences/ADXPreferences.js');
+        adxPreferences  = require('../../app/preferences/ADXPreferences.cjs');
 
         spies.readPreferences = spyOn(adxPreferences, 'read');
-        spies.readPreferences.andCallFake((opt, cb) => {
+        spies.readPreferences.and.callFake((opt, cb) => {
             cb({
                 author : {
                     name : 'MyPrefName',
@@ -123,7 +118,7 @@ describe('ADXGenerator', function () {
         });
 
         it("should use the current working directory when the `output` path is not specified", function () {
-            spies.cwd.andReturn('/cwd');
+            spies.cwd.and.returnValue('/cwd');
             adxGenerator.generate({}, 'adc', 'adxname');
             expect(generatorInstance.outputDirectory).toBe('/cwd');
         });
@@ -156,7 +151,7 @@ describe('ADXGenerator', function () {
         });
 
         it("should output an error when the specified template was not found", function () {
-            spies.getTemplatePath.andCallFake(function (type, name, callback) {
+            spies.getTemplatePath.and.callFake(function (type, name, callback) {
                 if (type === 'adc' && name === 'templatename') {
                     callback(new Error(format(errMsg.cannotFoundTemplate, 'templatename')));
                 }
@@ -198,7 +193,7 @@ describe('ADXGenerator', function () {
 
         describe('#verifyOutputDirExist', function () {
             it("should output an error when the output directory path doesn't exist", function () {
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     if (path === 'adx/path/dir') {
                         callback(null, false);
                     } else {
@@ -214,7 +209,7 @@ describe('ADXGenerator', function () {
 
         describe("#verifyADXDirNotAlreadyExist", function () {
             it("should output an error when the output directory + adx name already exist", function () {
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     callback(null, true);
                 });
                 adxGenerator.generate({
@@ -224,7 +219,7 @@ describe('ADXGenerator', function () {
             });
 
             it('should not output an error when the output directory and the adx name is valid', function () {
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     if (path == 'adx\\path\\dir\\adxname') {
                         callback(null, false);
                     } else {
@@ -240,7 +235,7 @@ describe('ADXGenerator', function () {
 
         describe("#copyFromTemplate", function () {
             beforeEach(function () {
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     if (path === 'adx\\path\\dir\\adxname') {
                         callback(null, false);
                     } else {
@@ -252,7 +247,7 @@ describe('ADXGenerator', function () {
             function forEachADXType(type) {
                 it("should copy the `default` " + type.toUpperCase() + " template directory in the ADX output directory", function () {
                     var source, destination;
-                    spies.ncp.andCallFake(function (src, dest) {
+                    spies.ncp.and.callFake(function (src, dest) {
                         source = src;
                         destination = dest;
                     });
@@ -267,11 +262,11 @@ describe('ADXGenerator', function () {
 
                 it("should search the path of the " + type.toUpperCase() + "'s template using `common.getTemplatePath` when the `templatePath` is not defined", function () {
                     var source;
-                    spies.getTemplatePath.andCallFake(function (templateType, name, cb) {
+                    spies.getTemplatePath.and.callFake(function (templateType, name, cb) {
                         expect(templateType).toEqual(type);
                         cb(null, 'template/path/test');
                     });
-                    spies.ncp.andCallFake(function (src, dest) {
+                    spies.ncp.and.callFake(function (src, dest) {
                         source = src;
                     });
                     adxGenerator.generate({
@@ -287,7 +282,7 @@ describe('ADXGenerator', function () {
 
 
             it("should output an error when the copy failed", function () {
-                spies.ncp.andCallFake(function (src, dest, callback) {
+                spies.ncp.and.callFake(function (src, dest, callback) {
                     callback(new Error('Fake error'));
                 });
                 adxGenerator.generate({
@@ -297,7 +292,7 @@ describe('ADXGenerator', function () {
             });
 
             it("should not output an error when the copy doesn't failed", function () {
-                spies.ncp.andCallFake(function (src, dest, callback) {
+                spies.ncp.and.callFake(function (src, dest, callback) {
                     callback(null);
                 });
                 adxGenerator.generate({
@@ -309,21 +304,21 @@ describe('ADXGenerator', function () {
 
         describe("#updateFiles", function () {
             beforeEach(function () {
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     if (path === 'adx\\path\\dir\\adxname') {
                         callback(null, false);
                     } else {
                         callback(null, true);
                     }
                 });
-                spies.ncp.andCallFake(function (src, dest, callback) {
+                spies.ncp.and.callFake(function (src, dest, callback) {
                     callback(null);
                 });
             });
 
             it("should read the config.xml and the readme.md files", function () {
                 var paths = [];
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     paths.push(path);
                     callback(null, "");
                 });
@@ -334,7 +329,7 @@ describe('ADXGenerator', function () {
             });
 
             it("should output an error when an error occurred while reading the file", function () {
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(new Error('fake error'));
                 });
                 adxGenerator.generate({
@@ -344,7 +339,7 @@ describe('ADXGenerator', function () {
             });
 
             it("should not output an error while reading the file succeed", function () {
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(null, "");
                 });
                 adxGenerator.generate({
@@ -354,11 +349,11 @@ describe('ADXGenerator', function () {
             });
 
             it('should call the common#evalTemplate with an object that looks like a config', function () {
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(null, 'the input');
                 });
                 var input, obj;
-                var spy = spyOn(common, 'evalTemplate').andCallFake(function (a, b) {
+                var spy = spyOn(common, 'evalTemplate').and.callFake(function (a, b) {
                     input = a;
                     obj = b;
                 });
@@ -390,14 +385,14 @@ describe('ADXGenerator', function () {
             });
 
             it('should write the file with the result of the common#evalTemplate', function () {
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(null, 'the input');
                 });
                 var result;
-                spies.fs.writeFile.andCallFake(function (path, content) {
+                spies.fs.writeFile.and.callFake(function (path, content) {
                     result = content;
                 });
-                spyOn(common, 'evalTemplate').andReturn('something');
+                spyOn(common, 'evalTemplate').and.returnValue('something');
 
                 adxGenerator.generate({
                     output : 'adx/path/dir',
@@ -408,10 +403,10 @@ describe('ADXGenerator', function () {
             });
 
             it("should output an error when failing to rewrite the file", function () {
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(null, "");
                 });
-                spies.fs.writeFile.andCallFake(function (path, content, callback) {
+                spies.fs.writeFile.and.callFake(function (path, content, callback) {
                     callback(new Error('fake error'));
                 });
                 adxGenerator.generate({
@@ -421,10 +416,10 @@ describe('ADXGenerator', function () {
             });
 
             it("should not output an error when rewrite the file succeed", function () {
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(null, "");
                 });
-                spies.fs.writeFile.andCallFake(function (path, content, callback) {
+                spies.fs.writeFile.and.callFake(function (path, content, callback) {
                     callback(null);
                 });
                 adxGenerator.generate({
@@ -436,23 +431,23 @@ describe('ADXGenerator', function () {
 
         describe("#done", function () {
            it("should output the structure of the ADX directory and a success message", function () {
-               spies.dirExists.andCallFake(function (path, callback) {
+               spies.dirExists.and.callFake(function (path, callback) {
                    if (path === 'adx\\path\\dir\\adxname' || path === 'adx\\path\\dir\\tests\\units') {
                        callback(null, false);
                    } else {
                        callback(null, true);
                    }
                });
-               spies.ncp.andCallFake(function (src, dest, callback) {
+               spies.ncp.and.callFake(function (src, dest, callback) {
                    callback(null);
                });
-               spies.fs.readFile.andCallFake(function (path, option, callback) {
+               spies.fs.readFile.and.callFake(function (path, option, callback) {
                   callback(null, "");
                });
-               spies.fs.writeFile.andCallFake(function (path, content, callback) {
+               spies.fs.writeFile.and.callFake(function (path, content, callback) {
                    callback(null);
                });
-               spies.getDirStructure.andCallFake(function (path, callback) {
+               spies.getDirStructure.and.callFake(function (path, callback) {
                     callback(null, [
                         {
                             name : 'resources',
@@ -512,23 +507,23 @@ describe('ADXGenerator', function () {
         describe("API `callback`", function () {
             beforeEach(function () {
 
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     if (path === 'adx\\path\\dir\\adcname' || path === 'adx\\path\\dir\\tests\\units') {
                         callback(null, false);
                     } else {
                         callback(null, true);
                     }
                 });
-                spies.ncp.andCallFake(function (src, dest, option, callback) {
+                spies.ncp.and.callFake(function (src, dest, callback) {
                     callback(null);
                 });
-                spies.fs.readFile.andCallFake(function (path, option, callback) {
+                spies.fs.readFile.and.callFake(function (path, option, callback) {
                     callback(null, "");
                 });
-                spies.fs.writeFile.andCallFake(function (path, content, callback) {
+                spies.fs.writeFile.and.callFake(function (path, content, callback) {
                     callback(null);
                 });
-                spies.getDirStructure.andCallFake(function (path, callback) {
+                spies.getDirStructure.and.callFake(function (path, callback) {
                     callback(null, [
                         {
                             name : 'resources',
@@ -588,7 +583,7 @@ describe('ADXGenerator', function () {
             });
 
             it("should be call with an err argument as an Error", function () {
-                spies.dirExists.andCallFake(function (path, callback) {
+                spies.dirExists.and.callFake(function (path, callback) {
                     callback(new Error("Fake error"));
                 });
                 var generator = new Generator();

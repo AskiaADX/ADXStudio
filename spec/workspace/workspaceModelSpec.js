@@ -25,7 +25,7 @@ describe("workspace", function () {
     beforeEach(function () {
         spies.fs = {};
         spies.fs.stat = spyOn(fs, 'stat');
-        spies.fs.stat.andCallFake(function (path, cb) {
+        spies.fs.stat.and.callFake(function (path, cb) {
             cb(null, {});
         });
 
@@ -33,7 +33,7 @@ describe("workspace", function () {
 
         spies.watcher = {};
         spies.watcher.create = spyOn(watcher, 'create');
-        spies.watcher.create.andCallFake(function (pattern) {
+        spies.watcher.create.and.callFake(function (pattern) {
             fakeWatcherInstance = new FakeWatcher(pattern);
             return fakeWatcherInstance;
         });
@@ -52,14 +52,10 @@ describe("workspace", function () {
 
     function runSync(fn) {
         var wasCalled = false;
-        runs( function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
     describe('#watchers', function () {
@@ -173,7 +169,7 @@ describe("workspace", function () {
         
         it("should watch file path associated with the tab when the tab is `loaded` (event)", function () {
             runSync(function (done) {
-                spyOn(fakeWatcherInstance, 'add').andCallFake(function (pattern) {
+                spyOn(fakeWatcherInstance, 'add').and.callFake(function (pattern) {
                     expect(pattern).toBe(nodePath.resolve('path/of/file'));
                     done();
                 });
@@ -187,7 +183,7 @@ describe("workspace", function () {
 
         it("should unwatch file while `unwatch` (event)", function () {
             runSync(function (done) {
-                spyOn(fakeWatcherInstance, 'remove').andCallFake(function (pattern) {
+                spyOn(fakeWatcherInstance, 'remove').and.callFake(function (pattern) {
                     expect(pattern).toBe(nodePath.resolve('path/of/file'));
                     done();
                 });
@@ -617,14 +613,14 @@ describe("workspace", function () {
         it("should return an object with an array of all tabs (id, pane, current, path, type, name)", function () {
             var fakeGuid = spyOn(uuid, 'v4');
             workspace.panes.current('main');
-            fakeGuid.andReturn('aaaaaa-aaaaaa-aaaaaa-aaaaaa');
+            fakeGuid.and.returnValue('aaaaaa-aaaaaa-aaaaaa-aaaaaa');
             workspace.createTab({ name : 'first', path : 'path/of/first/file', type : 'file'});
-            fakeGuid.andReturn('bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb');
+            fakeGuid.and.returnValue('bbbbbbb-bbbbbbb-bbbbbbb-bbbbbbb');
             workspace.createTab({ name : 'second', path : 'path/of/second/file', type : 'file'});
             workspace.panes.current('second');
-            fakeGuid.andReturn('cccccc-cccccc-cccccc-cccccc');
+            fakeGuid.and.returnValue('cccccc-cccccc-cccccc-cccccc');
             workspace.createTab({  path : 'path/of/third/file', type : 'file'});
-            fakeGuid.andReturn('dddddd-dddddd-dddddd-dddddd');
+            fakeGuid.and.returnValue('dddddd-dddddd-dddddd-dddddd');
             workspace.createTab({ path : 'path/of/fourth/file', type : 'file'});
             
             var json = workspace.toJSON();
@@ -729,7 +725,7 @@ describe("workspace", function () {
                 }, 
                 output = [];
             
-            spyOn(workspace, 'createTab').andCallFake(function (config, pane) {
+            spyOn(workspace, 'createTab').and.callFake(function (config, pane) {
                 output.push({
                     pane : pane,
                     config : config
@@ -978,7 +974,7 @@ describe("workspace", function () {
 
         describe('@file-removed', function () {
             beforeEach(function () {
-                spies.fs.stat.andCallFake(function (p, cb) {
+                spies.fs.stat.and.callFake(function (p, cb) {
                     cb(new Error());
                 });
             });

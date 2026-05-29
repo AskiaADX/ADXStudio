@@ -32,12 +32,12 @@ describe('appSettings', function () {
             }
         };
 
-        spies.fs.stat.andCallFake(function (dir, cb) {
+        spies.fs.stat.and.callFake(function (dir, cb) {
             cb(null, fakeStats);
         });
 
 
-        spies.fs.statSync.andCallFake(function (file) {
+        spies.fs.statSync.and.callFake(function (file) {
             var value = (/file/.test(file));
             return {
                 isDirectory : function () {
@@ -49,11 +49,11 @@ describe('appSettings', function () {
             };
         });
 
-        spies.fs.mkdir.andCallFake(function (dir, cb) {
+        spies.fs.mkdir.and.callFake(function (dir, cb) {
             cb(null);
         });
 
-        spies.ADXPref.read.andCallFake(function (options, cb) {
+        spies.ADXPref.read.and.callFake(function (options, cb) {
             cb({
                 author : {
                     name : 'AuthName',
@@ -64,21 +64,17 @@ describe('appSettings', function () {
             });
         });
 
-        spies.ADXPref.write.andCallFake(function (prefs, cb) {
+        spies.ADXPref.write.and.callFake(function (prefs, cb) {
             ADX.preferences.read({}, cb);
         });
     });
 
     function runSync(fn) {
         var wasCalled = false;
-        runs(function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
 
@@ -100,7 +96,7 @@ describe('appSettings', function () {
 
         it('should read the MRU.json file under the APPDATA/ADXStudio', function () {
             var readPath;
-            spies.fs.readFile.andCallFake(function (filePath) {
+            spies.fs.readFile.and.callFake(function (filePath) {
                 readPath = filePath;
             });
             appSettings.getMostRecentlyUsed(function () {});
@@ -109,7 +105,7 @@ describe('appSettings', function () {
 
         it('should not read the MRU.json file if it was already read (in cache)', function () {
             var callCount = 0;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 callCount++;
                 cb(null, '[{"path" : "A"}, {"path" : "B"}]');
             });
@@ -125,7 +121,7 @@ describe('appSettings', function () {
 
         it('should return an error when the MRU.json could not be accessible', function () {
             var sendError = new Error("ENOFILE"), returnError;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(sendError);
             });
             appSettings.getMostRecentlyUsed(function (err) {
@@ -136,7 +132,7 @@ describe('appSettings', function () {
 
         it('should return an empty array  when the MRU.json could not be accessible', function () {
             var result;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(new Error("Error"));
             });
             appSettings.getMostRecentlyUsed(function (err, data) {
@@ -147,7 +143,7 @@ describe('appSettings', function () {
 
         it('should return an array with the deserialized content of the MRU.json file', function () {
             var result;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '[{"path" : "A"}, {"path" : "B"}]');
             });
             appSettings.getMostRecentlyUsed(function (err, data) {
@@ -158,10 +154,10 @@ describe('appSettings', function () {
 
         it('should include only existing paths in the return array', function () {
             var result;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '[{"path" : "A"}, {"path" : "B"}]');
             });
-            spies.fs.statSync.andCallFake(function (dir) {
+            spies.fs.statSync.and.callFake(function (dir) {
                 if (dir === 'A') {
                     throw new Error('no such file or directory');
                 }
@@ -181,7 +177,7 @@ describe('appSettings', function () {
 
         it('should clear the cache of the MRU', function () {
             var callCount = 0;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 callCount++;
                 cb(null, '[{"path" : "A"}, {"path" : "B"}]');
             });
@@ -209,11 +205,11 @@ describe('appSettings', function () {
         });
 
         it('should try to create the AppData directory for ADXStudio', function () {
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
             runSync(function (done) {
-                spies.fs.mkdir.andCallFake(function (dirPath) {
+                spies.fs.mkdir.and.callFake(function (dirPath) {
                     expect(dirPath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio'));
                     done();
                 });
@@ -223,12 +219,12 @@ describe('appSettings', function () {
         });
 
         it('should return append a new item on top of the MRU array and write it in the MRU.json', function () {
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
 
             runSync(function (done) {
-                spies.fs.writeFile.andCallFake(function (filePath, data) {
+                spies.fs.writeFile.and.callFake(function (filePath, data) {
                     expect(filePath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'MRU.json'));
                     expect(data).toEqual(JSON.stringify([{
                         path : 'test'
@@ -246,12 +242,12 @@ describe('appSettings', function () {
         });
 
         it('should not append the item twice, but move it on top of the MRU array', function () {
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
 
             runSync(function (done) {
-                spies.fs.writeFile.andCallFake(function (filePath, data) {
+                spies.fs.writeFile.and.callFake(function (filePath, data) {
                     expect(data).toEqual(JSON.stringify([{
                         path : 'B'
                     }, {
@@ -267,11 +263,11 @@ describe('appSettings', function () {
 
         it('should update the MRU cache', function () {
             var callCount = 0;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 callCount++;
                 cb(null, '[{"path" : "A"}, {"path" : "B"}]');
             });
-            spies.fs.writeFile.andCallFake(function (filePath, data, options, cb) {
+            spies.fs.writeFile.and.callFake(function (filePath, data, options, cb) {
                 cb(null);
             });
             runSync(function (done) {
@@ -290,13 +286,13 @@ describe('appSettings', function () {
         });
 
         it('should return an error when cannot write into the file', function () {
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
 
             runSync(function (done) {
                 var theError = new Error("The error");
-                spies.fs.writeFile.andCallFake(function (filePath, data, options,  cb) {
+                spies.fs.writeFile.and.callFake(function (filePath, data, options,  cb) {
                     cb(theError);
                 });
 
@@ -316,7 +312,7 @@ describe('appSettings', function () {
 
         it('should read the Prefs.json file under the APPDATA/ADXStudio', function () {
             var readPath;
-            spies.fs.readFile.andCallFake(function (filePath) {
+            spies.fs.readFile.and.callFake(function (filePath) {
                 readPath = filePath;
             });
             appSettings.getPreferences(function () {});
@@ -324,7 +320,7 @@ describe('appSettings', function () {
         });
 
         it('should read the preferences of ADXUtil', function () {
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here"}');
             });
             appSettings.getPreferences(function () {});
@@ -334,10 +330,10 @@ describe('appSettings', function () {
 
         it('should return the default preferences when the Prefs.json and the ADXUtil prefs are not accessible', function () {
             var result;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(new Error("Error"));
             });
-            spies.ADXPref.read.andCallFake(function (options, cb) {
+            spies.ADXPref.read.and.callFake(function (options, cb) {
                 cb(null);
             });
             appSettings.getPreferences(function (data) {
@@ -351,7 +347,7 @@ describe('appSettings', function () {
 
         it('should return the preferences from the Prefs.json and the ADXUtil when it\'s accessible', function () {
             var result;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
             appSettings.getPreferences(function (data) {
@@ -371,7 +367,7 @@ describe('appSettings', function () {
 
         it('should update the preferences with the default preferences when there are missing keys', function () {
             var result;
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"another_key": "Here"}');
             });
             appSettings.getPreferences(function (data) {
@@ -398,12 +394,12 @@ describe('appSettings', function () {
         });
 
         it("should re-read the preferences from the file, merge it with the preferences in args and write the final prefs in the Prefs.json", function () {
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
 
             runSync(function (done) {
-                spies.fs.writeFile.andCallFake(function (filePath,  data) {
+                spies.fs.writeFile.and.callFake(function (filePath,  data) {
                     expect(filePath).toEqual(pathHelper.join(process.env.APPDATA, 'ADXStudio', 'Prefs.json'));
                     expect(data).toEqual(JSON.stringify({
                         defaultProjectsLocation : "ElseWhere",
@@ -421,10 +417,10 @@ describe('appSettings', function () {
 
         it("should return an error via the callback when writing in the Prefs.json file failed", function () {
             var throwError = new Error("Error");
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
-            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+            spies.fs.writeFile.and.callFake(function (filePath,  data, options, cb) {
                cb(throwError);
             });
 
@@ -440,15 +436,15 @@ describe('appSettings', function () {
         });
 
         it("should write the ADXUtil preferences when it's defined and when writing in Prefs.json succeed", function () {
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
-            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+            spies.fs.writeFile.and.callFake(function (filePath,  data, options, cb) {
                 cb(null);
             });
 
             runSync(function (done) {
-                spies.ADXPref.write.andCallFake(function (prefs) {
+                spies.ADXPref.write.and.callFake(function (prefs) {
                     expect(prefs).toEqual({
                         author : {
                             name : 'NewAuthName',
@@ -473,10 +469,10 @@ describe('appSettings', function () {
         });
 
         it("should not write the ADXUtil preferences when it's not defined", function () {
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
-            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+            spies.fs.writeFile.and.callFake(function (filePath,  data, options, cb) {
                 cb(null);
             });
 
@@ -492,10 +488,10 @@ describe('appSettings', function () {
         });
 
         it("should not return an error when the prefs.json succeed and the ADXUtil.preferences.write succeed", function () {
-            spies.fs.readFile.andCallFake(function (filePath, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, cb) {
                 cb(null, '{"defaultProjectsLocation": "Here", "openLastProjectByDefault" : false}');
             });
-            spies.fs.writeFile.andCallFake(function (filePath,  data, options, cb) {
+            spies.fs.writeFile.and.callFake(function (filePath,  data, options, cb) {
                 cb(null);
             });
 
@@ -523,11 +519,11 @@ describe('appSettings', function () {
 
         it('should return the path of the most recently used project', function () {
 
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
 
-            spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
+            spyOn(appSettings, 'getPreferences').and.callFake(function (cb) {
                 cb({
                     openLastProjectByDefault : true
                 });
@@ -542,11 +538,11 @@ describe('appSettings', function () {
         });
 
         it('should return an empty string when there is not most recently used project', function () {
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, []);
             });
 
-            spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
+            spyOn(appSettings, 'getPreferences').and.callFake(function (cb) {
                 cb({
                     openLastProjectByDefault : true
                 });
@@ -562,11 +558,11 @@ describe('appSettings', function () {
 
         it('should return an empty string when the `openLastProjectByDefault` preference is false', function () {
 
-            spyOn(appSettings, 'getMostRecentlyUsed').andCallFake(function (cb) {
+            spyOn(appSettings, 'getMostRecentlyUsed').and.callFake(function (cb) {
                 cb(null, [{"path" : "A"}, {"path" : "B"}]);
             });
 
-            spyOn(appSettings, 'getPreferences').andCallFake(function (cb) {
+            spyOn(appSettings, 'getPreferences').and.callFake(function (cb) {
                 cb({
                     openLastProjectByDefault : false
                 });

@@ -8,24 +8,20 @@ describe('ADXPreferences', function () {
         common;
 
     function runSync(fn) {
-        var wasCalled = false;
-        runs(function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        let wasCalled = false;
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
     beforeEach(function () {
-        var adxPreferencesKey = require.resolve('../../app/preferences/ADXPreferences.js');
+        var adxPreferencesKey = require.resolve('../../app/preferences/ADXPreferences.cjs');
 
         delete require.cache[adxPreferencesKey];
-        adxPreferences = require('../../app/preferences/ADXPreferences.js');
+        adxPreferences = require('../../app/preferences/ADXPreferences.cjs');
 
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
         msg = common.messages.message;
         errMsg = common.messages.error;
 
@@ -36,7 +32,7 @@ describe('ADXPreferences', function () {
             mkdir: spyOn(fs, 'mkdir')
         };
 
-        spies.fs.mkdir.andCallFake(function (p, cb) {
+        spies.fs.mkdir.and.callFake(function (p, cb) {
             cb();
         });
 
@@ -51,7 +47,7 @@ describe('ADXPreferences', function () {
     describe('#read', function () {
         it("should try to read the `preferences.json` file", function () {
             var fileRead;
-            spies.fs.readFile.andCallFake(function (filePath, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, encoding, cb) {
                 fileRead = filePath;
                 cb(new Error('AN ERROR'));
             });
@@ -59,7 +55,7 @@ describe('ADXPreferences', function () {
             expect(fileRead).toEqual(path.join(process.env.APPDATA, common.APP_NAME, common.PREFERENCES_FILE_NAME));
         });
         it("should output the `No preferences defined` when the `preferences.json` file is not found", function () {
-            spies.fs.readFile.andCallFake(function (filePath, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, encoding, cb) {
                 cb(new Error('AN ERROR'));
             });
             adxPreferences.read();
@@ -74,7 +70,7 @@ describe('ADXPreferences', function () {
                     website : "the website"
                 }
             };
-            spies.fs.readFile.andCallFake(function (f, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (f, encoding, cb) {
                 cb(null, JSON.stringify(obj));
             });
             adxPreferences.read();
@@ -89,7 +85,7 @@ describe('ADXPreferences', function () {
                     website : "the website"
                 }
             };
-            spies.fs.readFile.andCallFake(function (f, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (f, encoding, cb) {
                 cb(null, JSON.stringify(obj));
             });
             runSync(function (done) {
@@ -100,7 +96,7 @@ describe('ADXPreferences', function () {
             });
         });
         it("should not output at all when the `options.silent` is true and the file is not found", function () {
-            spies.fs.readFile.andCallFake(function (filePath, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (filePath, encoding, cb) {
                 cb(new Error('AN ERROR'));
             });
             adxPreferences.read({silent : true});
@@ -115,7 +111,7 @@ describe('ADXPreferences', function () {
                     website : "the website"
                 }
             };
-            spies.fs.readFile.andCallFake(function (f, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (f, encoding, cb) {
                 cb(null, JSON.stringify(obj));
             });
             adxPreferences.read({silent : true});
@@ -126,7 +122,7 @@ describe('ADXPreferences', function () {
     describe('#write', function () {
         it("should not try to write in the `preferences.json` file if no options is define", function () {
             runSync(function (done) {
-                spies.fs.readFile.andCallFake(function (filePath, encoding, cb) {
+                spies.fs.readFile.and.callFake(function (filePath, encoding, cb) {
                     cb(new Error('AN ERROR'));
                 });
                 adxPreferences.write(null, function () {
@@ -145,11 +141,11 @@ describe('ADXPreferences', function () {
                     website : "the website"
                 }
             };
-            spies.fs.readFile.andCallFake(function (p, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (p, encoding, cb) {
                 cb(new Error("An error"), null);
             });
             runSync(function (done) {
-                spies.fs.writeFile.andCallFake(function (filePath, content) {
+                spies.fs.writeFile.and.callFake(function (filePath, content) {
                     expect(filePath).toEqual(path.join(process.env.APPDATA, common.APP_NAME, common.PREFERENCES_FILE_NAME));
                     expect(content).toEqual(JSON.stringify(obj));
                     done();
@@ -180,11 +176,11 @@ describe('ADXPreferences', function () {
                     website : "add a website"
                 }
             };
-            spies.fs.readFile.andCallFake(function (p, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (p, encoding, cb) {
                 cb(null, JSON.stringify(objRead));
             });
             runSync(function (done) {
-                spies.fs.writeFile.andCallFake(function (p, content) {
+                spies.fs.writeFile.and.callFake(function (p, content) {
                     expect(content).toEqual(JSON.stringify(expectedObj));
                     done();
                 });
@@ -193,7 +189,7 @@ describe('ADXPreferences', function () {
         });
 
         it("should try to write the zendesk preferences when it's define", function () {
-            spies.fs.readFile.andCallFake(function (p, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (p, encoding, cb) {
                 cb(null, JSON.stringify({
                     author : {
                         email : "test@test.com"
@@ -201,8 +197,8 @@ describe('ADXPreferences', function () {
                 }));
             });
 
-            spies.fs.writeFile.andCallFake(function (p, content, options, cbbWrite) {
-                spies.fs.readFile.andCallFake(function (p, encoding, cbRead) {
+            spies.fs.writeFile.and.callFake(function (p, content, options, cbbWrite) {
+                spies.fs.readFile.and.callFake(function (p, encoding, cbRead) {
                     cbRead(null, content);
                 });
                 cbbWrite();
@@ -246,7 +242,7 @@ describe('ADXPreferences', function () {
         /*
         DEPRECATED PUBLISHER
         it("should try to write the github preferences when it's define", function () {
-            spies.fs.readFile.andCallFake(function (p, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (p, encoding, cb) {
                 cb(null, JSON.stringify({
                     author : {
                         email : "test@test.com"
@@ -254,8 +250,8 @@ describe('ADXPreferences', function () {
                 }));
             });
 
-            spies.fs.writeFile.andCallFake(function (p, content, options, cbbWrite) {
-                spies.fs.readFile.andCallFake(function (p, encoding, cbRead) {
+            spies.fs.writeFile.and.callFake(function (p, content, options, cbbWrite) {
+                spies.fs.readFile.and.callFake(function (p, encoding, cbRead) {
                     cbRead(null, content);
                 });
                 cbbWrite();
@@ -317,12 +313,12 @@ describe('ADXPreferences', function () {
                     website : "add a website"
                 }
             };
-            spies.fs.readFile.andCallFake(function (p, encoding, cb) {
+            spies.fs.readFile.and.callFake(function (p, encoding, cb) {
                 cb(null, JSON.stringify(objRead));
             });
 
-            spies.fs.writeFile.andCallFake(function (p, content, options, cbbWrite) {
-                spies.fs.readFile.andCallFake(function (p, encoding, cbRead) {
+            spies.fs.writeFile.and.callFake(function (p, content, options, cbbWrite) {
+                spies.fs.readFile.and.callFake(function (p, encoding, cbRead) {
                     cbRead(null, content);
                 });
                 cbbWrite();

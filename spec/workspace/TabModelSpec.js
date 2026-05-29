@@ -12,32 +12,32 @@ describe("Tab", function () {
         Tab = require('../../app/workspace/TabModel.js').Tab;
 
         spies.isTextOrBinary = spyOn(Tab, 'isTextOrBinaryFile');
-        spies.isTextOrBinary.andCallFake(function (path, cb) {
+        spies.isTextOrBinary.and.callFake(function (path, cb) {
             cb(null, 'text');
         });
 
-        spies.uuid  = spyOn(uuid, "v4").andReturn("random-guid");
+        spies.uuid  = spyOn(uuid, "v4").and.returnValue("random-guid");
 
 
         spies.fs = {};
 
         spies.fs.rename =  spyOn(fs, 'rename');
-        spies.fs.rename.andCallFake(function (oldpath, newpath, cb) {
+        spies.fs.rename.and.callFake(function (oldpath, newpath, cb) {
             cb(null);
         });
 
         spies.fs.stat = spyOn(fs, 'stat');
-        spies.fs.stat.andCallFake(function (path, cb) {
+        spies.fs.stat.and.callFake(function (path, cb) {
             cb(null, {});
         });
 
         spies.fs.readFile = spyOn(fs, 'readFile');
-        spies.fs.readFile.andCallFake(function (path, cb) {
+        spies.fs.readFile.and.callFake(function (path, cb) {
             cb(null, "Hello world!");
         });
 
         spies.fs.writeFile = spyOn(fs, 'writeFile');
-        spies.fs.writeFile.andCallFake(function (path, content, cb) {
+        spies.fs.writeFile.and.callFake(function (path, content, cb) {
             cb(null);
         });
 
@@ -45,19 +45,15 @@ describe("Tab", function () {
 
     function runSync(fn) {
         var wasCalled = false;
-        runs( function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
     describe("#constructor", function () {
         it("should assign a GUID as the identifier of the tab", function () {
-            spies.uuid.andReturn("random-guid");
+            spies.uuid.and.returnValue("random-guid");
             var tab = new Tab();
             expect(tab.id).toBe('random-guid');
         });
@@ -108,7 +104,7 @@ describe("Tab", function () {
         });
 
         it("should set the #fileType to `binary` if the file is a text file", function () {
-            spies.isTextOrBinary.andCallFake(function (path, cb) {
+            spies.isTextOrBinary.and.callFake(function (path, cb) {
                 cb(null, 'binary');
             });
 
@@ -122,7 +118,7 @@ describe("Tab", function () {
         });
 
         it("should set the #fileType to `image` if the file extension is recognise as image", function () {
-            spies.isTextOrBinary.andCallFake(function (path, cb) {
+            spies.isTextOrBinary.and.callFake(function (path, cb) {
                 cb(null, 'binary');
             });
             [
@@ -142,7 +138,7 @@ describe("Tab", function () {
         });
 
         it("should not read the file, if the file is `image`", function () {
-            spies.fs.readFile.andCallFake(function (path, cb) {
+            spies.fs.readFile.and.callFake(function (path, cb) {
                 cb(null, 'Should not be set');
             });
 
@@ -156,7 +152,7 @@ describe("Tab", function () {
         });
 
         it("should, if the file is `text`, read the content and assign it to the #content property", function () {
-            spies.fs.readFile.andCallFake(function (path, cb) {
+            spies.fs.readFile.and.callFake(function (path, cb) {
                 cb(null, 'Hello');
             });
 
@@ -170,10 +166,10 @@ describe("Tab", function () {
         });
 
         it("should not read the file, if the file is `binary`", function () {
-            spies.isTextOrBinary.andCallFake(function (path, cb) {
+            spies.isTextOrBinary.and.callFake(function (path, cb) {
                 cb(null, 'binary');
             });
-            spies.fs.readFile.andCallFake(function (path, cb) {
+            spies.fs.readFile.and.callFake(function (path, cb) {
                 cb(null, 'Should not be set');
             });
 
@@ -187,14 +183,14 @@ describe("Tab", function () {
         });
 
         it("should set the properties #statTimes an object with the keys `modified` and `change`", function () {
-            spies.isTextOrBinary.andCallFake(function (path, cb) {
+            spies.isTextOrBinary.and.callFake(function (path, cb) {
                 cb(null, 'binary');
             });
 
             var mtime = new Date(2015, 6, 16, 15, 11, 9),
                 ctime = new Date(2015, 6, 16, 15, 11, 9);
 
-            spies.fs.stat.andCallFake(function (path, cb) {
+            spies.fs.stat.and.callFake(function (path, cb) {
                 cb(null, {
                     mtime : mtime,
                     ctime : ctime
@@ -296,7 +292,7 @@ describe("Tab", function () {
 
         it("should rename the file when passing the `file.path` in arg", function () {
             var oldPath, newPath;
-            spies.fs.rename.andCallFake(function (oldP, newP, cb) {
+            spies.fs.rename.and.callFake(function (oldP, newP, cb) {
                 oldPath = oldP;
                 newPath = newP;
                 cb(null);
@@ -319,7 +315,7 @@ describe("Tab", function () {
 
         it("should write a new file if the `file.path` is defined but not the `tab.path`", function () {
             var path, content;
-            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+            spies.fs.writeFile.and.callFake(function (p, c, cb) {
                 path = p;
                 content = c;
                 cb(null);
@@ -341,7 +337,7 @@ describe("Tab", function () {
 
         it("should write a new file when the content is defined", function () {
             var path, content;
-            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+            spies.fs.writeFile.and.callFake(function (p, c, cb) {
                 path = p;
                 content = c;
                 cb(null);
@@ -359,14 +355,14 @@ describe("Tab", function () {
         });
 
         /*it("should return an error when trying to save a file that has already been changed", function () {
-            spies.isTextOrBinary.andCallFake(function (path, cb) {
+            spies.isTextOrBinary.and.callFake(function (path, cb) {
                 cb(null, 'text');
             });
 
             var mtime = new Date(2015, 6, 16, 15, 11, 9),
                 ctime = new Date(2015, 6, 16, 15, 11, 9);
 
-            spies.fs.stat.andCallFake(function (path, cb) {
+            spies.fs.stat.and.callFake(function (path, cb) {
                 cb(null, {
                     mtime : mtime,
                     ctime : ctime
@@ -378,7 +374,7 @@ describe("Tab", function () {
                     path : '/the/path/'
                 });
                 tab.loadFile(function () {
-                    spies.fs.stat.andCallFake(function (path, cb) {
+                    spies.fs.stat.and.callFake(function (path, cb) {
                         cb(null, {
                             mtime : new Date(2015, 6, 16, 15, 11, 10),
                             ctime : new Date(2015, 6, 16, 15, 11, 10)
@@ -399,22 +395,22 @@ describe("Tab", function () {
                 nmtime = new Date(2015, 6, 16, 15, 11, 10),
                 nctime = new Date(2015, 6, 16, 15, 11, 10);
 
-            spies.fs.stat.andCallFake(function (path, cb) {
+            spies.fs.stat.and.callFake(function (path, cb) {
                 cb(null, {
                     mtime : imtime,
                     ctime : ictime
                 });
             });
-            spies.fs.readFile.andCallFake(function (path, cb) {
+            spies.fs.readFile.and.callFake(function (path, cb) {
                 cb(null, "No");
             });
 
-            spies.fs.writeFile.andCallFake(function (path, content, cb) {
-                spies.fs.readFile.andCallFake(function (path, cb) {
+            spies.fs.writeFile.and.callFake(function (path, content, cb) {
+                spies.fs.readFile.and.callFake(function (path, cb) {
                     cb(null, content);
                 });
 
-                spies.fs.stat.andCallFake(function (path, cb) {
+                spies.fs.stat.and.callFake(function (path, cb) {
                     cb(null, {
                         mtime : nmtime,
                         ctime : nctime
@@ -446,7 +442,7 @@ describe("Tab", function () {
 
         it("should reset #edited to false", function () {
             var path, content;
-            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+            spies.fs.writeFile.and.callFake(function (p, c, cb) {
                 path = p;
                 content = c;
                 cb(null);
@@ -669,7 +665,7 @@ describe("Tab", function () {
 
         it('Should trigger the `unwatch` event before saving the file.', function () {
             var path, content;
-            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+            spies.fs.writeFile.and.callFake(function (p, c, cb) {
                 path = p;
                 content = c;
                 cb(null);
@@ -691,7 +687,7 @@ describe("Tab", function () {
 
         it('Should trigger the `watch` event after saving the file.', function () {
             var path, content;
-            spies.fs.writeFile.andCallFake(function (p, c, cb) {
+            spies.fs.writeFile.and.callFake(function (p, c, cb) {
                 path = p;
                 content = c;
                 cb(null);
