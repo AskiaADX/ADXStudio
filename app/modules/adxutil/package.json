@@ -36,8 +36,8 @@
     "email": "mamadou@askia.com"
   },
   "bin": {
-    "ADXUtil": "./app/ADXUtil.js"
-  },
+    "ADXUtil": "./app/ADXUtil.cjs"
+  }
   "bugs": {
     "url": "https://github.com/AskiaADX/ADXUtil/issues"
   },
