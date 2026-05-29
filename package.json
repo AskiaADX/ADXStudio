@@ -5,7 +5,7 @@
   "main": "app/main.js",
   "scripts": {
     "start": "electron --enable-logging --inspect=9229 ./app/main.js",
-    "test": "jasmine-node spec/",
+    "test": "jasmine",
     "dist": "electron-builder --win --x64 --ia32"
   },
   "repository": {
@@ -32,7 +32,7 @@
   "dependencies": {
     "@node-minify/core": "^10.5.0",
     "@node-minify/uglify-js": "^10.5.0",
-    "axios": "^1.15.2",
+    "axios": "^1.16.1",
     "charset-detector": "0.0.2",
     "cli-color": "^2.0.4",
     "commander": "^14.0.3",
@@ -45,15 +45,16 @@
     "ncp": "^2.0.0",
     "node-zendesk": "^6.0.1",
     "nodejs-websocket": "^1.7.2",
-    "request": "^2.88.2",
     "uuid": "^14.0.0",
     "wrench": "^1.5.9"
   },
   "devDependencies": {
     "electron": "^41.3.0",
     "electron-builder": "^26.8.1",
+    "gulp": "^5.0.1",
     "ini": "^6.0.0",
-    "jasmine-node": "^3.0.0",
+    "jasmine": "^6.2.0",
+    "jsdoc": "^4.0.5",
     "underscore": "^1.13.8",
     "yargs-parser": ">=5.0.0-security.0"
   },

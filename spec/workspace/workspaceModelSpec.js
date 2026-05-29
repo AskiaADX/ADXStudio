@@ -25,7 +25,7 @@ describe("workspace", function () {
     beforeEach(function () {
         spies.fs = {};
         spies.fs.stat = spyOn(fs, 'stat');
-        spies.fs.stat.andCallFake(function (path, cb) {
+        spies.fs.stat.and.callFake(function (path, cb) {
             cb(null, {});
         });
 
@@ -33,7 +33,7 @@ describe("workspace", function () {
 
         spies.watcher = {};
         spies.watcher.create = spyOn(watcher, 'create');
-        spies.watcher.create.andCallFake(function (pattern) {
+        spies.watcher.create.and.callFake(function (pattern) {
             fakeWatcherInstance = new FakeWatcher(pattern);
             return fakeWatcherInstance;
         });
@@ -173,7 +173,7 @@ describe("workspace", function () {
         
         it("should watch file path associated with the tab when the tab is `loaded` (event)", function () {
             runSync(function (done) {
-                spyOn(fakeWatcherInstance, 'add').andCallFake(function (pattern) {
+                spyOn(fakeWatcherInstance, 'add').and.callFake(function (pattern) {
                     expect(pattern).toBe(nodePath.resolve('path/of/file'));
                     done();
                 });
@@ -187,7 +187,7 @@ describe("workspace", function () {
 
         it("should unwatch file while `unwatch` (event)", function () {
             runSync(function (done) {
-                spyOn(fakeWatcherInstance, 'remove').andCallFake(function (pattern) {
+                spyOn(fakeWatcherInstance, 'remove').and.callFake(function (pattern) {
                     expect(pattern).toBe(nodePath.resolve('path/of/file'));
                     done();
                 });

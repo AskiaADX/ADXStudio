@@ -12,7 +12,7 @@ describe("Tab", function () {
         Tab = require('../../app/workspace/TabModel.js').Tab;
 
         spies.isTextOrBinary = spyOn(Tab, 'isTextOrBinaryFile');
-        spies.isTextOrBinary.andCallFake(function (path, cb) {
+        spies.isTextOrBinary.and.callFake(function (path, cb) {
             cb(null, 'text');
         });
 
@@ -22,22 +22,22 @@ describe("Tab", function () {
         spies.fs = {};
 
         spies.fs.rename =  spyOn(fs, 'rename');
-        spies.fs.rename.andCallFake(function (oldpath, newpath, cb) {
+        spies.fs.rename.and.callFake(function (oldpath, newpath, cb) {
             cb(null);
         });
 
         spies.fs.stat = spyOn(fs, 'stat');
-        spies.fs.stat.andCallFake(function (path, cb) {
+        spies.fs.stat.and.callFake(function (path, cb) {
             cb(null, {});
         });
 
         spies.fs.readFile = spyOn(fs, 'readFile');
-        spies.fs.readFile.andCallFake(function (path, cb) {
+        spies.fs.readFile.and.callFake(function (path, cb) {
             cb(null, "Hello world!");
         });
 
         spies.fs.writeFile = spyOn(fs, 'writeFile');
-        spies.fs.writeFile.andCallFake(function (path, content, cb) {
+        spies.fs.writeFile.and.callFake(function (path, content, cb) {
             cb(null);
         });
 

@@ -430,41 +430,32 @@ function deleteAttachmentsIfArticle(self, title, section_id, callback) {
 function uploadAvailableFiles(self, files, articleId, callback) {
     const attachments = {};
 
-    function uploadAvailableFilesRecursive(index) {
-        const formData = {
-            'file' : fs.createReadStream(files[index])
+    async function uploadAvailableFilesRecursive(index) {
+        const form = new FormData();
+        form.append('file', fs.createReadStream(files[index]));
+        const url = self.options.url + "/api/v2/help_center/articles/" + articleId + "/attachments.json";
+        const headers = {
+            ...form.getHeaders(),
+            'Authorization': "Basic " + Buffer.from(self.options.username + ":" + self.options.password).toString('base64')
         };
-        const data = {
-            url		: self.options.url + "/api/v2/help_center/articles/" + articleId + "/attachments.json",
-            formData: formData,
-            headers : {
-                'Authorization' : "Basic " + Buffer.alloc(self.options.username + ":" + self.options.password).toString('base64')
-            }
-        };
-
-        request.post(data, (err, resp, body) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-
-            body = JSON.parse(body);
-
+        try {
+            const response = await axios.post(url, form, { headers });
+            const body = response.data;
             let prefix = files[index].match(/\.([a-z]+)$/i)[1];
             if (prefix.toLowerCase() === "adc" || prefix.toLowerCase() === "adp") prefix = "adx";
             attachments[prefix] = {
-                id   : body.article_attachment.id,
-                name : body.article_attachment.file_name
+                id: body.article_attachment.id,
+                name: body.article_attachment.file_name
             };
             index++;
-
             if (index < files.length) {
-                uploadAvailableFilesRecursive(index);
+                await uploadAvailableFilesRecursive(index);
             } else {
-                // The latest iteration
                 callback(null, attachments);
             }
-        });
+        } catch (err) {
+            callback(err);
+        }
     }
 
     uploadAvailableFilesRecursive(0);
@@ -474,7 +465,6 @@ function uploadAvailableFiles(self, files, articleId, callback) {
  * Check if we already have an article or if we need to create one
  *
  * @param {PublisherZenDesk} publisher
- * @param {Number} articleToUpdateId The id of the article to update
  * @param {Number} id The id of the article to create if the article does not exist
  * @param {JSON} jsonArticle of the article to create if the article does not exist
  * @param {Function} cb

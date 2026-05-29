@@ -5,7 +5,7 @@
 import gulp from 'gulp';
 import { deleteAsync } from 'del';
 import shell from 'gulp-shell';
-import jsdoc from 'gulp-jsdoc3';
+import { exec } from 'child_process';
 
 // Destination files
 const DEST_DOCS = 'docs/';
@@ -20,8 +20,15 @@ export function cleanDocs(cb) {
 
 // Document
 export function document(cb) {
-    gulp.src(['readme.md', './app/**/*.js'], { read: false })
-        .pipe(jsdoc(cb));
+    exec('npx jsdoc -c jsdoc.json', (err, stdout, stderr) => {
+        if (err) {
+            console.error(`Error generating documentation: ${stderr}`);
+            cb(err);
+        } else {
+            console.log(stdout);
+            cb();
+        }
+    });
 }
 
 // Global cleaning

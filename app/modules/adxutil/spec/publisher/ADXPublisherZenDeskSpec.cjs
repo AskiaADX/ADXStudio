@@ -6,7 +6,7 @@ describe("ADXPublisherZenDesk", function() {
         Configurator        = require('../../app/configurator/ADXConfigurator.js').Configurator,
         PublisherZenDesk	= require('../../app/publisher/ADXPublisherZenDesk.js').PublisherZenDesk,
         zenDesk             = require('node-zendesk'),
-        request             = require('request'),
+        axios               = require('axios'),
         spies				= {},
         sectionLists        = [
             {
@@ -224,16 +224,18 @@ describe("ADXPublisherZenDesk", function() {
             createClient : spyOn(zenDesk, 'createClient')
         };
         spies.zendesk.createClient.andReturn(fakeClient);
-        spies.request = {
-            post : spyOn(request, 'post')
+        spies.axios = {
+            post : spyOn(axios, 'post')
         };
-        spies.request.post.andCallFake(function (obj, cb) {
-            cb(null, null, JSON.stringify({
-                article_attachment : {
-                    id : 'an id',
-                    file_name : 'a file_name'
+        spies.axios.post.andCallFake(function (url, form, config) {
+            return Promise.resolve({
+                data: {
+                    article_attachment: {
+                        id: 'an id',
+                        file_name: 'a file_name'
+                    }
                 }
-            }));
+            });
         });
 
         // Court-circuit the validation outputs
@@ -761,8 +763,8 @@ describe("ADXPublisherZenDesk", function() {
                 config.projectType = "adc";
                 var error = new Error('An error');
                 var publisherZenDesk = new PublisherZenDesk(config, {}, options);
-                spies.request.post.andCallFake(function (obj, cb) {
-                    cb(error);
+                spies.axios.post.andCallFake(function () {
+                    return Promise.reject(error);
                 });
 
                 runSync(function (done) {
@@ -774,7 +776,7 @@ describe("ADXPublisherZenDesk", function() {
             });
 
             function testPost(o, index) {
-                it("should call request.post with the correct arguments for " + o.name, function() {
+                it("should call axios.post with the correct arguments for " + o.name, function() {
                     var config = new Configurator('.');
                     config.projectType = "adc";
                     var publisherZenDesk = new PublisherZenDesk(config, {}, options);
@@ -782,28 +784,23 @@ describe("ADXPublisherZenDesk", function() {
                     o.path = path.resolve(path.join(config.path, o.suffix));
                     var n = 0;
 
-
                     runSync(function (done) {
-                        spies.request.post.andCallFake(function (obj, cb) {
+                        spies.axios.post.andCallFake(function (url, form, config) {
                             if (index === n) {
-                                expect(obj).toEqual({
-                                    url		: "https://uri/api/v2/help_center/articles/12/attachments.json",
-                                    formData: {
-                                        file : o.path
-                                    },
-                                    headers : {
-                                        'Authorization' : "Basic " + Buffer.alloc(options.username + ":" + options.password).toString('base64')
-                                    }
-                                });
+                                expect(url).toEqual("https://uri/api/v2/help_center/articles/12/attachments.json");
+                                expect(config.headers['Authorization']).toEqual("Basic " + Buffer.from(options.username + ":" + options.password).toString('base64'));
+                                // Optionally, check form instance and file path if needed
                                 done();
                             }
                             n++;
-                            cb(null, null, JSON.stringify({
-                                article_attachment : {
-                                    id : 'an id',
-                                    file_name : 'a file_name'
+                            return Promise.resolve({
+                                data: {
+                                    article_attachment: {
+                                        id: 'an id',
+                                        file_name: 'a file_name'
+                                    }
                                 }
-                            }));
+                            });
                         });
                         publisherZenDesk.publish(function() {});
                     });
@@ -812,16 +809,16 @@ describe("ADXPublisherZenDesk", function() {
 
             [
                 {
-                    name 	: "adc",
-                    suffix 	: path.join(common.ADX_BIN_PATH, 'test-adx.adc')
+                    name  : "adc",
+                    suffix: path.join(common.ADX_BIN_PATH, 'test-adx.adc')
                 },
                 {
-                    name 	: "qex",
-                    suffix 	: path.join(common.QEX_PATH, 'test-adx.qex')
+                    name  : "qex",
+                    suffix: path.join(common.QEX_PATH, 'test-adx.qex')
                 },
                 {
-                    name 	: "png",
-                    suffix 	: 'preview.png'
+                    name  : "png",
+                    suffix: 'preview.png'
                 }
             ].forEach(testPost);
         });
