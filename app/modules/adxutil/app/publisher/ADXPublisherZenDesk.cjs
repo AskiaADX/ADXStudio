@@ -461,7 +461,7 @@ function uploadAvailableFiles(self, files, articleId, callback) {
         }
     }
 
-    uploadAvailableFilesRecursive(0);
+    uploadAvailableFilesRecursive(0).catch(callback);
 }
 
 /**
