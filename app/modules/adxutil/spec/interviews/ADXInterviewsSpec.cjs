@@ -8,18 +8,26 @@ describe('ADXInterviews', function () {
         spies = {},
         errMsg,
         successMsg,
-        uuid            = require('uuid');
+        uuidKey,
+        originalUuid;
 
     beforeEach(function () {
+        uuidKey = require.resolve('uuid');
+        originalUuid = require(uuidKey);
+        require.cache[uuidKey].exports = {
+            v4: jasmine.createSpy('uuid.v4').and.returnValue('guid')
+        };
+        spies.uuid = require.cache[uuidKey].exports.v4;
+
         // Clean the cache, obtain a fresh instance of the adxInterviews each time
-        var adxInterviewsKey = require.resolve('../../app/interviews/ADXInterviews.js'),
-            commonKey = require.resolve('../../app/common/common.js');
+        var adxInterviewsKey = require.resolve('../../app/interviews/ADXInterviews.cjs'),
+            commonKey = require.resolve('../../app/common/common.cjs');
 
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
         delete require.cache[adxInterviewsKey];
-        adxInterviews = require('../../app/interviews/ADXInterviews.js');
+        adxInterviews = require('../../app/interviews/ADXInterviews.cjs');
 
         InterviewsFactory = adxInterviews.InterviewsFactory;
 
@@ -27,32 +35,31 @@ describe('ADXInterviews', function () {
         errMsg = common.messages.error;
         successMsg = common.messages.success;
 
-        // Court-circuit the uuid generator
-        spies.uuid = spyOn(uuid, 'v4');
-        spies.uuid.andReturn('guid');
-
         // Court-circuit the validation outputs
         spies.writeError = spyOn(common, 'writeError');
         spies.writeSuccess = spyOn(common, 'writeSuccess');
         spies.writeMessage = spyOn(common, 'writeMessage');
         spies.dirExists = spyOn(common, 'dirExists');
 
-        InteractiveADXShell = require('../../app/common/InteractiveADXShell.js').InteractiveADXShell;
+        InteractiveADXShell = require('../../app/common/InteractiveADXShell.cjs').InteractiveADXShell;
         spies.interactiveExec = spyOn(InteractiveADXShell.prototype, 'exec');
         spies.interactiveDestroy = spyOn(InteractiveADXShell.prototype, 'destroy')
     });
 
+    afterEach(function () {
+        if (uuidKey && require.cache[uuidKey]) {
+            require.cache[uuidKey].exports = originalUuid;
+        }
+    });
+
 
     function runSync(fn) {
-        var wasCalled = false;
-        runs(function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        let wasCalled = false;
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
+
     }
 
     describe('InterviewsFactory', function () {
@@ -62,7 +69,7 @@ describe('ADXInterviews', function () {
             it("should throw an exception when the `adxDirPath` argument of the constructor is a falsy", function () {
                 expect(function () {
                     var factory = new InterviewsFactory();
-                }).toThrow(errMsg.invalidPathArg);
+                }).toThrowError(errMsg.invalidPathArg);
             });
 
             it("should set the property #path to the object instance", function () {
@@ -86,7 +93,7 @@ describe('ADXInterviews', function () {
 
             it("should return a new instance of Interview with a new random id", function () {
                 var factory = new InterviewsFactory('my/path');
-                spies.uuid.andReturn('guid');
+                spies.uuid.and.returnValue('guid');
                 var inter = factory.create();
                 expect(inter.id).toBe('guid');
             });
@@ -95,7 +102,7 @@ describe('ADXInterviews', function () {
                 var factory = new InterviewsFactory('my/path');
                 var callCount = -1;
                 var ret = ['guid', 'guid', 'another_guid'];
-                spies.uuid.andCallFake(function () {
+                spies.uuid.and.callFake(function () {
                     callCount++;
                     return ret[callCount];
                 });
@@ -119,7 +126,7 @@ describe('ADXInterviews', function () {
 
             it("should return the instance of Interview using his id", function () {
                 var factory = new InterviewsFactory('my/path');
-                spies.uuid.andReturn('guid');
+                spies.uuid.and.returnValue('guid');
                 var inter = factory.create();
                 var foundInter = factory.getById('guid');
                 expect(inter).toBe(foundInter);
@@ -127,7 +134,7 @@ describe('ADXInterviews', function () {
 
             it("should return undefined when the id is not found", function () {
                 var factory = new InterviewsFactory('my/path');
-                spies.uuid.andReturn('guid');
+                spies.uuid.and.returnValue('guid');
                 var inter = factory.create();
                 var foundInter = factory.getById('unknow_id');
                 expect(foundInter).toBeUndefined();
@@ -141,7 +148,7 @@ describe('ADXInterviews', function () {
 
             it("should call the method #destroy of the specified interview id", function () {
                 var factory = new InterviewsFactory('my/path');
-                spies.uuid.andReturn('guid');
+                spies.uuid.and.returnValue('guid');
                 factory.create();
                 factory.remove('guid');
                 expect(spies.interactiveDestroy).toHaveBeenCalled();
@@ -149,7 +156,7 @@ describe('ADXInterviews', function () {
 
             it("should remove the interview from the cache", function () {
                 var factory = new InterviewsFactory('my/path');
-                spies.uuid.andReturn('guid');
+                spies.uuid.and.returnValue('guid');
                 factory.create();
                 factory.remove('guid');
                 var inter = factory.getById('guid');
@@ -166,7 +173,7 @@ describe('ADXInterviews', function () {
                 var factory = new InterviewsFactory('my/path');
                 var count = -1;
                 var ids = ['a', 'b', 'c', 'd', 'e'];
-                spies.uuid.andCallFake(function () {
+                spies.uuid.and.callFake(function () {
                     count++;
                     return ids[count];
                 });
@@ -190,7 +197,7 @@ describe('ADXInterviews', function () {
 
             it("should set the property #id to the object instance", function () {
                 var factory = new InterviewsFactory('my/path');
-                spies.uuid.andReturn('guid');
+                spies.uuid.and.returnValue('guid');
                 var inter = factory.create();
                 expect(inter.id).toBe('guid');
             });

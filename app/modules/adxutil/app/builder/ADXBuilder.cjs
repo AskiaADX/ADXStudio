@@ -322,15 +322,15 @@ Builder.prototype.compressADX =  function compressADX() {
             }
         });
 
-        const bufferPromise = zip.generateAsync({
+        const zipOptions = {
             type: "nodebuffer",
             compression: 'DEFLATE',
             compressionOptions: {
                 level: 6
             }
-        });
+        };
 
-        bufferPromise.then(function(buffer){
+        function writeBuffer(buffer) {
             const fileExt = '.' + self.adxConfigurator.projectType.toLowerCase();
 
             self.outputPath = pathHelper.join(self.binPath, self.adxName + fileExt);
@@ -339,9 +339,21 @@ Builder.prototype.compressADX =  function compressADX() {
                     throw err;
                 }
             });
-    
+
             self.sequence.resume();
-        });
+        }
+
+        if (typeof zip.generateAsync === 'function') {
+            zip.generateAsync(zipOptions).then(writeBuffer);
+            return;
+        }
+
+        if (typeof zip.generate === 'function') {
+            writeBuffer(zip.generate(zipOptions));
+            return;
+        }
+
+        self.sequence.resume(new Error('Invalid zip object: missing generate/generateAsync'));
     });
 };
 

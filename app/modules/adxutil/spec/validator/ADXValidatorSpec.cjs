@@ -14,16 +14,16 @@ describe('ADXValidator', function () {
 
     beforeEach(function () {
         // Clean the cache, obtain a fresh instance of the ADXValidator each time
-        var adxValidatorKey = require.resolve('../../app/validator/ADXValidator.js'),
-            commonKey = require.resolve('../../app/common/common.js');
+        var adxValidatorKey = require.resolve('../../app/validator/ADXValidator.cjs'),
+            commonKey = require.resolve('../../app/common/common.cjs');
 
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
         delete require.cache[adxValidatorKey];
-        adxValidator = require('../../app/validator/ADXValidator.js');
+        adxValidator = require('../../app/validator/ADXValidator.cjs');
 
-        Configurator = require('../../app/configurator/ADXConfigurator.js').Configurator;
+        Configurator = require('../../app/configurator/ADXConfigurator.cjs').Configurator;
 
         Validator = adxValidator.Validator;
 
@@ -67,32 +67,36 @@ describe('ADXValidator', function () {
 
 
         // Add matchers
-        this.addMatchers({
+        jasmine.addMatchers({
             /**
              * Validate that the actual array contains the expected value
-             * @param {*} expected
-             * @returns {Boolean}
+             * @returns {{compare: function(*, *): {pass: boolean, message: string}}}
              */
-            toContains: function(expected) {
-                var actual = this.actual,
-                    notText = this.isNot ? " not" : "",
-                    expectedValue = expected;
+            toContains: function() {
+                return {
+                    compare: function (actual, expected) {
+                        var expectedValue = expected;
+                        var pass;
 
-                this.message = function () {
-                    return "Expected " + actual + notText + " contains " + expectedValue;
-                };
+                        if (!Array.isArray(actual)) {
+                            pass = false;
+                        } else {
+                            pass = actual.some(function (value) {
+                                if (Array.isArray(expected)) {
+                                    expectedValue = value;
+                                    return expected.indexOf(value) !== -1;
+                                }
 
-                if (!Array.isArray(actual)) {
-                     return false;
-                }
-                return actual.some(function (value) {
-                    if (Array.isArray(expected)) {
-                        expectedValue = value;
-                        return (expected.indexOf(value) !== -1);
+                                return value === expected;
+                            });
+                        }
+
+                        return {
+                            pass: pass,
+                            message: "Expected " + actual + " to contain " + expectedValue
+                        };
                     }
-
-                    return value === expected;
-                });
+                };
             }
         });
     });
@@ -376,7 +380,7 @@ describe('ADXValidator', function () {
         });
 
         it("should output an error when the path specified doesn't exist", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(new Error("No such file or directory"));
             });
 
@@ -385,7 +389,7 @@ describe('ADXValidator', function () {
         });
 
         it("should not output an error when the path specified exist", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
 
@@ -395,7 +399,7 @@ describe('ADXValidator', function () {
         });
 
         it("should use the current directory when the path is not specified", function () {
-            spyOn(process, 'cwd').andReturn('/cwd/');
+            spyOn(process, 'cwd').and.returnValue('/cwd/');
             var dir;
             spies.validateHook = function () {
                 dir = this.adxDirectoryPath;
@@ -417,7 +421,7 @@ describe('ADXValidator', function () {
         });
 
         it("should output an error when the config.xml file doesn't exist", function () {
-            spies.fs.exists.andCallFake(function (path, callback) {
+            spies.fs.exists.and.callFake(function (path, callback) {
                 callback(false);
             });
 
@@ -427,7 +431,7 @@ describe('ADXValidator', function () {
         });
 
         it("should not output an error when the config.xml file exist", function () {
-            spies.fs.exists.andCallFake(function (path, callback) {
+            spies.fs.exists.and.callFake(function (path, callback) {
                 callback(true);
             });
 
@@ -437,7 +441,7 @@ describe('ADXValidator', function () {
         });
 
         it("should output a success message when the config.xml file exist", function () {
-            spies.fs.exists.andCallFake(function (path, callback) {
+            spies.fs.exists.and.callFake(function (path, callback) {
                 callback(true);
             });
 
@@ -448,11 +452,11 @@ describe('ADXValidator', function () {
 
         it("should search the `resources` directory", function () {
             var searchResourcesDirectory = false;
-            spies.fs.exists.andCallFake(function (path, callback) {
+            spies.fs.exists.and.callFake(function (path, callback) {
                 callback(true);
             });
 
-            spies.fs.stat.andCallFake(function (path) {
+            spies.fs.stat.and.callFake(function (path) {
                 if (path === '\\adx\\path\\dir\\resources') {
                     searchResourcesDirectory = true;
                 }
@@ -466,11 +470,11 @@ describe('ADXValidator', function () {
         function loadResourcesDirectory(mode) {
             it("should search the `resources/" + mode + "/` directory", function () {
                 var searchResources = false;
-                spies.fs.exists.andCallFake(function (path, callback) {
+                spies.fs.exists.and.callFake(function (path, callback) {
                     callback(true);
                 });
 
-                spies.fs.stat.andCallFake(function (path, callback) {
+                spies.fs.stat.and.callFake(function (path, callback) {
                     if (path === '\\adx\\path\\dir\\resources') {
                         callback(null, true);
                     } else if (path === '\\adx\\path\\dir\\resources\\' + mode) {
@@ -489,14 +493,14 @@ describe('ADXValidator', function () {
                 var files = ['123.txt', '456.html'],
                     key   = (mode === 'static') ? 'statics' : mode,
                     instance;
-                spies.fs.exists.andCallFake(function (path, callback) {
+                spies.fs.exists.and.callFake(function (path, callback) {
                     callback(true);
                 });
                 spies.validateHook = function () {
                     instance = this;
                 };
 
-                spies.fs.stat.andCallFake(function (path, callback) {
+                spies.fs.stat.and.callFake(function (path, callback) {
                     if (path === '\\adx\\path\\dir\\resources') {
                         callback(null, true);
                     } else if (path === '\\adx\\path\\dir\\resources\\' + mode) {
@@ -506,9 +510,9 @@ describe('ADXValidator', function () {
                     }
                 });
 
-                spies.fs.readdirSync.andReturn(files);
+                spies.fs.readdirSync.and.returnValue(files);
 
-                spyOn(common, 'isIgnoreFile').andReturn(false);
+                spyOn(common, 'isIgnoreFile').and.returnValue(false);
 
                 adxValidator.validate(null, '/adx/path/dir');
 
@@ -526,7 +530,7 @@ describe('ADXValidator', function () {
                     key   = (mode === 'static') ? 'statics' : mode,
                     instance;
 
-                spies.fs.exists.andCallFake(function (path, callback) {
+                spies.fs.exists.and.callFake(function (path, callback) {
                     callback(true);
                 });
 
@@ -534,7 +538,7 @@ describe('ADXValidator', function () {
                     instance = this;
                 };
 
-                spies.fs.stat.andCallFake(function (path, callback) {
+                spies.fs.stat.and.callFake(function (path, callback) {
                     if (path === '\\adx\\path\\dir\\resources') {
                         callback(null, true);
                     } else if (path === '\\adx\\path\\dir\\resources\\' + mode) {
@@ -544,9 +548,9 @@ describe('ADXValidator', function () {
                     }
                 });
 
-                spies.fs.readdirSync.andReturn(files);
+                spies.fs.readdirSync.and.returnValue(files);
 
-                spyOn(common, 'isIgnoreFile').andCallFake(function (f) {
+                spyOn(common, 'isIgnoreFile').and.callFake(function (f) {
                    return (f === 'Thumbs.db');
                 });
 
@@ -720,7 +724,7 @@ describe('ADXValidator', function () {
         });
 
         it("should output an error when the ADXConfigurator could not load the xml", function () {
-            Configurator.prototype.load.andCallFake(function (cb) {
+            Configurator.prototype.load.and.callFake(function (cb) {
                 cb(new Error("Fake error"));
             });
 
@@ -730,7 +734,7 @@ describe('ADXValidator', function () {
         });
 
         it("should not output an error when the ADXConfigurator was successfully loaded", function () {
-            Configurator.prototype.load.andCallFake(function (cb) {
+            Configurator.prototype.load.and.callFake(function (cb) {
                 cb(null);
             });
 
@@ -740,7 +744,7 @@ describe('ADXValidator', function () {
         });
 
         it("should remove the validateMasterPage in the sequence while using an ADC", function () {
-            Configurator.prototype.load.andCallFake(function (cb) {
+            Configurator.prototype.load.and.callFake(function (cb) {
                 this.fromXml('<control></control>');
                 cb(null);
             });
@@ -751,7 +755,7 @@ describe('ADXValidator', function () {
         });
 
         it("should remove the validateADXInfoConstraints in the sequence while using an ADP", function () {
-            Configurator.prototype.load.andCallFake(function (cb) {
+            Configurator.prototype.load.and.callFake(function (cb) {
                 this.fromXml('<page></page>');
                 cb(null);
             });
@@ -779,7 +783,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.0.0alpha\\Config.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -794,7 +798,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.0.0\\ADCSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -809,7 +813,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.1.0\\ADCSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -824,7 +828,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.1.0\\ADPSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -839,7 +843,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.2.0\\ADCSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -854,7 +858,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.2.0\\ADPSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -869,7 +873,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.3.0\\ADCSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -884,7 +888,7 @@ describe('ADXValidator', function () {
             };
 
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command) {
+            spyOn(childProc, 'exec').and.callFake(function (command) {
                 expect(command).toBe('"\\root\\lib\\libxml\\xmllint.exe" --noout --schema "\\root\\schema\\2.3.0\\ADPSchema.xsd" "\\adx\\path\\dir\\config.xml"');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -898,7 +902,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator.fromXml('<control></control>');
             };
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command, callback) {
+            spyOn(childProc, 'exec').and.callFake(function (command, callback) {
                 callback(new Error('Fake validation error'));
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -912,7 +916,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator.fromXml('<control></control>');
             };
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command, callback) {
+            spyOn(childProc, 'exec').and.callFake(function (command, callback) {
                 callback(null);
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -926,7 +930,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator.fromXml('<control></control>');
             };
             var childProc = require('child_process');
-            spyOn(childProc, 'exec').andCallFake(function (command, callback) {
+            spyOn(childProc, 'exec').and.callFake(function (command, callback) {
                 callback(null);
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2189,7 +2193,7 @@ describe('ADXValidator', function () {
                 '</outputs></page>');
             };
             var files = [];
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 files.push(file);
                 cb(null, '<askia-head/><askia-form><askia-questions/></askia-form><askia-foot/>');
             });
@@ -2213,7 +2217,7 @@ describe('ADXValidator', function () {
                     '</outputs></page>');
             };
             var files = [];
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 files.push(file);
                 cb(null, '<askia-head/><askia-form><askia-questions/></askia-form><askia-foot/>');
             });
@@ -2230,7 +2234,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(new Error('fake error'));
                 }
@@ -2244,7 +2248,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                    cb(null, '<html><body></body></html>');
                }
@@ -2258,7 +2262,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><body><askia-head /><askia-head/></body></html>');
                 }
@@ -2272,7 +2276,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><head><askia-head/></head><body></body></html>');
                 }
@@ -2286,7 +2290,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><body><askia-head /><askia-form><askia-form ></body></html>');
                 }
@@ -2300,7 +2304,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><head><askia-head/></head><body><askia-form></body></html>');
                 }
@@ -2314,7 +2318,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><body><askia-head /><askia-form></askia-form></askia-form></body></html>');
                 }
@@ -2328,7 +2332,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><head><askia-head/></head><body><askia-form></askia-form></body></html>');
                 }
@@ -2342,7 +2346,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><body><askia-head /><askia-form><askia-questions/><askia-questions /></askia-form></body></html>');
                 }
@@ -2356,7 +2360,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><head><askia-head/></head><body><askia-form><askia-questions/></askia-form></body></html>');
                 }
@@ -2370,7 +2374,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html><body><askia-head /><askia-form><askia-questions/></askia-form><askia-foot/><askia-foot /></body></html>');
                 }
@@ -2384,7 +2388,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html>\r\n<head>\r\n<askia-head/>\r\n</head>\r\n<body>\r\n</askia-form>\r\n<askia-form>\r\n<askia-questions/>\r\n<askia-foot/></body>\r\n</html>');
                 }
@@ -2398,7 +2402,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html>\r\n<head>\r\n<askia-head/>\r\n</head>\r\n<body>\r\n</askia-form>\r\n<askia-questions/>\r\n<askia-form>\r\n<askia-foot/></body>\r\n</html>');
                 }
@@ -2412,7 +2416,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html>\r\n<head>\r\n<askia-head/>\r\n</head>\r\n<body>\r\n</askia-form>\r\n<askia-form>\r\n<askia-questions/>\r\n<askia-foot/></body>\r\n</html>');
                 }
@@ -2426,7 +2430,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 if (file === '\\adx\\path\\dir\\resources\\dynamic\\first.html') {
                     cb(null, '<html>\r\n<head>\r\n<askia-head/>\r\n</head>\r\n<body>\r\n<askia-form>\r\nSomething before\r\n<askia-questions/>\r\nSomething after\r\n</askia-form>\r\n<askia-foot/></body>\r\n</html>');
                 }
@@ -2440,7 +2444,7 @@ describe('ADXValidator', function () {
                 this.adxConfigurator = new Configurator('/adx/path/dir');
                 this.adxConfigurator.fromXml('<page><outputs><output id="first" masterPage="first.html"></output><output id="second" masterPage="second.html"></output></outputs></page>');
             };
-            spies.fs.readFile.andCallFake(function (file, cb) {
+            spies.fs.readFile.and.callFake(function (file, cb) {
                 cb(null, '<html>\r\n<head>\r\n<askia-head/>\r\n</head>\r\n<body>\r\n<askia-form>\r\nSomething before\r\n<askia-questions/>\r\nSomething after\r\n</askia-form>\r\n<askia-foot/></body>\r\n</html>');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2459,10 +2463,10 @@ describe('ADXValidator', function () {
             spies.sequence = ['runAutoTests'];
 
             childProc = require('child_process');
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
             spyExec = spyOn(childProc, 'execFile');
 
-            InteractiveADXShell  =  require('../../app/common/InteractiveADXShell.js').InteractiveADXShell;
+            InteractiveADXShell  =  require('../../app/common/InteractiveADXShell.cjs').InteractiveADXShell;
             spyInteractiveExec = spyOn(InteractiveADXShell.prototype, 'exec');
             spyOn(Validator.prototype, 'writeError');
             spyOn(Validator.prototype, 'writeWarning');
@@ -2471,10 +2475,10 @@ describe('ADXValidator', function () {
         });
 
         it('should run the ADXShell process with the environment from the common.getChildProcessEnv', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options) {
+            spyExec.and.callFake(function (file, args, options) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(options.env).toEqual(common.getChildProcessEnv());
             });
@@ -2484,10 +2488,10 @@ describe('ADXValidator', function () {
         });
 
         it('should run the ADXShell process with the path of the ADX directory in arguments and the flag --auto', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args) {
+            spyExec.and.callFake(function (file, args) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['--auto', '\\adx\\path\\dir']);
             });
@@ -2497,10 +2501,10 @@ describe('ADXValidator', function () {
         });
 
         it('should run the ADXShell process with the flag --html when options.printMode="html"', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args) {
+            spyExec.and.callFake(function (file, args) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['--html', '--auto', '\\adx\\path\\dir']);
             });
@@ -2512,10 +2516,10 @@ describe('ADXValidator', function () {
         });
 
         it('should output a warning when the ADXShell process failed', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options, callback) {
+            spyExec.and.callFake(function (file, args, options, callback) {
                 callback(new Error('Fake validation error'), '', 'Fake validation error');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2524,10 +2528,10 @@ describe('ADXValidator', function () {
         });
 
         it('should output the stdout of the ADXShell process', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options, callback) {
+            spyExec.and.callFake(function (file, args, options, callback) {
                 callback(null, 'Fake stdout');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2536,10 +2540,10 @@ describe('ADXValidator', function () {
         });
 
         it("should output a success when the ADXShell process doesn't failed", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options, callback) {
+            spyExec.and.callFake(function (file, args, options, callback) {
                 callback(null);
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2548,11 +2552,11 @@ describe('ADXValidator', function () {
         });
 
         it("should run the ADXShell process using the InteractiveADXShell when it's defined in the options", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
             var mockCommand;
-            spyInteractiveExec.andCallFake(function (command) {
+            spyInteractiveExec.and.callFake(function (command) {
                 mockCommand = command;
             });
             adxValidator.validate({
@@ -2574,7 +2578,7 @@ describe('ADXValidator', function () {
             spies.sequence = ['runADXUnitTests'];
 
             childProc = require('child_process');
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
             spyExec = spyOn(childProc, 'execFile');
 
             spyOn(Validator.prototype, 'writeError');
@@ -2586,7 +2590,7 @@ describe('ADXValidator', function () {
         it('should verify that the `tests/units` directory exists', function () {
             var searchUnitsTests = false;
 
-            spies.fs.stat.andCallFake(function (path) {
+            spies.fs.stat.and.callFake(function (path) {
                 if (path === '\\adx\\path\\dir\\tests\\units') {
                     searchUnitsTests = true;
                 }
@@ -2598,7 +2602,7 @@ describe('ADXValidator', function () {
         });
 
         it("should not output a warning when the `tests/units` directory doesn't exists", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(new Error("No such file or directory"));
             });
 
@@ -2607,10 +2611,10 @@ describe('ADXValidator', function () {
         });
 
         it('should run the ADXShell process with the environment from the common.getChildProcessEnv', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options) {
+            spyExec.and.callFake(function (file, args, options) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(options.env).toEqual(common.getChildProcessEnv());
             });
@@ -2620,10 +2624,10 @@ describe('ADXValidator', function () {
         });
 
         it('should run the ADXShell process with the path of the ADX directory in arguments', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args) {
+            spyExec.and.callFake(function (file, args) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['\\adx\\path\\dir']);
             });
@@ -2633,10 +2637,10 @@ describe('ADXValidator', function () {
         });
 
         it('should output a warning when the ADXShell process failed', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options, callback) {
+            spyExec.and.callFake(function (file, args, options, callback) {
                 callback(new Error('Fake validation error'), '', 'Fake validation error');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2645,10 +2649,10 @@ describe('ADXValidator', function () {
         });
 
         it('should output the stdout of the ADXShell process', function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options, callback) {
+            spyExec.and.callFake(function (file, args, options, callback) {
                 callback(null, 'Fake stdout');
             });
             adxValidator.validate(null, '/adx/path/dir');
@@ -2657,10 +2661,10 @@ describe('ADXValidator', function () {
         });
 
         it("should output a success when the ADXShell process doesn't failed", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
-            spyExec.andCallFake(function (file, args, options, callback) {
+            spyExec.and.callFake(function (file, args, options, callback) {
                 callback(null);
             });
             adxValidator.validate(null, '/adx/path/dir');

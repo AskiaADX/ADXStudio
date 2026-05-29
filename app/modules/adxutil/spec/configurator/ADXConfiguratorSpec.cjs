@@ -12,14 +12,14 @@ describe('ADXConfigurator', function () {
 
     beforeEach(function () {
         // Clean the cache, obtain a fresh instance of the object each time
-        var adxConfigKey = require.resolve('../../app/configurator/ADXConfigurator.js'),
-            commonKey = require.resolve('../../app/common/common.js');
+        var adxConfigKey = require.resolve('../../app/configurator/ADXConfigurator.cjs'),
+            commonKey = require.resolve('../../app/common/common.cjs');
 
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
         delete require.cache[adxConfigKey];
-        ADXConfigurator = require('../../app/configurator/ADXConfigurator.js').Configurator;
+        ADXConfigurator = require('../../app/configurator/ADXConfigurator.cjs').Configurator;
 
         // Messages
         errMsg = common.messages.error;
@@ -41,15 +41,12 @@ describe('ADXConfigurator', function () {
 
 
     function runSync(fn) {
-        var wasCalled = false;
-        runs(function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        let wasCalled = false;
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
+
     }
 
     describe("#constructor", function () {
@@ -58,7 +55,7 @@ describe('ADXConfigurator', function () {
 
             expect(function () {
                 var configurator = new ADXConfigurator();
-            }).toThrow(errMsg.invalidPathArg);
+            }).toThrowError(errMsg.invalidPathArg);
 
         });
 
@@ -73,7 +70,7 @@ describe('ADXConfigurator', function () {
     describe("#load", function () {
 
         it("should return an error when the `path` specified via the constructor doesn't exist", function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(new Error(errMsg.noSuchFileOrDirectory));
             });
             runSync(function (done) {
@@ -86,13 +83,13 @@ describe('ADXConfigurator', function () {
         });
 
         it("should try to read the config.xml file", function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
             runSync(function (done) {
                 var configurator = new ADXConfigurator("a/valid/path");
 
-                spies.fs.readFile.andCallFake(function (filepath) {
+                spies.fs.readFile.and.callFake(function (filepath) {
                     expect(filepath).toEqual(path.join("a/valid/path", "config.xml"));
                     done();
                 });
@@ -104,10 +101,10 @@ describe('ADXConfigurator', function () {
 
         it("should return an error when it could not read the config.xml file", function () {
             var theError = new Error("A fake error");
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(theError, null);
             });
             runSync(function (done) {
@@ -120,10 +117,10 @@ describe('ADXConfigurator', function () {
         });
 
         it("should call the #fromXml() method with the content of the config.xml file", function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<xml></xml>');
             });
             runSync(function (done) {
@@ -140,10 +137,10 @@ describe('ADXConfigurator', function () {
 
     describe("#fromXml", function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<control>\n  <info>\n  <name>the-name</name>\n  <guid>the-guid</guid>\n  ' +
                     '<version>the-version</version>\n  <date>the-date</date>\n  <description><![CDATA[the-description]]></description>\n  ' +
                     '<company>the-company</company>\n  <author>the-author</author>\n  <site>the-site</site>\n  ' +
@@ -292,13 +289,13 @@ describe('ADXConfigurator', function () {
 
     describe("#toXml", function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
         });
 
         it("should return the configuration of ADC 2.0 as XML", function () {
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -520,7 +517,7 @@ describe('ADXConfigurator', function () {
         });
 
         it("should return the configuration of ADC 2.1 as XML", function () {
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<control version="2.1.0"><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -742,7 +739,7 @@ describe('ADXConfigurator', function () {
 
         it("should return the configuration of ADP 2.1 as XML", function () {
 
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<page><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -922,13 +919,13 @@ describe('ADXConfigurator', function () {
 
     describe("#get", function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
         });
 
         it("should return the configuration of the ADC as object  (clean object)", function () {
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -1279,7 +1276,7 @@ describe('ADXConfigurator', function () {
         });
 
         it("should return the configuration of the ADP as object (clean object)", function () {
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<page><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -1579,13 +1576,13 @@ describe('ADXConfigurator', function () {
 
     describe("#set", function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
         });
 
         it("should set the configuration of the ADC using the object in arg (with cleaning)", function () {
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -2190,7 +2187,7 @@ describe('ADXConfigurator', function () {
         });
 
         it("should set the configuration of the ADP using the object in arg (with cleaning)", function () {
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<page><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -2727,10 +2724,10 @@ describe('ADXConfigurator', function () {
     describe("#info", function () {
 
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 if (p === 'adc\\path\\config.xml') {
                     cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
@@ -2946,7 +2943,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create the ADC information when it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
                     cb(null, '<control></control>');
                 });
                 runSync(function (done) {
@@ -3086,7 +3083,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create the ADC 2.1 information when it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
                     cb(null, '<control version="2.1.0:"></control>');
                 });
                 runSync(function (done) {
@@ -3186,7 +3183,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create the ADP information when it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
                     cb(null, '<page></page>');
                 });
                 runSync(function (done) {
@@ -3252,7 +3249,7 @@ describe('ADXConfigurator', function () {
                     });
 
                     it("should create the node when it's not defined in the " + projectType.toUpperCase() + " xml", function () {
-                        spies.fs.readFile.andCallFake(function (p, cb) {
+                        spies.fs.readFile.and.callFake(function (p, cb) {
                             if (p === 'adc\\path\\config.xml') {
                                 cb(null, '<control></control>');
                             } else {
@@ -3606,10 +3603,10 @@ describe('ADXConfigurator', function () {
 
     describe('#outputs', function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 if (p === 'adc\\path\\config.xml') {
                     cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
@@ -3731,7 +3728,7 @@ describe('ADXConfigurator', function () {
                 });
 
                 it("should create the " + projectType.toUpperCase() + " outputs when it's not defined in the xml", function () {
-                    spies.fs.readFile.andCallFake(function (p, cb) {
+                    spies.fs.readFile.and.callFake(function (p, cb) {
                         if (projectType === 'adc') {
                             cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                                 '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
@@ -4161,7 +4158,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create the ADC outputs if it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
                     cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                         '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -4516,7 +4513,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create the ADP outputs if it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
                     cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                         '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -4798,10 +4795,10 @@ describe('ADXConfigurator', function () {
 
     describe('#properties', function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 if (p === 'adc\\path\\config.xml') {
                     cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
@@ -5485,7 +5482,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create ADC properties if it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
 
                     cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
@@ -5988,7 +5985,7 @@ describe('ADXConfigurator', function () {
             });
 
             it("should create ADP properties if it's not defined in the xml", function () {
-                spies.fs.readFile.andCallFake(function (p, cb) {
+                spies.fs.readFile.and.callFake(function (p, cb) {
                     cb(null, '<page><info><name>the-name</name><guid>the-guid</guid>' +
                         '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                         '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -6356,10 +6353,10 @@ describe('ADXConfigurator', function () {
 
     describe('#save', function () {
         beforeEach(function () {
-            spies.dirExists.andCallFake(function (p, cb) {
+            spies.dirExists.and.callFake(function (p, cb) {
                 cb(null, true);
             });
-            spies.fs.readFile.andCallFake(function (p, cb) {
+            spies.fs.readFile.and.callFake(function (p, cb) {
                 cb(null, '<control><info><name>the-name</name><guid>the-guid</guid>' +
                     '<version>the-version</version><date>the-date</date><description><![CDATA[the-description]]></description>' +
                     '<company>the-company</company><author>the-author</author><site>the-site</site>' +
@@ -6470,8 +6467,8 @@ describe('ADXConfigurator', function () {
         it("should transform the current configurator to XML and write it into the config file", function () {
             runSync(function (done) {
                 var configurator = new ADXConfigurator("an/valid/path");
-                spyOn(configurator, 'toXml').andReturn('<thexml />');
-                spies.fs.writeFile.andCallFake(function (filePath, content, options) {
+                spyOn(configurator, 'toXml').and.returnValue('<thexml />');
+                spies.fs.writeFile.and.callFake(function (filePath, content, options) {
                     expect(filePath).toBe(path.join('an/valid/path', common.CONFIG_FILE_NAME));
                     expect(content).toBe('<thexml />');
                     expect(options).toEqual({encoding : 'utf8'});
@@ -6486,8 +6483,8 @@ describe('ADXConfigurator', function () {
 
         it("should reload the configurator when it was successfully saved", function () {
             var configurator = new ADXConfigurator("an/valid/path");
-            spyOn(configurator, 'toXml').andReturn('<thexml />');
-            spies.fs.writeFile.andCallFake(function (filePath, content, options, cb) {
+            spyOn(configurator, 'toXml').and.returnValue('<thexml />');
+            spies.fs.writeFile.and.callFake(function (filePath, content, options, cb) {
                 cb(null);
             });
             configurator.load(function () {
@@ -6502,8 +6499,8 @@ describe('ADXConfigurator', function () {
             var configurator = new ADXConfigurator("an/valid/path");
             var theError = new Error('An error');
             var resultError;
-            spyOn(configurator, 'toXml').andReturn('<thexml />');
-            spies.fs.writeFile.andCallFake(function (filePath, content, options, cb) {
+            spyOn(configurator, 'toXml').and.returnValue('<thexml />');
+            spies.fs.writeFile.and.callFake(function (filePath, content, options, cb) {
                 cb(theError);
             });
             configurator.load(function () {

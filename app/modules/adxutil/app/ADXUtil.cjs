@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 const Command = require('../../../../node_modules/commander').Command;
 const program = new Command();
-const common  = require('../app/common/common.js');
+const common  = require('./common/common.cjs');
+
+program.storeOptionsAsProperties(true);
+program.allowUnknownOption(true);
+program.allowExcessArguments(true);
 
 
 program
@@ -10,7 +14,7 @@ program
     .option('-f, --fixture <name>', 'name of the fixture to use for the `show` command')
     .option('-m, --masterPage <path>', 'path of the master page to use for the `show` command (for ADC)')
     .option('-p, --properties <props>', 'ADX properties (in url query string format) to set for the `show` command')
-    .option('-th, --themes <themes>', 'ADX theme properties (in url query string format) to set for the `show` command')
+    .option('--themes <themes>', 'ADX theme properties (in url query string format) to set for the `show` command')
     // .option('-f, --force', 'overwrite the output directory when it exist')
     .option('-T, --no-test', 'skip the execution of ADX unit tests')
     .option('-X, --no-xml', 'skip the validation of the config.xml file')
@@ -40,7 +44,7 @@ program
     .command('generate <type> <name>')
     .description('generate a new ADX structure (ADP or ADC)')
     .action((type, name) => {
-        const adxGenerator = require('./generator/ADXGenerator.js');
+        const adxGenerator = require('./generator/ADXGenerator.cjs');
         adxGenerator.generate(program, type, name);
     });
 
@@ -48,7 +52,7 @@ program
     .command('publish <platform> [<path>]')
     .description('publish an ADX on a platform')
     .action((platform, path) => {
-        const adxPublisher = require('./publisher/ADXPublisher.js');
+        const adxPublisher = require('./publisher/ADXPublisher.cjs');
         adxPublisher.publish(program, platform, path)
     });
 
@@ -56,7 +60,7 @@ program
     .command('validate [<path>]')
     .description('validate the uncompressed ADX structure')
     .action((path) => {
-        const adxValidator = require('./validator/ADXValidator.js');
+        const adxValidator = require('./validator/ADXValidator.cjs');
         adxValidator.validate(program, path);
     });
 
@@ -64,7 +68,7 @@ program
     .command('build [<path>]')
     .description('build the ADX file')
     .action((path) => {
-        const adxBuilder = require('./builder/ADXBuilder.js');
+        const adxBuilder = require('./builder/ADXBuilder.cjs');
         adxBuilder.build(program, path);
     });
 
@@ -72,7 +76,7 @@ program
     .command('show [<path>]')
     .description('show the output of the ADX')
     .action((path) => {
-        const adxShow = require('./show/ADXShow.js');
+        const adxShow = require('./show/ADXShow.cjs');
         adxShow.show(program, path);
     });
 
@@ -80,7 +84,7 @@ program
     .command('import [<path>]')
     .description('import an askia xml in fixtures')
     .action((path) => {
-        const adxImport = require('./import/ADXImport.js');
+        const adxImport = require('./import/ADXImport.cjs');
         adxImport.adxImport(program, path);
     });
 
@@ -89,7 +93,7 @@ program
     .command('config')
     .description('get or set the configuration (use the --authorXXX flags to set the config)')
     .action(() =>{
-        const adxPreferences = require('./preferences/ADXPreferences.js');
+        const adxPreferences = require('./preferences/ADXPreferences.cjs');
         // No option to set, so only read
         if (!program.authorName && !program.authorEmail && !program.authorCompany && !program.authorWebsite) {
             adxPreferences.read();

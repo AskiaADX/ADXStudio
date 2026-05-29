@@ -42,7 +42,7 @@ describe('explorer', function () {
             }
         };
 
-        spies.fs.readdir.andCallFake(function (dir, cb) {
+        spies.fs.readdir.and.callFake(function (dir, cb) {
             cb(null, ['file2', 'file1', 'afile', 'folder2', 'bfolder', 'file3', 'afolder', 'folder1', 'folder3']);
         });
 
@@ -52,12 +52,12 @@ describe('explorer', function () {
             }
         };
 
-        spies.fs.stat.andCallFake(function (dir, cb) {
+        spies.fs.stat.and.callFake(function (dir, cb) {
             cb(null, fakeStats);
         });
 
 
-        spies.fs.statSync.andCallFake(function (file) {
+        spies.fs.statSync.and.callFake(function (file) {
             var value = (/file/.test(file));
             return {
                 isFile: function () {
@@ -69,7 +69,7 @@ describe('explorer', function () {
             };
         });
 
-        spies.watcher.create.andCallFake(function (pattern) {
+        spies.watcher.create.and.callFake(function (pattern) {
             return new FakeWatcher(pattern);
         });
 
@@ -77,14 +77,10 @@ describe('explorer', function () {
 
     function runSync(fn) {
         var wasCalled = false;
-        runs(function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
     describe('#getRootPath', function () {
@@ -162,7 +158,7 @@ describe('explorer', function () {
         });
 
         it("Should return an error when it's not a valid directory path", function () {
-            spies.fs.stat.andCallFake(function (dir, cb) {
+            spies.fs.stat.and.callFake(function (dir, cb) {
                 cb(new Error());
             });
             runSync(function (done) {
@@ -263,7 +259,7 @@ describe('explorer', function () {
                 var oldReceived,
                     newReceived;
 
-                spies.fs.rename.andCallFake(function (oldPath, newPath, callback) {
+                spies.fs.rename.and.callFake(function (oldPath, newPath, callback) {
                     oldReceived = oldPath;
                     newReceived = newPath;
                     callback();
@@ -291,7 +287,7 @@ describe('explorer', function () {
         it("Should remove the watcher on directory to remove", function () {
             runSync(function (done) {
 
-                spies.fsExtra.rmrf.andCallFake(function (path, callback) {
+                spies.fsExtra.rmrf.and.callFake(function (path, callback) {
                     callback();
                 });
                 explorer.load('path', true, function () {
@@ -309,7 +305,7 @@ describe('explorer', function () {
             runSync(function (done) {
                 var pathReceived;
 
-                spies.fsExtra.rmrf.andCallFake(function (path, callback) {
+                spies.fsExtra.rmrf.and.callFake(function (path, callback) {
                     pathReceived = path;
                     callback();
                 });

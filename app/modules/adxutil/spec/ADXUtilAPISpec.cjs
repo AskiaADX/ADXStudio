@@ -3,8 +3,8 @@
 describe('ADXUtilAPI', () => {
     const fs = require('fs');
     const pathHelper = require('path');
-    const InteractiveADXShell = require('../app/common/InteractiveADXShell.js').InteractiveADXShell;
-    const ncpLib = require('ncp');
+    const InteractiveADXShell = require('../app/common/InteractiveADXShell.cjs').InteractiveADXShell;
+    const fsExtra = require('fs-extra');
     let ADX,
         adxUtilApi,
         errMsg,
@@ -29,30 +29,26 @@ describe('ADXUtilAPI', () => {
 
     function runSync(fn) {
         let wasCalled = false;
-        runs(() => {
-            fn(() => {
-                wasCalled = true;
-            });
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(() => {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
     beforeEach(() => {
         // !! Make sure to court-circuit   !!
         // !! it before to load the module !!
-        spies.ncp = spyOn(ncpLib, 'ncp');
+        spies.ncp = spyOn(fsExtra, 'copy');
 
-        adxUtilApi = require.resolve('../app/ADXUtilAPI.js');
+        adxUtilApi = require.resolve('../app/ADXUtilAPI.cjs');
         if (adxUtilApi) {
             delete require.cache[adxUtilApi];
         }
 
-        adxUtilApi = require('../app/ADXUtilAPI.js');
+        adxUtilApi = require('../app/ADXUtilAPI.cjs');
         ADX = adxUtilApi.ADX;
 
-        common = require('../app/common/common.js');
+        common = require('../app/common/common.cjs');
         errMsg     = common.messages.error;
         spies.getTemplateList = spyOn(common, 'getTemplateList');
 
@@ -66,38 +62,38 @@ describe('ADXUtilAPI', () => {
             mkdir       : spyOn(fs, 'mkdir')
         };
 
-        adxValidator = require('../app/validator/ADXValidator.js');
+        adxValidator = require('../app/validator/ADXValidator.cjs');
         Validator = adxValidator.Validator;
         spies.validate = spyOn(Validator.prototype, 'validate');
 
-        adxBuilder = require('../app/builder/ADXBuilder.js');
+        adxBuilder = require('../app/builder/ADXBuilder.cjs');
         Builder = adxBuilder.Builder;
         spies.build = spyOn(Builder.prototype, 'build');
         
-        adxPublisher = require('../app/publisher/ADXPublisher.js');
+        adxPublisher = require('../app/publisher/ADXPublisher.cjs');
         Publisher = adxPublisher.Publisher;
         spies.publish = spyOn(Publisher.prototype, 'publish');
         
-        adxShow = require('../app/show/ADXShow.js');
+        adxShow = require('../app/show/ADXShow.cjs');
         Show = adxShow.Show;
         spies.show = spyOn(Show.prototype, 'show');
 
-        adxGenerator = require('../app/generator/ADXGenerator.js');
+        adxGenerator = require('../app/generator/ADXGenerator.cjs');
         Generator = adxGenerator.Generator;
         spies.generate = spyOn(Generator.prototype, 'generate');
 
-        adxConfigurator = require('../app/configurator/ADXConfigurator.js');
+        adxConfigurator = require('../app/configurator/ADXConfigurator.cjs');
         Configurator = adxConfigurator.Configurator;
         spies.load = spyOn(Configurator.prototype, 'load');
 
-        adxInterviews = require('../app/interviews/ADXInterviews.js');
+        adxInterviews = require('../app/interviews/ADXInterviews.cjs');
         InterviewsFactory = adxInterviews.InterviewsFactory;
 
-        adxPreferences = require('../app/preferences/ADXPreferences.js');
+        adxPreferences = require('../app/preferences/ADXPreferences.cjs');
         preferences = adxPreferences.preferences;
 
         spies.getTemplatePath = spyOn(common, 'getTemplatePath');
-        spies.getTemplatePath.andCallFake(function (type, name, cb) {
+        spies.getTemplatePath.and.callFake(function (type, name, cb) {
             cb(null, pathHelper.join(common.TEMPLATES_PATH, type, name));
         });
     });
@@ -120,14 +116,14 @@ describe('ADXUtilAPI', () => {
             it("should throw an exception when the `adxDir` argument is not defined", function () {
                 expect(function () {
                     var adx = new ADX();
-                }).toThrow(errMsg.invalidPathArg);
+                }).toThrowError(errMsg.invalidPathArg);
             });
 
             it("should throw an exception when the `adxdir` is invalid path", function () {
-                spies.fs.statSync.andThrow("No such file or directory");
+                spies.fs.statSync.and.throwError("No such file or directory");
                 expect(function () {
                     var adx = new ADX('/invalid/path');
-                }).toThrow("No such file or directory");
+                }).toThrowError("No such file or directory");
             });
 
             it("should initialize a new instance of the InteractiveADXShell in #_adxShell", function () {
@@ -144,14 +140,14 @@ describe('ADXUtilAPI', () => {
         describe("#load", function () {
             it("should instantiate a new Configurator object with the path of the ADX", function () {
                 var firstInstance, firstInstancePath, secondInstance, secondInstancePath;
-                spies.load.andCallFake(function () {
+                spies.load.and.callFake(function () {
                     firstInstance = this;
                     firstInstancePath = this.path;
                 });
                 var first = new ADX('first/path');
                 first.load();
 
-                spies.load.andCallFake(function () {
+                spies.load.and.callFake(function () {
                     secondInstance= this;
                     secondInstancePath = this.path;
                 });
@@ -171,7 +167,7 @@ describe('ADXUtilAPI', () => {
             });
             it("should call the `callback` with Error when the configurator#load failed", function () {
                 var err = new Error("fake");
-                spies.load.andCallFake(function (cb) {
+                spies.load.and.callFake(function (cb) {
                     cb(err);
                 });
                 var adx = new ADX('some/path');
@@ -184,7 +180,7 @@ describe('ADXUtilAPI', () => {
 
             it("should call the `callback` after initializing the #configurator", function () {
                 var conf, hasBeenCalled = false;
-                spies.load.andCallFake(function (cb) {
+                spies.load.and.callFake(function (cb) {
                     conf = this;
                     cb(null);
                 });
@@ -200,14 +196,14 @@ describe('ADXUtilAPI', () => {
         describe("#validate", function () {
             it("should instantiate a new Validator object with the path of the ADX", function () {
                 var firstInstance, firstInstancePath, secondInstance, secondInstancePath;
-                spies.validate.andCallFake(function () {
+                spies.validate.and.callFake(function () {
                     firstInstance = this;
                     firstInstancePath = this.adxDirectoryPath;
                 });
                 var first = new ADX('first/path');
                 first.validate();
 
-                spies.validate.andCallFake(function () {
+                spies.validate.and.callFake(function () {
                     secondInstance= this;
                     secondInstancePath = this.adxDirectoryPath;
                 });
@@ -233,14 +229,14 @@ describe('ADXUtilAPI', () => {
         describe("#build", function () {
             it("should instantiate a new Builder object with the path of the ADX", function () {
                 var firstInstance, firstInstancePath, secondInstance, secondInstancePath;
-                spies.build.andCallFake(function () {
+                spies.build.and.callFake(function () {
                     firstInstance = this;
                     firstInstancePath = this.adxDirectoryPath;
                 });
                 var first = new ADX('first/path');
                 first.build();
 
-                spies.build.andCallFake(function () {
+                spies.build.and.callFake(function () {
                     secondInstance= this;
                     secondInstancePath = this.adxDirectoryPath;
                 });
@@ -266,14 +262,14 @@ describe('ADXUtilAPI', () => {
         describe("#publish", function () {
             it("should instantiate a new Publisher object with the path of the ADX", function () {
                 var firstInstance, firstInstancePath, secondInstance, secondInstancePath;
-                spies.publish.andCallFake(function () {
+                spies.publish.and.callFake(function () {
                     firstInstance = this;
                     firstInstancePath = this.adxDirectoryPath;
                 });
                 var first = new ADX('first/path');
                 first.publish();
 
-                spies.publish.andCallFake(function () {
+                spies.publish.and.callFake(function () {
                     secondInstance= this;
                     secondInstancePath = this.adxDirectoryPath;
                 });
@@ -299,14 +295,14 @@ describe('ADXUtilAPI', () => {
         describe("#show", function () {
             it("should instantiate a new Show object with the path of the ADX", function () {
                 var firstInstance, firstInstancePath, secondInstance, secondInstancePath;
-                spies.show.andCallFake(function () {
+                spies.show.and.callFake(function () {
                     firstInstance = this;
                     firstInstancePath = this.adxDirectoryPath;
                 });
                 var first = new ADX('first/path');
                 first.show();
 
-                spies.show.andCallFake(function () {
+                spies.show.and.callFake(function () {
                     secondInstance= this;
                     secondInstancePath = this.adxDirectoryPath;
                 });
@@ -331,7 +327,7 @@ describe('ADXUtilAPI', () => {
 
         describe('#getFixtureList', function () {
             it('should return the names of xml file under the `tests/fixtures` path', function () {
-                spies.fs.readdir.andCallFake(function (path, cb) {
+                spies.fs.readdir.and.callFake(function (path, cb) {
                     if (path === pathHelper.join('some/path', common.FIXTURES_DIR_PATH)) {
                         cb(null, ['no-fixture.doc', 'fixture1.xml', 'fixture2.xml', 'fixture3.xml', 'no-fixture', 'no-fixture.txt', 'fixture4.xml']);
                     } else {
@@ -350,7 +346,7 @@ describe('ADXUtilAPI', () => {
 
         describe('#checkTestsDirectory', function () {
             beforeEach(function () {
-                spies.load.andCallFake(function (cb) {
+                spies.load.and.callFake(function (cb) {
                     cb();
                 });
             });
@@ -363,7 +359,7 @@ describe('ADXUtilAPI', () => {
 
             it("should call the callback with an error when the #load return an error", function () {
                 var adx = new ADX('adx/path');
-                spies.load.andCallFake(function (cb) {
+                spies.load.and.callFake(function (cb) {
                     cb(new Error('Fake error'));
                 });
                 runSync(function (done) {
@@ -393,19 +389,19 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should copy `tests/fixtures` directory of the `blank` ADC template if it  doesn't exist", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     if (p === pathHelper.join('adc/path', common.FIXTURES_DIR_PATH)) {
                         cb(null, false);
                     } else {
                         cb(null, true);
                     }
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
 
                 runSync(function (done) {
-                    spies.ncp.andCallFake(function (source, dest) {
+                    spies.ncp.and.callFake(function (source, dest) {
                         expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adc', common.DEFAULT_TEMPLATE_NAME, common.FIXTURES_DIR_PATH));
                         expect(dest).toEqual(pathHelper.join('adc/path', common.FIXTURES_DIR_PATH));
                         done();
@@ -419,19 +415,19 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should copy `tests/fixtures` directory of the `blank` ADP template if it  doesn't exist", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     if (p === pathHelper.join('adp/path', common.FIXTURES_DIR_PATH)) {
                         cb(null, false);
                     } else {
                         cb(null, true);
                     }
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
 
                 runSync(function (done) {
-                    spies.ncp.andCallFake(function (source, dest) {
+                    spies.ncp.and.callFake(function (source, dest) {
                         expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adp', common.DEFAULT_TEMPLATE_NAME, common.FIXTURES_DIR_PATH));
                         expect(dest).toEqual(pathHelper.join('adp/path', common.FIXTURES_DIR_PATH));
                         done();
@@ -445,7 +441,7 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should copy `tests/emulations` directory of the `blank` ADC template if it  doesn't exist", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     if (p === pathHelper.join('adc/path', common.EMULATIONS_DIR_PATH)) {
                         cb(null, false);
                     }
@@ -453,12 +449,12 @@ describe('ADXUtilAPI', () => {
                         cb(null, true);
                     }
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
 
                 runSync(function (done) {
-                    spies.ncp.andCallFake(function (source, dest) {
+                    spies.ncp.and.callFake(function (source, dest) {
                         expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adc', common.DEFAULT_TEMPLATE_NAME, common.EMULATIONS_DIR_PATH));
                         expect(dest).toEqual(pathHelper.join('adc/path', common.EMULATIONS_DIR_PATH));
                         done();
@@ -472,7 +468,7 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should copy `tests/emulations` directory of the `blank` ADP template if it  doesn't exist", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     if (p === pathHelper.join('adp/path', common.EMULATIONS_DIR_PATH)) {
                         cb(null, false);
                     }
@@ -480,12 +476,12 @@ describe('ADXUtilAPI', () => {
                         cb(null, true);
                     }
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
 
                 runSync(function (done) {
-                    spies.ncp.andCallFake(function (source, dest) {
+                    spies.ncp.and.callFake(function (source, dest) {
                         expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adp', common.DEFAULT_TEMPLATE_NAME, common.EMULATIONS_DIR_PATH));
                         expect(dest).toEqual(pathHelper.join('adp/path', common.EMULATIONS_DIR_PATH));
                         done();
@@ -499,7 +495,7 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should copy `tests/pages` directory of the `blank` ADC template if it  doesn't exist", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     if (p === pathHelper.join('adc/path', common.PAGES_DIR_PATH)) {
                         cb(null, false);
                     }
@@ -507,12 +503,12 @@ describe('ADXUtilAPI', () => {
                         cb(null, true);
                     }
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
 
                 runSync(function (done) {
-                    spies.ncp.andCallFake(function (source, dest) {
+                    spies.ncp.and.callFake(function (source, dest) {
                         expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adc', common.DEFAULT_TEMPLATE_NAME, common.PAGES_DIR_PATH));
                         expect(dest).toEqual(pathHelper.join('adc/path', common.PAGES_DIR_PATH));
                         done();
@@ -526,7 +522,7 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should copy `tests/controls` directory of the `blank` ADP template if it  doesn't exist", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     if (p === pathHelper.join('adp/path', common.CONTROLS_DIR_PATH)) {
                         cb(null, false);
                     }
@@ -534,12 +530,12 @@ describe('ADXUtilAPI', () => {
                         cb(null, true);
                     }
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
 
                 runSync(function (done) {
-                    spies.ncp.andCallFake(function (source, dest) {
+                    spies.ncp.and.callFake(function (source, dest) {
                         expect(source).toEqual(pathHelper.join(pathHelper.resolve(__dirname, "../"), common.TEMPLATES_PATH, 'adp', common.DEFAULT_TEMPLATE_NAME, common.CONTROLS_DIR_PATH));
                         expect(dest).toEqual(pathHelper.join('adp/path', common.CONTROLS_DIR_PATH));
                         done();
@@ -553,13 +549,13 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should call the callback arg when the copy is finish", function () {
-                spyOn(common, 'dirExists').andCallFake(function (p, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (p, cb) {
                     cb(null, false);
                 });
-                spies.fs.mkdir.andCallFake(function (p, cb) {
+                spies.fs.mkdir.and.callFake(function (p, cb) {
                     cb();
                 });
-                spies.ncp.andCallFake(function (source, dest, cb) {
+                spies.ncp.and.callFake(function (source, dest, cb) {
                     cb();
                 });
 
@@ -578,7 +574,7 @@ describe('ADXUtilAPI', () => {
 
         describe('#getEmulationList', function () {
             it('should return the names of xml file under the `tests/fixtures/emulation` path', function () {
-                spies.fs.readdir.andCallFake(function (path, cb) {
+                spies.fs.readdir.and.callFake(function (path, cb) {
                     if (path === pathHelper.join('some/path', common.EMULATIONS_DIR_PATH)) {
                         cb(null, ['no-emulation.doc', 'emulation1.xml', 'emulation2.xml', 'emulation3.xml', 'no-emulation', 'no-emulation.txt', 'emulation4.xml']);
                     } else {
@@ -621,7 +617,7 @@ describe('ADXUtilAPI', () => {
 
             it("should call the Generator#generate with the `type`, `name` and `options` arguments", function () {
                 var opt = {}, t = 'adc', n = 'test', options, name, type;
-                spies.generate.andCallFake(function (a, b, c) {
+                spies.generate.and.callFake(function (a, b, c) {
                     type = a;
                     name = b;
                     options = c;
@@ -634,7 +630,7 @@ describe('ADXUtilAPI', () => {
 
             it("should not call the Generator#generate with the `callback` when  the `options` is not defined", function () {
                 var cb = function () {}, t = 'adc', n = 'test', callback, name, type;
-                spies.generate.andCallFake(function (a, b, c) {
+                spies.generate.and.callFake(function (a, b, c) {
                     type = a;
                     name = b;
                     callback = c;
@@ -647,7 +643,7 @@ describe('ADXUtilAPI', () => {
 
             it("should call the Generator#generate with different `callback` arguments", function () {
                 var cb = function (){}, callback;
-                spies.generate.andCallFake(function (a, b, c, d) {
+                spies.generate.and.callFake(function (a, b, c, d) {
                     callback = d;
                 });
                 ADX.generate('', '', {}, cb);
@@ -657,7 +653,7 @@ describe('ADXUtilAPI', () => {
 
             it("should call the callback with a Error from the generator", function () {
                 var err = new Error("fake");
-                spies.generate.andCallFake(function (a, b, c, d) {
+                spies.generate.and.callFake(function (a, b, c, d) {
                     d(err);
                 });
                 var callbackErr;
@@ -668,7 +664,7 @@ describe('ADXUtilAPI', () => {
             });
 
             it("should call the callback with a new instance of the ADX initialize with the outputPath", function () {
-                spies.generate.andCallFake(function (a, b, c, d) {
+                spies.generate.and.callFake(function (a, b, c, d) {
                     d(null, '/output/path');
                 });
                 var adx;
@@ -682,7 +678,7 @@ describe('ADXUtilAPI', () => {
 
         describe(".getTemplateList", function () {
            it("should return the list of template", function () {
-               spies.getTemplateList.andCallFake(function (type, cb) {
+               spies.getTemplateList.and.callFake(function (type, cb) {
                   cb(null, [{
                       name : 'template1',
                       path : 'path/of/template1'

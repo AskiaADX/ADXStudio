@@ -11,14 +11,14 @@ describe('ADXShow', function () {
 
     beforeEach(function () {
         // Clean the cache, obtain a fresh instance of the adxShow each time
-        var adxShowKey   = require.resolve('../../app/show/ADXShow.js'),
-            commonKey       = require.resolve('../../app/common/common.js');
+        var adxShowKey   = require.resolve('../../app/show/ADXShow.cjs'),
+            commonKey       = require.resolve('../../app/common/common.cjs');
 
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
         delete require.cache[adxShowKey];
-        adxShow = require('../../app/show/ADXShow.js');
+        adxShow = require('../../app/show/ADXShow.cjs');
 
         Show = adxShow.Show;
 
@@ -32,21 +32,17 @@ describe('ADXShow', function () {
         spies.writeMessage = spyOn(common, 'writeMessage');
         spies.dirExists    = spyOn(common, 'dirExists');
 
-        InteractiveADXShell  = require('../../app/common/InteractiveADXShell.js').InteractiveADXShell;
+        InteractiveADXShell  = require('../../app/common/InteractiveADXShell.cjs').InteractiveADXShell;
         spies.interactiveExec = spyOn(InteractiveADXShell.prototype, 'exec');
     });
 
 
     function runSync(fn) {
-        var wasCalled = false;
-        runs( function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        let wasCalled = false;
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
     }
 
 
@@ -67,9 +63,9 @@ describe('ADXShow', function () {
             var childProc = require('child_process'),
                 spyExec   = spyOn(childProc, 'execFile');
 
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
 
-            spyExec.andCallFake(function (file, args, options) {
+            spyExec.and.callFake(function (file, args, options) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['show', '"-output:something"', '"-fixture:single.xml"', '"\\adx\\path\\dir"']);
                 expect(options.env).toEqual(common.getChildProcessEnv());
@@ -87,9 +83,9 @@ describe('ADXShow', function () {
             var childProc = require('child_process'),
                 spyExec   = spyOn(childProc, 'execFile');
 
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
 
-            spyExec.andCallFake(function (file, args) {
+            spyExec.and.callFake(function (file, args) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['show', '"-output:something"', '"-fixture:single.xml"', '"-masterPage:mp.html"', '"\\adx\\path\\dir"']);
             });
@@ -106,9 +102,9 @@ describe('ADXShow', function () {
             var childProc = require('child_process'),
                 spyExec   = spyOn(childProc, 'execFile');
 
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
 
-            spyExec.andCallFake(function (file, args) {
+            spyExec.and.callFake(function (file, args) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['show', '"-output:something"', '"-fixture:single.xml"', '"-masterPage:mp.html"', '"-properties:prop1=value1&prop2=value2&prop%203=value%2C%223"', '"\\adx\\path\\dir"']);
             });
@@ -126,9 +122,9 @@ describe('ADXShow', function () {
             var childProc = require('child_process'),
                 spyExec   = spyOn(childProc, 'execFile');
 
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
 
-            spyExec.andCallFake(function (file, args) {
+            spyExec.and.callFake(function (file, args) {
                 expect(file).toBe('.\\ADXShell.exe');
                 expect(args).toEqual(['show', '"-output:something"', '"-fixture:single.xml"', '"-masterPage:mp.html"', '"-themes:prop1=value1&prop2=value2&prop%203=value%2C%223"', '"\\adx\\path\\dir"']);
             });
@@ -143,10 +139,10 @@ describe('ADXShow', function () {
         });
 
         it("should run the `ADXShell` process using the InteractiveADXShell when it's defined in the options", function () {
-            spyOn(process, 'cwd').andReturn('');
+            spyOn(process, 'cwd').and.returnValue('');
 
             var mockCommand;
-            spies.interactiveExec.andCallFake(function (command) {
+            spies.interactiveExec.and.callFake(function (command) {
                 mockCommand = command;
             });
             adxShow.show({
@@ -177,9 +173,9 @@ describe('ADXShow', function () {
                 var childProc = require('child_process'),
                     spyExec = spyOn(childProc, 'execFile');
 
-                spyOn(process, 'cwd').andReturn('');
+                spyOn(process, 'cwd').and.returnValue('');
 
-                spyExec.andCallFake(function (file, args, options, cb) {
+                spyExec.and.callFake(function (file, args, options, cb) {
                     cb(null,null, new Error("ERROR"));
                 });
 
@@ -200,9 +196,9 @@ describe('ADXShow', function () {
                 var childProc = require('child_process'),
                     spyExec = spyOn(childProc, 'execFile');
 
-                spyOn(process, 'cwd').andReturn('');
+                spyOn(process, 'cwd').and.returnValue('');
 
-                spyExec.andCallFake(function (file, args, options, cb) {
+                spyExec.and.callFake(function (file, args, options, cb) {
                     cb(null,null, new Error("ERROR"));
                 });
 
@@ -225,9 +221,9 @@ describe('ADXShow', function () {
                 var childProc = require('child_process'),
                     spyExec = spyOn(childProc, 'execFile');
 
-                spyOn(process, 'cwd').andReturn('');
+                spyOn(process, 'cwd').and.returnValue('');
 
-                spyExec.andCallFake(function (file, args, options, cb) {
+                spyExec.and.callFake(function (file, args, options, cb) {
                     cb(null, 'TEST OUTPUT', null);
                 });
 
@@ -248,9 +244,9 @@ describe('ADXShow', function () {
                 var childProc = require('child_process'),
                     spyExec = spyOn(childProc, 'execFile');
 
-                spyOn(process, 'cwd').andReturn('');
+                spyOn(process, 'cwd').and.returnValue('');
 
-                spyExec.andCallFake(function (file, args, options, cb) {
+                spyExec.and.callFake(function (file, args, options, cb) {
                     cb(null, 'TEST OUTPUT', null);
                 });
 
@@ -272,9 +268,9 @@ describe('ADXShow', function () {
                 var childProc = require('child_process'),
                     spyExec = spyOn(childProc, 'execFile');
 
-                spyOn(process, 'cwd').andReturn('');
+                spyOn(process, 'cwd').and.returnValue('');
 
-                spyExec.andCallFake(function (file, args, options, cb) {
+                spyExec.and.callFake(function (file, args, options, cb) {
                     cb(null, 'TEST OUTPUT', null);
                 });
 

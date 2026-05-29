@@ -15,15 +15,15 @@ let successMsg;
 
     beforeEach(() => {
         // Clean the cache, obtain a fresh instance of the adxBuilder each time
-        const commonKey       = require.resolve('../../app/common/common.js');
+        const commonKey       = require.resolve('../../app/common/common.cjs');
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
-        Configurator = require('../../app/configurator/ADXConfigurator.js').Configurator;
+        Configurator = require('../../app/configurator/ADXConfigurator.cjs').Configurator;
 
-        const adxValidatorKey = require.resolve('../../app/validator/ADXValidator.js');
+        const adxValidatorKey = require.resolve('../../app/validator/ADXValidator.cjs');
         delete require.cache[adxValidatorKey];
-        adxValidator = require('../../app/validator/ADXValidator.js');
+        adxValidator = require('../../app/validator/ADXValidator.cjs');
 
         Validator = adxValidator.Validator;
         spies.validateHook = function () {};
@@ -32,9 +32,9 @@ let successMsg;
             spies.validateHook.apply(this, arguments);
         };
 
-        const adxBuilderKey   = require.resolve('../../app/builder/ADXBuilder.js');
+        const adxBuilderKey   = require.resolve('../../app/builder/ADXBuilder.cjs');
         delete require.cache[adxBuilderKey];
-        adxBuilder = require('../../app/builder/ADXBuilder.js');
+        adxBuilder = require('../../app/builder/ADXBuilder.cjs');
 
         Builder = adxBuilder.Builder;
 
@@ -69,7 +69,7 @@ let successMsg;
             mkdirSync   : spyOn(fs, 'mkdirSync')
         };
 
-        spyOn(common, 'isIgnoreFile').andCallFake((f) => {
+        spyOn(common, 'isIgnoreFile').and.callFake((f) => {
             return (f === 'Thumbs.db' || f === '.DS_Store');
         });
 
@@ -83,7 +83,7 @@ let successMsg;
 
         it("should run the validator with xml validation, even if the flag --no-xml is true", () => {
             let p;
-            spies.validateHook.andCallFake((options) => {
+            spies.validateHook.and.callFake((options) => {
                 p = options;
             });
             adxBuilder.build({
@@ -94,7 +94,7 @@ let successMsg;
 
         it("should run the validator with auto-test validation, even if the flag --no-test is true", () => {
             let p;
-            spies.validateHook.andCallFake(function (options) {
+            spies.validateHook.and.callFake(function (options) {
                 p = options;
             });
             adxBuilder.build({
@@ -104,7 +104,7 @@ let successMsg;
         });
 
         it("should output an error when the validation failed", () => {
-            spies.validateHook.andCallFake((options, callback) => {
+            spies.validateHook.and.callFake((options, callback) => {
                 callback(new Error("Fake error"));
             });
             const spy = spyOn(Builder.prototype, 'writeError');
@@ -126,7 +126,7 @@ let successMsg;
         it("should pass the #logger to the validator when it's defined in the options arg", () => {
             const builderInstance = new Builder('test');
             let p;
-            spies.validateHook.andCallFake(function (options) {
+            spies.validateHook.and.callFake(function (options) {
                 p = options;
             });
             const logger = {
@@ -155,7 +155,7 @@ let successMsg;
             });
 
             it("should create a `bin` directory, if it doesn't exist", () => {
-                spies.dirExists.andCallFake((path, callback) => {
+                spies.dirExists.and.callFake((path, callback) => {
                    callback(null, false);
                 });
                 adxBuilder.build();
@@ -163,7 +163,7 @@ let successMsg;
             });
 
             it("should not create a `bin` directory, if it already exist", () => {
-                spies.dirExists.andCallFake((path, callback) => {
+                spies.dirExists.and.callFake((path, callback) => {
                     callback(null, true);
                 });
                 adxBuilder.build();
@@ -171,10 +171,10 @@ let successMsg;
             });
 
             it("should output an error when it cannot create the `bin` folder", () => {
-                spies.dirExists.andCallFake((path, callback) => {
+                spies.dirExists.and.callFake((path, callback) => {
                     callback(null, false);
                 });
-                spies.fs.mkdirSync.andReturn(new Error("Fake error"));
+                spies.fs.mkdirSync.and.returnValue(new Error("Fake error"));
                 const spy = spyOn(Builder.prototype, 'writeError');
                 adxBuilder.build();
                 expect(spy).toHaveBeenCalledWith("Fake error");
@@ -192,7 +192,7 @@ let successMsg;
                     callback(null, {});
                 };
 
-                spies.dirExists.andCallFake((path, callback) => {
+                spies.dirExists.and.callFake((path, callback) => {
                     callback(null, true);
                 });
 
@@ -230,7 +230,7 @@ let successMsg;
                     'config.xml',
                     'readme.txt'
                 ];
-                spyOn(common, 'getDirStructure').andCallFake((path, callback) => {
+                spyOn(common, 'getDirStructure').and.callFake((path, callback) => {
                     callback(null, struct);
                 });
 
@@ -241,13 +241,13 @@ let successMsg;
                     generate : function () {}
                 };
 
-                spies.getNewZip.andReturn(newZip);
+                spies.getNewZip.and.returnValue(newZip);
 
                 files = [];
-                spyOn(newZip, 'file').andCallFake((filePath) => {
+                spyOn(newZip, 'file').and.callFake((filePath) => {
                     files.push(filePath);
                 });
-                spyOn(newZip, 'folder').andCallFake((folderName) => {
+                spyOn(newZip, 'folder').and.callFake((folderName) => {
                     files.push(folderName);
                 });
                 spyOn(newZip, 'generate');
@@ -266,7 +266,6 @@ let successMsg;
                     'resources\\share\\',
                     'resources\\share\\default.js',
                     'resources\\share\\share.js',
-                    'resources\\modules\\',
                     'config.xml',
                     'readme.txt'
                 ]);
@@ -295,7 +294,6 @@ let successMsg;
                     'resources\\share\\',
                     'resources\\share\\default.js',
                     'resources\\share\\share.js',
-                    'resources\\modules\\',
                     'config.xml',
                     'readme.txt'
                 ]);
@@ -355,7 +353,6 @@ let successMsg;
                     'resources\\share\\',
                     'resources\\share\\default.js',
                     'resources\\share\\share.js',
-                    'resources\\modules\\',
                     'config.xml',
                     'readme.txt'
                 ]);
@@ -370,7 +367,7 @@ let successMsg;
                     callback(null, {});
                 };
                 let outputPath;
-                spies.fs.writeFile.andCallFake((path) => {
+                spies.fs.writeFile.and.callFake((path) => {
                     outputPath = path;
                 });
                 adxBuilder.build(null, 'adx/path/dir');
@@ -386,7 +383,7 @@ let successMsg;
                     callback(null, {});
                 };
                 let outputPath;
-                spies.fs.writeFile.andCallFake((path) => {
+                spies.fs.writeFile.and.callFake((path) => {
                     outputPath = path;
                 });
                 adxBuilder.build(null, 'adx/path/dir');
@@ -410,7 +407,7 @@ let successMsg;
                     folder : () => {},
                     file : () => {}
                 };
-                spies.getNewZip.andCallFake(() => {
+                spies.getNewZip.and.callFake(() => {
                     return zip;
                 });
                 /* Act */
@@ -429,11 +426,11 @@ let successMsg;
 
         describe("done", () => {
             beforeEach(() => {
-                spies.dirExists.andCallFake((path, callback) => {
+                spies.dirExists.and.callFake((path, callback) => {
                     callback(null, true);
                 });
 
-                spyOn(common, 'getDirStructure').andCallFake((path, callback) => {
+                spyOn(common, 'getDirStructure').and.callFake((path, callback) => {
                     callback(null, [
                         {
                             name : 'resources',
@@ -470,7 +467,7 @@ let successMsg;
                     ]);
                 });
 
-                spies.getNewZip.andReturn({
+                spies.getNewZip.and.returnValue({
                     file : function () {},
                     folder: function () {},
                     generate : function () {}
@@ -556,11 +553,11 @@ let successMsg;
                     });
                 };
 
-                spies.dirExists.andCallFake((path, callback) => {
+                spies.dirExists.and.callFake((path, callback) => {
                     callback(null, true);
                 });
 
-                spyOn(common, 'getDirStructure').andCallFake((path, callback) => {
+                spyOn(common, 'getDirStructure').and.callFake((path, callback) => {
                     callback(null, [
                         {
                             name : 'resources',
@@ -597,7 +594,7 @@ let successMsg;
                     ]);
                 });
 
-                spies.getNewZip.andReturn({
+                spies.getNewZip.and.returnValue({
                     file : function () {},
                     folder: function () {},
                     generate : function () {}

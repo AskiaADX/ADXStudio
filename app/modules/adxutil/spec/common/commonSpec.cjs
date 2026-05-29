@@ -6,10 +6,10 @@
  configurable : true,
  enumerable : true
  });
- var commonKey = require.resolve('../../app/common/common.js');
+ var commonKey = require.resolve('../../app/common/common.cjs');
  delete require.cache[commonKey];
 
- var common = require('../../app/common/common.js');
+ var common = require('../../app/common/common.cjs');
  expect(common.ADX_UNIT_DIR_PATH).toEqual('/lib/adxshell_x86/');
  // Restore the original value
  Object.defineProperty(process, 'arch', descriptor);
@@ -18,19 +18,26 @@ describe('common', function () {
 
     var fs              = require('fs'),
         clc             = require('cli-color'),
-        uuid            = require('uuid'),
         pathHelper      = require('path'),
         util            = require('util'),
         path            = require('path'),
         spies           = {},
+        uuidKey,
+        originalUuid,
         common,
         errMsg;
 
     beforeEach(function () {
+        uuidKey = require.resolve('uuid');
+        originalUuid = require(uuidKey);
+        require.cache[uuidKey].exports = {
+            v4: jasmine.createSpy('uuid.v4').and.returnValue('guid')
+        };
+
         // Clean the cache, obtain a fresh instance of the common each time
-        var commonKey = require.resolve('../../app/common/common.js');
+        var commonKey = require.resolve('../../app/common/common.cjs');
         delete require.cache[commonKey];
-        common = require('../../app/common/common.js');
+        common = require('../../app/common/common.cjs');
 
         // Messages
         errMsg      = common.messages.error;
@@ -43,22 +50,21 @@ describe('common', function () {
             readdir     : spyOn(fs, 'readdir'),
             readFileSync : spyOn(fs, 'readFileSync')
         };
+    });
 
-        // Court-circuit the uuid generator
-        spyOn(uuid, 'v4').andReturn('guid');
-
+    afterEach(function () {
+        if (uuidKey && require.cache[uuidKey]) {
+            require.cache[uuidKey].exports = originalUuid;
+        }
     });
 
     function runSync(fn) {
-        var wasCalled = false;
-        runs( function () {
-            fn(function () {
-                wasCalled = true;
-            });
+        let wasCalled = false;
+        fn(function () {
+            wasCalled = true;
         });
-        waitsFor(function () {
-            return wasCalled;
-        });
+        expect(wasCalled).toBe(true);
+
     }
     // Run the test in a given architecture (x64, ia32)
     function runInArch(arch, fn) {
@@ -95,11 +101,11 @@ describe('common', function () {
 
         function forEachADXType(type) {
             it('should list directories in the `template` `' + type.toUpperCase() + 's` path of the application', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spies.fs.statSync.andReturn({
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spies.fs.statSync.and.returnValue({
                     isDirectory : function () {return true;}
                 });
-                spies.fs.readdir.andCallFake(function (path, cb) {
+                spies.fs.readdir.and.callFake(function (path, cb) {
                     if (path === pathHelper.join(common.TEMPLATES_PATH,  type )) {
                         cb(null, [
                             'template1',
@@ -127,13 +133,13 @@ describe('common', function () {
             });
 
             it('should list directories in the `template` `' + type.toUpperCase() + 's` path of the program data', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spies.fs.statSync.andReturn({
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spies.fs.statSync.and.returnValue({
                     isDirectory : function () {return true;}
                 });
                 process.env.ALLUSERSPROFILE = '\\ProgramData';
 
-                spies.fs.readdir.andCallFake(function (path, cb) {
+                spies.fs.readdir.and.callFake(function (path, cb) {
                     if (path === pathHelper.join(process.env.ALLUSERSPROFILE, common.APP_NAME, common.TEMPLATES_PATH, type)) {
                         cb(null, [
                             'template1',
@@ -161,13 +167,13 @@ describe('common', function () {
             });
 
             it('should list directories in the `template` `' + type.toUpperCase() + 's` path of the user data', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spies.fs.statSync.andReturn({
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spies.fs.statSync.and.returnValue({
                     isDirectory : function () {return true;}
                 });
                 process.env.APPDATA = '\\username.domain\\AppData\\Roaming';
 
-                spies.fs.readdir.andCallFake(function (path, cb) {
+                spies.fs.readdir.and.callFake(function (path, cb) {
                     if (path === pathHelper.join(process.env.APPDATA, common.APP_NAME, common.TEMPLATES_PATH, type)) {
                         cb(null, [
                             'template1',
@@ -195,14 +201,14 @@ describe('common', function () {
             });
 
             it('should override the `' + type.toUpperCase() + 's` template when duplicate using the template nearest to the user data', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spies.fs.statSync.andReturn({
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spies.fs.statSync.and.returnValue({
                     isDirectory : function () {return true;}
                 });
                 process.env.ALLUSERSPROFILE = '\\ProgramData';
                 process.env.APPDATA = '\\username.domain\\AppData\\Roaming';
 
-                spies.fs.readdir.andCallFake(function (path, cb) {
+                spies.fs.readdir.and.callFake(function (path, cb) {
                     if (path === pathHelper.join(common.TEMPLATES_PATH, type)) {
                         cb(null, [
                             'template1',
@@ -273,8 +279,8 @@ describe('common', function () {
 
         function forEachADXType(type) {
             it('should return the path template of ` `' + type.toUpperCase() + '` from user data if it\'s found', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spyOn(common, 'dirExists').andCallFake(function (path, cb) {
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spyOn(common, 'dirExists').and.callFake(function (path, cb) {
                     cb(null, true);
                 });
                 process.env.ALLUSERSPROFILE = '\\ProgramData';
@@ -288,8 +294,8 @@ describe('common', function () {
             });
 
             it('should return the path template of ` `' + type.toUpperCase() + '` from program  data if it\'s found', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spyOn(common, 'dirExists').andCallFake(function (path, cb) {
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spyOn(common, 'dirExists').and.callFake(function (path, cb) {
                     if (path === pathHelper.join(process.env.APPDATA, common.APP_NAME, common.TEMPLATES_PATH, type, 'template1')) {
                         cb(null, false);
                         return;
@@ -307,8 +313,8 @@ describe('common', function () {
             });
 
             it('should return the path template of ` `' + type.toUpperCase() + '` from installation data if it\'s found', function () {
-                spyOn(pathHelper, 'resolve').andReturn('');
-                spyOn(common, 'dirExists').andCallFake(function (path, cb) {
+                spyOn(pathHelper, 'resolve').and.returnValue('');
+                spyOn(common, 'dirExists').and.callFake(function (path, cb) {
                     if (path !== pathHelper.join(common.TEMPLATES_PATH, type, 'template1')) {
                         cb(null, false);
                         return;
@@ -326,7 +332,7 @@ describe('common', function () {
             });
 
             it('should return an error when the template of ` `' + type.toUpperCase() + '` is not found', function () {
-                spyOn(common, 'dirExists').andCallFake(function (path, cb) {
+                spyOn(common, 'dirExists').and.callFake(function (path, cb) {
                     cb(null, false);
                 });
                 runSync(function (done) {
@@ -344,7 +350,7 @@ describe('common', function () {
 
     describe('#dirExists', function () {
         it("should call the callback with false when the fs#stat return an error", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(new Error('No such file or directory'));
             });
             common.dirExists('path', function (err, exist) {
@@ -352,7 +358,7 @@ describe('common', function () {
             });
         });
         it("should call the callback with true when the fs#stat doesn't reutrn an error", function () {
-            spies.fs.stat.andCallFake(function (path, callback) {
+            spies.fs.stat.and.callFake(function (path, callback) {
                 callback(null);
             });
             common.dirExists('path', function (err, exist) {
@@ -363,8 +369,8 @@ describe('common', function () {
 
     describe("#isIgnoreFile", function () {
         it("should read the ADXIgnore file at the root of the app/ folder", function () {
-            spyOn(pathHelper, 'resolve').andReturn('root/ADXIgnore');
-            spies.fs.readFileSync.andReturn('test');
+            spyOn(pathHelper, 'resolve').and.returnValue('root/ADXIgnore');
+            spies.fs.readFileSync.and.returnValue('test');
             common.isIgnoreFile('test');
 
             expect(fs.readFileSync).toHaveBeenCalledWith('root/ADXIgnore', 'utf8');
@@ -378,7 +384,7 @@ describe('common', function () {
 
         function testIgnore(f) {
             it("should return true when the file should be ignored (" + f + ")", function () {
-                spies.fs.readFileSync.andReturn([
+                spies.fs.readFileSync.and.returnValue([
                     '# Based on gitignore file #',
                     '###########################',
                     '',
@@ -465,21 +471,21 @@ describe('common', function () {
             },
            result;
 
-           spies.fs.stat.andCallFake(function (path, callback) {
+           spies.fs.stat.and.callFake(function (path, callback) {
                 if (path === 'root' || path  === 'root/a' || path === 'root/b' || path === 'root/b/c' || path === 'root/b/c/d') {
                     callback(null, dirStat);
                 } else {
                     callback(null, fileStat);
                 }
            });
-           spies.fs.statSync.andCallFake(function (path) {
+           spies.fs.statSync.and.callFake(function (path) {
                if (path === 'root' || path  === 'root/a' || path === 'root/b' || path === 'root/b/c' || path === 'root/b/c/d') {
                    return dirStat;
                } else {
                    return fileStat;
                }
            });
-           spies.fs.readdirSync.andCallFake(function (path) {
+           spies.fs.readdirSync.and.callFake(function (path) {
                current++;
                return dirSequence[current];
            });
@@ -581,7 +587,7 @@ describe('common', function () {
 
         function testReplacement(obj) {
             it("should replace the `" + obj.pattern + "` by the right value", function () {
-                spyOn(common, 'formatXmlDate').andReturn('2013-12-31');
+                spyOn(common, 'formatXmlDate').and.returnValue('2013-12-31');
                 var result = common.evalTemplate(obj.pattern, {
                     info : {
                         name   : 'adxname',

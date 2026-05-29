@@ -212,29 +212,32 @@ function generateHtmlCodeForCategory(category) {
  * @ignore
  */
 function generateHtmlCodeForOptions(opt) {
-        const url = self.options.url + "/api/v2/help_center/articles/" + articleId + "/attachments.json";
-        const form = new FormData();
-        form.append('file', fs.createReadStream(files[index]));
-        axios.post(url, form, {
-            headers: {
-                ...form.getHeaders(),
-                'Authorization': "Basic " + Buffer.from(self.options.username + ":" + self.options.password).toString('base64')
-            }
-        }).then(response => {
-            const body = response.data;
-            let prefix = files[index].match(/\.([a-z]+)$/i)[1];
-            if (prefix.toLowerCase() === "adc" || prefix.toLowerCase() === "adp") prefix = "adx";
-            attachments[prefix] = {
-                id   : body.article_attachment.id,
-                name : body.article_attachment.file_name
-            };
-            uploadAvailableFilesRecursive(index + 1);
-        }).catch(err => {
-            callback(err);
-        });
-        (property.options ? ('<br/>Options : ' + generateHtmlCodeForOptions(property.options)) : "") +
-        (property.colorFormat ? ('<br/>ColorFormat : ' + property.colorFormat) : "") +'</td>\n' +
-        '</tr>\n' ;
+    const out = [];
+    for (let key in opt) {
+        if (opt.hasOwnProperty(key) && opt[key]) {
+            out.push(key);
+        }
+    }
+    return out.join(' ');
+}
+
+/**
+ * Generate an HTML string which is a line of a 3 columns array with one property.
+ *
+ * @param {Object} property object which represents one property.
+ * @ignore
+ */
+function generateHtmlCodeForProperty(property) {
+    return '<tr>\n' +
+        '<td data-sheets-value="[null,2,&quot;' + property.name + '&quot;]">' + property.name + '</td>\n' +
+        '<td data-sheets-value="[null,2,&quot;' + property.type + '&quot;]">' + property.type + '</td>\n' +
+        '<td>' +
+        (property.description || '') +
+        (property.value ? ('<br/>Default value : ' + property.value) : '') +
+        (property.options ? ('<br/>Options : ' + generateHtmlCodeForOptions(property.options)) : '') +
+        (property.colorFormat ? ('<br/>ColorFormat : ' + property.colorFormat) : '') +
+        '</td>\n' +
+        '</tr>\n';
 }
 
 /**
