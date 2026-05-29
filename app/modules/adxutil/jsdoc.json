@@ -1,7 +1,7 @@
 {
   "source": {
     "include": ["app"],
-    "includePattern": ".*\\.js$",
+    "includePattern": ".*\\.(cjs|js)$",
     "excludePattern": "(node_modules|docs)"
   },
   "opts": {
