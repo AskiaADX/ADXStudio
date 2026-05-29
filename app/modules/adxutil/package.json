@@ -37,7 +37,7 @@
   },
   "bin": {
     "ADXUtil": "./app/ADXUtil.cjs"
-  }
+  },
   "bugs": {
     "url": "https://github.com/AskiaADX/ADXUtil/issues"
   },
