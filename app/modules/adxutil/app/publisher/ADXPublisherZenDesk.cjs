@@ -465,6 +465,7 @@ function uploadAvailableFiles(self, files, articleId, callback) {
  * Check if we already have an article or if we need to create one
  *
  * @param {PublisherZenDesk} publisher
+ * @param {Number} articleToUpdateId The id of the article to update
  * @param {Number} id The id of the article to create if the article does not exist
  * @param {JSON} jsonArticle of the article to create if the article does not exist
  * @param {Function} cb

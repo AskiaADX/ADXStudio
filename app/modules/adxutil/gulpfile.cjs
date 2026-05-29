@@ -4,7 +4,6 @@
 
 import gulp from 'gulp';
 import { deleteAsync } from 'del';
-import shell from 'gulp-shell';
 import { exec } from 'child_process';
 
 // Destination files
