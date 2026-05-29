@@ -2,9 +2,9 @@
  1. Creates a documentation
  */
 
-import gulp from 'gulp';
-import { deleteAsync } from 'del';
-import { exec } from 'child_process';
+const gulp = require('gulp');
+const { deleteAsync } = require('del');
+const { exec } = require('child_process');
 
 // Destination files
 const DEST_DOCS = 'docs/';
@@ -13,12 +13,12 @@ const DEST_DOCS = 'docs/';
 const SRC = 'app/';
 
 // Cleanup the documentation folder
-export function cleanDocs(cb) {
+function cleanDocs(cb) {
     deleteAsync([DEST_DOCS + '**/*']).then(() => cb());
 }
 
 // Document
-export function document(cb) {
+function document(cb) {
     exec('npx jsdoc -c jsdoc.json', (err, stdout, stderr) => {
         if (err) {
             console.error(`Error generating documentation: ${stderr}`);
@@ -31,8 +31,13 @@ export function document(cb) {
 }
 
 // Global cleaning
-export const clean = gulp.series(cleanDocs);
+const clean = gulp.series(cleanDocs);
 
 // Default task
-export default gulp.series(clean, document);
+const defaultTask = gulp.series(clean, document);
+
+exports.cleanDocs = cleanDocs;
+exports.document = document;
+exports.clean = clean;
+exports.default = defaultTask;
 
