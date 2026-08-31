@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "electron": "^41.3.0",
-    "electron-builder": "^26.8.1",
+    "electron-builder": "^26.15.3",
     "gulp": "^5.0.1",
     "ini": "^6.0.0",
     "jasmine": "^6.2.0",
