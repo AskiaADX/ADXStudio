@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron --enable-logging --inspect=9229 ./app/main.js",
     "test": "jasmine",
-    "dist": "electron-builder --win --x64 --ia32"
+    "dist": "electron-builder --win --x64"
   },
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "wrench": "^1.5.9"
   },
   "devDependencies": {
-    "electron": "^41.10.7",
+    "electron": "^45.3.2",
     "electron-builder": "^26.18.1",
     "gulp": "^5.0.1",
     "ini": "^6.0.0",
@@ -61,7 +61,7 @@
     "appId": "com.askia.adxstudio",
     "asar": false,
     "buildVersion": "0",
-    "electronVersion": "41.10.7",
+    "electronVersion": "45.3.2",
     "copyright": "Copyright (c) Askia 2026",
     "productName": "ADXStudio",
     "win": {
