@@ -10,13 +10,11 @@ Setup
 
 #### Installer
 
-Download the [latest release](https://github.com/AskiaADX/ADXStudio/releases/latest) archive.
+1.	Download `ADXStudio.Setup.<version>.exe` from the [latest release](https://github.com/AskiaADX/ADXStudio/releases/latest).
+2.	Run the installer as `administrator`.
+3.	Try to create your ADC or ADP using one of the templates, or create a new Project.
 
-1.	After downloading the release, unzip `ADXStudioSetup.zip`.
-2.	Run the `ADXStudio Setup 1.0.5.exe` executable as `administrator`.
-3.	Try to create your ADC or ADP using one of the template, or create a new Project.
-
-*Note: do not tamper with any other components of `ADXStudio Setup 1.0.5.exe` folder.*
+*Note: since version 1.0.8, ADXStudio requires 64-bit Windows 10 or later. 32-bit Windows is no longer supported; use version 1.0.7 there.*
 
 #### Manual installation
 
