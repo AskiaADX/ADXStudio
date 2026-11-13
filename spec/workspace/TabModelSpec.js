@@ -2,7 +2,7 @@
 describe("Tab", function () {
     "use strict";
     var Tab,
-        uuid = require('uuid'),
+        crypto = require('crypto'),
         fs   = require('fs'),
         nodePath = require('path'),
         spies = {};
@@ -16,7 +16,7 @@ describe("Tab", function () {
             cb(null, 'text');
         });
 
-        spies.uuid  = spyOn(uuid, "v4").and.returnValue("random-guid");
+        spies.uuid  = spyOn(crypto, "randomUUID").and.returnValue("random-guid");
 
 
         spies.fs = {};

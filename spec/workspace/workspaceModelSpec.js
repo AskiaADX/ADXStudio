@@ -7,7 +7,7 @@ describe("workspace", function () {
         EventEmitter = require('events').EventEmitter,
         nodePath = require('path'),
         util = require('util'),
-        uuid = require('uuid'),
+        crypto = require('crypto'),
         fs   = require('fs'),
         watcher,
         fakeWatcherInstance;
@@ -59,15 +59,15 @@ describe("workspace", function () {
     }
 
     describe('#watchers', function () {
-        it("Should be a function", function () {
+        it("unwatchTabsIn should be a function", function () {
             expect(typeof workspace.unwatchTabsIn).toBe("function");
         });
-        
-        it("Should be a function", function () {
+
+        it("rewatchTabsIn should be a function", function () {
             expect(typeof workspace.rewatchTabsIn).toBe("function");
         });
-        
-        it("Should be a function", function () {
+
+        it("findRewatchableTabsIn should be a function", function () {
             expect(typeof workspace.findRewatchableTabsIn).toBe("function");
         });
     });
@@ -611,7 +611,7 @@ describe("workspace", function () {
         });
 
         it("should return an object with an array of all tabs (id, pane, current, path, type, name)", function () {
-            var fakeGuid = spyOn(uuid, 'v4');
+            var fakeGuid = spyOn(crypto, 'randomUUID');
             workspace.panes.current('main');
             fakeGuid.and.returnValue('aaaaaa-aaaaaa-aaaaaa-aaaaaa');
             workspace.createTab({ name : 'first', path : 'path/of/first/file', type : 'file'});

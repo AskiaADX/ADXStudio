@@ -8,7 +8,7 @@ const appSettings = require('../appSettings/appSettingsModel.js');
 const ADX = require('../modules/adxutil').ADX;
 const fs = require('fs');
 const path = require('path');
-const uuid = require('uuid');
+const crypto = require('crypto');
 const packageJson = require('../../package.json');
 let  mainView;
 
@@ -158,7 +158,7 @@ function createNewProject (event, options) {
       fs.writeFile(path.join(adx.path, '.adxstudio', 'workspace.json'),  JSON.stringify({
         tabs: [
           {
-            id: uuid.v4(),
+            id: crypto.randomUUID(),
             pane: 'main',
             current: true,
             config: {
