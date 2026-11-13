@@ -447,8 +447,24 @@ ipc.handle('dialog:open', async (event, options) => {
   return result;
 });
 
+/**
+ * Indicates if the URL can be opened by the OS: only web and mail links, as other
+ * protocols (file:, custom URL handlers...) could launch local applications.
+ * @param {String} url URL to open
+ * @return {Boolean}
+ */
+function isSafeExternalUrl (url) {
+  try {
+    return ['http:', 'https:', 'mailto:'].includes(new URL(url).protocol);
+  } catch (err) {
+    return false;
+  }
+}
+
 ipc.on('shell:openExternal', (event, url) => {
-  shell.openExternal(url);
+  if (isSafeExternalUrl(url)) {
+    shell.openExternal(url);
+  }
 });
 
 
@@ -465,9 +481,12 @@ ipc.on('shell:openExternal', (event, url) => {
       });
 
       // redirect all new window url to the default browser
-      global.mainWindow.webContents.on('new-window', function onNewWindow (event, url) {
-        event.preventDefault();
-        shell.openExternal(url);
+      // ('new-window' was removed in Electron 22, so the window open handler is used)
+      global.mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        if (isSafeExternalUrl(url)) {
+          shell.openExternal(url);
+        }
+        return { action: 'deny' };
       });
 
       // Now show it

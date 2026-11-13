@@ -27,6 +27,49 @@ function throwError (err, response) {
 }
 
 /**
+ * Reply with a plain-text HTTP error
+ * @param {Object} response HTTP Response
+ * @param {Number} statusCode HTTP status code
+ * @param {String} message Status message
+ */
+function replyError (response, statusCode, message) {
+  response.writeHead(statusCode, { 'Content-Type': 'text/plain' });
+  response.end(statusCode + ' ' + message + '\n');
+}
+
+/**
+ * Indicates if the path is located inside the root directory
+ * @param {String} root Root directory
+ * @param {String} filepath Path to test
+ * @return {Boolean}
+ */
+function isPathInside (root, filepath) {
+  const relative = path.relative(root, filepath);
+  return relative === '' ||
+    (relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative));
+}
+
+/**
+ * Indicates if the name is a plain file name (no directory and no parent reference)
+ * @param {String} name Name of the fixture or emulation
+ * @return {Boolean}
+ */
+function isPlainFileName (name) {
+  return !name || (!/[\\/]/.test(name) && !name.includes('..'));
+}
+
+/**
+ * Indicates if a value received from the request can be passed to the ADXShell.
+ * The ADXShell arguments are quoted and sent line by line, so a quote or a line
+ * break would let a request inject extra arguments or commands.
+ * @param {String} value Value to test
+ * @return {Boolean}
+ */
+function isSafeShellValue (value) {
+  return typeof value !== 'string' || !/["\r\n]/.test(value);
+}
+
+/**
  * Parse the query part of the URI and return an object that represent it
  *
  * Query like ?x=y&prop[a]=1&prop[b]=2&theme[a]=10&theme[b]=20 will be transform to:
@@ -138,6 +181,14 @@ function showADX (err, request, response, requestData, fixturesAndEmulations) {
   if (request.method === 'POST') {
     command = 'update';
     options.parameters = requestData;
+  }
+
+  // The fixture and emulation must be file names in the project, and no value
+  // may break out of its quoted ADXShell argument
+  if (!isPlainFileName(fixtureName) || !isPlainFileName(emulationName) ||
+      !Object.keys(options).every((key) => isSafeShellValue(options[key]))) {
+    replyError(response, 400, 'Bad Request');
+    return;
   }
 
   if (!id && request.method === 'GET') {
@@ -388,7 +439,17 @@ function replyWithRequestData (request, response, requestData) {
       return;
     }
 
+    // Never serve files outside the project (e.g. /..%2f..%2fWindows/win.ini)
+    if (uri.split(/[\\/]+/).includes('..')) {
+      replyError(response, 404, 'Not Found');
+      return;
+    }
+
     findResource(adx, uri, (err, stats, filepath) => {
+      if (!err && !isPathInside(adx.path, filepath)) {
+        replyError(response, 404, 'Not Found');
+        return;
+      }
       if (err) {
         response.writeHead(404, { 'Content-Type': 'text/plain' });
         response.write('404 Not Found\n');
@@ -432,7 +493,13 @@ function replyWithRequestData (request, response, requestData) {
  */
 function reply (request, response) {
   getRequestData(request, (err, requestData) => {
-    if (err) throw err;
+    if (err) {
+      // Do not throw: an oversized request would crash the main process
+      if (!response.headersSent) {
+        replyError(response, 413, 'Payload Too Large');
+      }
+      return;
+    }
     replyWithRequestData(request, response, requestData);
   });
 }
