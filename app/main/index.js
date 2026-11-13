@@ -65,14 +65,19 @@
   window.electronAPI.on('show-modal-dialog', function showModalDialog (event, options) {    
     let args = Array.prototype.slice.call(arguments, 2, arguments.length); // Remove the first args
     askia.modalDialog.show(options, function (result) {
-      // args.push(result.button);
-      if (result.button === 'ok' || result.button === 'yes') {
-        if (result.value) {
-          args.push(result.value);
-        }
-
-        window.electronAPI.send.apply(null, args);
+      // No reply channel (e.g. an 'okOnly' message): nothing to answer
+      if (!args.length) {
+        return;
       }
+      // Always reply, with the clicked button, so the controller can handle
+      // 'no' and 'cancel' too (e.g. "No" in the save-before-quit dialog must quit).
+      // Reply handlers have the signature (event, ...extraArgs, button, value).
+      args.push(result.button);
+      if (result.value) {
+        args.push(result.value);
+      }
+
+      window.electronAPI.send.apply(null, args);
     });
   });
 
