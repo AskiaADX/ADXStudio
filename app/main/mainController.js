@@ -303,6 +303,9 @@ function importDesign() {
  * @param {*} options
  */
 function importValidation(event, button, options) {
+  if (button !== 'ok' && button !== 'yes') {
+    return;
+  }
   let adx = global.project.getADX();
   if (!adx || !adx.path) {
     return;
@@ -348,13 +351,11 @@ function openPreferences (){
 /**
  * Save preferences
  */
-function savePreferences (event, options) {
-  /*
+function savePreferences (event, button, options) {
   if (button !== 'ok' && button !== 'yes') {
     return;
   }
-  */
-  if (!options.preferences) {
+  if (!options || !options.preferences) {
     return;
   }
   appSettings.setPreferences(options.preferences);
