@@ -642,8 +642,10 @@ function showSaveDialog (tab, fileContent) {
     title: 'Save As',
     properties: ['openFile'],
     defaultPath: defaultPath
-  }, (filePath) => {
-    if (!filePath) {
+  }).then((result) => {
+    // The callback form of showSaveDialog was removed in Electron 6: use the Promise
+    const filePath = result.filePath;
+    if (result.canceled || !filePath) {
       return;
     }
 
@@ -653,6 +655,7 @@ function showSaveDialog (tab, fileContent) {
           type: 'okOnly',
           message: err.message
         });
+        return;
       }
       openFile(filePath);
     });

@@ -8,6 +8,18 @@ const fs = require('fs');
 const path = require('path');
 const appSettings = require('../appSettings/appSettingsModel.js');
 
+// Since Electron 43 the OS no longer remembers the last folder of the open dialogs
+// (they always start in Downloads), so keep track of it here.
+let lastDialogDirectory = '';
+
+/**
+ * Folder where the open dialogs should start
+ * @return {String|undefined}
+ */
+function dialogDefaultPath () {
+  return lastDialogDirectory || global.project.getPath() || undefined;
+}
+
 // Default Menu of the app.
 app.once('ready', function createAppMenu () {
   let publish;
@@ -56,11 +68,12 @@ app.once('ready', function createAppMenu () {
         properties: ['openFile'],
         defaultPath: global.project.getPath()
       }).then(result => {
-        if (!result.filePaths[0]) {
+        // showSaveDialog returns a single `filePath` (not `filePaths`)
+        if (result.canceled || !result.filePath) {
           return;
         }
 
-        fs.writeFile(result.filePaths[0], '', { encoding: 'utf8' }, function (err) {
+        fs.writeFile(result.filePath, '', { encoding: 'utf8' }, function (err) {
           if (err) {
             app.emit('show-modal-dialog', {
               type: 'okOnly',
@@ -68,7 +81,7 @@ app.once('ready', function createAppMenu () {
             });
             return;
           }
-          app.emit('menu-new-file', result.filePaths[0]);
+          app.emit('menu-new-file', result.filePath);
         });
       }).catch(err => {
         console.log(err);
@@ -80,10 +93,14 @@ app.once('ready', function createAppMenu () {
      */
     function openProjectClick () {
 
+      // Start next to the current project, so a sibling project is easy to pick
+      const currentProject = global.project.getPath();
       dialog.showOpenDialog({
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
+        defaultPath: lastDialogDirectory || (currentProject && path.dirname(currentProject)) || undefined
       }).then(result => {
         if (result.filePaths && result.filePaths.length) {
+          lastDialogDirectory = path.dirname(result.filePaths[0]);
           global.project.set(result.filePaths[0]);
           app.emit('menu-open-project', result.filePaths[0]);
         }
@@ -97,9 +114,11 @@ app.once('ready', function createAppMenu () {
      */
     function openFileClick () {
       dialog.showOpenDialog({
-        properties: ['openFile']
+        properties: ['openFile'],
+        defaultPath: dialogDefaultPath()
       }).then(result => {
         if (result.filePaths && result.filePaths.length) {
+          lastDialogDirectory = path.dirname(result.filePaths[0]);
           app.emit('menu-open-file', result.filePaths[0]);
         }
       }).catch(err => {
