@@ -43,6 +43,20 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
+    // The tab contents are absolutely positioned with pixel sizes, so recompute them
+    // when the window size changes. At startup the window is created at 800x600 and
+    // only maximized when shown, so tabs restored before that would keep the small size.
+    let resizeFrame = null;
+    window.addEventListener('resize', function onWindowResize () {
+      if (resizeFrame) {
+        return;
+      }
+      resizeFrame = window.requestAnimationFrame(function () {
+        resizeFrame = null;
+        WorkspaceView.getInstance().fixRendering();
+      });
+    });
+
     this.init();
   }
 
