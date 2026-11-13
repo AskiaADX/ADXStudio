@@ -69,7 +69,9 @@ function trueCasePathSync (fsPath) {
   // network share) and return the 1st match, if any.
   // Fortunately, glob() with nocase case-corrects the input even if it is
   // a *literal* path.
-  return glob.sync(noDrivePath, { nocase: true, cwd: pathRoot })[0];
+  // !! glob >= 9 treats '\' as an escape character; without windowsPathsNoEscape
+  // !! no Windows path ever matches and the watcher is silently never created.
+  return glob.sync(noDrivePath, { nocase: true, cwd: pathRoot, windowsPathsNoEscape: true })[0];
 }
 
 

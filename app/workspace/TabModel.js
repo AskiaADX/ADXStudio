@@ -1,6 +1,6 @@
 'use strict';
 
-const uuid = require('uuid');
+const crypto = require('crypto');
 const detector = require('charset-detector');
 const fs = require('fs');
 const nodePath = require('path');
@@ -24,7 +24,7 @@ function Tab (config) {
       path: config
     };
   }
-  this.id = uuid.v4();
+  this.id = crypto.randomUUID();
   this.config = config || {};
   this.type = this.config.type || 'file';
   this.path = typeof this.config.path === 'string' ? nodePath.resolve(this.config.path) : '';
