@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/AskiaADX/ADXStudio",
   "dependencies": {
+    "@AskiaADX/adxutil": "^2.0.6",
     "@node-minify/core": "^10.5.0",
     "@node-minify/uglify-js": "^10.5.0",
     "axios": "^1.21.1",
